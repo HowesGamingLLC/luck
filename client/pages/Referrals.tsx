@@ -1,5 +1,11 @@
 import { useState } from "react";
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Progress } from "@/components/ui/progress";
@@ -34,9 +40,9 @@ const mockReferralData = {
   link: "https://mcluck.com/ref/JOHN2024",
   totalReferrals: 12,
   activeReferrals: 8,
-  totalEarnings: 847.50,
+  totalEarnings: 847.5,
   monthlyEarnings: 156.25,
-  weeklyEarnings: 45.00,
+  weeklyEarnings: 45.0,
   currentTier: "Gold",
   nextTier: "Platinum",
   tierProgress: 60,
@@ -46,20 +52,92 @@ const mockReferralData = {
 };
 
 const tiers = [
-  { name: "Bronze", minReferrals: 0, rate: 10, color: "text-amber-600", bgColor: "bg-amber-100 dark:bg-amber-900/20" },
-  { name: "Silver", minReferrals: 5, rate: 12, color: "text-gray-400", bgColor: "bg-gray-100 dark:bg-gray-900/20" },
-  { name: "Gold", minReferrals: 10, rate: 15, color: "text-gold", bgColor: "bg-yellow-100 dark:bg-yellow-900/20" },
-  { name: "Platinum", minReferrals: 20, rate: 20, color: "text-purple-400", bgColor: "bg-purple-100 dark:bg-purple-900/20" },
-  { name: "Diamond", minReferrals: 50, rate: 25, color: "text-blue-400", bgColor: "bg-blue-100 dark:bg-blue-900/20" },
+  {
+    name: "Bronze",
+    minReferrals: 0,
+    rate: 10,
+    color: "text-amber-600",
+    bgColor: "bg-amber-100 dark:bg-amber-900/20",
+  },
+  {
+    name: "Silver",
+    minReferrals: 5,
+    rate: 12,
+    color: "text-gray-400",
+    bgColor: "bg-gray-100 dark:bg-gray-900/20",
+  },
+  {
+    name: "Gold",
+    minReferrals: 10,
+    rate: 15,
+    color: "text-gold",
+    bgColor: "bg-yellow-100 dark:bg-yellow-900/20",
+  },
+  {
+    name: "Platinum",
+    minReferrals: 20,
+    rate: 20,
+    color: "text-purple-400",
+    bgColor: "bg-purple-100 dark:bg-purple-900/20",
+  },
+  {
+    name: "Diamond",
+    minReferrals: 50,
+    rate: 25,
+    color: "text-blue-400",
+    bgColor: "bg-blue-100 dark:bg-blue-900/20",
+  },
 ];
 
 const referralHistory = [
-  { id: "1", name: "Sarah M.", joinDate: "2 days ago", earnings: 25.50, status: "active", avatar: "" },
-  { id: "2", name: "Mike R.", joinDate: "1 week ago", earnings: 78.25, status: "active", avatar: "" },
-  { id: "3", name: "Lisa K.", joinDate: "2 weeks ago", earnings: 156.75, status: "active", avatar: "" },
-  { id: "4", name: "David P.", joinDate: "3 weeks ago", earnings: 89.50, status: "active", avatar: "" },
-  { id: "5", name: "Emma W.", joinDate: "1 month ago", earnings: 234.25, status: "inactive", avatar: "" },
-  { id: "6", name: "James L.", joinDate: "1 month ago", earnings: 67.80, status: "active", avatar: "" },
+  {
+    id: "1",
+    name: "Sarah M.",
+    joinDate: "2 days ago",
+    earnings: 25.5,
+    status: "active",
+    avatar: "",
+  },
+  {
+    id: "2",
+    name: "Mike R.",
+    joinDate: "1 week ago",
+    earnings: 78.25,
+    status: "active",
+    avatar: "",
+  },
+  {
+    id: "3",
+    name: "Lisa K.",
+    joinDate: "2 weeks ago",
+    earnings: 156.75,
+    status: "active",
+    avatar: "",
+  },
+  {
+    id: "4",
+    name: "David P.",
+    joinDate: "3 weeks ago",
+    earnings: 89.5,
+    status: "active",
+    avatar: "",
+  },
+  {
+    id: "5",
+    name: "Emma W.",
+    joinDate: "1 month ago",
+    earnings: 234.25,
+    status: "inactive",
+    avatar: "",
+  },
+  {
+    id: "6",
+    name: "James L.",
+    joinDate: "1 month ago",
+    earnings: 67.8,
+    status: "active",
+    avatar: "",
+  },
 ];
 
 const monthlyBonuses = [
@@ -92,9 +170,10 @@ export default function Referrals() {
   };
 
   const shareOnSocial = (platform: string) => {
-    const text = "Join me on McLuck and start winning big! Use my referral code for bonus spins.";
+    const text =
+      "Join me on McLuck and start winning big! Use my referral code for bonus spins.";
     const url = mockReferralData.link;
-    
+
     let shareUrl = "";
     switch (platform) {
       case "twitter":
@@ -109,16 +188,21 @@ export default function Referrals() {
       default:
         return;
     }
-    
+
     window.open(shareUrl, "_blank", "width=600,height=400");
   };
 
   const getCurrentTier = () => {
-    return tiers.find(tier => tier.name === mockReferralData.currentTier) || tiers[0];
+    return (
+      tiers.find((tier) => tier.name === mockReferralData.currentTier) ||
+      tiers[0]
+    );
   };
 
   const getNextTier = () => {
-    const currentIndex = tiers.findIndex(tier => tier.name === mockReferralData.currentTier);
+    const currentIndex = tiers.findIndex(
+      (tier) => tier.name === mockReferralData.currentTier,
+    );
     return currentIndex < tiers.length - 1 ? tiers[currentIndex + 1] : null;
   };
 
@@ -131,7 +215,8 @@ export default function Referrals() {
             Referral Program
           </h1>
           <p className="text-xl text-muted-foreground max-w-2xl mx-auto">
-            Invite friends and earn up to 25% commission on their winnings! The more you refer, the more you earn.
+            Invite friends and earn up to 25% commission on their winnings! The
+            more you refer, the more you earn.
           </p>
         </div>
 
@@ -139,11 +224,15 @@ export default function Referrals() {
         <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
           <Card className="glass">
             <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-              <CardTitle className="text-sm font-medium">Total Referrals</CardTitle>
+              <CardTitle className="text-sm font-medium">
+                Total Referrals
+              </CardTitle>
               <Users className="h-4 w-4 text-purple" />
             </CardHeader>
             <CardContent>
-              <div className="text-2xl font-bold text-purple">{mockReferralData.totalReferrals}</div>
+              <div className="text-2xl font-bold text-purple">
+                {mockReferralData.totalReferrals}
+              </div>
               <p className="text-xs text-muted-foreground">
                 {mockReferralData.activeReferrals} active players
               </p>
@@ -152,11 +241,15 @@ export default function Referrals() {
 
           <Card className="glass">
             <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-              <CardTitle className="text-sm font-medium">Total Earnings</CardTitle>
+              <CardTitle className="text-sm font-medium">
+                Total Earnings
+              </CardTitle>
               <DollarSign className="h-4 w-4 text-gold" />
             </CardHeader>
             <CardContent>
-              <div className="text-2xl font-bold text-gold">${mockReferralData.totalEarnings}</div>
+              <div className="text-2xl font-bold text-gold">
+                ${mockReferralData.totalEarnings}
+              </div>
               <p className="text-xs text-muted-foreground">
                 ${mockReferralData.monthlyEarnings} this month
               </p>
@@ -165,11 +258,15 @@ export default function Referrals() {
 
           <Card className="glass">
             <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-              <CardTitle className="text-sm font-medium">Commission Rate</CardTitle>
+              <CardTitle className="text-sm font-medium">
+                Commission Rate
+              </CardTitle>
               <TrendingUp className="h-4 w-4 text-teal" />
             </CardHeader>
             <CardContent>
-              <div className="text-2xl font-bold text-teal">{mockReferralData.commissionRate}%</div>
+              <div className="text-2xl font-bold text-teal">
+                {mockReferralData.commissionRate}%
+              </div>
               <p className="text-xs text-muted-foreground">
                 {getCurrentTier()?.name} tier
               </p>
@@ -178,14 +275,16 @@ export default function Referrals() {
 
           <Card className="glass">
             <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-              <CardTitle className="text-sm font-medium">Weekly Earnings</CardTitle>
+              <CardTitle className="text-sm font-medium">
+                Weekly Earnings
+              </CardTitle>
               <Gift className="h-4 w-4 text-success" />
             </CardHeader>
             <CardContent>
-              <div className="text-2xl font-bold text-success">${mockReferralData.weeklyEarnings}</div>
-              <p className="text-xs text-muted-foreground">
-                Last 7 days
-              </p>
+              <div className="text-2xl font-bold text-success">
+                ${mockReferralData.weeklyEarnings}
+              </div>
+              <p className="text-xs text-muted-foreground">Last 7 days</p>
             </CardContent>
           </Card>
         </div>
@@ -213,11 +312,20 @@ export default function Referrals() {
                         {mockReferralData.code}
                       </div>
                       <Button
-                        onClick={() => copyToClipboard(mockReferralData.code, "Referral Code")}
+                        onClick={() =>
+                          copyToClipboard(
+                            mockReferralData.code,
+                            "Referral Code",
+                          )
+                        }
                         variant="outline"
                         className="px-3"
                       >
-                        {copied === "Referral Code" ? <Check className="h-4 w-4" /> : <Copy className="h-4 w-4" />}
+                        {copied === "Referral Code" ? (
+                          <Check className="h-4 w-4" />
+                        ) : (
+                          <Copy className="h-4 w-4" />
+                        )}
                       </Button>
                     </div>
                   </div>
@@ -229,18 +337,29 @@ export default function Referrals() {
                         {mockReferralData.link}
                       </div>
                       <Button
-                        onClick={() => copyToClipboard(mockReferralData.link, "Referral Link")}
+                        onClick={() =>
+                          copyToClipboard(
+                            mockReferralData.link,
+                            "Referral Link",
+                          )
+                        }
                         variant="outline"
                         className="px-3"
                       >
-                        {copied === "Referral Link" ? <Check className="h-4 w-4" /> : <Copy className="h-4 w-4" />}
+                        {copied === "Referral Link" ? (
+                          <Check className="h-4 w-4" />
+                        ) : (
+                          <Copy className="h-4 w-4" />
+                        )}
                       </Button>
                     </div>
                   </div>
                 </div>
 
                 <div className="border-t pt-4">
-                  <p className="text-sm font-medium mb-3">Share on Social Media</p>
+                  <p className="text-sm font-medium mb-3">
+                    Share on Social Media
+                  </p>
                   <div className="flex gap-2">
                     <Button
                       onClick={() => shareOnSocial("twitter")}
@@ -293,9 +412,15 @@ export default function Referrals() {
                       className="flex items-center gap-4 p-3 rounded-lg bg-card/50"
                     >
                       <Avatar className="h-10 w-10">
-                        <AvatarImage src={referral.avatar} alt={referral.name} />
+                        <AvatarImage
+                          src={referral.avatar}
+                          alt={referral.name}
+                        />
                         <AvatarFallback>
-                          {referral.name.split(' ').map(n => n[0]).join('')}
+                          {referral.name
+                            .split(" ")
+                            .map((n) => n[0])
+                            .join("")}
                         </AvatarFallback>
                       </Avatar>
 
@@ -303,8 +428,16 @@ export default function Referrals() {
                         <div className="flex items-center gap-2">
                           <span className="font-medium">{referral.name}</span>
                           <Badge
-                            variant={referral.status === "active" ? "default" : "secondary"}
-                            className={referral.status === "active" ? "bg-success text-white" : ""}
+                            variant={
+                              referral.status === "active"
+                                ? "default"
+                                : "secondary"
+                            }
+                            className={
+                              referral.status === "active"
+                                ? "bg-success text-white"
+                                : ""
+                            }
                           >
                             {referral.status}
                           </Badge>
@@ -341,7 +474,9 @@ export default function Referrals() {
               </CardHeader>
               <CardContent className="space-y-4">
                 <div className="text-center">
-                  <div className={`text-2xl font-bold ${getCurrentTier()?.color}`}>
+                  <div
+                    className={`text-2xl font-bold ${getCurrentTier()?.color}`}
+                  >
                     {mockReferralData.currentTier}
                   </div>
                   <p className="text-sm text-muted-foreground">
@@ -356,15 +491,23 @@ export default function Referrals() {
                         <span>Progress to {getNextTier()?.name}</span>
                         <span>{mockReferralData.tierProgress}%</span>
                       </div>
-                      <Progress value={mockReferralData.tierProgress} className="h-2" />
+                      <Progress
+                        value={mockReferralData.tierProgress}
+                        className="h-2"
+                      />
                     </div>
 
                     <div className="text-center p-3 bg-card/50 rounded-lg">
                       <p className="text-sm text-muted-foreground">
-                        Refer <span className="font-semibold text-purple">{mockReferralData.referralsNeeded} more friends</span> to reach
+                        Refer{" "}
+                        <span className="font-semibold text-purple">
+                          {mockReferralData.referralsNeeded} more friends
+                        </span>{" "}
+                        to reach
                       </p>
                       <p className={`font-semibold ${getNextTier()?.color}`}>
-                        {getNextTier()?.name} ({getNextTier()?.rate}% commission)
+                        {getNextTier()?.name} ({getNextTier()?.rate}%
+                        commission)
                       </p>
                     </div>
                   </>
@@ -418,7 +561,10 @@ export default function Referrals() {
               </CardHeader>
               <CardContent className="space-y-3">
                 {monthlyBonuses.map((bonus, index) => (
-                  <div key={index} className="flex items-center justify-between p-2 rounded bg-card/30">
+                  <div
+                    key={index}
+                    className="flex items-center justify-between p-2 rounded bg-card/30"
+                  >
                     <div>
                       <div className="text-sm font-medium">{bonus.month}</div>
                       <div className="text-xs text-muted-foreground">

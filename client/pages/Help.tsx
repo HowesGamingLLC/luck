@@ -1,5 +1,11 @@
 import { useState } from "react";
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -40,21 +46,25 @@ const faqCategories = [
     faqs: [
       {
         question: "How do I create an account?",
-        answer: "Click the 'Sign Up' button in the top right corner, enter your email and create a password. You'll receive a verification email to complete your registration."
+        answer:
+          "Click the 'Sign Up' button in the top right corner, enter your email and create a password. You'll receive a verification email to complete your registration.",
       },
       {
         question: "How do I verify my account?",
-        answer: "After signing up, check your email for a verification link. Click the link to verify your account. You may also need to verify your identity with a government-issued ID for withdrawals."
+        answer:
+          "After signing up, check your email for a verification link. Click the link to verify your account. You may also need to verify your identity with a government-issued ID for withdrawals.",
       },
       {
         question: "What games can I play?",
-        answer: "McLuck offers various sweepstakes games including the Daily Spin Wheel, scratch cards, slots, and special promotional games. All games are free to play with chances to win real prizes."
+        answer:
+          "McLuck offers various sweepstakes games including the Daily Spin Wheel, scratch cards, slots, and special promotional games. All games are free to play with chances to win real prizes.",
       },
       {
         question: "Is McLuck free to play?",
-        answer: "Yes! McLuck is completely free to play. You get free spins daily and can earn more through various activities like referrals, daily login bonuses, and special promotions."
-      }
-    ]
+        answer:
+          "Yes! McLuck is completely free to play. You get free spins daily and can earn more through various activities like referrals, daily login bonuses, and special promotions.",
+      },
+    ],
   },
   {
     id: "gameplay",
@@ -63,21 +73,25 @@ const faqCategories = [
     faqs: [
       {
         question: "How does the spin wheel work?",
-        answer: "The spin wheel is a game of chance where you can win various prizes. Each spin has predetermined odds for different prize amounts. You get free spins daily and can earn more through activities."
+        answer:
+          "The spin wheel is a game of chance where you can win various prizes. Each spin has predetermined odds for different prize amounts. You get free spins daily and can earn more through activities.",
       },
       {
         question: "What are the winning odds?",
-        answer: "Odds vary by prize amount. Smaller prizes have higher odds (30% for $10) while larger prizes are rarer (2% for $500). All odds are clearly displayed on the game page."
+        answer:
+          "Odds vary by prize amount. Smaller prizes have higher odds (30% for $10) while larger prizes are rarer (2% for $500). All odds are clearly displayed on the game page.",
       },
       {
         question: "How often can I spin?",
-        answer: "You get 3 free spins daily. Additional spins can be earned through daily login bonuses, referrals, achievements, and special promotions."
+        answer:
+          "You get 3 free spins daily. Additional spins can be earned through daily login bonuses, referrals, achievements, and special promotions.",
       },
       {
         question: "Can I improve my chances of winning?",
-        answer: "All games are based on chance with predetermined odds. However, playing consistently, referring friends, and participating in promotions can give you more opportunities to win."
-      }
-    ]
+        answer:
+          "All games are based on chance with predetermined odds. However, playing consistently, referring friends, and participating in promotions can give you more opportunities to win.",
+      },
+    ],
   },
   {
     id: "winnings",
@@ -86,21 +100,25 @@ const faqCategories = [
     faqs: [
       {
         question: "How do I withdraw my winnings?",
-        answer: "Go to your Wallet page, click 'Withdraw', choose your payment method, and enter the amount. Withdrawals are processed within 24-48 hours after verification."
+        answer:
+          "Go to your Wallet page, click 'Withdraw', choose your payment method, and enter the amount. Withdrawals are processed within 24-48 hours after verification.",
       },
       {
         question: "What is the minimum withdrawal amount?",
-        answer: "The minimum withdrawal amount is $10. This ensures cost-effective processing while allowing you to access your winnings quickly."
+        answer:
+          "The minimum withdrawal amount is $10. This ensures cost-effective processing while allowing you to access your winnings quickly.",
       },
       {
         question: "What payment methods do you accept?",
-        answer: "We support PayPal, bank transfers, and various digital payment methods. Cryptocurrency options are also available in select regions."
+        answer:
+          "We support PayPal, bank transfers, and various digital payment methods. Cryptocurrency options are also available in select regions.",
       },
       {
         question: "Are there any withdrawal fees?",
-        answer: "Standard withdrawals are free for verified accounts. Express withdrawals (processed within 2 hours) may have a small fee depending on the payment method."
-      }
-    ]
+        answer:
+          "Standard withdrawals are free for verified accounts. Express withdrawals (processed within 2 hours) may have a small fee depending on the payment method.",
+      },
+    ],
   },
   {
     id: "account",
@@ -109,21 +127,25 @@ const faqCategories = [
     faqs: [
       {
         question: "How do I reset my password?",
-        answer: "Click 'Forgot Password' on the login page, enter your email, and follow the reset instructions sent to your email address."
+        answer:
+          "Click 'Forgot Password' on the login page, enter your email, and follow the reset instructions sent to your email address.",
       },
       {
         question: "How do I update my profile information?",
-        answer: "Go to your Profile page and click 'Edit Profile'. You can update your name, location, and other personal information. Some changes may require verification."
+        answer:
+          "Go to your Profile page and click 'Edit Profile'. You can update your name, location, and other personal information. Some changes may require verification.",
       },
       {
         question: "Is my personal information safe?",
-        answer: "Yes, we use bank-level SSL encryption and follow strict data protection protocols. Your information is never shared with third parties without your consent."
+        answer:
+          "Yes, we use bank-level SSL encryption and follow strict data protection protocols. Your information is never shared with third parties without your consent.",
       },
       {
         question: "Can I delete my account?",
-        answer: "Yes, you can request account deletion by contacting our support team. Please note that this action is irreversible and you'll need to withdraw any remaining balance first."
-      }
-    ]
+        answer:
+          "Yes, you can request account deletion by contacting our support team. Please note that this action is irreversible and you'll need to withdraw any remaining balance first.",
+      },
+    ],
   },
   {
     id: "referrals",
@@ -132,21 +154,25 @@ const faqCategories = [
     faqs: [
       {
         question: "How does the referral program work?",
-        answer: "Share your unique referral code with friends. When they sign up and play, you earn a percentage of their winnings as commission. Higher tiers offer better commission rates."
+        answer:
+          "Share your unique referral code with friends. When they sign up and play, you earn a percentage of their winnings as commission. Higher tiers offer better commission rates.",
       },
       {
         question: "What commission rates do you offer?",
-        answer: "Commission rates range from 10% (Bronze) to 25% (Diamond) based on your tier. Tiers are determined by the number of successful referrals you've made."
+        answer:
+          "Commission rates range from 10% (Bronze) to 25% (Diamond) based on your tier. Tiers are determined by the number of successful referrals you've made.",
       },
       {
         question: "When do I receive referral commissions?",
-        answer: "Commissions are calculated and paid daily. You can track your earnings in real-time on your Referrals page and withdraw them anytime."
+        answer:
+          "Commissions are calculated and paid daily. You can track your earnings in real-time on your Referrals page and withdraw them anytime.",
       },
       {
         question: "Is there a limit to how much I can earn?",
-        answer: "There's no limit to referral earnings! The more active players you refer, the more you can earn. Top referrers earn thousands of dollars monthly."
-      }
-    ]
+        answer:
+          "There's no limit to referral earnings! The more active players you refer, the more you can earn. Top referrers earn thousands of dollars monthly.",
+      },
+    ],
   },
   {
     id: "technical",
@@ -155,48 +181,55 @@ const faqCategories = [
     faqs: [
       {
         question: "The game won't load, what should I do?",
-        answer: "Try refreshing the page, clearing your browser cache, or switching to a different browser. If issues persist, contact our technical support team."
+        answer:
+          "Try refreshing the page, clearing your browser cache, or switching to a different browser. If issues persist, contact our technical support team.",
       },
       {
         question: "Can I play on mobile devices?",
-        answer: "Yes! McLuck is fully optimized for mobile devices. You can play on any smartphone or tablet through your web browser. A mobile app is coming soon."
+        answer:
+          "Yes! McLuck is fully optimized for mobile devices. You can play on any smartphone or tablet through your web browser. A mobile app is coming soon.",
       },
       {
         question: "What browsers are supported?",
-        answer: "McLuck works best on Chrome, Firefox, Safari, and Edge. For the best experience, please use the latest version of your preferred browser."
+        answer:
+          "McLuck works best on Chrome, Firefox, Safari, and Edge. For the best experience, please use the latest version of your preferred browser.",
       },
       {
         question: "I'm experiencing connection issues",
-        answer: "Check your internet connection and try again. If you continue having issues, our technical team can help diagnose connection problems."
-      }
-    ]
-  }
+        answer:
+          "Check your internet connection and try again. If you continue having issues, our technical team can help diagnose connection problems.",
+      },
+    ],
+  },
 ];
 
 const tutorials = [
   {
     title: "Getting Started with McLuck",
-    description: "Complete guide to setting up your account and playing your first game",
+    description:
+      "Complete guide to setting up your account and playing your first game",
     duration: "5 min",
     type: "video",
     icon: Play,
-    difficulty: "Beginner"
+    difficulty: "Beginner",
   },
   {
     title: "Maximizing Your Winnings",
-    description: "Tips and strategies to increase your chances and optimize your gameplay",
+    description:
+      "Tips and strategies to increase your chances and optimize your gameplay",
     duration: "8 min",
     type: "video",
     icon: TrendingUp,
-    difficulty: "Intermediate"
+    difficulty: "Intermediate",
   },
   {
     title: "Referral Program Mastery",
-    description: "How to build a successful referral network and earn passive income",
+    description:
+      "How to build a successful referral network and earn passive income",
     duration: "6 min",
     type: "video",
     icon: Users,
-    difficulty: "Beginner"
+    difficulty: "Beginner",
   },
   {
     title: "Account Security Best Practices",
@@ -204,8 +237,8 @@ const tutorials = [
     duration: "4 min",
     type: "article",
     icon: Shield,
-    difficulty: "Beginner"
-  }
+    difficulty: "Beginner",
+  },
 ];
 
 const supportOptions = [
@@ -216,7 +249,7 @@ const supportOptions = [
     responseTime: "< 2 minutes",
     icon: MessageCircle,
     action: "Start Chat",
-    primary: true
+    primary: true,
   },
   {
     title: "Email Support",
@@ -225,7 +258,7 @@ const supportOptions = [
     responseTime: "< 4 hours",
     icon: Mail,
     action: "Send Email",
-    primary: false
+    primary: false,
   },
   {
     title: "Phone Support",
@@ -234,21 +267,24 @@ const supportOptions = [
     responseTime: "Immediate",
     icon: Phone,
     action: "Call Now",
-    primary: false
-  }
+    primary: false,
+  },
 ];
 
 export default function Help() {
   const [searchQuery, setSearchQuery] = useState("");
   const [selectedCategory, setSelectedCategory] = useState("getting-started");
 
-  const filteredFAQs = faqCategories.map(category => ({
-    ...category,
-    faqs: category.faqs.filter(faq =>
-      faq.question.toLowerCase().includes(searchQuery.toLowerCase()) ||
-      faq.answer.toLowerCase().includes(searchQuery.toLowerCase())
-    )
-  })).filter(category => category.faqs.length > 0 || searchQuery === "");
+  const filteredFAQs = faqCategories
+    .map((category) => ({
+      ...category,
+      faqs: category.faqs.filter(
+        (faq) =>
+          faq.question.toLowerCase().includes(searchQuery.toLowerCase()) ||
+          faq.answer.toLowerCase().includes(searchQuery.toLowerCase()),
+      ),
+    }))
+    .filter((category) => category.faqs.length > 0 || searchQuery === "");
 
   return (
     <div className="min-h-[calc(100vh-4rem)] py-8">
@@ -259,7 +295,8 @@ export default function Help() {
             Help & Support
           </h1>
           <p className="text-xl text-muted-foreground max-w-2xl mx-auto">
-            Find answers to common questions, learn how to maximize your winnings, and get support when you need it.
+            Find answers to common questions, learn how to maximize your
+            winnings, and get support when you need it.
           </p>
         </div>
 
@@ -297,7 +334,9 @@ export default function Help() {
                       <Card
                         key={category.id}
                         className={`glass cursor-pointer transition-all duration-200 hover:scale-105 ${
-                          selectedCategory === category.id ? "border-purple bg-purple/10" : ""
+                          selectedCategory === category.id
+                            ? "border-purple bg-purple/10"
+                            : ""
                         }`}
                         onClick={() => setSelectedCategory(category.id)}
                       >
@@ -321,7 +360,10 @@ export default function Help() {
                     <CardContent>
                       <Accordion type="single" collapsible className="w-full">
                         {category.faqs.map((faq, index) => (
-                          <AccordionItem key={index} value={`${category.id}-${index}`}>
+                          <AccordionItem
+                            key={index}
+                            value={`${category.id}-${index}`}
+                          >
                             <AccordionTrigger className="text-left">
                               {faq.question}
                             </AccordionTrigger>
@@ -342,7 +384,10 @@ export default function Help() {
                   {tutorials.map((tutorial, index) => {
                     const Icon = tutorial.icon;
                     return (
-                      <Card key={index} className="glass hover:glow transition-all duration-200">
+                      <Card
+                        key={index}
+                        className="glass hover:glow transition-all duration-200"
+                      >
                         <CardContent className="p-6">
                           <div className="flex items-start gap-4">
                             <div className="p-3 bg-gradient-to-br from-purple to-gold rounded-full">
@@ -350,7 +395,9 @@ export default function Help() {
                             </div>
                             <div className="flex-1">
                               <div className="flex items-center gap-2 mb-2">
-                                <h3 className="font-semibold">{tutorial.title}</h3>
+                                <h3 className="font-semibold">
+                                  {tutorial.title}
+                                </h3>
                                 <Badge variant="outline" className="text-xs">
                                   {tutorial.difficulty}
                                 </Badge>
@@ -400,7 +447,9 @@ export default function Help() {
                       >
                         <CardContent className="p-6 text-center">
                           <div className="mb-4">
-                            <Icon className={`h-8 w-8 mx-auto ${option.primary ? "text-purple" : "text-muted-foreground"}`} />
+                            <Icon
+                              className={`h-8 w-8 mx-auto ${option.primary ? "text-purple" : "text-muted-foreground"}`}
+                            />
                           </div>
                           <h3 className="font-semibold mb-2">{option.title}</h3>
                           <p className="text-sm text-muted-foreground mb-4">
@@ -415,7 +464,9 @@ export default function Help() {
                             </div>
                           </div>
                           <Button
-                            className={option.primary ? "btn-primary w-full" : "w-full"}
+                            className={
+                              option.primary ? "btn-primary w-full" : "w-full"
+                            }
                             variant={option.primary ? "default" : "outline"}
                           >
                             {option.action}
@@ -442,7 +493,7 @@ export default function Help() {
                         </div>
                         <ExternalLink className="h-4 w-4 text-muted-foreground ml-auto" />
                       </div>
-                      
+
                       <div className="flex items-center gap-3">
                         <Book className="h-5 w-5 text-teal" />
                         <div>
@@ -466,7 +517,7 @@ export default function Help() {
                         </div>
                         <ExternalLink className="h-4 w-4 text-muted-foreground ml-auto" />
                       </div>
-                      
+
                       <div className="flex items-center gap-3">
                         <Headphones className="h-5 w-5 text-success" />
                         <div>

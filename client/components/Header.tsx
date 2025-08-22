@@ -36,7 +36,7 @@ const mockUser: User = {
   id: "1",
   name: "John Doe",
   email: "john@example.com",
-  balance: 1250.50,
+  balance: 1250.5,
 };
 
 export function Header() {
@@ -75,9 +75,7 @@ export function Header() {
                 key={item.href}
                 to={item.href}
                 className={`flex items-center space-x-1 transition-colors hover:text-purple ${
-                  isActive(item.href)
-                    ? "text-purple"
-                    : "text-muted-foreground"
+                  isActive(item.href) ? "text-purple" : "text-muted-foreground"
                 }`}
               >
                 <Icon className="h-4 w-4" />
@@ -102,7 +100,10 @@ export function Header() {
               {/* User Menu */}
               <DropdownMenu>
                 <DropdownMenuTrigger asChild>
-                  <Button variant="ghost" className="relative h-8 w-8 rounded-full">
+                  <Button
+                    variant="ghost"
+                    className="relative h-8 w-8 rounded-full"
+                  >
                     <Avatar className="h-8 w-8">
                       <AvatarImage src={mockUser.avatar} alt={mockUser.name} />
                       <AvatarFallback className="bg-purple text-white">
@@ -166,7 +167,11 @@ export function Header() {
             size="sm"
             onClick={() => setIsMenuOpen(!isMenuOpen)}
           >
-            {isMenuOpen ? <X className="h-5 w-5" /> : <Menu className="h-5 w-5" />}
+            {isMenuOpen ? (
+              <X className="h-5 w-5" />
+            ) : (
+              <Menu className="h-5 w-5" />
+            )}
           </Button>
         </div>
       </div>
@@ -194,7 +199,7 @@ export function Header() {
                   </Link>
                 );
               })}
-              
+
               {isLoggedIn && (
                 <div className="pt-2 border-t border-border">
                   <div className="flex items-center space-x-2 px-3 py-2">

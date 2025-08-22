@@ -25,11 +25,11 @@ const defaultSegments: WheelSegment[] = [
   { label: "$500", value: 500, color: "#EC4899", probability: 0.02 },
 ];
 
-export function SpinWheel({ 
-  segments = defaultSegments, 
-  size = 300, 
+export function SpinWheel({
+  segments = defaultSegments,
+  size = 300,
   onSpin,
-  disabled = false 
+  disabled = false,
 }: SpinWheelProps) {
   const [isSpinning, setIsSpinning] = useState(false);
   const [rotation, setRotation] = useState(0);
@@ -39,12 +39,12 @@ export function SpinWheel({
     if (isSpinning || disabled) return;
 
     setIsSpinning(true);
-    
+
     // Calculate random result based on probabilities
     const random = Math.random();
     let cumulativeProbability = 0;
     let selectedSegment = segments[0];
-    
+
     for (const segment of segments) {
       cumulativeProbability += segment.probability;
       if (random <= cumulativeProbability) {
@@ -57,11 +57,11 @@ export function SpinWheel({
     const segmentAngle = 360 / segments.length;
     const selectedIndex = segments.indexOf(selectedSegment);
     const targetAngle = selectedIndex * segmentAngle;
-    
+
     // Add multiple full rotations plus random offset for effect
     const spinAmount = 360 * (5 + Math.random() * 3) + targetAngle;
     const newRotation = rotation + spinAmount;
-    
+
     setRotation(newRotation);
 
     // Complete spin after animation
@@ -76,36 +76,35 @@ export function SpinWheel({
 
   return (
     <div className="flex flex-col items-center space-y-6">
-      <div 
-        className="relative"
-        style={{ width: size, height: size }}
-      >
+      <div className="relative" style={{ width: size, height: size }}>
         {/* Wheel */}
         <div
           ref={wheelRef}
           className="absolute inset-0 rounded-full border-4 border-gold shadow-2xl spin-wheel overflow-hidden"
           style={{
             transform: `rotate(${rotation}deg)`,
-            transition: isSpinning ? 'transform 4s cubic-bezier(0.23, 1, 0.32, 1)' : 'none',
+            transition: isSpinning
+              ? "transform 4s cubic-bezier(0.23, 1, 0.32, 1)"
+              : "none",
           }}
         >
           {segments.map((segment, index) => {
             const startAngle = index * segmentAngle;
             const endAngle = startAngle + segmentAngle;
-            
+
             // Calculate path for segment
             const startAngleRad = (startAngle * Math.PI) / 180;
             const endAngleRad = (endAngle * Math.PI) / 180;
-            
+
             const x1 = radius + radius * Math.cos(startAngleRad);
             const y1 = radius + radius * Math.sin(startAngleRad);
             const x2 = radius + radius * Math.cos(endAngleRad);
             const y2 = radius + radius * Math.sin(endAngleRad);
-            
+
             const largeArcFlag = segmentAngle > 180 ? 1 : 0;
-            
+
             const pathData = `M ${radius} ${radius} L ${x1} ${y1} A ${radius} ${radius} 0 ${largeArcFlag} 1 ${x2} ${y2} Z`;
-            
+
             // Text position
             const textAngle = startAngle + segmentAngle / 2;
             const textAngleRad = (textAngle * Math.PI) / 180;

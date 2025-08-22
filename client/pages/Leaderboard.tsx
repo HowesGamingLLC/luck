@@ -1,5 +1,11 @@
 import { useState } from "react";
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
@@ -44,44 +50,255 @@ interface Player {
 const mockLeaderboards = {
   daily: {
     biggestWinners: [
-      { id: "1", name: "CryptoKing", rank: 1, value: 2500, change: 5, level: 25, verified: true, badge: "VIP" },
-      { id: "2", name: "LuckyLisa", rank: 2, value: 1850, change: 2, level: 18, verified: true },
-      { id: "3", name: "SpinMaster", rank: 3, value: 1420, change: -1, level: 22, verified: false },
-      { id: "4", name: "GoldRusher", rank: 4, value: 980, change: 3, level: 15, verified: true },
-      { id: "5", name: "John Doe", rank: 5, value: 850, change: 1, level: 12, verified: true }, // Current user
-      { id: "6", name: "WheelWizard", rank: 6, value: 720, change: -2, level: 19, verified: false },
-      { id: "7", name: "JackpotJoe", rank: 7, value: 650, change: 0, level: 14, verified: true },
-      { id: "8", name: "SpinQueen", rank: 8, value: 540, change: 4, level: 16, verified: true },
+      {
+        id: "1",
+        name: "CryptoKing",
+        rank: 1,
+        value: 2500,
+        change: 5,
+        level: 25,
+        verified: true,
+        badge: "VIP",
+      },
+      {
+        id: "2",
+        name: "LuckyLisa",
+        rank: 2,
+        value: 1850,
+        change: 2,
+        level: 18,
+        verified: true,
+      },
+      {
+        id: "3",
+        name: "SpinMaster",
+        rank: 3,
+        value: 1420,
+        change: -1,
+        level: 22,
+        verified: false,
+      },
+      {
+        id: "4",
+        name: "GoldRusher",
+        rank: 4,
+        value: 980,
+        change: 3,
+        level: 15,
+        verified: true,
+      },
+      {
+        id: "5",
+        name: "John Doe",
+        rank: 5,
+        value: 850,
+        change: 1,
+        level: 12,
+        verified: true,
+      }, // Current user
+      {
+        id: "6",
+        name: "WheelWizard",
+        rank: 6,
+        value: 720,
+        change: -2,
+        level: 19,
+        verified: false,
+      },
+      {
+        id: "7",
+        name: "JackpotJoe",
+        rank: 7,
+        value: 650,
+        change: 0,
+        level: 14,
+        verified: true,
+      },
+      {
+        id: "8",
+        name: "SpinQueen",
+        rank: 8,
+        value: 540,
+        change: 4,
+        level: 16,
+        verified: true,
+      },
     ],
     mostSpins: [
-      { id: "1", name: "SpinAddict", rank: 1, value: 127, change: 2, level: 20, verified: true },
-      { id: "2", name: "WheelWarrior", rank: 2, value: 98, change: 1, level: 17, verified: false },
-      { id: "3", name: "NonStopGamer", rank: 3, value: 89, change: -1, level: 23, verified: true },
-      { id: "4", name: "John Doe", rank: 4, value: 76, change: 3, level: 12, verified: true }, // Current user
+      {
+        id: "1",
+        name: "SpinAddict",
+        rank: 1,
+        value: 127,
+        change: 2,
+        level: 20,
+        verified: true,
+      },
+      {
+        id: "2",
+        name: "WheelWarrior",
+        rank: 2,
+        value: 98,
+        change: 1,
+        level: 17,
+        verified: false,
+      },
+      {
+        id: "3",
+        name: "NonStopGamer",
+        rank: 3,
+        value: 89,
+        change: -1,
+        level: 23,
+        verified: true,
+      },
+      {
+        id: "4",
+        name: "John Doe",
+        rank: 4,
+        value: 76,
+        change: 3,
+        level: 12,
+        verified: true,
+      }, // Current user
     ],
     highestWinRate: [
-      { id: "1", name: "PerfectRecord", rank: 1, value: 95, change: 0, level: 21, verified: true, badge: "Pro" },
-      { id: "2", name: "AlwaysWins", rank: 2, value: 88, change: 1, level: 19, verified: true },
-      { id: "3", name: "LuckyStreak", rank: 3, value: 82, change: -1, level: 16, verified: false },
-      { id: "4", name: "John Doe", rank: 4, value: 68, change: 2, level: 12, verified: true }, // Current user
+      {
+        id: "1",
+        name: "PerfectRecord",
+        rank: 1,
+        value: 95,
+        change: 0,
+        level: 21,
+        verified: true,
+        badge: "Pro",
+      },
+      {
+        id: "2",
+        name: "AlwaysWins",
+        rank: 2,
+        value: 88,
+        change: 1,
+        level: 19,
+        verified: true,
+      },
+      {
+        id: "3",
+        name: "LuckyStreak",
+        rank: 3,
+        value: 82,
+        change: -1,
+        level: 16,
+        verified: false,
+      },
+      {
+        id: "4",
+        name: "John Doe",
+        rank: 4,
+        value: 68,
+        change: 2,
+        level: 12,
+        verified: true,
+      }, // Current user
     ],
   },
   weekly: {
     biggestWinners: [
-      { id: "1", name: "WeeklyChamp", rank: 1, value: 15750, change: 0, level: 28, verified: true, badge: "Champion" },
-      { id: "2", name: "BigWinner99", rank: 2, value: 12340, change: 1, level: 25, verified: true },
-      { id: "3", name: "GoldDigger", rank: 3, value: 9870, change: -1, level: 22, verified: true },
-      { id: "15", name: "John Doe", rank: 15, value: 4250, change: 5, level: 12, verified: true }, // Current user
+      {
+        id: "1",
+        name: "WeeklyChamp",
+        rank: 1,
+        value: 15750,
+        change: 0,
+        level: 28,
+        verified: true,
+        badge: "Champion",
+      },
+      {
+        id: "2",
+        name: "BigWinner99",
+        rank: 2,
+        value: 12340,
+        change: 1,
+        level: 25,
+        verified: true,
+      },
+      {
+        id: "3",
+        name: "GoldDigger",
+        rank: 3,
+        value: 9870,
+        change: -1,
+        level: 22,
+        verified: true,
+      },
+      {
+        id: "15",
+        name: "John Doe",
+        rank: 15,
+        value: 4250,
+        change: 5,
+        level: 12,
+        verified: true,
+      }, // Current user
     ],
     mostSpins: [
-      { id: "1", name: "SpinMachine", rank: 1, value: 892, change: 0, level: 24, verified: true },
-      { id: "2", name: "NeverStops", rank: 2, value: 756, change: 2, level: 21, verified: false },
-      { id: "8", name: "John Doe", rank: 8, value: 347, change: 1, level: 12, verified: true }, // Current user
+      {
+        id: "1",
+        name: "SpinMachine",
+        rank: 1,
+        value: 892,
+        change: 0,
+        level: 24,
+        verified: true,
+      },
+      {
+        id: "2",
+        name: "NeverStops",
+        rank: 2,
+        value: 756,
+        change: 2,
+        level: 21,
+        verified: false,
+      },
+      {
+        id: "8",
+        name: "John Doe",
+        rank: 8,
+        value: 347,
+        change: 1,
+        level: 12,
+        verified: true,
+      }, // Current user
     ],
     highestWinRate: [
-      { id: "1", name: "WeeklyPro", rank: 1, value: 92, change: 1, level: 26, verified: true },
-      { id: "2", name: "ConsistentWin", rank: 2, value: 89, change: 0, level: 23, verified: true },
-      { id: "12", name: "John Doe", rank: 12, value: 71, change: 3, level: 12, verified: true }, // Current user
+      {
+        id: "1",
+        name: "WeeklyPro",
+        rank: 1,
+        value: 92,
+        change: 1,
+        level: 26,
+        verified: true,
+      },
+      {
+        id: "2",
+        name: "ConsistentWin",
+        rank: 2,
+        value: 89,
+        change: 0,
+        level: 23,
+        verified: true,
+      },
+      {
+        id: "12",
+        name: "John Doe",
+        rank: 12,
+        value: 71,
+        change: 3,
+        level: 12,
+        verified: true,
+      }, // Current user
     ],
   },
 };
@@ -109,35 +326,49 @@ export default function Leaderboard() {
   const currentUser = "John Doe";
 
   const getCurrentData = () => {
-    return mockLeaderboards[selectedPeriod as keyof typeof mockLeaderboards]?.[selectedCategory as keyof typeof mockLeaderboards.daily] || [];
+    return (
+      mockLeaderboards[selectedPeriod as keyof typeof mockLeaderboards]?.[
+        selectedCategory as keyof typeof mockLeaderboards.daily
+      ] || []
+    );
   };
 
-  const filteredData = getCurrentData().filter(player =>
-    player.name.toLowerCase().includes(searchQuery.toLowerCase())
+  const filteredData = getCurrentData().filter((player) =>
+    player.name.toLowerCase().includes(searchQuery.toLowerCase()),
   );
 
   const getRankIcon = (rank: number) => {
     if (rank === 1) return <Crown className="h-5 w-5 text-gold" />;
     if (rank === 2) return <Medal className="h-5 w-5 text-gray-400" />;
     if (rank === 3) return <Medal className="h-5 w-5 text-amber-600" />;
-    return <span className="text-lg font-bold text-muted-foreground">#{rank}</span>;
+    return (
+      <span className="text-lg font-bold text-muted-foreground">#{rank}</span>
+    );
   };
 
   const getValueLabel = () => {
     switch (selectedCategory) {
-      case "biggestWinners": return "$";
-      case "mostSpins": return "";
-      case "highestWinRate": return "%";
-      default: return "";
+      case "biggestWinners":
+        return "$";
+      case "mostSpins":
+        return "";
+      case "highestWinRate":
+        return "%";
+      default:
+        return "";
     }
   };
 
   const getCategoryIcon = () => {
     switch (selectedCategory) {
-      case "biggestWinners": return <Coins className="h-5 w-5" />;
-      case "mostSpins": return <Zap className="h-5 w-5" />;
-      case "highestWinRate": return <Target className="h-5 w-5" />;
-      default: return <Trophy className="h-5 w-5" />;
+      case "biggestWinners":
+        return <Coins className="h-5 w-5" />;
+      case "mostSpins":
+        return <Zap className="h-5 w-5" />;
+      case "highestWinRate":
+        return <Target className="h-5 w-5" />;
+      default:
+        return <Trophy className="h-5 w-5" />;
     }
   };
 
@@ -150,7 +381,8 @@ export default function Leaderboard() {
             Leaderboard
           </h1>
           <p className="text-xl text-muted-foreground max-w-2xl mx-auto">
-            Compete with players worldwide and climb the ranks to win amazing prizes!
+            Compete with players worldwide and climb the ranks to win amazing
+            prizes!
           </p>
         </div>
 
@@ -159,7 +391,10 @@ export default function Leaderboard() {
           <CardContent className="p-6">
             <div className="flex flex-col md:flex-row gap-4 items-center">
               <div className="flex flex-col sm:flex-row gap-4 flex-1">
-                <Select value={selectedPeriod} onValueChange={setSelectedPeriod}>
+                <Select
+                  value={selectedPeriod}
+                  onValueChange={setSelectedPeriod}
+                >
                   <SelectTrigger className="w-full sm:w-[180px]">
                     <SelectValue />
                   </SelectTrigger>
@@ -179,7 +414,10 @@ export default function Leaderboard() {
                   </SelectContent>
                 </Select>
 
-                <Select value={selectedCategory} onValueChange={setSelectedCategory}>
+                <Select
+                  value={selectedCategory}
+                  onValueChange={setSelectedCategory}
+                >
                   <SelectTrigger className="w-full sm:w-[200px]">
                     <SelectValue />
                   </SelectTrigger>
@@ -257,7 +495,10 @@ export default function Leaderboard() {
                       <Avatar className="h-10 w-10">
                         <AvatarImage src={player.avatar} alt={player.name} />
                         <AvatarFallback>
-                          {player.name.split(' ').map(n => n[0]).join('')}
+                          {player.name
+                            .split(" ")
+                            .map((n) => n[0])
+                            .join("")}
                         </AvatarFallback>
                       </Avatar>
 
@@ -266,7 +507,9 @@ export default function Leaderboard() {
                         <div className="flex items-center gap-2">
                           <span className="font-semibold">{player.name}</span>
                           {player.name === currentUser && (
-                            <Badge className="bg-teal text-white text-xs">You</Badge>
+                            <Badge className="bg-teal text-white text-xs">
+                              You
+                            </Badge>
                           )}
                           {player.verified && (
                             <Badge variant="outline" className="text-xs">
@@ -279,19 +522,31 @@ export default function Leaderboard() {
                             </Badge>
                           )}
                         </div>
-                        <p className="text-sm text-muted-foreground">Level {player.level}</p>
+                        <p className="text-sm text-muted-foreground">
+                          Level {player.level}
+                        </p>
                       </div>
 
                       {/* Value */}
                       <div className="text-right">
                         <div className="font-bold text-lg">
-                          {getValueLabel()}{player.value.toLocaleString()}
+                          {getValueLabel()}
+                          {player.value.toLocaleString()}
                         </div>
-                        <div className={`text-sm flex items-center gap-1 ${
-                          player.change > 0 ? "text-success" : player.change < 0 ? "text-destructive" : "text-muted-foreground"
-                        }`}>
-                          {player.change > 0 && <TrendingUp className="h-3 w-3" />}
-                          {player.change !== 0 && `${player.change > 0 ? "+" : ""}${player.change}`}
+                        <div
+                          className={`text-sm flex items-center gap-1 ${
+                            player.change > 0
+                              ? "text-success"
+                              : player.change < 0
+                                ? "text-destructive"
+                                : "text-muted-foreground"
+                          }`}
+                        >
+                          {player.change > 0 && (
+                            <TrendingUp className="h-3 w-3" />
+                          )}
+                          {player.change !== 0 &&
+                            `${player.change > 0 ? "+" : ""}${player.change}`}
                         </div>
                       </div>
                     </div>
@@ -312,22 +567,24 @@ export default function Leaderboard() {
                 </CardTitle>
               </CardHeader>
               <CardContent className="space-y-3">
-                {prizes[selectedPeriod as keyof typeof prizes].map((prize, index) => {
-                  const Icon = prize.icon;
-                  return (
-                    <div key={index} className="flex items-center gap-3">
-                      <Icon className={`h-5 w-5 ${prize.color}`} />
-                      <div className="flex-1">
-                        <div className="text-sm font-medium">
-                          Rank {prize.rank}
-                        </div>
-                        <div className={`text-sm ${prize.color}`}>
-                          {prize.prize}
+                {prizes[selectedPeriod as keyof typeof prizes].map(
+                  (prize, index) => {
+                    const Icon = prize.icon;
+                    return (
+                      <div key={index} className="flex items-center gap-3">
+                        <Icon className={`h-5 w-5 ${prize.color}`} />
+                        <div className="flex-1">
+                          <div className="text-sm font-medium">
+                            Rank {prize.rank}
+                          </div>
+                          <div className={`text-sm ${prize.color}`}>
+                            {prize.prize}
+                          </div>
                         </div>
                       </div>
-                    </div>
-                  );
-                })}
+                    );
+                  },
+                )}
               </CardContent>
             </Card>
 
@@ -342,15 +599,21 @@ export default function Leaderboard() {
               <CardContent className="space-y-4">
                 <div className="text-center">
                   <div className="text-2xl font-bold text-purple">2,847</div>
-                  <p className="text-sm text-muted-foreground">Active Players</p>
+                  <p className="text-sm text-muted-foreground">
+                    Active Players
+                  </p>
                 </div>
                 <div className="text-center">
                   <div className="text-2xl font-bold text-gold">$12,500</div>
-                  <p className="text-sm text-muted-foreground">Total Prize Pool</p>
+                  <p className="text-sm text-muted-foreground">
+                    Total Prize Pool
+                  </p>
                 </div>
                 <div className="text-center">
                   <div className="text-2xl font-bold text-teal">6h 23m</div>
-                  <p className="text-sm text-muted-foreground">Time Remaining</p>
+                  <p className="text-sm text-muted-foreground">
+                    Time Remaining
+                  </p>
                 </div>
               </CardContent>
             </Card>
@@ -366,7 +629,9 @@ export default function Leaderboard() {
               <CardContent>
                 <div className="text-center">
                   <div className="text-3xl font-bold gradient-text mb-2">
-                    #{filteredData.find(p => p.name === currentUser)?.rank || "N/A"}
+                    #
+                    {filteredData.find((p) => p.name === currentUser)?.rank ||
+                      "N/A"}
                   </div>
                   <p className="text-sm text-muted-foreground mb-4">
                     {selectedCategory === "biggestWinners" && "Total Winnings"}

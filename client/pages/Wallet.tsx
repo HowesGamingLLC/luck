@@ -1,5 +1,11 @@
 import { useState } from "react";
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -46,7 +52,7 @@ import {
 
 // Mock wallet data
 const mockWalletData = {
-  balance: 1250.50,
+  balance: 1250.5,
   pending: 75.25,
   totalWithdrawn: 2340.75,
   totalDeposited: 0, // Free-to-play platform
@@ -65,7 +71,7 @@ const paymentMethods = [
     icon: "🟦",
   },
   {
-    id: "2", 
+    id: "2",
     type: "bank",
     name: "Bank Account",
     details: "**** **** 1234",
@@ -88,7 +94,7 @@ const transactionHistory = [
   {
     id: "1",
     type: "withdrawal",
-    amount: -150.00,
+    amount: -150.0,
     status: "completed",
     method: "PayPal",
     date: "2024-01-20",
@@ -99,8 +105,8 @@ const transactionHistory = [
   {
     id: "2",
     type: "win",
-    amount: 75.00,
-    status: "completed", 
+    amount: 75.0,
+    status: "completed",
     method: "Daily Spin",
     date: "2024-01-20",
     time: "12:15",
@@ -110,7 +116,7 @@ const transactionHistory = [
   {
     id: "3",
     type: "referral",
-    amount: 25.50,
+    amount: 25.5,
     status: "completed",
     method: "Commission",
     date: "2024-01-19",
@@ -121,7 +127,7 @@ const transactionHistory = [
   {
     id: "4",
     type: "withdrawal",
-    amount: -200.00,
+    amount: -200.0,
     status: "pending",
     method: "Bank Transfer",
     date: "2024-01-19",
@@ -132,7 +138,7 @@ const transactionHistory = [
   {
     id: "5",
     type: "win",
-    amount: 50.00,
+    amount: 50.0,
     status: "completed",
     method: "Daily Spin",
     date: "2024-01-18",
@@ -143,7 +149,7 @@ const transactionHistory = [
   {
     id: "6",
     type: "bonus",
-    amount: 15.00,
+    amount: 15.0,
     status: "completed",
     method: "Welcome Bonus",
     date: "2024-01-17",
@@ -189,16 +195,23 @@ export default function WalletPage() {
     }
   };
 
-  const filteredTransactions = transactionHistory.filter(transaction => {
-    const matchesSearch = transaction.description.toLowerCase().includes(searchQuery.toLowerCase()) ||
-                         transaction.method.toLowerCase().includes(searchQuery.toLowerCase());
-    const matchesFilter = filterType === "all" || transaction.type === filterType;
+  const filteredTransactions = transactionHistory.filter((transaction) => {
+    const matchesSearch =
+      transaction.description
+        .toLowerCase()
+        .includes(searchQuery.toLowerCase()) ||
+      transaction.method.toLowerCase().includes(searchQuery.toLowerCase());
+    const matchesFilter =
+      filterType === "all" || transaction.type === filterType;
     return matchesSearch && matchesFilter;
   });
 
   const handleWithdraw = () => {
     // In real app, this would process the withdrawal
-    console.log("Processing withdrawal:", { amount: withdrawAmount, method: selectedMethod });
+    console.log("Processing withdrawal:", {
+      amount: withdrawAmount,
+      method: selectedMethod,
+    });
     setIsWithdrawOpen(false);
     setWithdrawAmount("");
     setSelectedMethod("");
@@ -213,7 +226,8 @@ export default function WalletPage() {
             Wallet & Payments
           </h1>
           <p className="text-xl text-muted-foreground max-w-2xl mx-auto">
-            Manage your balance, track your winnings, and withdraw your earnings securely.
+            Manage your balance, track your winnings, and withdraw your earnings
+            securely.
           </p>
         </div>
 
@@ -221,7 +235,9 @@ export default function WalletPage() {
         <div className="grid md:grid-cols-3 gap-6 mb-8">
           <Card className="glass border-gold/50">
             <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-              <CardTitle className="text-sm font-medium">Available Balance</CardTitle>
+              <CardTitle className="text-sm font-medium">
+                Available Balance
+              </CardTitle>
               <Wallet className="h-4 w-4 text-gold" />
             </CardHeader>
             <CardContent>
@@ -236,7 +252,9 @@ export default function WalletPage() {
 
           <Card className="glass">
             <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-              <CardTitle className="text-sm font-medium">Pending Balance</CardTitle>
+              <CardTitle className="text-sm font-medium">
+                Pending Balance
+              </CardTitle>
               <Clock className="h-4 w-4 text-warning" />
             </CardHeader>
             <CardContent>
@@ -251,16 +269,16 @@ export default function WalletPage() {
 
           <Card className="glass">
             <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-              <CardTitle className="text-sm font-medium">Total Withdrawn</CardTitle>
+              <CardTitle className="text-sm font-medium">
+                Total Withdrawn
+              </CardTitle>
               <TrendingUp className="h-4 w-4 text-success" />
             </CardHeader>
             <CardContent>
               <div className="text-3xl font-bold text-success">
                 ${mockWalletData.totalWithdrawn.toLocaleString()}
               </div>
-              <p className="text-xs text-muted-foreground">
-                Lifetime earnings
-              </p>
+              <p className="text-xs text-muted-foreground">Lifetime earnings</p>
             </CardContent>
           </Card>
         </div>
@@ -278,7 +296,7 @@ export default function WalletPage() {
                   </p>
                 </div>
               </div>
-              
+
               <div className="flex gap-3">
                 <Dialog open={isWithdrawOpen} onOpenChange={setIsWithdrawOpen}>
                   <DialogTrigger asChild>
@@ -312,24 +330,32 @@ export default function WalletPage() {
                       </div>
                       <div>
                         <Label htmlFor="method">Payment Method</Label>
-                        <Select value={selectedMethod} onValueChange={setSelectedMethod}>
+                        <Select
+                          value={selectedMethod}
+                          onValueChange={setSelectedMethod}
+                        >
                           <SelectTrigger>
                             <SelectValue placeholder="Select payment method" />
                           </SelectTrigger>
                           <SelectContent>
                             {paymentMethods
-                              .filter(method => method.verified)
+                              .filter((method) => method.verified)
                               .map((method) => (
-                              <SelectItem key={method.id} value={method.id}>
-                                <div className="flex items-center gap-2">
-                                  <span>{method.icon}</span>
-                                  <span>{method.name}</span>
-                                  {method.primary && (
-                                    <Badge variant="outline" className="text-xs">Primary</Badge>
-                                  )}
-                                </div>
-                              </SelectItem>
-                            ))}
+                                <SelectItem key={method.id} value={method.id}>
+                                  <div className="flex items-center gap-2">
+                                    <span>{method.icon}</span>
+                                    <span>{method.name}</span>
+                                    {method.primary && (
+                                      <Badge
+                                        variant="outline"
+                                        className="text-xs"
+                                      >
+                                        Primary
+                                      </Badge>
+                                    )}
+                                  </div>
+                                </SelectItem>
+                              ))}
                           </SelectContent>
                         </Select>
                       </div>
@@ -349,10 +375,13 @@ export default function WalletPage() {
                       </div>
                     </div>
                     <DialogFooter>
-                      <Button variant="outline" onClick={() => setIsWithdrawOpen(false)}>
+                      <Button
+                        variant="outline"
+                        onClick={() => setIsWithdrawOpen(false)}
+                      >
                         Cancel
                       </Button>
-                      <Button 
+                      <Button
                         onClick={handleWithdraw}
                         disabled={!withdrawAmount || !selectedMethod}
                         className="btn-gold"
@@ -363,7 +392,10 @@ export default function WalletPage() {
                   </DialogContent>
                 </Dialog>
 
-                <Dialog open={isAddMethodOpen} onOpenChange={setIsAddMethodOpen}>
+                <Dialog
+                  open={isAddMethodOpen}
+                  onOpenChange={setIsAddMethodOpen}
+                >
                   <DialogTrigger asChild>
                     <Button variant="outline">
                       <Plus className="h-4 w-4 mr-2" />
@@ -394,7 +426,10 @@ export default function WalletPage() {
                       </div>
                     </div>
                     <DialogFooter>
-                      <Button variant="outline" onClick={() => setIsAddMethodOpen(false)}>
+                      <Button
+                        variant="outline"
+                        onClick={() => setIsAddMethodOpen(false)}
+                      >
                         Cancel
                       </Button>
                     </DialogFooter>
@@ -442,7 +477,9 @@ export default function WalletPage() {
                         <SelectContent>
                           <SelectItem value="all">All Types</SelectItem>
                           <SelectItem value="win">Winnings</SelectItem>
-                          <SelectItem value="withdrawal">Withdrawals</SelectItem>
+                          <SelectItem value="withdrawal">
+                            Withdrawals
+                          </SelectItem>
                           <SelectItem value="referral">Referrals</SelectItem>
                           <SelectItem value="bonus">Bonuses</SelectItem>
                         </SelectContent>
@@ -462,12 +499,19 @@ export default function WalletPage() {
 
                           <div className="flex-1">
                             <div className="flex items-center justify-between mb-1">
-                              <span className="font-medium">{transaction.description}</span>
+                              <span className="font-medium">
+                                {transaction.description}
+                              </span>
                               <div className="text-right">
-                                <div className={`font-semibold ${
-                                  transaction.amount > 0 ? "text-success" : "text-foreground"
-                                }`}>
-                                  {transaction.amount > 0 ? "+" : ""}${Math.abs(transaction.amount).toFixed(2)}
+                                <div
+                                  className={`font-semibold ${
+                                    transaction.amount > 0
+                                      ? "text-success"
+                                      : "text-foreground"
+                                  }`}
+                                >
+                                  {transaction.amount > 0 ? "+" : ""}$
+                                  {Math.abs(transaction.amount).toFixed(2)}
                                 </div>
                                 {transaction.fee > 0 && (
                                   <div className="text-xs text-muted-foreground">
@@ -478,7 +522,8 @@ export default function WalletPage() {
                             </div>
                             <div className="flex items-center justify-between">
                               <span className="text-sm text-muted-foreground">
-                                {transaction.method} • {transaction.date} at {transaction.time}
+                                {transaction.method} • {transaction.date} at{" "}
+                                {transaction.time}
                               </span>
                               {getStatusBadge(transaction.status)}
                             </div>
@@ -506,12 +551,14 @@ export default function WalletPage() {
                         className="flex items-center gap-4 p-4 rounded-lg border"
                       >
                         <div className="text-2xl">{method.icon}</div>
-                        
+
                         <div className="flex-1">
                           <div className="flex items-center gap-2 mb-1">
                             <span className="font-medium">{method.name}</span>
                             {method.primary && (
-                              <Badge className="bg-purple text-white">Primary</Badge>
+                              <Badge className="bg-purple text-white">
+                                Primary
+                              </Badge>
                             )}
                             {method.verified ? (
                               <Badge className="bg-success text-white">
@@ -525,7 +572,9 @@ export default function WalletPage() {
                               </Badge>
                             )}
                           </div>
-                          <p className="text-sm text-muted-foreground">{method.details}</p>
+                          <p className="text-sm text-muted-foreground">
+                            {method.details}
+                          </p>
                         </div>
 
                         <div className="flex gap-2">

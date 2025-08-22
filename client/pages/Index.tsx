@@ -1,7 +1,13 @@
 import { useState } from "react";
 import { Link } from "react-router-dom";
 import { Button } from "@/components/ui/button";
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { SpinWheel } from "@/components/SpinWheel";
 import {
@@ -39,25 +45,29 @@ export default function Index() {
     {
       icon: Trophy,
       title: "Daily Jackpots",
-      description: "Win big with our daily progressive jackpots. The more you play, the bigger they get!",
+      description:
+        "Win big with our daily progressive jackpots. The more you play, the bigger they get!",
       highlight: "Up to $10,000",
     },
     {
       icon: Users,
       title: "Referral Rewards",
-      description: "Invite friends and earn up to 20% of their winnings. Build your network, boost your earnings.",
+      description:
+        "Invite friends and earn up to 20% of their winnings. Build your network, boost your earnings.",
       highlight: "20% Commission",
     },
     {
       icon: Shield,
       title: "Safe & Secure",
-      description: "Bank-level security with instant payouts. Your money and data are always protected.",
+      description:
+        "Bank-level security with instant payouts. Your money and data are always protected.",
       highlight: "SSL Encrypted",
     },
     {
       icon: Zap,
       title: "Instant Wins",
-      description: "No waiting around. Spin, win, and get paid instantly to your wallet.",
+      description:
+        "No waiting around. Spin, win, and get paid instantly to your wallet.",
       highlight: "Instant Payouts",
     },
   ];
@@ -73,13 +83,15 @@ export default function Index() {
     {
       name: "Sarah M.",
       amount: "$2,500",
-      quote: "I couldn't believe it when I hit the jackpot! McLuck changed my life.",
+      quote:
+        "I couldn't believe it when I hit the jackpot! McLuck changed my life.",
       rating: 5,
     },
     {
       name: "Mike R.",
       amount: "$850",
-      quote: "The referral program is amazing. I'm earning passive income daily!",
+      quote:
+        "The referral program is amazing. I'm earning passive income daily!",
       rating: 5,
     },
     {
@@ -94,8 +106,12 @@ export default function Index() {
     <div className="min-h-screen">
       {/* Hero Section */}
       <section className="relative overflow-hidden bg-gradient-to-br from-background via-purple/5 to-background py-20">
-        <div className={"absolute inset-0 bg-[url('data:image/svg+xml,%3Csvg width=\"60\" height=\"60\" viewBox=\"0 0 60 60\" xmlns=\"http://www.w3.org/2000/svg\"%3E%3Cg fill=\"none\" fill-rule=\"evenodd\"%3E%3Cg fill=\"%239C92AC\" fill-opacity=\"0.05\"%3E%3Ccircle cx=\"30\" cy=\"30\" r=\"2\"/%3E%3C/g%3E%3C/g%3E%3C/svg%3E')] opacity-50"} />
-        
+        <div
+          className={
+            'absolute inset-0 bg-[url(\'data:image/svg+xml,%3Csvg width="60" height="60" viewBox="0 0 60 60" xmlns="http://www.w3.org/2000/svg"%3E%3Cg fill="none" fill-rule="evenodd"%3E%3Cg fill="%239C92AC" fill-opacity="0.05"%3E%3Ccircle cx="30" cy="30" r="2"/%3E%3C/g%3E%3C/g%3E%3C/svg%3E\')] opacity-50'
+          }
+        />
+
         <div className="container relative">
           <div className="grid lg:grid-cols-2 gap-12 items-center">
             {/* Left Content */}
@@ -105,18 +121,18 @@ export default function Index() {
                   🎉 Welcome Bonus: Double Your First Spin!
                 </Badge>
                 <h1 className="text-4xl md:text-6xl font-display font-bold leading-tight">
-                  Win Big with{" "}
-                  <span className="gradient-text">McLuck</span>
+                  Win Big with <span className="gradient-text">McLuck</span>
                 </h1>
                 <p className="text-xl text-muted-foreground max-w-lg">
-                  Join thousands of winners in the most exciting sweepstakes platform. 
-                  Spin the wheel, claim your prizes, and change your life today!
+                  Join thousands of winners in the most exciting sweepstakes
+                  platform. Spin the wheel, claim your prizes, and change your
+                  life today!
                 </p>
               </div>
 
               <div className="flex flex-col sm:flex-row gap-4">
-                <Button 
-                  size="lg" 
+                <Button
+                  size="lg"
                   className="btn-primary text-lg px-8 py-6 group"
                   asChild
                 >
@@ -125,9 +141,9 @@ export default function Index() {
                     Start Playing Now
                   </Link>
                 </Button>
-                <Button 
-                  size="lg" 
-                  variant="outline" 
+                <Button
+                  size="lg"
+                  variant="outline"
                   className="text-lg px-8 py-6 border-2 hover:bg-purple/10"
                 >
                   Learn More
@@ -143,7 +159,9 @@ export default function Index() {
                     <div key={index} className="text-center">
                       <Icon className="h-6 w-6 mx-auto mb-2 text-purple" />
                       <div className="font-bold text-lg">{stat.value}</div>
-                      <div className="text-sm text-muted-foreground">{stat.label}</div>
+                      <div className="text-sm text-muted-foreground">
+                        {stat.label}
+                      </div>
                     </div>
                   );
                 })}
@@ -153,18 +171,17 @@ export default function Index() {
             {/* Right Content - Spin Wheel */}
             <div className="relative">
               <div className="relative z-10">
-                <SpinWheel 
-                  size={350} 
-                  onSpin={handleSpinResult}
-                />
-                
+                <SpinWheel size={350} onSpin={handleSpinResult} />
+
                 {/* Spin Result */}
                 {showResult && spinResult && (
                   <div className="absolute inset-0 flex items-center justify-center">
                     <Card className="glass border-gold/50 animate-bounce-slow">
                       <CardContent className="p-6 text-center">
                         <Trophy className="h-8 w-8 mx-auto mb-2 text-gold" />
-                        <h3 className="text-2xl font-bold gradient-text">Congratulations!</h3>
+                        <h3 className="text-2xl font-bold gradient-text">
+                          Congratulations!
+                        </h3>
                         <p className="text-xl font-semibold text-gold">
                           You won {spinResult.label}!
                         </p>
@@ -173,14 +190,17 @@ export default function Index() {
                   </div>
                 )}
               </div>
-              
+
               {/* Floating Elements */}
               <div className="absolute -top-4 -right-4 animate-float">
                 <div className="bg-gradient-to-r from-gold to-gold-dark p-3 rounded-full shadow-gold-glow">
                   <Coins className="h-6 w-6 text-black" />
                 </div>
               </div>
-              <div className="absolute -bottom-4 -left-4 animate-float" style={{ animationDelay: "1s" }}>
+              <div
+                className="absolute -bottom-4 -left-4 animate-float"
+                style={{ animationDelay: "1s" }}
+              >
                 <div className="bg-gradient-to-r from-teal to-teal-dark p-3 rounded-full shadow-teal-glow">
                   <Gift className="h-6 w-6 text-black" />
                 </div>
@@ -198,7 +218,8 @@ export default function Index() {
               Why Choose <span className="gradient-text">McLuck</span>?
             </h2>
             <p className="text-xl text-muted-foreground max-w-2xl mx-auto">
-              Experience the most rewarding sweepstakes platform with unmatched features and prizes.
+              Experience the most rewarding sweepstakes platform with unmatched
+              features and prizes.
             </p>
           </div>
 
@@ -206,7 +227,10 @@ export default function Index() {
             {features.map((feature, index) => {
               const Icon = feature.icon;
               return (
-                <Card key={index} className="glass hover:glow transition-all duration-300 group">
+                <Card
+                  key={index}
+                  className="glass hover:glow transition-all duration-300 group"
+                >
                   <CardHeader className="text-center">
                     <div className="mx-auto mb-4 p-3 bg-gradient-to-br from-purple to-purple-dark rounded-full group-hover:scale-110 transition-transform duration-300">
                       <Icon className="h-8 w-8 text-white" />
@@ -236,7 +260,8 @@ export default function Index() {
               Recent <span className="gradient-text">Winners</span>
             </h2>
             <p className="text-xl text-muted-foreground">
-              Join thousands of satisfied players who've changed their lives with McLuck.
+              Join thousands of satisfied players who've changed their lives
+              with McLuck.
             </p>
           </div>
 
@@ -252,9 +277,14 @@ export default function Index() {
                       </p>
                     </div>
                     <div className="flex">
-                      {Array.from({ length: testimonial.rating }).map((_, i) => (
-                        <Star key={i} className="h-4 w-4 fill-gold text-gold" />
-                      ))}
+                      {Array.from({ length: testimonial.rating }).map(
+                        (_, i) => (
+                          <Star
+                            key={i}
+                            className="h-4 w-4 fill-gold text-gold"
+                          />
+                        ),
+                      )}
                     </div>
                   </div>
                 </CardHeader>
@@ -281,28 +311,24 @@ export default function Index() {
               Ready to Win Big?
             </h2>
             <p className="text-xl text-purple-foreground/80">
-              Join McLuck today and get double your first spin! Start your winning journey now.
+              Join McLuck today and get double your first spin! Start your
+              winning journey now.
             </p>
             <div className="flex flex-col sm:flex-row gap-4 justify-center">
-              <Button 
-                size="lg" 
-                className="btn-gold text-lg px-8 py-6"
-                asChild
-              >
-                <Link to="/games">
-                  Start Playing - It's Free!
-                </Link>
+              <Button size="lg" className="btn-gold text-lg px-8 py-6" asChild>
+                <Link to="/games">Start Playing - It's Free!</Link>
               </Button>
-              <Button 
-                size="lg" 
-                variant="outline" 
+              <Button
+                size="lg"
+                variant="outline"
                 className="text-lg px-8 py-6 border-white text-white hover:bg-white hover:text-purple"
               >
                 See All Games
               </Button>
             </div>
             <p className="text-sm text-purple-foreground/60">
-              No purchase necessary. Must be 18+ to play. Terms and conditions apply.
+              No purchase necessary. Must be 18+ to play. Terms and conditions
+              apply.
             </p>
           </div>
         </div>
