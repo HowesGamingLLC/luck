@@ -113,6 +113,22 @@ export default {
             height: "0",
           },
         },
+        "pulse-glow": {
+          "0%": {
+            boxShadow: "0 0 20px rgba(147, 51, 234, 0.3)",
+          },
+          "100%": {
+            boxShadow: "0 0 30px rgba(147, 51, 234, 0.6)",
+          },
+        },
+        "float": {
+          "0%, 100%": {
+            transform: "translateY(0)",
+          },
+          "50%": {
+            transform: "translateY(-10px)",
+          },
+        },
       },
       animation: {
         "accordion-down": "accordion-down 0.2s ease-out",
