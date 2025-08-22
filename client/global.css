@@ -138,6 +138,52 @@
   }
 
   body {
-    @apply bg-background text-foreground;
+    @apply bg-background text-foreground font-sans;
+  }
+
+  h1, h2, h3, h4, h5, h6 {
+    @apply font-display font-semibold;
+  }
+}
+
+@layer components {
+  .gradient-text {
+    @apply bg-gradient-to-r from-gold via-purple to-teal bg-clip-text text-transparent;
+  }
+
+  .gradient-bg {
+    @apply bg-gradient-to-br from-purple via-purple-dark to-background;
+  }
+
+  .glass {
+    @apply bg-card/50 backdrop-blur-sm border border-border/50;
+  }
+
+  .glow {
+    @apply shadow-glow transition-shadow duration-300;
+  }
+
+  .gold-glow {
+    @apply shadow-gold-glow transition-shadow duration-300;
+  }
+
+  .teal-glow {
+    @apply shadow-teal-glow transition-shadow duration-300;
+  }
+
+  .spin-wheel {
+    @apply transition-transform duration-[4000ms] ease-out;
+  }
+
+  .btn-primary {
+    @apply bg-gradient-to-r from-purple to-purple-dark text-white font-semibold px-6 py-3 rounded-xl transition-all duration-200 hover:scale-105 hover:shadow-glow;
+  }
+
+  .btn-gold {
+    @apply bg-gradient-to-r from-gold to-gold-dark text-gold-foreground font-semibold px-6 py-3 rounded-xl transition-all duration-200 hover:scale-105 hover:shadow-gold-glow;
+  }
+
+  .btn-teal {
+    @apply bg-gradient-to-r from-teal to-teal-dark text-teal-foreground font-semibold px-6 py-3 rounded-xl transition-all duration-200 hover:scale-105 hover:shadow-teal-glow;
   }
 }
