@@ -1,9 +1,27 @@
 import { SpinWheel } from "@/components/SpinWheel";
+import { SlotMachine } from "@/components/SlotMachine";
+import { SLOT_THEMES, getSlotTheme } from "@/components/SlotThemes";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { useState } from "react";
-import { Trophy, Coins, Gift, Zap, Clock, Users } from "lucide-react";
+import {
+  Trophy,
+  Coins,
+  Gift,
+  Zap,
+  Clock,
+  Users,
+  Sparkles,
+  Crown,
+  Star,
+  Gem,
+  Flame,
+  Rocket,
+  Castle,
+  Waves,
+} from "lucide-react";
 
 interface WheelSegment {
   label: string;
@@ -12,14 +30,36 @@ interface WheelSegment {
   probability: number;
 }
 
+interface SlotGameInfo {
+  id: string;
+  name: string;
+  icon: any;
+  description: string;
+  minBet: number;
+  maxPayout: number;
+  jackpot: number;
+  popularity: number;
+  difficulty: string;
+}
+
 export default function Games() {
   const [spinResult, setSpinResult] = useState<WheelSegment | null>(null);
   const [userBalance] = useState(1250.5);
+  const [selectedSlot, setSelectedSlot] = useState<string>("classic");
+  const [totalWinnings, setTotalWinnings] = useState(430);
+  const [totalSpins, setTotalSpins] = useState(47);
+  const [slotWins, setSlotWins] = useState(0);
 
   const handleSpinResult = (result: WheelSegment) => {
     setSpinResult(result);
-    // In a real app, this would update the user's balance
-    console.log(`Won: ${result.label}`);
+    setTotalWinnings(prev => prev + result.value);
+    console.log(`Spin Wheel Won: ${result.label}`);
+  };
+
+  const handleSlotWin = (amount: number, combination: string[]) => {
+    setTotalWinnings(prev => prev + amount);
+    setSlotWins(prev => prev + 1);
+    console.log(`Slot Win: $${amount} with ${combination.join(', ')}`);
   };
 
   const gameStats = [
@@ -29,17 +69,134 @@ export default function Games() {
       icon: Coins,
       color: "text-gold",
     },
-    { label: "Total Spins", value: "47", icon: Zap, color: "text-purple" },
-    { label: "Total Won", value: "$430", icon: Trophy, color: "text-teal" },
-    { label: "Win Rate", value: "68%", icon: Gift, color: "text-success" },
+    { 
+      label: "Total Spins", 
+      value: totalSpins.toString(), 
+      icon: Zap, 
+      color: "text-purple" 
+    },
+    { 
+      label: "Total Won", 
+      value: `$${totalWinnings}`, 
+      icon: Trophy, 
+      color: "text-teal" 
+    },
+    { 
+      label: "Win Rate", 
+      value: `${Math.round(((slotWins + 12) / totalSpins) * 100)}%`, 
+      icon: Gift, 
+      color: "text-success" 
+    },
+  ];
+
+  const slotGames: SlotGameInfo[] = [
+    {
+      id: "classic",
+      name: "Classic Fruits",
+      icon: Sparkles,
+      description: "Traditional fruit machine with classic symbols",
+      minBet: 1,
+      maxPayout: 500,
+      jackpot: 2500,
+      popularity: 95,
+      difficulty: "Easy"
+    },
+    {
+      id: "diamond",
+      name: "Diamond Deluxe",
+      icon: Gem,
+      description: "Luxury gems and precious stones",
+      minBet: 2,
+      maxPayout: 1000,
+      jackpot: 5000,
+      popularity: 88,
+      difficulty: "Medium"
+    },
+    {
+      id: "treasure",
+      name: "Treasure Hunt",
+      icon: Crown,
+      description: "Pirate treasure and golden coins",
+      minBet: 1,
+      maxPayout: 750,
+      jackpot: 3750,
+      popularity: 82,
+      difficulty: "Easy"
+    },
+    {
+      id: "sevens",
+      name: "Lucky Sevens",
+      icon: Star,
+      description: "Classic casino with lucky sevens",
+      minBet: 3,
+      maxPayout: 1500,
+      jackpot: 7777,
+      popularity: 90,
+      difficulty: "Hard"
+    },
+    {
+      id: "space",
+      name: "Space Adventure",
+      icon: Rocket,
+      description: "Cosmic journey through the galaxy",
+      minBet: 2,
+      maxPayout: 888,
+      jackpot: 4440,
+      popularity: 76,
+      difficulty: "Medium"
+    },
+    {
+      id: "magic",
+      name: "Magic Kingdom",
+      icon: Castle,
+      description: "Magical spells and enchanted symbols",
+      minBet: 2,
+      maxPayout: 999,
+      jackpot: 4995,
+      popularity: 79,
+      difficulty: "Medium"
+    },
+    {
+      id: "ocean",
+      name: "Ocean Adventure",
+      icon: Waves,
+      description: "Deep sea treasures and marine life",
+      minBet: 1,
+      maxPayout: 650,
+      jackpot: 3250,
+      popularity: 73,
+      difficulty: "Easy"
+    },
+    {
+      id: "west",
+      name: "Wild West",
+      icon: Flame,
+      description: "Cowboys, gold rush, and frontier life",
+      minBet: 2,
+      maxPayout: 600,
+      jackpot: 3000,
+      popularity: 85,
+      difficulty: "Medium"
+    },
   ];
 
   const recentActivity = [
-    { type: "win", amount: "$25", time: "2 minutes ago" },
-    { type: "spin", amount: "-", time: "5 minutes ago" },
+    { type: "slot-win", game: "Diamond Deluxe", amount: "$85", time: "1 minute ago" },
+    { type: "spin", amount: "-", time: "2 minutes ago" },
+    { type: "win", amount: "$25", time: "3 minutes ago" },
+    { type: "slot-win", game: "Lucky Sevens", amount: "$150", time: "8 minutes ago" },
     { type: "win", amount: "$10", time: "12 minutes ago" },
-    { type: "win", amount: "$50", time: "1 hour ago" },
+    { type: "slot-win", game: "Classic Fruits", amount: "$35", time: "18 minutes ago" },
   ];
+
+  const getDifficultyColor = (difficulty: string) => {
+    switch (difficulty) {
+      case "Easy": return "text-green-500";
+      case "Medium": return "text-yellow-500";
+      case "Hard": return "text-red-500";
+      default: return "text-gray-500";
+    }
+  };
 
   return (
     <div className="min-h-[calc(100vh-4rem)] py-8">
@@ -47,15 +204,14 @@ export default function Games() {
         {/* Header */}
         <div className="text-center mb-8">
           <h1 className="text-4xl font-display font-bold gradient-text mb-4">
-            Spin & Win
+            Casino Games
           </h1>
           <p className="text-xl text-muted-foreground max-w-2xl mx-auto">
-            Try your luck with our daily spin wheel! Win cash prizes, bonuses,
-            and exclusive rewards.
+            Try your luck with our exciting games! Spin wheels, play slots, and win amazing prizes.
           </p>
         </div>
 
-        <div className="grid lg:grid-cols-3 gap-8">
+        <div className="grid lg:grid-cols-4 gap-8">
           {/* Left Sidebar - Stats */}
           <div className="space-y-6">
             <Card className="glass">
@@ -96,7 +252,7 @@ export default function Games() {
                 </CardTitle>
               </CardHeader>
               <CardContent className="space-y-3">
-                {recentActivity.map((activity, index) => (
+                {recentActivity.slice(0, 5).map((activity, index) => (
                   <div
                     key={index}
                     className="flex items-center justify-between text-sm"
@@ -104,19 +260,20 @@ export default function Games() {
                     <div className="flex items-center space-x-2">
                       <Badge
                         variant={
-                          activity.type === "win" ? "default" : "secondary"
+                          activity.type.includes("win") ? "default" : "secondary"
                         }
-                        className={activity.type === "win" ? "bg-success" : ""}
+                        className={activity.type.includes("win") ? "bg-success" : ""}
                       >
-                        {activity.type === "win" ? "Win" : "Spin"}
+                        {activity.type === "win" ? "Wheel" : 
+                         activity.type === "slot-win" ? "Slot" : "Spin"}
                       </Badge>
-                      {activity.type === "win" && (
+                      {activity.type.includes("win") && (
                         <span className="font-semibold text-success">
                           {activity.amount}
                         </span>
                       )}
                     </div>
-                    <span className="text-muted-foreground">
+                    <span className="text-muted-foreground text-xs">
                       {activity.time}
                     </span>
                   </div>
@@ -125,45 +282,92 @@ export default function Games() {
             </Card>
           </div>
 
-          {/* Center - Spin Wheel */}
-          <div className="flex flex-col items-center space-y-6">
-            <Card className="glass p-8">
-              <div className="text-center mb-6">
-                <h2 className="text-2xl font-bold mb-2">Daily Spin Wheel</h2>
-                <p className="text-muted-foreground">
-                  You have{" "}
-                  <span className="text-gold font-semibold">3 spins</span>{" "}
-                  remaining today
-                </p>
-              </div>
+          {/* Main Content - Games */}
+          <div className="lg:col-span-2">
+            <Tabs defaultValue="wheel" className="space-y-6">
+              <TabsList className="grid w-full grid-cols-2">
+                <TabsTrigger value="wheel">Spin Wheel</TabsTrigger>
+                <TabsTrigger value="slots">Slot Machines</TabsTrigger>
+              </TabsList>
 
-              <SpinWheel size={300} onSpin={handleSpinResult} />
-
-              {spinResult && (
-                <div className="mt-6 text-center">
-                  <div className="bg-gradient-to-r from-gold/20 to-gold/10 border border-gold/30 rounded-lg p-4">
-                    <h3 className="text-lg font-semibold text-gold mb-1">
-                      Congratulations! 🎉
-                    </h3>
-                    <p className="text-2xl font-bold gradient-text">
-                      You won {spinResult.label}!
-                    </p>
-                    <p className="text-sm text-muted-foreground mt-2">
-                      Your winnings have been added to your balance.
+              {/* Spin Wheel Tab */}
+              <TabsContent value="wheel">
+                <Card className="glass p-8">
+                  <div className="text-center mb-6">
+                    <h2 className="text-2xl font-bold mb-2">Daily Spin Wheel</h2>
+                    <p className="text-muted-foreground">
+                      You have{" "}
+                      <span className="text-gold font-semibold">3 spins</span>{" "}
+                      remaining today
                     </p>
                   </div>
-                </div>
-              )}
-            </Card>
 
-            <div className="text-center space-y-2">
-              <Button className="btn-gold w-full" disabled={true}>
-                Get More Spins - Coming Soon!
-              </Button>
-              <p className="text-xs text-muted-foreground">
-                More spins available through daily login bonuses and referrals
-              </p>
-            </div>
+                  <div className="flex justify-center">
+                    <SpinWheel size={300} onSpin={handleSpinResult} />
+                  </div>
+
+                  {spinResult && (
+                    <div className="mt-6 text-center">
+                      <div className="bg-gradient-to-r from-gold/20 to-gold/10 border border-gold/30 rounded-lg p-4">
+                        <h3 className="text-lg font-semibold text-gold mb-1">
+                          Congratulations! 🎉
+                        </h3>
+                        <p className="text-2xl font-bold gradient-text">
+                          You won {spinResult.label}!
+                        </p>
+                        <p className="text-sm text-muted-foreground mt-2">
+                          Your winnings have been added to your balance.
+                        </p>
+                      </div>
+                    </div>
+                  )}
+                </Card>
+              </TabsContent>
+
+              {/* Slots Tab */}
+              <TabsContent value="slots" className="space-y-6">
+                {/* Slot Game Selection */}
+                <Card className="glass">
+                  <CardHeader>
+                    <CardTitle>Choose Your Slot Game</CardTitle>
+                  </CardHeader>
+                  <CardContent>
+                    <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
+                      {slotGames.map((game) => {
+                        const Icon = game.icon;
+                        return (
+                          <button
+                            key={game.id}
+                            onClick={() => setSelectedSlot(game.id)}
+                            className={`p-3 rounded-lg border transition-all duration-200 hover:scale-105 ${
+                              selectedSlot === game.id
+                                ? "border-purple bg-purple/10 shadow-glow"
+                                : "border-border hover:border-purple/50"
+                            }`}
+                          >
+                            <Icon className="h-6 w-6 mx-auto mb-2 text-purple" />
+                            <div className="text-xs font-medium">{game.name}</div>
+                            <div className="text-xs text-muted-foreground">
+                              Max: ${game.maxPayout}
+                            </div>
+                          </button>
+                        );
+                      })}
+                    </div>
+                  </CardContent>
+                </Card>
+
+                {/* Selected Slot Machine */}
+                <div className="flex justify-center">
+                  <SlotMachine 
+                    theme={getSlotTheme(selectedSlot as any)}
+                    onWin={handleSlotWin}
+                    onSpin={() => setTotalSpins(prev => prev + 1)}
+                    className="max-w-lg w-full"
+                  />
+                </div>
+              </TabsContent>
+            </Tabs>
           </div>
 
           {/* Right Sidebar - Game Info */}
@@ -172,78 +376,131 @@ export default function Games() {
               <CardHeader>
                 <CardTitle className="flex items-center space-x-2">
                   <Gift className="h-5 w-5 text-teal" />
-                  <span>Prize Pool</span>
+                  <span>Today's Jackpots</span>
                 </CardTitle>
               </CardHeader>
               <CardContent className="space-y-4">
                 <div className="text-center">
                   <div className="text-3xl font-bold gradient-text mb-2">
-                    $12,450
+                    $45,870
                   </div>
                   <p className="text-sm text-muted-foreground">
-                    Total available prizes today
+                    Total jackpot pool
                   </p>
                 </div>
-
+                
                 <div className="space-y-2">
                   <div className="flex justify-between items-center">
-                    <span className="text-sm">$10 prizes</span>
-                    <Badge variant="secondary">30% chance</Badge>
+                    <span className="text-sm">Lucky Sevens</span>
+                    <Badge className="bg-red-500 text-white">$7,777</Badge>
                   </div>
                   <div className="flex justify-between items-center">
-                    <span className="text-sm">$25 prizes</span>
-                    <Badge variant="secondary">25% chance</Badge>
+                    <span className="text-sm">Diamond Deluxe</span>
+                    <Badge className="bg-blue-500 text-white">$5,000</Badge>
                   </div>
                   <div className="flex justify-between items-center">
-                    <span className="text-sm">$50 prizes</span>
-                    <Badge variant="secondary">20% chance</Badge>
+                    <span className="text-sm">Magic Kingdom</span>
+                    <Badge className="bg-purple-500 text-white">$4,995</Badge>
                   </div>
                   <div className="flex justify-between items-center">
-                    <span className="text-sm">$100 prizes</span>
-                    <Badge variant="secondary">15% chance</Badge>
-                  </div>
-                  <div className="flex justify-between items-center">
-                    <span className="text-sm">$250 prizes</span>
-                    <Badge variant="secondary">8% chance</Badge>
-                  </div>
-                  <div className="flex justify-between items-center">
-                    <span className="text-sm">$500 prizes</span>
-                    <Badge variant="secondary">2% chance</Badge>
+                    <span className="text-sm">Space Adventure</span>
+                    <Badge className="bg-indigo-500 text-white">$4,440</Badge>
                   </div>
                 </div>
               </CardContent>
             </Card>
 
+            {/* Current Game Info */}
+            {selectedSlot && (
+              <Card className="glass">
+                <CardHeader>
+                  <CardTitle className="flex items-center space-x-2">
+                    <Sparkles className="h-5 w-5 text-gold" />
+                    <span>Game Info</span>
+                  </CardTitle>
+                </CardHeader>
+                <CardContent className="space-y-3">
+                  {(() => {
+                    const game = slotGames.find(g => g.id === selectedSlot);
+                    if (!game) return null;
+                    return (
+                      <>
+                        <div className="text-center">
+                          <h3 className="font-semibold text-lg">{game.name}</h3>
+                          <p className="text-sm text-muted-foreground">
+                            {game.description}
+                          </p>
+                        </div>
+                        
+                        <div className="space-y-2">
+                          <div className="flex justify-between">
+                            <span className="text-sm">Min Bet:</span>
+                            <span className="font-semibold">${game.minBet}</span>
+                          </div>
+                          <div className="flex justify-between">
+                            <span className="text-sm">Max Payout:</span>
+                            <span className="font-semibold">${game.maxPayout}</span>
+                          </div>
+                          <div className="flex justify-between">
+                            <span className="text-sm">Jackpot:</span>
+                            <span className="font-semibold text-gold">${game.jackpot}</span>
+                          </div>
+                          <div className="flex justify-between">
+                            <span className="text-sm">Difficulty:</span>
+                            <span className={`font-semibold ${getDifficultyColor(game.difficulty)}`}>
+                              {game.difficulty}
+                            </span>
+                          </div>
+                          <div className="flex justify-between">
+                            <span className="text-sm">Popularity:</span>
+                            <span className="font-semibold">{game.popularity}%</span>
+                          </div>
+                        </div>
+                      </>
+                    );
+                  })()}
+                </CardContent>
+              </Card>
+            )}
+
             <Card className="glass">
               <CardHeader>
                 <CardTitle className="flex items-center space-x-2">
                   <Users className="h-5 w-5 text-purple" />
-                  <span>Live Activity</span>
+                  <span>Live Wins</span>
                 </CardTitle>
               </CardHeader>
               <CardContent className="space-y-3">
                 <div className="text-sm">
                   <div className="flex justify-between items-center mb-1">
-                    <span className="font-medium">Player47***</span>
-                    <span className="text-success font-semibold">+$100</span>
+                    <span className="font-medium">Lucky_Player***</span>
+                    <span className="text-success font-semibold">+$777</span>
                   </div>
-                  <p className="text-muted-foreground text-xs">Just now</p>
+                  <p className="text-muted-foreground text-xs">Lucky Sevens • Just now</p>
                 </div>
 
                 <div className="text-sm">
                   <div className="flex justify-between items-center mb-1">
-                    <span className="font-medium">Sarah_M***</span>
-                    <span className="text-success font-semibold">+$25</span>
+                    <span className="font-medium">Diamond_Queen***</span>
+                    <span className="text-success font-semibold">+$250</span>
                   </div>
-                  <p className="text-muted-foreground text-xs">2 minutes ago</p>
+                  <p className="text-muted-foreground text-xs">Diamond Deluxe • 1 min ago</p>
                 </div>
 
                 <div className="text-sm">
                   <div className="flex justify-between items-center mb-1">
-                    <span className="font-medium">Mike_R***</span>
-                    <span className="text-success font-semibold">+$50</span>
+                    <span className="font-medium">Slot_Master***</span>
+                    <span className="text-success font-semibold">+$125</span>
                   </div>
-                  <p className="text-muted-foreground text-xs">5 minutes ago</p>
+                  <p className="text-muted-foreground text-xs">Classic Fruits • 3 min ago</p>
+                </div>
+
+                <div className="text-sm">
+                  <div className="flex justify-between items-center mb-1">
+                    <span className="font-medium">Space_Explorer***</span>
+                    <span className="text-success font-semibold">+$88</span>
+                  </div>
+                  <p className="text-muted-foreground text-xs">Space Adventure • 5 min ago</p>
                 </div>
               </CardContent>
             </Card>
