@@ -47,7 +47,7 @@ const CLASSIC_THEME: SlotTheme = {
   symbols: [
     { id: "cherry", symbol: "🍒", value: 5, rarity: 25, color: "text-red-500" },
     { id: "lemon", symbol: "🍋", value: 10, rarity: 20, color: "text-yellow-500" },
-    { id: "orange", symbol: "🍊", value: 15, rarity: 18, color: "text-orange-500" },
+    { id: "orange", symbol: "��", value: 15, rarity: 18, color: "text-orange-500" },
     { id: "plum", symbol: "🍇", value: 20, rarity: 15, color: "text-purple-500" },
     { id: "bell", symbol: "🔔", value: 25, rarity: 12, color: "text-gold" },
     { id: "star", symbol: "⭐", value: 50, rarity: 8, color: "text-yellow-400" },
@@ -384,7 +384,24 @@ export function SlotMachine({
             </div>
           </div>
         )}
+
+        {/* Sound Effects Info */}
+        <div className="text-center text-xs text-muted-foreground">
+          {soundEnabled ? "🔊 Sound effects enabled" : "🔇 Sound effects disabled"}
+          {spinCount > 0 && (
+            <span className="ml-2">• Lucky spin #{spinCount}</span>
+          )}
+        </div>
       </CardContent>
+
+      {/* Jackpot Celebration Modal */}
+      {jackpotWin && (
+        <JackpotCelebration
+          amount={jackpotWin.amount}
+          type={jackpotWin.type}
+          onComplete={() => setJackpotWin(null)}
+        />
+      )}
     </Card>
   );
 }
