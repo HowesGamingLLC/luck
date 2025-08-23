@@ -373,43 +373,7 @@ export default function Games() {
 
           {/* Right Sidebar - Game Info */}
           <div className="space-y-6">
-            <Card className="glass">
-              <CardHeader>
-                <CardTitle className="flex items-center space-x-2">
-                  <Gift className="h-5 w-5 text-teal" />
-                  <span>Today's Jackpots</span>
-                </CardTitle>
-              </CardHeader>
-              <CardContent className="space-y-4">
-                <div className="text-center">
-                  <div className="text-3xl font-bold gradient-text mb-2">
-                    $45,870
-                  </div>
-                  <p className="text-sm text-muted-foreground">
-                    Total jackpot pool
-                  </p>
-                </div>
-                
-                <div className="space-y-2">
-                  <div className="flex justify-between items-center">
-                    <span className="text-sm">Lucky Sevens</span>
-                    <Badge className="bg-red-500 text-white">$7,777</Badge>
-                  </div>
-                  <div className="flex justify-between items-center">
-                    <span className="text-sm">Diamond Deluxe</span>
-                    <Badge className="bg-blue-500 text-white">$5,000</Badge>
-                  </div>
-                  <div className="flex justify-between items-center">
-                    <span className="text-sm">Magic Kingdom</span>
-                    <Badge className="bg-purple-500 text-white">$4,995</Badge>
-                  </div>
-                  <div className="flex justify-between items-center">
-                    <span className="text-sm">Space Adventure</span>
-                    <Badge className="bg-indigo-500 text-white">$4,440</Badge>
-                  </div>
-                </div>
-              </CardContent>
-            </Card>
+            <ProgressiveJackpot />
 
             {/* Current Game Info */}
             {selectedSlot && (
