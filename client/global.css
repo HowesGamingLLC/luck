@@ -204,6 +204,28 @@
   .slot-reel-spinning {
     animation: spin-reel 2s cubic-bezier(0.23, 1, 0.32, 1) forwards;
   }
+
+  .slot-win-flash {
+    animation: win-flash 1s ease-in-out;
+  }
+
+  .slot-jackpot {
+    animation: jackpot-celebration 2s ease-in-out infinite;
+  }
+
+  .coin-drop {
+    animation: coin-drop 0.8s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+  }
+
+  .reel-blur {
+    filter: blur(2px);
+    transition: filter 0.3s ease;
+  }
+
+  .reel-glow {
+    box-shadow: 0 0 20px rgba(251, 191, 36, 0.5);
+    animation: reel-glow-pulse 2s ease-in-out infinite;
+  }
 }
 
 /* Slot Machine Keyframes */
