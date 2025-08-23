@@ -72,7 +72,9 @@ export function SlotMachine({
   const [lastWin, setLastWin] = useState<{ amount: number; lines: number[] } | null>(null);
   const [soundEnabled, setSoundEnabled] = useState(true);
   const [spinCount, setSpinCount] = useState(0);
+  const [jackpotWin, setJackpotWin] = useState<{amount: number; type: string} | null>(null);
   const reelRefs = useRef<(HTMLDivElement | null)[]>([]);
+  const { triggerJackpotWin, checkJackpotEligibility } = useJackpotWin();
 
   // Initialize reels
   useEffect(() => {
