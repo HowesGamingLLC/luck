@@ -218,10 +218,21 @@ export function SlotMachine({
     const winResult = checkWinningLines(newResults);
     if (winResult.amount > 0) {
       setLastWin(winResult);
-      onWin?.(winResult.amount, newResults.flat());
-      
+
+      // Check for jackpot eligibility
+      const jackpotType = checkJackpotEligibility(newResults.flat(), theme.name);
+      if (jackpotType) {
+        const jackpotAmounts = { mini: 500, minor: 2000, major: 10000, mega: 50000 };
+        const jackpotAmount = jackpotAmounts[jackpotType as keyof typeof jackpotAmounts];
+        const jackpotWinData = triggerJackpotWin(jackpotAmount, jackpotType);
+        setJackpotWin(jackpotWinData);
+        onWin?.(jackpotAmount, newResults.flat());
+      } else {
+        onWin?.(winResult.amount, newResults.flat());
+      }
+
       if (soundEnabled) {
-        console.log("🎵 Win sound effect");
+        console.log(jackpotType ? "🎵 JACKPOT sound effect!" : "🎵 Win sound effect");
       }
     }
 
