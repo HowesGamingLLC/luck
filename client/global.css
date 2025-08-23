@@ -252,3 +252,73 @@
     transform: translateY(100%);
   }
 }
+
+@keyframes win-flash {
+  0%, 100% {
+    background-color: transparent;
+  }
+  25%, 75% {
+    background-color: rgba(251, 191, 36, 0.3);
+  }
+  50% {
+    background-color: rgba(251, 191, 36, 0.6);
+  }
+}
+
+@keyframes jackpot-celebration {
+  0%, 100% {
+    transform: scale(1);
+    color: #fbbf24;
+  }
+  50% {
+    transform: scale(1.1);
+    color: #f59e0b;
+    text-shadow: 0 0 20px #fbbf24;
+  }
+}
+
+@keyframes coin-drop {
+  0% {
+    transform: translateY(-20px) rotateX(0deg);
+    opacity: 0;
+  }
+  50% {
+    transform: translateY(0px) rotateX(180deg);
+    opacity: 1;
+  }
+  100% {
+    transform: translateY(10px) rotateX(360deg);
+    opacity: 0;
+  }
+}
+
+@keyframes reel-glow-pulse {
+  0%, 100% {
+    box-shadow: 0 0 10px rgba(251, 191, 36, 0.3);
+  }
+  50% {
+    box-shadow: 0 0 30px rgba(251, 191, 36, 0.8);
+  }
+}
+
+/* Slot-specific hover and interaction effects */
+.slot-machine-card:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 25px rgba(147, 51, 234, 0.2);
+}
+
+.slot-symbol:hover {
+  transform: scale(1.2);
+  transition: transform 0.2s ease;
+}
+
+/* Responsive slot animations */
+@media (prefers-reduced-motion: reduce) {
+  .slot-reel-spinning,
+  .animate-spin-reel-overlay,
+  .slot-win-flash,
+  .slot-jackpot,
+  .coin-drop {
+    animation: none;
+  }
+}
