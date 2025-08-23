@@ -1,5 +1,6 @@
 import { SpinWheel } from "@/components/SpinWheel";
 import { SlotMachine } from "@/components/SlotMachine";
+import { ProgressiveJackpot } from "@/components/ProgressiveJackpot";
 import { SLOT_THEMES, getSlotTheme } from "@/components/SlotThemes";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
