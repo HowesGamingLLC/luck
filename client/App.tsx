@@ -25,6 +25,7 @@ import AdminPanel from "./pages/AdminPanel";
 import AdminPackages from "./pages/AdminPackages";
 import AIEmployeePage from "./pages/AIEmployeePage";
 import EnhancedSlotsPage from "./pages/EnhancedSlotsPage";
+import FreeSlotsDocs from "./pages/FreeSlotsDocs";
 import BingoPage from "./pages/BingoPage";
 import SportsbookPage from "./pages/SportsbookPage";
 import TableGamesPage from "./pages/TableGamesPage";
