@@ -186,11 +186,11 @@ export default function PokerPage() {
     },
   ];
 
-  // Mock tournaments
+  // CoinKrazy.com Branded Tournaments
   const tournaments: Tournament[] = [
     {
       id: "tourney-1",
-      name: "Daily Freeroll",
+      name: "CoinKrazy Daily Freeroll",
       type: "freeroll",
       buyIn: { gc: 0, sc: 0 },
       prize: { gc: 10000, sc: 100 },
@@ -202,7 +202,7 @@ export default function PokerPage() {
     },
     {
       id: "tourney-2",
-      name: "Sit & Go Turbo",
+      name: "CoinKrazy Turbo SNG",
       type: "sit-n-go",
       buyIn: { gc: 100, sc: 1.0 },
       prize: { gc: 1000, sc: 10.0 },
@@ -214,7 +214,7 @@ export default function PokerPage() {
     },
     {
       id: "tourney-3",
-      name: "Weekend Warrior",
+      name: "CoinKrazy Weekend Championship",
       type: "scheduled",
       buyIn: { gc: 500, sc: 5.0 },
       prize: { gc: 25000, sc: 250.0 },
@@ -223,6 +223,18 @@ export default function PokerPage() {
       maxPlayers: 200,
       status: "registering",
       timeToStart: 120,
+    },
+    {
+      id: "tourney-4",
+      name: "CoinKrazy High Stakes Series",
+      type: "scheduled",
+      buyIn: { gc: 2000, sc: 20.0 },
+      prize: { gc: 100000, sc: 1000.0 },
+      startTime: new Date(Date.now() + 6 * 60 * 60 * 1000), // 6 hours
+      registered: 45,
+      maxPlayers: 300,
+      status: "registering",
+      timeToStart: 360,
     },
   ];
 
