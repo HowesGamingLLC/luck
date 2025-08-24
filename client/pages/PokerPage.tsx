@@ -280,13 +280,21 @@ export default function PokerPage() {
       return;
     }
 
+    setCurrentTable(table);
     setSelectedTable(table.id);
+    setInGame(true);
     updateBalance(
       selectedCurrency,
       -cost,
       `Poker table buy-in: ${table.name}`,
       "wager",
     );
+  };
+
+  const leaveTable = () => {
+    setInGame(false);
+    setCurrentTable(null);
+    setSelectedTable(null);
   };
 
   const handlePokerAction = (action: string, amount?: number) => {
