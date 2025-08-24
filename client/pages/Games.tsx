@@ -68,28 +68,28 @@ export default function Games() {
 
   const gameStats = [
     {
-      label: "Your Balance",
-      value: `$${userBalance.toLocaleString()}`,
+      label: "Gold Coins",
+      value: `${user?.balance.goldCoins.toLocaleString() || 0} GC`,
       icon: Coins,
       color: "text-gold",
     },
-    { 
-      label: "Total Spins", 
-      value: totalSpins.toString(), 
-      icon: Zap, 
-      color: "text-purple" 
+    {
+      label: "Sweep Coins",
+      value: `${user?.balance.sweepCoins.toFixed(2) || 0} SC`,
+      icon: Gem,
+      color: "text-teal",
     },
-    { 
-      label: "Total Won", 
-      value: `$${totalWinnings}`, 
-      icon: Trophy, 
-      color: "text-teal" 
+    {
+      label: "Total Won",
+      value: `${(user?.totalWon.goldCoins || 0) + (user?.totalWon.sweepCoins || 0)} Total`,
+      icon: Trophy,
+      color: "text-success"
     },
-    { 
-      label: "Win Rate", 
-      value: `${Math.round(((slotWins + 12) / totalSpins) * 100)}%`, 
-      icon: Gift, 
-      color: "text-success" 
+    {
+      label: "Player Level",
+      value: `Level ${user?.level || 1}`,
+      icon: Star,
+      color: "text-purple"
     },
   ];
 
