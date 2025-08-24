@@ -437,10 +437,19 @@ export default function WalletPage() {
                       </Button>
                       <Button
                         onClick={handleWithdraw}
-                        disabled={!withdrawAmount || !selectedMethod}
-                        className="btn-gold"
+                        disabled={
+                          !withdrawAmount ||
+                          !selectedMethod ||
+                          parseFloat(withdrawAmount) < MIN_WITHDRAWAL_SC ||
+                          parseFloat(withdrawAmount) > (user?.balance.sweepCoins || 0) ||
+                          (user?.balance.sweepCoins || 0) < MIN_WITHDRAWAL_SC
+                        }
+                        className="bg-teal hover:bg-teal-dark text-white"
                       >
-                        Confirm Withdrawal
+                        {(user?.balance.sweepCoins || 0) < MIN_WITHDRAWAL_SC
+                          ? `Need ${MIN_WITHDRAWAL_SC} SC to Withdraw`
+                          : "Confirm Withdrawal"
+                        }
                       </Button>
                     </DialogFooter>
                   </DialogContent>
