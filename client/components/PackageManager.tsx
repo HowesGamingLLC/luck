@@ -130,7 +130,11 @@ interface PackageAnalytics {
   conversionRate: number;
   topPackages: { id: string; name: string; sales: number; revenue: number }[];
   salesTrend: { date: string; sales: number; revenue: number }[];
-  categoryPerformance: { category: string; sales: number; percentage: number }[];
+  categoryPerformance: {
+    category: string;
+    sales: number;
+    percentage: number;
+  }[];
 }
 
 interface PackageManagerProps {
@@ -138,9 +142,13 @@ interface PackageManagerProps {
   selectedPackageId?: string;
 }
 
-export function PackageManager({ onPackageSelect, selectedPackageId }: PackageManagerProps) {
+export function PackageManager({
+  onPackageSelect,
+  selectedPackageId,
+}: PackageManagerProps) {
   const [packages, setPackages] = useState<GoldCoinPackage[]>([]);
-  const [selectedPackage, setSelectedPackage] = useState<GoldCoinPackage | null>(null);
+  const [selectedPackage, setSelectedPackage] =
+    useState<GoldCoinPackage | null>(null);
   const [isCreateDialogOpen, setIsCreateDialogOpen] = useState(false);
   const [isEditDialogOpen, setIsEditDialogOpen] = useState(false);
   const [activeTab, setActiveTab] = useState("overview");
@@ -175,20 +183,20 @@ export function PackageManager({ onPackageSelect, selectedPackageId }: PackageMa
   // Mock analytics data
   const [analytics] = useState<PackageAnalytics>({
     totalSales: 2547,
-    totalRevenue: 127350.50,
+    totalRevenue: 127350.5,
     avgOrderValue: 49.99,
     conversionRate: 12.5,
     topPackages: [
-      { id: "premium", name: "Premium Pack", sales: 856, revenue: 59920.00 },
-      { id: "popular", name: "Popular Choice", sales: 742, revenue: 29680.00 },
+      { id: "premium", name: "Premium Pack", sales: 856, revenue: 59920.0 },
+      { id: "popular", name: "Popular Choice", sales: 742, revenue: 29680.0 },
       { id: "starter", name: "Starter Pack", sales: 521, revenue: 5209.79 },
     ],
     salesTrend: [
-      { date: "2024-01-15", sales: 45, revenue: 2250.00 },
-      { date: "2024-01-16", sales: 52, revenue: 2600.00 },
-      { date: "2024-01-17", sales: 38, revenue: 1900.00 },
-      { date: "2024-01-18", sales: 61, revenue: 3050.00 },
-      { date: "2024-01-19", sales: 73, revenue: 3650.00 },
+      { date: "2024-01-15", sales: 45, revenue: 2250.0 },
+      { date: "2024-01-16", sales: 52, revenue: 2600.0 },
+      { date: "2024-01-17", sales: 38, revenue: 1900.0 },
+      { date: "2024-01-18", sales: 61, revenue: 3050.0 },
+      { date: "2024-01-19", sales: 73, revenue: 3650.0 },
     ],
     categoryPerformance: [
       { category: "Premium", sales: 45, percentage: 35 },
@@ -204,7 +212,7 @@ export function PackageManager({ onPackageSelect, selectedPackageId }: PackageMa
 
   useEffect(() => {
     if (selectedPackageId) {
-      const pkg = packages.find(p => p.id === selectedPackageId);
+      const pkg = packages.find((p) => p.id === selectedPackageId);
       if (pkg) {
         setSelectedPackage(pkg);
         onPackageSelect?.(pkg);
@@ -218,7 +226,8 @@ export function PackageManager({ onPackageSelect, selectedPackageId }: PackageMa
       {
         id: "starter",
         name: "Starter Pack",
-        description: "Perfect for new players to get started with their gaming journey",
+        description:
+          "Perfect for new players to get started with their gaming journey",
         goldCoins: 10000,
         bonusSweepCoins: 5,
         price: 9.99,
@@ -229,7 +238,12 @@ export function PackageManager({ onPackageSelect, selectedPackageId }: PackageMa
         icon: "🪙",
         color: "from-blue-500 to-blue-600",
         gradient: "bg-gradient-to-r from-blue-500 to-blue-600",
-        features: ["10,000 Gold Coins", "5 FREE Sweep Coins", "Instant delivery", "24/7 support"],
+        features: [
+          "10,000 Gold Coins",
+          "5 FREE Sweep Coins",
+          "Instant delivery",
+          "24/7 support",
+        ],
         category: "starter",
         tier: 1,
         salesCount: 521,
@@ -255,11 +269,16 @@ export function PackageManager({ onPackageSelect, selectedPackageId }: PackageMa
         icon: "⭐",
         color: "from-purple-500 to-purple-600",
         gradient: "bg-gradient-to-r from-purple-500 to-purple-600",
-        features: ["50,000 Gold Coins", "30 FREE Sweep Coins", "20% bonus coins", "Priority support"],
+        features: [
+          "50,000 Gold Coins",
+          "30 FREE Sweep Coins",
+          "20% bonus coins",
+          "Priority support",
+        ],
         category: "premium",
         tier: 2,
         salesCount: 742,
-        revenue: 29680.00,
+        revenue: 29680.0,
         conversionRate: 15.2,
         createdAt: new Date("2024-01-01"),
         updatedAt: new Date("2024-01-18"),
@@ -270,7 +289,8 @@ export function PackageManager({ onPackageSelect, selectedPackageId }: PackageMa
       {
         id: "premium",
         name: "Premium Pack",
-        description: "Best value package for serious players who want maximum coins",
+        description:
+          "Best value package for serious players who want maximum coins",
         goldCoins: 100000,
         bonusSweepCoins: 75,
         price: 69.99,
@@ -282,11 +302,17 @@ export function PackageManager({ onPackageSelect, selectedPackageId }: PackageMa
         icon: "👑",
         color: "from-gold to-yellow-600",
         gradient: "bg-gradient-to-r from-yellow-400 to-yellow-600",
-        features: ["100,000 Gold Coins", "75 FREE Sweep Coins", "50% bonus coins", "VIP support", "Exclusive rewards"],
+        features: [
+          "100,000 Gold Coins",
+          "75 FREE Sweep Coins",
+          "50% bonus coins",
+          "VIP support",
+          "Exclusive rewards",
+        ],
         category: "premium",
         tier: 3,
         salesCount: 856,
-        revenue: 59920.00,
+        revenue: 59920.0,
         conversionRate: 22.1,
         createdAt: new Date("2024-01-01"),
         updatedAt: new Date("2024-01-19"),
@@ -297,7 +323,8 @@ export function PackageManager({ onPackageSelect, selectedPackageId }: PackageMa
       {
         id: "mega",
         name: "Mega Package",
-        description: "Ultimate package for high rollers with exclusive benefits",
+        description:
+          "Ultimate package for high rollers with exclusive benefits",
         goldCoins: 250000,
         bonusSweepCoins: 200,
         price: 149.99,
@@ -309,7 +336,13 @@ export function PackageManager({ onPackageSelect, selectedPackageId }: PackageMa
         icon: "💎",
         color: "from-red-500 to-pink-600",
         gradient: "bg-gradient-to-r from-red-500 to-pink-600",
-        features: ["250,000 Gold Coins", "200 FREE Sweep Coins", "100% bonus coins", "VIP treatment", "Personal account manager"],
+        features: [
+          "250,000 Gold Coins",
+          "200 FREE Sweep Coins",
+          "100% bonus coins",
+          "VIP treatment",
+          "Personal account manager",
+        ],
         category: "vip",
         tier: 4,
         salesCount: 234,
@@ -337,7 +370,12 @@ export function PackageManager({ onPackageSelect, selectedPackageId }: PackageMa
         icon: "⚡",
         color: "from-green-500 to-green-600",
         gradient: "bg-gradient-to-r from-green-500 to-green-600",
-        features: ["25,000 Gold Coins", "15 FREE Sweep Coins", "Weekend bonus", "Fast delivery"],
+        features: [
+          "25,000 Gold Coins",
+          "15 FREE Sweep Coins",
+          "Weekend bonus",
+          "Fast delivery",
+        ],
         category: "special",
         tier: 2,
         salesCount: 194,
@@ -356,36 +394,46 @@ export function PackageManager({ onPackageSelect, selectedPackageId }: PackageMa
     setPackages(mockPackages);
   };
 
-  const filteredPackages = packages.filter(pkg => {
-    const matchesSearch = pkg.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
-                          pkg.description.toLowerCase().includes(searchTerm.toLowerCase()) ||
-                          pkg.tags.some(tag => tag.toLowerCase().includes(searchTerm.toLowerCase()));
-    
-    const matchesCategory = filterCategory === "all" || pkg.category === filterCategory;
-    
-    return matchesSearch && matchesCategory;
-  }).sort((a, b) => {
-    switch (sortBy) {
-      case "created_desc":
-        return new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime();
-      case "created_asc":
-        return new Date(a.createdAt).getTime() - new Date(b.createdAt).getTime();
-      case "price_desc":
-        return b.price - a.price;
-      case "price_asc":
-        return a.price - b.price;
-      case "sales_desc":
-        return b.salesCount - a.salesCount;
-      case "sales_asc":
-        return a.salesCount - b.salesCount;
-      case "name_asc":
-        return a.name.localeCompare(b.name);
-      case "name_desc":
-        return b.name.localeCompare(a.name);
-      default:
-        return 0;
-    }
-  });
+  const filteredPackages = packages
+    .filter((pkg) => {
+      const matchesSearch =
+        pkg.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
+        pkg.description.toLowerCase().includes(searchTerm.toLowerCase()) ||
+        pkg.tags.some((tag) =>
+          tag.toLowerCase().includes(searchTerm.toLowerCase()),
+        );
+
+      const matchesCategory =
+        filterCategory === "all" || pkg.category === filterCategory;
+
+      return matchesSearch && matchesCategory;
+    })
+    .sort((a, b) => {
+      switch (sortBy) {
+        case "created_desc":
+          return (
+            new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime()
+          );
+        case "created_asc":
+          return (
+            new Date(a.createdAt).getTime() - new Date(b.createdAt).getTime()
+          );
+        case "price_desc":
+          return b.price - a.price;
+        case "price_asc":
+          return a.price - b.price;
+        case "sales_desc":
+          return b.salesCount - a.salesCount;
+        case "sales_asc":
+          return a.salesCount - b.salesCount;
+        case "name_asc":
+          return a.name.localeCompare(b.name);
+        case "name_desc":
+          return b.name.localeCompare(a.name);
+        default:
+          return 0;
+      }
+    });
 
   const createPackage = () => {
     const newPackage: GoldCoinPackage = {
@@ -403,7 +451,7 @@ export function PackageManager({ onPackageSelect, selectedPackageId }: PackageMa
       icon: packageForm.icon,
       color: packageForm.color,
       gradient: `bg-gradient-to-r ${packageForm.color}`,
-      features: packageForm.features.filter(f => f.trim() !== ""),
+      features: packageForm.features.filter((f) => f.trim() !== ""),
       category: packageForm.category,
       tier: packageForm.tier,
       salesCount: 0,
@@ -411,7 +459,7 @@ export function PackageManager({ onPackageSelect, selectedPackageId }: PackageMa
       conversionRate: 0,
       createdAt: new Date(),
       updatedAt: new Date(),
-      tags: packageForm.tags.filter(t => t.trim() !== ""),
+      tags: packageForm.tags.filter((t) => t.trim() !== ""),
       targetAudience: packageForm.targetAudience,
       maxPurchases: packageForm.maxPurchases,
       validUntil: packageForm.validUntil,
@@ -441,10 +489,10 @@ export function PackageManager({ onPackageSelect, selectedPackageId }: PackageMa
       icon: packageForm.icon,
       color: packageForm.color,
       gradient: `bg-gradient-to-r ${packageForm.color}`,
-      features: packageForm.features.filter(f => f.trim() !== ""),
+      features: packageForm.features.filter((f) => f.trim() !== ""),
       category: packageForm.category,
       tier: packageForm.tier,
-      tags: packageForm.tags.filter(t => t.trim() !== ""),
+      tags: packageForm.tags.filter((t) => t.trim() !== ""),
       targetAudience: packageForm.targetAudience,
       maxPurchases: packageForm.maxPurchases,
       validUntil: packageForm.validUntil,
@@ -452,7 +500,11 @@ export function PackageManager({ onPackageSelect, selectedPackageId }: PackageMa
       updatedAt: new Date(),
     };
 
-    setPackages(packages.map(pkg => pkg.id === selectedPackage.id ? updatedPackage : pkg));
+    setPackages(
+      packages.map((pkg) =>
+        pkg.id === selectedPackage.id ? updatedPackage : pkg,
+      ),
+    );
     setSelectedPackage(updatedPackage);
     resetForm();
     setIsEditDialogOpen(false);
@@ -460,7 +512,7 @@ export function PackageManager({ onPackageSelect, selectedPackageId }: PackageMa
 
   const deletePackage = (packageId: string) => {
     if (confirm("Are you sure you want to delete this package?")) {
-      setPackages(packages.filter(pkg => pkg.id !== packageId));
+      setPackages(packages.filter((pkg) => pkg.id !== packageId));
       if (selectedPackage?.id === packageId) {
         setSelectedPackage(null);
       }
@@ -482,9 +534,13 @@ export function PackageManager({ onPackageSelect, selectedPackageId }: PackageMa
   };
 
   const togglePackageStatus = (packageId: string) => {
-    setPackages(packages.map(pkg => 
-      pkg.id === packageId ? { ...pkg, active: !pkg.active, updatedAt: new Date() } : pkg
-    ));
+    setPackages(
+      packages.map((pkg) =>
+        pkg.id === packageId
+          ? { ...pkg, active: !pkg.active, updatedAt: new Date() }
+          : pkg,
+      ),
+    );
   };
 
   const resetForm = () => {
@@ -540,7 +596,7 @@ export function PackageManager({ onPackageSelect, selectedPackageId }: PackageMa
   const addFeature = () => {
     setPackageForm({
       ...packageForm,
-      features: [...packageForm.features, ""]
+      features: [...packageForm.features, ""],
     });
   };
 
@@ -549,21 +605,21 @@ export function PackageManager({ onPackageSelect, selectedPackageId }: PackageMa
     newFeatures[index] = value;
     setPackageForm({
       ...packageForm,
-      features: newFeatures
+      features: newFeatures,
     });
   };
 
   const removeFeature = (index: number) => {
     setPackageForm({
       ...packageForm,
-      features: packageForm.features.filter((_, i) => i !== index)
+      features: packageForm.features.filter((_, i) => i !== index),
     });
   };
 
   const addTag = () => {
     setPackageForm({
       ...packageForm,
-      tags: [...packageForm.tags, ""]
+      tags: [...packageForm.tags, ""],
     });
   };
 
@@ -572,24 +628,29 @@ export function PackageManager({ onPackageSelect, selectedPackageId }: PackageMa
     newTags[index] = value;
     setPackageForm({
       ...packageForm,
-      tags: newTags
+      tags: newTags,
     });
   };
 
   const removeTag = (index: number) => {
     setPackageForm({
       ...packageForm,
-      tags: packageForm.tags.filter((_, i) => i !== index)
+      tags: packageForm.tags.filter((_, i) => i !== index),
     });
   };
 
   const getCategoryColor = (category: string) => {
     switch (category) {
-      case "starter": return "text-blue-500 bg-blue-100";
-      case "premium": return "text-purple-500 bg-purple-100";
-      case "vip": return "text-gold bg-yellow-100";
-      case "special": return "text-green-500 bg-green-100";
-      default: return "text-gray-500 bg-gray-100";
+      case "starter":
+        return "text-blue-500 bg-blue-100";
+      case "premium":
+        return "text-purple-500 bg-purple-100";
+      case "vip":
+        return "text-gold bg-yellow-100";
+      case "special":
+        return "text-green-500 bg-green-100";
+      default:
+        return "text-gray-500 bg-gray-100";
     }
   };
 
@@ -635,7 +696,9 @@ export function PackageManager({ onPackageSelect, selectedPackageId }: PackageMa
             <CardContent className="p-4 text-center">
               <ShoppingCart className="h-6 w-6 mx-auto mb-2 text-blue-500" />
               <div className="text-sm text-muted-foreground">Total Sales</div>
-              <div className="text-2xl font-bold">{analytics.totalSales.toLocaleString()}</div>
+              <div className="text-2xl font-bold">
+                {analytics.totalSales.toLocaleString()}
+              </div>
             </CardContent>
           </Card>
 
@@ -652,7 +715,9 @@ export function PackageManager({ onPackageSelect, selectedPackageId }: PackageMa
           <Card>
             <CardContent className="p-4 text-center">
               <Target className="h-6 w-6 mx-auto mb-2 text-purple-500" />
-              <div className="text-sm text-muted-foreground">Avg Order Value</div>
+              <div className="text-sm text-muted-foreground">
+                Avg Order Value
+              </div>
               <div className="text-2xl font-bold text-purple-500">
                 ${analytics.avgOrderValue.toFixed(2)}
               </div>
@@ -662,7 +727,9 @@ export function PackageManager({ onPackageSelect, selectedPackageId }: PackageMa
           <Card>
             <CardContent className="p-4 text-center">
               <TrendingUp className="h-6 w-6 mx-auto mb-2 text-orange-500" />
-              <div className="text-sm text-muted-foreground">Conversion Rate</div>
+              <div className="text-sm text-muted-foreground">
+                Conversion Rate
+              </div>
               <div className="text-2xl font-bold text-orange-500">
                 {analytics.conversionRate}%
               </div>
@@ -670,7 +737,11 @@ export function PackageManager({ onPackageSelect, selectedPackageId }: PackageMa
           </Card>
         </div>
 
-        <Tabs value={activeTab} onValueChange={setActiveTab} className="space-y-6">
+        <Tabs
+          value={activeTab}
+          onValueChange={setActiveTab}
+          className="space-y-6"
+        >
           <TabsList className="grid w-full grid-cols-4">
             <TabsTrigger value="overview">Overview</TabsTrigger>
             <TabsTrigger value="packages">Packages</TabsTrigger>
@@ -694,7 +765,10 @@ export function PackageManager({ onPackageSelect, selectedPackageId }: PackageMa
               <CardContent>
                 <div className="space-y-3">
                   {analytics.topPackages.map((pkg, index) => (
-                    <div key={pkg.id} className="flex items-center justify-between p-3 border rounded-lg">
+                    <div
+                      key={pkg.id}
+                      className="flex items-center justify-between p-3 border rounded-lg"
+                    >
                       <div className="flex items-center gap-3">
                         <div className="w-8 h-8 rounded-full bg-gradient-to-r from-purple-500 to-blue-500 flex items-center justify-center text-white text-sm font-medium">
                           {index + 1}
@@ -734,7 +808,9 @@ export function PackageManager({ onPackageSelect, selectedPackageId }: PackageMa
                     <div key={category.category} className="space-y-2">
                       <div className="flex justify-between text-sm">
                         <span>{category.category}</span>
-                        <span className="font-medium">{category.sales} sales ({category.percentage}%)</span>
+                        <span className="font-medium">
+                          {category.sales} sales ({category.percentage}%)
+                        </span>
                       </div>
                       <Progress value={category.percentage} className="h-2" />
                     </div>
@@ -766,7 +842,10 @@ export function PackageManager({ onPackageSelect, selectedPackageId }: PackageMa
 
                   <div>
                     <Label htmlFor="category">Category</Label>
-                    <Select value={filterCategory} onValueChange={setFilterCategory}>
+                    <Select
+                      value={filterCategory}
+                      onValueChange={setFilterCategory}
+                    >
                       <SelectTrigger>
                         <SelectValue />
                       </SelectTrigger>
@@ -787,12 +866,20 @@ export function PackageManager({ onPackageSelect, selectedPackageId }: PackageMa
                         <SelectValue />
                       </SelectTrigger>
                       <SelectContent>
-                        <SelectItem value="created_desc">Newest First</SelectItem>
-                        <SelectItem value="created_asc">Oldest First</SelectItem>
+                        <SelectItem value="created_desc">
+                          Newest First
+                        </SelectItem>
+                        <SelectItem value="created_asc">
+                          Oldest First
+                        </SelectItem>
                         <SelectItem value="name_asc">Name A-Z</SelectItem>
                         <SelectItem value="name_desc">Name Z-A</SelectItem>
-                        <SelectItem value="price_desc">Price High-Low</SelectItem>
-                        <SelectItem value="price_asc">Price Low-High</SelectItem>
+                        <SelectItem value="price_desc">
+                          Price High-Low
+                        </SelectItem>
+                        <SelectItem value="price_asc">
+                          Price Low-High
+                        </SelectItem>
                         <SelectItem value="sales_desc">Best Selling</SelectItem>
                         <SelectItem value="sales_asc">Least Selling</SelectItem>
                       </SelectContent>
@@ -801,7 +888,8 @@ export function PackageManager({ onPackageSelect, selectedPackageId }: PackageMa
 
                   <div className="flex items-end">
                     <div className="text-sm text-muted-foreground">
-                      Showing {filteredPackages.length} of {packages.length} packages
+                      Showing {filteredPackages.length} of {packages.length}{" "}
+                      packages
                     </div>
                   </div>
                 </div>
@@ -811,7 +899,10 @@ export function PackageManager({ onPackageSelect, selectedPackageId }: PackageMa
             {/* Package Grid */}
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
               {filteredPackages.map((pkg) => (
-                <Card key={pkg.id} className="overflow-hidden relative transition-all hover:shadow-lg">
+                <Card
+                  key={pkg.id}
+                  className="overflow-hidden relative transition-all hover:shadow-lg"
+                >
                   {/* Package Badges */}
                   <div className="absolute top-4 right-4 flex flex-col gap-2 z-10">
                     {pkg.popular && (
@@ -830,9 +921,7 @@ export function PackageManager({ onPackageSelect, selectedPackageId }: PackageMa
                       </Badge>
                     )}
                     {!pkg.active && (
-                      <Badge className="bg-red-500 text-white">
-                        INACTIVE
-                      </Badge>
+                      <Badge className="bg-red-500 text-white">INACTIVE</Badge>
                     )}
                   </div>
 
@@ -885,19 +974,28 @@ export function PackageManager({ onPackageSelect, selectedPackageId }: PackageMa
                         <div className="text-muted-foreground">Sales</div>
                       </div>
                       <div className="p-2 bg-muted rounded">
-                        <div className="font-semibold">${pkg.revenue.toFixed(0)}</div>
+                        <div className="font-semibold">
+                          ${pkg.revenue.toFixed(0)}
+                        </div>
                         <div className="text-muted-foreground">Revenue</div>
                       </div>
                     </div>
 
                     {/* Category and Tags */}
                     <div className="space-y-2">
-                      <Badge className={getCategoryColor(pkg.category)} variant="outline">
+                      <Badge
+                        className={getCategoryColor(pkg.category)}
+                        variant="outline"
+                      >
                         {pkg.category.toUpperCase()}
                       </Badge>
                       <div className="flex flex-wrap gap-1">
-                        {pkg.tags.slice(0, 2).map(tag => (
-                          <Badge key={tag} variant="secondary" className="text-xs">
+                        {pkg.tags.slice(0, 2).map((tag) => (
+                          <Badge
+                            key={tag}
+                            variant="secondary"
+                            className="text-xs"
+                          >
                             {tag}
                           </Badge>
                         ))}
@@ -943,10 +1041,11 @@ export function PackageManager({ onPackageSelect, selectedPackageId }: PackageMa
                             variant="outline"
                             onClick={() => togglePackageStatus(pkg.id)}
                           >
-                            {pkg.active ? 
-                              <XCircle className="h-3 w-3" /> : 
+                            {pkg.active ? (
+                              <XCircle className="h-3 w-3" />
+                            ) : (
                               <CheckCircle className="h-3 w-3" />
-                            }
+                            )}
                           </Button>
                         </TooltipTrigger>
                         <TooltipContent>
@@ -987,9 +1086,12 @@ export function PackageManager({ onPackageSelect, selectedPackageId }: PackageMa
           <TabsContent value="analytics" className="space-y-6">
             <div className="text-center py-8">
               <BarChart3 className="h-12 w-12 mx-auto mb-4 text-muted-foreground" />
-              <h3 className="text-lg font-semibold mb-2">Advanced Package Analytics</h3>
+              <h3 className="text-lg font-semibold mb-2">
+                Advanced Package Analytics
+              </h3>
               <p className="text-muted-foreground mb-4">
-                Detailed analytics and insights about package performance would be available here
+                Detailed analytics and insights about package performance would
+                be available here
               </p>
               <Button variant="outline">
                 <Download className="h-4 w-4 mr-2" />
@@ -1016,8 +1118,12 @@ export function PackageManager({ onPackageSelect, selectedPackageId }: PackageMa
                         <SelectValue />
                       </SelectTrigger>
                       <SelectContent>
-                        <SelectItem value="price_asc">Price: Low to High</SelectItem>
-                        <SelectItem value="price_desc">Price: High to Low</SelectItem>
+                        <SelectItem value="price_asc">
+                          Price: Low to High
+                        </SelectItem>
+                        <SelectItem value="price_desc">
+                          Price: High to Low
+                        </SelectItem>
                         <SelectItem value="popular">Most Popular</SelectItem>
                         <SelectItem value="newest">Newest First</SelectItem>
                       </SelectContent>
@@ -1062,9 +1168,7 @@ export function PackageManager({ onPackageSelect, selectedPackageId }: PackageMa
                   </div>
                 </div>
 
-                <Button className="btn-primary">
-                  Save Settings
-                </Button>
+                <Button className="btn-primary">Save Settings</Button>
               </CardContent>
             </Card>
           </TabsContent>
@@ -1079,7 +1183,7 @@ export function PackageManager({ onPackageSelect, selectedPackageId }: PackageMa
                 Design a new Gold Coin package for your store
               </DialogDescription>
             </DialogHeader>
-            
+
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
               {/* Left Column - Basic Info */}
               <div className="space-y-4">
@@ -1088,7 +1192,9 @@ export function PackageManager({ onPackageSelect, selectedPackageId }: PackageMa
                   <Input
                     id="name"
                     value={packageForm.name}
-                    onChange={(e) => setPackageForm({...packageForm, name: e.target.value})}
+                    onChange={(e) =>
+                      setPackageForm({ ...packageForm, name: e.target.value })
+                    }
                     placeholder="e.g., Premium Pack"
                   />
                 </div>
@@ -1098,7 +1204,12 @@ export function PackageManager({ onPackageSelect, selectedPackageId }: PackageMa
                   <Textarea
                     id="description"
                     value={packageForm.description}
-                    onChange={(e) => setPackageForm({...packageForm, description: e.target.value})}
+                    onChange={(e) =>
+                      setPackageForm({
+                        ...packageForm,
+                        description: e.target.value,
+                      })
+                    }
                     placeholder="Brief description of the package"
                     rows={3}
                   />
@@ -1111,7 +1222,12 @@ export function PackageManager({ onPackageSelect, selectedPackageId }: PackageMa
                       id="goldCoins"
                       type="number"
                       value={packageForm.goldCoins}
-                      onChange={(e) => setPackageForm({...packageForm, goldCoins: Number(e.target.value)})}
+                      onChange={(e) =>
+                        setPackageForm({
+                          ...packageForm,
+                          goldCoins: Number(e.target.value),
+                        })
+                      }
                       min="1"
                     />
                   </div>
@@ -1121,7 +1237,12 @@ export function PackageManager({ onPackageSelect, selectedPackageId }: PackageMa
                       id="bonusSweepCoins"
                       type="number"
                       value={packageForm.bonusSweepCoins}
-                      onChange={(e) => setPackageForm({...packageForm, bonusSweepCoins: Number(e.target.value)})}
+                      onChange={(e) =>
+                        setPackageForm({
+                          ...packageForm,
+                          bonusSweepCoins: Number(e.target.value),
+                        })
+                      }
                       min="0"
                       step="0.01"
                     />
@@ -1135,18 +1256,30 @@ export function PackageManager({ onPackageSelect, selectedPackageId }: PackageMa
                       id="price"
                       type="number"
                       value={packageForm.price}
-                      onChange={(e) => setPackageForm({...packageForm, price: Number(e.target.value)})}
+                      onChange={(e) =>
+                        setPackageForm({
+                          ...packageForm,
+                          price: Number(e.target.value),
+                        })
+                      }
                       min="0.01"
                       step="0.01"
                     />
                   </div>
                   <div>
-                    <Label htmlFor="originalPrice">Original Price ($ - Optional)</Label>
+                    <Label htmlFor="originalPrice">
+                      Original Price ($ - Optional)
+                    </Label>
                     <Input
                       id="originalPrice"
                       type="number"
                       value={packageForm.originalPrice}
-                      onChange={(e) => setPackageForm({...packageForm, originalPrice: Number(e.target.value)})}
+                      onChange={(e) =>
+                        setPackageForm({
+                          ...packageForm,
+                          originalPrice: Number(e.target.value),
+                        })
+                      }
                       min="0"
                       step="0.01"
                       placeholder="For discount display"
@@ -1159,7 +1292,12 @@ export function PackageManager({ onPackageSelect, selectedPackageId }: PackageMa
                     <Label htmlFor="category">Category</Label>
                     <Select
                       value={packageForm.category}
-                      onValueChange={(value) => setPackageForm({...packageForm, category: value as any})}
+                      onValueChange={(value) =>
+                        setPackageForm({
+                          ...packageForm,
+                          category: value as any,
+                        })
+                      }
                     >
                       <SelectTrigger>
                         <SelectValue />
@@ -1178,7 +1316,12 @@ export function PackageManager({ onPackageSelect, selectedPackageId }: PackageMa
                       id="tier"
                       type="number"
                       value={packageForm.tier}
-                      onChange={(e) => setPackageForm({...packageForm, tier: Number(e.target.value)})}
+                      onChange={(e) =>
+                        setPackageForm({
+                          ...packageForm,
+                          tier: Number(e.target.value),
+                        })
+                      }
                       min="1"
                       max="10"
                     />
@@ -1193,7 +1336,9 @@ export function PackageManager({ onPackageSelect, selectedPackageId }: PackageMa
                   <Input
                     id="icon"
                     value={packageForm.icon}
-                    onChange={(e) => setPackageForm({...packageForm, icon: e.target.value})}
+                    onChange={(e) =>
+                      setPackageForm({ ...packageForm, icon: e.target.value })
+                    }
                     placeholder="🪙"
                   />
                 </div>
@@ -1202,18 +1347,32 @@ export function PackageManager({ onPackageSelect, selectedPackageId }: PackageMa
                   <Label htmlFor="color">Color Gradient</Label>
                   <Select
                     value={packageForm.color}
-                    onValueChange={(value) => setPackageForm({...packageForm, color: value})}
+                    onValueChange={(value) =>
+                      setPackageForm({ ...packageForm, color: value })
+                    }
                   >
                     <SelectTrigger>
                       <SelectValue />
                     </SelectTrigger>
                     <SelectContent>
-                      <SelectItem value="from-blue-500 to-blue-600">Blue</SelectItem>
-                      <SelectItem value="from-purple-500 to-purple-600">Purple</SelectItem>
-                      <SelectItem value="from-gold to-yellow-600">Gold</SelectItem>
-                      <SelectItem value="from-green-500 to-green-600">Green</SelectItem>
-                      <SelectItem value="from-red-500 to-pink-600">Red</SelectItem>
-                      <SelectItem value="from-teal-500 to-cyan-600">Teal</SelectItem>
+                      <SelectItem value="from-blue-500 to-blue-600">
+                        Blue
+                      </SelectItem>
+                      <SelectItem value="from-purple-500 to-purple-600">
+                        Purple
+                      </SelectItem>
+                      <SelectItem value="from-gold to-yellow-600">
+                        Gold
+                      </SelectItem>
+                      <SelectItem value="from-green-500 to-green-600">
+                        Green
+                      </SelectItem>
+                      <SelectItem value="from-red-500 to-pink-600">
+                        Red
+                      </SelectItem>
+                      <SelectItem value="from-teal-500 to-cyan-600">
+                        Teal
+                      </SelectItem>
                     </SelectContent>
                   </Select>
                 </div>
@@ -1287,17 +1446,29 @@ export function PackageManager({ onPackageSelect, selectedPackageId }: PackageMa
                   <Input
                     id="targetAudience"
                     value={packageForm.targetAudience}
-                    onChange={(e) => setPackageForm({...packageForm, targetAudience: e.target.value})}
+                    onChange={(e) =>
+                      setPackageForm({
+                        ...packageForm,
+                        targetAudience: e.target.value,
+                      })
+                    }
                     placeholder="e.g., New Players"
                   />
                 </div>
 
                 <div>
-                  <Label htmlFor="promotionalText">Promotional Text (Optional)</Label>
+                  <Label htmlFor="promotionalText">
+                    Promotional Text (Optional)
+                  </Label>
                   <Input
                     id="promotionalText"
                     value={packageForm.promotionalText}
-                    onChange={(e) => setPackageForm({...packageForm, promotionalText: e.target.value})}
+                    onChange={(e) =>
+                      setPackageForm({
+                        ...packageForm,
+                        promotionalText: e.target.value,
+                      })
+                    }
                     placeholder="e.g., Limited Time, Best Value!"
                   />
                 </div>
@@ -1309,28 +1480,36 @@ export function PackageManager({ onPackageSelect, selectedPackageId }: PackageMa
                       <span className="text-sm">Popular Package</span>
                       <Switch
                         checked={packageForm.popular}
-                        onCheckedChange={(checked) => setPackageForm({...packageForm, popular: checked})}
+                        onCheckedChange={(checked) =>
+                          setPackageForm({ ...packageForm, popular: checked })
+                        }
                       />
                     </div>
                     <div className="flex items-center justify-between">
                       <span className="text-sm">Best Value</span>
                       <Switch
                         checked={packageForm.bestValue}
-                        onCheckedChange={(checked) => setPackageForm({...packageForm, bestValue: checked})}
+                        onCheckedChange={(checked) =>
+                          setPackageForm({ ...packageForm, bestValue: checked })
+                        }
                       />
                     </div>
                     <div className="flex items-center justify-between">
                       <span className="text-sm">Featured</span>
                       <Switch
                         checked={packageForm.featured}
-                        onCheckedChange={(checked) => setPackageForm({...packageForm, featured: checked})}
+                        onCheckedChange={(checked) =>
+                          setPackageForm({ ...packageForm, featured: checked })
+                        }
                       />
                     </div>
                     <div className="flex items-center justify-between">
                       <span className="text-sm">Active</span>
                       <Switch
                         checked={packageForm.active}
-                        onCheckedChange={(checked) => setPackageForm({...packageForm, active: checked})}
+                        onCheckedChange={(checked) =>
+                          setPackageForm({ ...packageForm, active: checked })
+                        }
                       />
                     </div>
                   </div>
@@ -1365,7 +1544,7 @@ export function PackageManager({ onPackageSelect, selectedPackageId }: PackageMa
                 Update package details and settings
               </DialogDescription>
             </DialogHeader>
-            
+
             {/* Same form content as create dialog */}
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
               {/* Left Column - Basic Info */}
@@ -1375,7 +1554,9 @@ export function PackageManager({ onPackageSelect, selectedPackageId }: PackageMa
                   <Input
                     id="edit-name"
                     value={packageForm.name}
-                    onChange={(e) => setPackageForm({...packageForm, name: e.target.value})}
+                    onChange={(e) =>
+                      setPackageForm({ ...packageForm, name: e.target.value })
+                    }
                     placeholder="e.g., Premium Pack"
                   />
                 </div>
@@ -1385,7 +1566,12 @@ export function PackageManager({ onPackageSelect, selectedPackageId }: PackageMa
                   <Textarea
                     id="edit-description"
                     value={packageForm.description}
-                    onChange={(e) => setPackageForm({...packageForm, description: e.target.value})}
+                    onChange={(e) =>
+                      setPackageForm({
+                        ...packageForm,
+                        description: e.target.value,
+                      })
+                    }
                     placeholder="Brief description of the package"
                     rows={3}
                   />
@@ -1398,17 +1584,29 @@ export function PackageManager({ onPackageSelect, selectedPackageId }: PackageMa
                       id="edit-goldCoins"
                       type="number"
                       value={packageForm.goldCoins}
-                      onChange={(e) => setPackageForm({...packageForm, goldCoins: Number(e.target.value)})}
+                      onChange={(e) =>
+                        setPackageForm({
+                          ...packageForm,
+                          goldCoins: Number(e.target.value),
+                        })
+                      }
                       min="1"
                     />
                   </div>
                   <div>
-                    <Label htmlFor="edit-bonusSweepCoins">Bonus Sweep Coins</Label>
+                    <Label htmlFor="edit-bonusSweepCoins">
+                      Bonus Sweep Coins
+                    </Label>
                     <Input
                       id="edit-bonusSweepCoins"
                       type="number"
                       value={packageForm.bonusSweepCoins}
-                      onChange={(e) => setPackageForm({...packageForm, bonusSweepCoins: Number(e.target.value)})}
+                      onChange={(e) =>
+                        setPackageForm({
+                          ...packageForm,
+                          bonusSweepCoins: Number(e.target.value),
+                        })
+                      }
                       min="0"
                       step="0.01"
                     />
@@ -1422,18 +1620,30 @@ export function PackageManager({ onPackageSelect, selectedPackageId }: PackageMa
                       id="edit-price"
                       type="number"
                       value={packageForm.price}
-                      onChange={(e) => setPackageForm({...packageForm, price: Number(e.target.value)})}
+                      onChange={(e) =>
+                        setPackageForm({
+                          ...packageForm,
+                          price: Number(e.target.value),
+                        })
+                      }
                       min="0.01"
                       step="0.01"
                     />
                   </div>
                   <div>
-                    <Label htmlFor="edit-originalPrice">Original Price ($ - Optional)</Label>
+                    <Label htmlFor="edit-originalPrice">
+                      Original Price ($ - Optional)
+                    </Label>
                     <Input
                       id="edit-originalPrice"
                       type="number"
                       value={packageForm.originalPrice}
-                      onChange={(e) => setPackageForm({...packageForm, originalPrice: Number(e.target.value)})}
+                      onChange={(e) =>
+                        setPackageForm({
+                          ...packageForm,
+                          originalPrice: Number(e.target.value),
+                        })
+                      }
                       min="0"
                       step="0.01"
                       placeholder="For discount display"
@@ -1446,7 +1656,12 @@ export function PackageManager({ onPackageSelect, selectedPackageId }: PackageMa
                     <Label htmlFor="edit-category">Category</Label>
                     <Select
                       value={packageForm.category}
-                      onValueChange={(value) => setPackageForm({...packageForm, category: value as any})}
+                      onValueChange={(value) =>
+                        setPackageForm({
+                          ...packageForm,
+                          category: value as any,
+                        })
+                      }
                     >
                       <SelectTrigger>
                         <SelectValue />
@@ -1465,7 +1680,12 @@ export function PackageManager({ onPackageSelect, selectedPackageId }: PackageMa
                       id="edit-tier"
                       type="number"
                       value={packageForm.tier}
-                      onChange={(e) => setPackageForm({...packageForm, tier: Number(e.target.value)})}
+                      onChange={(e) =>
+                        setPackageForm({
+                          ...packageForm,
+                          tier: Number(e.target.value),
+                        })
+                      }
                       min="1"
                       max="10"
                     />
@@ -1480,7 +1700,9 @@ export function PackageManager({ onPackageSelect, selectedPackageId }: PackageMa
                   <Input
                     id="edit-icon"
                     value={packageForm.icon}
-                    onChange={(e) => setPackageForm({...packageForm, icon: e.target.value})}
+                    onChange={(e) =>
+                      setPackageForm({ ...packageForm, icon: e.target.value })
+                    }
                     placeholder="🪙"
                   />
                 </div>
@@ -1489,18 +1711,32 @@ export function PackageManager({ onPackageSelect, selectedPackageId }: PackageMa
                   <Label htmlFor="edit-color">Color Gradient</Label>
                   <Select
                     value={packageForm.color}
-                    onValueChange={(value) => setPackageForm({...packageForm, color: value})}
+                    onValueChange={(value) =>
+                      setPackageForm({ ...packageForm, color: value })
+                    }
                   >
                     <SelectTrigger>
                       <SelectValue />
                     </SelectTrigger>
                     <SelectContent>
-                      <SelectItem value="from-blue-500 to-blue-600">Blue</SelectItem>
-                      <SelectItem value="from-purple-500 to-purple-600">Purple</SelectItem>
-                      <SelectItem value="from-gold to-yellow-600">Gold</SelectItem>
-                      <SelectItem value="from-green-500 to-green-600">Green</SelectItem>
-                      <SelectItem value="from-red-500 to-pink-600">Red</SelectItem>
-                      <SelectItem value="from-teal-500 to-cyan-600">Teal</SelectItem>
+                      <SelectItem value="from-blue-500 to-blue-600">
+                        Blue
+                      </SelectItem>
+                      <SelectItem value="from-purple-500 to-purple-600">
+                        Purple
+                      </SelectItem>
+                      <SelectItem value="from-gold to-yellow-600">
+                        Gold
+                      </SelectItem>
+                      <SelectItem value="from-green-500 to-green-600">
+                        Green
+                      </SelectItem>
+                      <SelectItem value="from-red-500 to-pink-600">
+                        Red
+                      </SelectItem>
+                      <SelectItem value="from-teal-500 to-cyan-600">
+                        Teal
+                      </SelectItem>
                     </SelectContent>
                   </Select>
                 </div>
@@ -1574,17 +1810,29 @@ export function PackageManager({ onPackageSelect, selectedPackageId }: PackageMa
                   <Input
                     id="edit-targetAudience"
                     value={packageForm.targetAudience}
-                    onChange={(e) => setPackageForm({...packageForm, targetAudience: e.target.value})}
+                    onChange={(e) =>
+                      setPackageForm({
+                        ...packageForm,
+                        targetAudience: e.target.value,
+                      })
+                    }
                     placeholder="e.g., New Players"
                   />
                 </div>
 
                 <div>
-                  <Label htmlFor="edit-promotionalText">Promotional Text (Optional)</Label>
+                  <Label htmlFor="edit-promotionalText">
+                    Promotional Text (Optional)
+                  </Label>
                   <Input
                     id="edit-promotionalText"
                     value={packageForm.promotionalText}
-                    onChange={(e) => setPackageForm({...packageForm, promotionalText: e.target.value})}
+                    onChange={(e) =>
+                      setPackageForm({
+                        ...packageForm,
+                        promotionalText: e.target.value,
+                      })
+                    }
                     placeholder="e.g., Limited Time, Best Value!"
                   />
                 </div>
@@ -1596,28 +1844,36 @@ export function PackageManager({ onPackageSelect, selectedPackageId }: PackageMa
                       <span className="text-sm">Popular Package</span>
                       <Switch
                         checked={packageForm.popular}
-                        onCheckedChange={(checked) => setPackageForm({...packageForm, popular: checked})}
+                        onCheckedChange={(checked) =>
+                          setPackageForm({ ...packageForm, popular: checked })
+                        }
                       />
                     </div>
                     <div className="flex items-center justify-between">
                       <span className="text-sm">Best Value</span>
                       <Switch
                         checked={packageForm.bestValue}
-                        onCheckedChange={(checked) => setPackageForm({...packageForm, bestValue: checked})}
+                        onCheckedChange={(checked) =>
+                          setPackageForm({ ...packageForm, bestValue: checked })
+                        }
                       />
                     </div>
                     <div className="flex items-center justify-between">
                       <span className="text-sm">Featured</span>
                       <Switch
                         checked={packageForm.featured}
-                        onCheckedChange={(checked) => setPackageForm({...packageForm, featured: checked})}
+                        onCheckedChange={(checked) =>
+                          setPackageForm({ ...packageForm, featured: checked })
+                        }
                       />
                     </div>
                     <div className="flex items-center justify-between">
                       <span className="text-sm">Active</span>
                       <Switch
                         checked={packageForm.active}
-                        onCheckedChange={(checked) => setPackageForm({...packageForm, active: checked})}
+                        onCheckedChange={(checked) =>
+                          setPackageForm({ ...packageForm, active: checked })
+                        }
                       />
                     </div>
                   </div>

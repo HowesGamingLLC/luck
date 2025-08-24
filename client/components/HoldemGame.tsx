@@ -118,7 +118,7 @@ export function HoldemGame({
 }: HoldemGameProps) {
   const { user: authUser } = useAuth();
   const { user: currencyUser, updateBalance, canAffordWager } = useCurrency();
-  
+
   // Game state
   const [gameState, setGameState] = useState<HoldemGameState>({
     stage: "waiting",
@@ -142,13 +142,23 @@ export function HoldemGame({
   const [animating, setAnimating] = useState(false);
   const [myCards, setMyCards] = useState<PlayingCard[]>([]);
   const [showWinDialog, setShowWinDialog] = useState(false);
-  const [lastWin, setLastWin] = useState<{ amount: number; hand: string } | null>(null);
+  const [lastWin, setLastWin] = useState<{
+    amount: number;
+    hand: string;
+  } | null>(null);
 
   // Initialize game with bot players
   useEffect(() => {
     const botNames = [
-      "PokerPro", "CardShark", "AllInAnnie", "BluffMaster", "RiverRat",
-      "TightPlayer", "LooseGannon", "CalculatedRisk", "LuckyCharm"
+      "PokerPro",
+      "CardShark",
+      "AllInAnnie",
+      "BluffMaster",
+      "RiverRat",
+      "TightPlayer",
+      "LooseGannon",
+      "CalculatedRisk",
+      "LuckyCharm",
     ];
 
     const initialPlayers: HoldemPlayer[] = [
@@ -199,7 +209,11 @@ export function HoldemGame({
 
   // Timer for player actions
   useEffect(() => {
-    if (gameState.actionOn && gameState.stage !== "waiting" && gameState.stage !== "showdown") {
+    if (
+      gameState.actionOn &&
+      gameState.stage !== "waiting" &&
+      gameState.stage !== "showdown"
+    ) {
       const timer = setInterval(() => {
         setTimeBank((prev) => {
           if (prev <= 1) {
@@ -228,15 +242,44 @@ export function HoldemGame({
   };
 
   const createDeck = (): PlayingCard[] => {
-    const suits: PlayingCard["suit"][] = ["hearts", "diamonds", "clubs", "spades"];
-    const ranks = ["2", "3", "4", "5", "6", "7", "8", "9", "T", "J", "Q", "K", "A"];
+    const suits: PlayingCard["suit"][] = [
+      "hearts",
+      "diamonds",
+      "clubs",
+      "spades",
+    ];
+    const ranks = [
+      "2",
+      "3",
+      "4",
+      "5",
+      "6",
+      "7",
+      "8",
+      "9",
+      "T",
+      "J",
+      "Q",
+      "K",
+      "A",
+    ];
     const deck: PlayingCard[] = [];
 
     for (const suit of suits) {
       for (let i = 0; i < ranks.length; i++) {
         const rank = ranks[i];
-        const value = rank === "A" ? 14 : rank === "K" ? 13 : rank === "Q" ? 12 : 
-                     rank === "J" ? 11 : rank === "T" ? 10 : parseInt(rank);
+        const value =
+          rank === "A"
+            ? 14
+            : rank === "K"
+              ? 13
+              : rank === "Q"
+                ? 12
+                : rank === "J"
+                  ? 11
+                  : rank === "T"
+                    ? 10
+                    : parseInt(rank);
         deck.push({ suit, rank, value });
       }
     }
@@ -252,17 +295,17 @@ export function HoldemGame({
 
   const startNewHand = () => {
     const deck = createDeck();
-    const activePlayers = players.filter(p => p.chips > 0);
-    
+    const activePlayers = players.filter((p) => p.chips > 0);
+
     if (activePlayers.length < 2) {
-      setGameState(prev => ({ ...prev, stage: "waiting" }));
+      setGameState((prev) => ({ ...prev, stage: "waiting" }));
       return;
     }
 
     // Deal hole cards
     const newPlayers = [...players];
     activePlayers.forEach((player, index) => {
-      const playerIndex = newPlayers.findIndex(p => p.id === player.id);
+      const playerIndex = newPlayers.findIndex((p) => p.id === player.id);
       newPlayers[playerIndex] = {
         ...player,
         hand: [deck.pop()!, deck.pop()!],
@@ -292,7 +335,7 @@ export function HoldemGame({
       newPlayers[sbPos].chips -= gameState.smallBlind;
       newPlayers[sbPos].totalBet = gameState.smallBlind;
     }
-    
+
     if (newPlayers[bbPos]) {
       newPlayers[bbPos].currentBet = gameState.bigBlind;
       newPlayers[bbPos].chips -= gameState.bigBlind;
@@ -300,9 +343,9 @@ export function HoldemGame({
     }
 
     setPlayers(newPlayers);
-    setMyCards(newPlayers.find(p => p.id === "human")?.hand || []);
-    
-    setGameState(prev => ({
+    setMyCards(newPlayers.find((p) => p.id === "human")?.hand || []);
+
+    setGameState((prev) => ({
       ...prev,
       stage: "preflop",
       communityCards: [],
@@ -319,12 +362,12 @@ export function HoldemGame({
   const handlePlayerAction = (action: string, amount?: number) => {
     if (gameState.actionOn !== "human") return;
 
-    const humanPlayer = players.find(p => p.id === "human");
+    const humanPlayer = players.find((p) => p.id === "human");
     if (!humanPlayer || humanPlayer.isFolded) return;
 
     const actionAmount = amount || betAmount;
     const newPlayers = [...players];
-    const playerIndex = newPlayers.findIndex(p => p.id === "human");
+    const playerIndex = newPlayers.findIndex((p) => p.id === "human");
 
     switch (action) {
       case "fold":
@@ -354,19 +397,35 @@ export function HoldemGame({
         const betAmountToUse = Math.min(actionAmount, humanPlayer.chips);
         newPlayers[playerIndex].currentBet += betAmountToUse;
         newPlayers[playerIndex].chips -= betAmountToUse;
-        setGameState(prev => ({ ...prev, currentBet: newPlayers[playerIndex].currentBet }));
-        updateBalance(currency, -betAmountToUse, `Poker ${action} - ${stakes}`, "wager");
+        setGameState((prev) => ({
+          ...prev,
+          currentBet: newPlayers[playerIndex].currentBet,
+        }));
+        updateBalance(
+          currency,
+          -betAmountToUse,
+          `Poker ${action} - ${stakes}`,
+          "wager",
+        );
         break;
 
       case "allIn":
         newPlayers[playerIndex].currentBet += humanPlayer.chips;
         newPlayers[playerIndex].chips = 0;
         newPlayers[playerIndex].isAllIn = true;
-        setGameState(prev => ({ 
-          ...prev, 
-          currentBet: Math.max(prev.currentBet, newPlayers[playerIndex].currentBet)
+        setGameState((prev) => ({
+          ...prev,
+          currentBet: Math.max(
+            prev.currentBet,
+            newPlayers[playerIndex].currentBet,
+          ),
         }));
-        updateBalance(currency, -humanPlayer.chips, `Poker all-in - ${stakes}`, "wager");
+        updateBalance(
+          currency,
+          -humanPlayer.chips,
+          `Poker all-in - ${stakes}`,
+          "wager",
+        );
         break;
     }
 
@@ -375,11 +434,11 @@ export function HoldemGame({
   };
 
   const simulateBotAction = (botId: string) => {
-    const bot = players.find(p => p.id === botId);
+    const bot = players.find((p) => p.id === botId);
     if (!bot || bot.isFolded) return;
 
     const newPlayers = [...players];
-    const botIndex = newPlayers.findIndex(p => p.id === botId);
+    const botIndex = newPlayers.findIndex((p) => p.id === botId);
 
     // Simple bot AI logic
     const random = Math.random();
@@ -387,7 +446,7 @@ export function HoldemGame({
     const potOdds = callAmount / (gameState.pot + callAmount);
 
     let action = "fold";
-    
+
     if (callAmount === 0) {
       action = "check";
     } else if (random < 0.3) {
@@ -422,13 +481,16 @@ export function HoldemGame({
         const raiseAmount = Math.min(gameState.bigBlind * 3, bot.chips);
         newPlayers[botIndex].currentBet += raiseAmount;
         newPlayers[botIndex].chips -= raiseAmount;
-        setGameState(prev => ({ ...prev, currentBet: newPlayers[botIndex].currentBet }));
+        setGameState((prev) => ({
+          ...prev,
+          currentBet: newPlayers[botIndex].currentBet,
+        }));
         break;
     }
 
-    setGameState(prev => ({ 
-      ...prev, 
-      lastAction: { playerId: botId, action, amount: callAmount }
+    setGameState((prev) => ({
+      ...prev,
+      lastAction: { playerId: botId, action, amount: callAmount },
     }));
 
     setPlayers(newPlayers);
@@ -436,14 +498,14 @@ export function HoldemGame({
   };
 
   const advanceAction = () => {
-    const activePlayers = players.filter(p => !p.isFolded && !p.isAllIn);
-    
+    const activePlayers = players.filter((p) => !p.isFolded && !p.isAllIn);
+
     if (activePlayers.length <= 1) {
       advanceStage();
       return;
     }
 
-    const currentIndex = players.findIndex(p => p.id === gameState.actionOn);
+    const currentIndex = players.findIndex((p) => p.id === gameState.actionOn);
     let nextIndex = (currentIndex + 1) % players.length;
 
     // Find next active player
@@ -455,41 +517,41 @@ export function HoldemGame({
       }
     }
 
-    setGameState(prev => ({ ...prev, actionOn: players[nextIndex].id }));
+    setGameState((prev) => ({ ...prev, actionOn: players[nextIndex].id }));
     setTimeBank(30);
   };
 
   const advanceStage = () => {
     const deck = createDeck(); // In real game, deck would be maintained
-    
+
     switch (gameState.stage) {
       case "preflop":
-        setGameState(prev => ({
+        setGameState((prev) => ({
           ...prev,
           stage: "flop",
           communityCards: [deck.pop()!, deck.pop()!, deck.pop()!],
           currentBet: 0,
-          actionOn: players.find(p => !p.isFolded && !p.isAllIn)?.id || null,
+          actionOn: players.find((p) => !p.isFolded && !p.isAllIn)?.id || null,
         }));
         break;
 
       case "flop":
-        setGameState(prev => ({
+        setGameState((prev) => ({
           ...prev,
           stage: "turn",
           communityCards: [...prev.communityCards, deck.pop()!],
           currentBet: 0,
-          actionOn: players.find(p => !p.isFolded && !p.isAllIn)?.id || null,
+          actionOn: players.find((p) => !p.isFolded && !p.isAllIn)?.id || null,
         }));
         break;
 
       case "turn":
-        setGameState(prev => ({
+        setGameState((prev) => ({
           ...prev,
           stage: "river",
           communityCards: [...prev.communityCards, deck.pop()!],
           currentBet: 0,
-          actionOn: players.find(p => !p.isFolded && !p.isAllIn)?.id || null,
+          actionOn: players.find((p) => !p.isFolded && !p.isAllIn)?.id || null,
         }));
         break;
 
@@ -499,18 +561,18 @@ export function HoldemGame({
     }
 
     // Reset bets for new street
-    setPlayers(prev => prev.map(p => ({ ...p, currentBet: 0 })));
+    setPlayers((prev) => prev.map((p) => ({ ...p, currentBet: 0 })));
     setTimeBank(30);
   };
 
   const showdown = () => {
-    const activePlayers = players.filter(p => !p.isFolded);
-    
+    const activePlayers = players.filter((p) => !p.isFolded);
+
     if (activePlayers.length === 1) {
       // Single winner
       const winner = activePlayers[0];
       const newPlayers = [...players];
-      const winnerIndex = newPlayers.findIndex(p => p.id === winner.id);
+      const winnerIndex = newPlayers.findIndex((p) => p.id === winner.id);
       newPlayers[winnerIndex].chips += gameState.pot;
 
       if (winner.id === "human") {
@@ -520,31 +582,37 @@ export function HoldemGame({
       }
 
       setPlayers(newPlayers);
-      setGameState(prev => ({ 
-        ...prev, 
+      setGameState((prev) => ({
+        ...prev,
         stage: "showdown",
-        winners: [{ playerId: winner.id, amount: gameState.pot, hand: "Uncontested" }]
+        winners: [
+          { playerId: winner.id, amount: gameState.pot, hand: "Uncontested" },
+        ],
       }));
     } else {
       // Evaluate hands and determine winners
-      const handStrengths = activePlayers.map(player => ({
+      const handStrengths = activePlayers.map((player) => ({
         playerId: player.id,
         strength: evaluateHand(player.hand, gameState.communityCards),
       }));
 
       // Sort by strength (simplified)
       handStrengths.sort((a, b) => b.strength.rank - a.strength.rank);
-      
+
       const winnerStrength = handStrengths[0].strength;
-      const winners = handStrengths.filter(h => h.strength.rank === winnerStrength.rank);
-      
+      const winners = handStrengths.filter(
+        (h) => h.strength.rank === winnerStrength.rank,
+      );
+
       const winAmount = Math.floor(gameState.pot / winners.length);
-      
+
       const newPlayers = [...players];
-      winners.forEach(winner => {
-        const playerIndex = newPlayers.findIndex(p => p.id === winner.playerId);
+      winners.forEach((winner) => {
+        const playerIndex = newPlayers.findIndex(
+          (p) => p.id === winner.playerId,
+        );
         newPlayers[playerIndex].chips += winAmount;
-        
+
         if (winner.playerId === "human") {
           updateBalance(currency, winAmount, `Poker win - ${stakes}`, "win");
           setLastWin({ amount: winAmount, hand: winnerStrength.name });
@@ -553,40 +621,47 @@ export function HoldemGame({
       });
 
       setPlayers(newPlayers);
-      setGameState(prev => ({
+      setGameState((prev) => ({
         ...prev,
         stage: "showdown",
-        winners: winners.map(w => ({
+        winners: winners.map((w) => ({
           playerId: w.playerId,
           amount: winAmount,
-          hand: winnerStrength.name
-        }))
+          hand: winnerStrength.name,
+        })),
       }));
     }
 
     // Start new hand after delay
     setTimeout(() => {
-      setGameState(prev => ({ 
-        ...prev, 
-        dealerPosition: (prev.dealerPosition + 1) % players.filter(p => p.chips > 0).length 
+      setGameState((prev) => ({
+        ...prev,
+        dealerPosition:
+          (prev.dealerPosition + 1) % players.filter((p) => p.chips > 0).length,
       }));
       startNewHand();
     }, 5000);
   };
 
-  const evaluateHand = (playerCards: PlayingCard[], communityCards: PlayingCard[]) => {
+  const evaluateHand = (
+    playerCards: PlayingCard[],
+    communityCards: PlayingCard[],
+  ) => {
     // Simplified hand evaluation
     const allCards = [...playerCards, ...communityCards];
-    const suits = allCards.map(c => c.suit);
-    const values = allCards.map(c => c.value).sort((a, b) => b - a);
+    const suits = allCards.map((c) => c.suit);
+    const values = allCards.map((c) => c.value).sort((a, b) => b - a);
 
-    const isFlush = suits.some(suit => suits.filter(s => s === suit).length >= 5);
+    const isFlush = suits.some(
+      (suit) => suits.filter((s) => s === suit).length >= 5,
+    );
     const isStraight = checkStraight(values);
     const pairs = countPairs(values);
 
     if (isFlush && isStraight) return { rank: 8, name: "Straight Flush" };
     if (pairs.fourOfAKind) return { rank: 7, name: "Four of a Kind" };
-    if (pairs.threeOfAKind && pairs.pair) return { rank: 6, name: "Full House" };
+    if (pairs.threeOfAKind && pairs.pair)
+      return { rank: 6, name: "Full House" };
     if (isFlush) return { rank: 5, name: "Flush" };
     if (isStraight) return { rank: 4, name: "Straight" };
     if (pairs.threeOfAKind) return { rank: 3, name: "Three of a Kind" };
@@ -605,18 +680,18 @@ export function HoldemGame({
 
   const countPairs = (values: number[]) => {
     const counts: { [key: number]: number } = {};
-    values.forEach(v => counts[v] = (counts[v] || 0) + 1);
+    values.forEach((v) => (counts[v] = (counts[v] || 0) + 1));
     const countValues = Object.values(counts);
-    
+
     return {
       fourOfAKind: countValues.includes(4),
       threeOfAKind: countValues.includes(3),
       pair: countValues.includes(2),
-      twoPair: countValues.filter(c => c === 2).length === 2,
+      twoPair: countValues.filter((c) => c === 2).length === 2,
     };
   };
 
-  const humanPlayer = players.find(p => p.id === "human");
+  const humanPlayer = players.find((p) => p.id === "human");
   const isMyTurn = gameState.actionOn === "human";
   const callAmount = gameState.currentBet - (humanPlayer?.currentBet || 0);
   const canCheck = callAmount === 0;
@@ -634,7 +709,9 @@ export function HoldemGame({
             </Button>
             <div>
               <h1 className="text-2xl font-bold text-white">Texas Hold'em</h1>
-              <p className="text-green-200">{stakes} • Table {tableId}</p>
+              <p className="text-green-200">
+                {stakes} • Table {tableId}
+              </p>
             </div>
           </div>
 
@@ -651,7 +728,11 @@ export function HoldemGame({
               onClick={() => setSoundEnabled(!soundEnabled)}
               className="bg-white/10"
             >
-              {soundEnabled ? <Volume2 className="h-4 w-4" /> : <VolumeX className="h-4 w-4" />}
+              {soundEnabled ? (
+                <Volume2 className="h-4 w-4" />
+              ) : (
+                <VolumeX className="h-4 w-4" />
+              )}
             </Button>
           </div>
         </div>
@@ -661,14 +742,18 @@ export function HoldemGame({
           {/* Community Cards & Pot */}
           <div className="text-center mb-8">
             <div className="mb-4">
-              <h3 className="text-lg font-semibold text-white mb-3">Community Cards</h3>
+              <h3 className="text-lg font-semibold text-white mb-3">
+                Community Cards
+              </h3>
               <div className="flex justify-center gap-2">
                 {gameState.communityCards.map((card, index) => (
                   <div
                     key={index}
                     className="w-16 h-22 bg-white border-2 border-gray-300 rounded-lg flex flex-col items-center justify-center shadow-lg transform hover:scale-105 transition-transform"
                   >
-                    <div className={`text-lg font-bold ${suits[card.suit].color}`}>
+                    <div
+                      className={`text-lg font-bold ${suits[card.suit].color}`}
+                    >
                       {card.rank}
                     </div>
                     <div className={`text-2xl ${suits[card.suit].color}`}>
@@ -676,14 +761,16 @@ export function HoldemGame({
                     </div>
                   </div>
                 ))}
-                {Array(5 - gameState.communityCards.length).fill(null).map((_, index) => (
-                  <div
-                    key={`empty-${index}`}
-                    className="w-16 h-22 border-2 border-dashed border-white/30 rounded-lg flex items-center justify-center"
-                  >
-                    <span className="text-white/50">?</span>
-                  </div>
-                ))}
+                {Array(5 - gameState.communityCards.length)
+                  .fill(null)
+                  .map((_, index) => (
+                    <div
+                      key={`empty-${index}`}
+                      className="w-16 h-22 border-2 border-dashed border-white/30 rounded-lg flex items-center justify-center"
+                    >
+                      <span className="text-white/50">?</span>
+                    </div>
+                  ))}
               </div>
             </div>
 
@@ -712,21 +799,27 @@ export function HoldemGame({
                   player.id === gameState.actionOn
                     ? "ring-2 ring-yellow-400 bg-yellow-50"
                     : player.isFolded
-                    ? "opacity-50 bg-gray-100"
-                    : "bg-white"
+                      ? "opacity-50 bg-gray-100"
+                      : "bg-white"
                 } ${player.isAllIn ? "ring-2 ring-red-500" : ""}`}
               >
                 <CardContent className="p-4">
                   {/* Player badges */}
                   <div className="absolute -top-2 -right-2 flex gap-1">
                     {player.isDealer && (
-                      <Badge className="bg-yellow-500 text-black text-xs">D</Badge>
+                      <Badge className="bg-yellow-500 text-black text-xs">
+                        D
+                      </Badge>
                     )}
                     {player.isBigBlind && (
-                      <Badge className="bg-red-500 text-white text-xs">BB</Badge>
+                      <Badge className="bg-red-500 text-white text-xs">
+                        BB
+                      </Badge>
                     )}
                     {player.isSmallBlind && (
-                      <Badge className="bg-orange-500 text-white text-xs">SB</Badge>
+                      <Badge className="bg-orange-500 text-white text-xs">
+                        SB
+                      </Badge>
                     )}
                   </div>
 
@@ -738,7 +831,9 @@ export function HoldemGame({
                       {player.id === gameState.actionOn && (
                         <div className="flex items-center gap-1">
                           <Clock className="h-3 w-3 text-orange-500" />
-                          <span className="text-xs text-orange-500">{timeBank}s</span>
+                          <span className="text-xs text-orange-500">
+                            {timeBank}s
+                          </span>
                         </div>
                       )}
                     </div>
@@ -750,7 +845,9 @@ export function HoldemGame({
                       </div>
                       <div className="flex justify-between">
                         <span className="text-gray-600">Bet:</span>
-                        <span className="font-bold text-blue-600">{player.currentBet}</span>
+                        <span className="font-bold text-blue-600">
+                          {player.currentBet}
+                        </span>
                       </div>
                     </div>
 
@@ -774,7 +871,9 @@ export function HoldemGame({
                             key={cardIndex}
                             className="w-10 h-14 bg-white border border-gray-300 rounded flex flex-col items-center justify-center text-black text-xs shadow"
                           >
-                            <div className={`font-bold ${suits[card.suit].color}`}>
+                            <div
+                              className={`font-bold ${suits[card.suit].color}`}
+                            >
                               {card.rank}
                             </div>
                             <div className={`${suits[card.suit].color}`}>
@@ -786,13 +885,18 @@ export function HoldemGame({
                     )}
 
                     {/* Hand strength for human player */}
-                    {player.id === "human" && myCards.length === 2 && gameState.communityCards.length >= 3 && (
-                      <div className="text-center mt-2">
-                        <p className="text-xs text-purple-600 font-medium">
-                          {evaluateHand(myCards, gameState.communityCards).name}
-                        </p>
-                      </div>
-                    )}
+                    {player.id === "human" &&
+                      myCards.length === 2 &&
+                      gameState.communityCards.length >= 3 && (
+                        <div className="text-center mt-2">
+                          <p className="text-xs text-purple-600 font-medium">
+                            {
+                              evaluateHand(myCards, gameState.communityCards)
+                                .name
+                            }
+                          </p>
+                        </div>
+                      )}
                   </div>
                 </CardContent>
               </Card>
@@ -800,142 +904,172 @@ export function HoldemGame({
           </div>
 
           {/* Player Actions */}
-          {isMyTurn && humanPlayer && !humanPlayer.isFolded && gameState.stage !== "showdown" && (
-            <Card className="bg-white/95 backdrop-blur">
-              <CardContent className="p-6">
-                <div className="space-y-4">
-                  {/* Bet amount slider */}
-                  <div className="space-y-2">
-                    <div className="flex items-center justify-between">
-                      <Label>Bet Amount</Label>
-                      <div className="flex items-center gap-2">
-                        <Button
-                          size="sm"
-                          variant="outline"
-                          onClick={() => setBetAmount(Math.max(gameState.bigBlind, betAmount - gameState.bigBlind))}
-                        >
-                          <Minus className="h-3 w-3" />
-                        </Button>
-                        <Input
-                          type="number"
-                          value={betAmount}
-                          onChange={(e) => setBetAmount(Number(e.target.value))}
-                          className="w-20 text-center"
-                          min={gameState.bigBlind}
-                          max={humanPlayer.chips}
-                        />
-                        <Button
-                          size="sm"
-                          variant="outline"
-                          onClick={() => setBetAmount(Math.min(humanPlayer.chips, betAmount + gameState.bigBlind))}
-                        >
-                          <Plus className="h-3 w-3" />
-                        </Button>
+          {isMyTurn &&
+            humanPlayer &&
+            !humanPlayer.isFolded &&
+            gameState.stage !== "showdown" && (
+              <Card className="bg-white/95 backdrop-blur">
+                <CardContent className="p-6">
+                  <div className="space-y-4">
+                    {/* Bet amount slider */}
+                    <div className="space-y-2">
+                      <div className="flex items-center justify-between">
+                        <Label>Bet Amount</Label>
+                        <div className="flex items-center gap-2">
+                          <Button
+                            size="sm"
+                            variant="outline"
+                            onClick={() =>
+                              setBetAmount(
+                                Math.max(
+                                  gameState.bigBlind,
+                                  betAmount - gameState.bigBlind,
+                                ),
+                              )
+                            }
+                          >
+                            <Minus className="h-3 w-3" />
+                          </Button>
+                          <Input
+                            type="number"
+                            value={betAmount}
+                            onChange={(e) =>
+                              setBetAmount(Number(e.target.value))
+                            }
+                            className="w-20 text-center"
+                            min={gameState.bigBlind}
+                            max={humanPlayer.chips}
+                          />
+                          <Button
+                            size="sm"
+                            variant="outline"
+                            onClick={() =>
+                              setBetAmount(
+                                Math.min(
+                                  humanPlayer.chips,
+                                  betAmount + gameState.bigBlind,
+                                ),
+                              )
+                            }
+                          >
+                            <Plus className="h-3 w-3" />
+                          </Button>
+                        </div>
+                      </div>
+
+                      <Slider
+                        value={[betAmount]}
+                        onValueChange={(value) => setBetAmount(value[0])}
+                        max={humanPlayer.chips}
+                        min={gameState.bigBlind}
+                        step={gameState.bigBlind}
+                        className="flex-1"
+                      />
+
+                      <div className="flex justify-between text-xs text-gray-500">
+                        <span>Min: {gameState.bigBlind}</span>
+                        <span>Max: {humanPlayer.chips}</span>
                       </div>
                     </div>
-                    
-                    <Slider
-                      value={[betAmount]}
-                      onValueChange={(value) => setBetAmount(value[0])}
-                      max={humanPlayer.chips}
-                      min={gameState.bigBlind}
-                      step={gameState.bigBlind}
-                      className="flex-1"
-                    />
-                    
-                    <div className="flex justify-between text-xs text-gray-500">
-                      <span>Min: {gameState.bigBlind}</span>
-                      <span>Max: {humanPlayer.chips}</span>
-                    </div>
-                  </div>
 
-                  {/* Action buttons */}
-                  <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
-                    <Button
-                      variant="destructive"
-                      onClick={() => handlePlayerAction("fold")}
-                      className="flex items-center gap-2"
-                    >
-                      <XCircle className="h-4 w-4" />
-                      Fold
-                    </Button>
-
-                    {canCheck && (
+                    {/* Action buttons */}
+                    <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
                       <Button
-                        variant="outline"
-                        onClick={() => handlePlayerAction("check")}
+                        variant="destructive"
+                        onClick={() => handlePlayerAction("fold")}
                         className="flex items-center gap-2"
                       >
-                        <CheckCircle className="h-4 w-4" />
-                        Check
+                        <XCircle className="h-4 w-4" />
+                        Fold
                       </Button>
-                    )}
 
-                    {canCall && (
+                      {canCheck && (
+                        <Button
+                          variant="outline"
+                          onClick={() => handlePlayerAction("check")}
+                          className="flex items-center gap-2"
+                        >
+                          <CheckCircle className="h-4 w-4" />
+                          Check
+                        </Button>
+                      )}
+
+                      {canCall && (
+                        <Button
+                          onClick={() => handlePlayerAction("call")}
+                          className="flex items-center gap-2 bg-blue-600 hover:bg-blue-700"
+                        >
+                          <Target className="h-4 w-4" />
+                          Call {callAmount}
+                        </Button>
+                      )}
+
                       <Button
-                        onClick={() => handlePlayerAction("call")}
-                        className="flex items-center gap-2 bg-blue-600 hover:bg-blue-700"
+                        onClick={() =>
+                          handlePlayerAction(callAmount > 0 ? "raise" : "bet")
+                        }
+                        disabled={!canBet}
+                        className="flex items-center gap-2 bg-green-600 hover:bg-green-700"
                       >
-                        <Target className="h-4 w-4" />
-                        Call {callAmount}
+                        <TrendingUp className="h-4 w-4" />
+                        {callAmount > 0 ? "Raise" : "Bet"} {betAmount}
                       </Button>
-                    )}
 
-                    <Button
-                      onClick={() => handlePlayerAction(callAmount > 0 ? "raise" : "bet")}
-                      disabled={!canBet}
-                      className="flex items-center gap-2 bg-green-600 hover:bg-green-700"
-                    >
-                      <TrendingUp className="h-4 w-4" />
-                      {callAmount > 0 ? "Raise" : "Bet"} {betAmount}
-                    </Button>
+                      <Button
+                        variant="outline"
+                        onClick={() => handlePlayerAction("allIn")}
+                        className="flex items-center gap-2 border-red-500 text-red-600 hover:bg-red-50"
+                      >
+                        <Zap className="h-4 w-4" />
+                        All In
+                      </Button>
+                    </div>
 
-                    <Button
-                      variant="outline"
-                      onClick={() => handlePlayerAction("allIn")}
-                      className="flex items-center gap-2 border-red-500 text-red-600 hover:bg-red-50"
-                    >
-                      <Zap className="h-4 w-4" />
-                      All In
-                    </Button>
+                    {/* Quick bet buttons */}
+                    <div className="flex gap-2 justify-center">
+                      <Button
+                        size="sm"
+                        variant="outline"
+                        onClick={() =>
+                          setBetAmount(Math.floor(gameState.pot / 2))
+                        }
+                      >
+                        1/2 Pot
+                      </Button>
+                      <Button
+                        size="sm"
+                        variant="outline"
+                        onClick={() => setBetAmount(gameState.pot)}
+                      >
+                        Pot
+                      </Button>
+                      <Button
+                        size="sm"
+                        variant="outline"
+                        onClick={() => setBetAmount(humanPlayer.chips)}
+                      >
+                        All In
+                      </Button>
+                    </div>
                   </div>
-
-                  {/* Quick bet buttons */}
-                  <div className="flex gap-2 justify-center">
-                    <Button
-                      size="sm"
-                      variant="outline"
-                      onClick={() => setBetAmount(Math.floor(gameState.pot / 2))}
-                    >
-                      1/2 Pot
-                    </Button>
-                    <Button
-                      size="sm"
-                      variant="outline"
-                      onClick={() => setBetAmount(gameState.pot)}
-                    >
-                      Pot
-                    </Button>
-                    <Button
-                      size="sm"
-                      variant="outline"
-                      onClick={() => setBetAmount(humanPlayer.chips)}
-                    >
-                      All In
-                    </Button>
-                  </div>
-                </div>
-              </CardContent>
-            </Card>
-          )}
+                </CardContent>
+              </Card>
+            )}
 
           {/* Last action display */}
           {gameState.lastAction && (
             <div className="text-center mt-4">
               <p className="text-white text-sm">
-                <strong>{players.find(p => p.id === gameState.lastAction?.playerId)?.name}</strong>{" "}
+                <strong>
+                  {
+                    players.find((p) => p.id === gameState.lastAction?.playerId)
+                      ?.name
+                  }
+                </strong>{" "}
                 {gameState.lastAction.action}
-                {gameState.lastAction.amount ? ` ${gameState.lastAction.amount}` : ""}
+                {gameState.lastAction.amount
+                  ? ` ${gameState.lastAction.amount}`
+                  : ""}
               </p>
             </div>
           )}
@@ -955,9 +1089,14 @@ export function HoldemGame({
             </DialogHeader>
             {lastWin && (
               <div className="text-center space-y-4">
-                <div className="text-4xl font-bold">+{lastWin.amount} {currency}</div>
+                <div className="text-4xl font-bold">
+                  +{lastWin.amount} {currency}
+                </div>
                 <div className="text-lg">with {lastWin.hand}</div>
-                <Button onClick={() => setShowWinDialog(false)} className="bg-white text-yellow-600 hover:bg-yellow-50">
+                <Button
+                  onClick={() => setShowWinDialog(false)}
+                  className="bg-white text-yellow-600 hover:bg-yellow-50"
+                >
                   Continue Playing
                 </Button>
               </div>

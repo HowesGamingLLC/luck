@@ -26,7 +26,11 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { useAuth } from "@/contexts/AuthContext";
-import { useCurrency, formatCurrency, CurrencyType } from "@/contexts/CurrencyContext";
+import {
+  useCurrency,
+  formatCurrency,
+  CurrencyType,
+} from "@/contexts/CurrencyContext";
 import {
   Zap,
   ShoppingCart,
@@ -256,10 +260,14 @@ export function QuickActions({
       icon: Shield,
       color: "text-orange-500",
       link: "/kyc",
-      badge: 
-        user?.kycStatus === "approved" ? "Verified" :
-        user?.kycStatus === "pending" ? "Pending" :
-        user?.kycStatus === "rejected" ? "Rejected" : "Required",
+      badge:
+        user?.kycStatus === "approved"
+          ? "Verified"
+          : user?.kycStatus === "pending"
+            ? "Pending"
+            : user?.kycStatus === "rejected"
+              ? "Rejected"
+              : "Required",
       disabled: user?.kycStatus === "approved",
       category: "account",
       requiresAuth: true,
@@ -366,12 +374,19 @@ export function QuickActions({
     },
   ];
 
-  const filteredActions = quickActions.filter(action => {
-    if (selectedCategory !== "all" && !categories.includes(action.category as any)) return false;
-    if (selectedCategory !== "all" && action.category !== selectedCategory) return false;
-    if (action.requiresAuth && !isAuthenticated) return false;
-    return true;
-  }).slice(0, maxItems);
+  const filteredActions = quickActions
+    .filter((action) => {
+      if (
+        selectedCategory !== "all" &&
+        !categories.includes(action.category as any)
+      )
+        return false;
+      if (selectedCategory !== "all" && action.category !== selectedCategory)
+        return false;
+      if (action.requiresAuth && !isAuthenticated) return false;
+      return true;
+    })
+    .slice(0, maxItems);
 
   const categoryNames = {
     gaming: "Gaming",
@@ -381,29 +396,51 @@ export function QuickActions({
     support: "Support",
   };
 
-  const categoryCounts = categories.reduce((acc, category) => {
-    acc[category] = quickActions.filter(action => action.category === category).length;
-    return acc;
-  }, {} as Record<string, number>);
+  const categoryCounts = categories.reduce(
+    (acc, category) => {
+      acc[category] = quickActions.filter(
+        (action) => action.category === category,
+      ).length;
+      return acc;
+    },
+    {} as Record<string, number>,
+  );
 
   const renderAction = (action: QuickAction) => {
     const Icon = action.icon;
-    const isDisabled = action.disabled || (action.requiresAuth && !isAuthenticated) || (action.requiresKyc && user?.kycStatus !== "approved");
-    
+    const isDisabled =
+      action.disabled ||
+      (action.requiresAuth && !isAuthenticated) ||
+      (action.requiresKyc && user?.kycStatus !== "approved");
+
     const content = (
-      <div className={`flex items-center ${layout === "list" ? "justify-between w-full" : layout === "compact" ? "gap-2" : "flex-col text-center"} ${isDisabled ? "opacity-50" : ""}`}>
-        <div className={`flex items-center ${layout === "compact" ? "gap-2" : layout === "list" ? "gap-3" : "flex-col gap-2"}`}>
-          <div className={`${layout === "compact" ? "w-8 h-8" : "w-10 h-10"} rounded-lg bg-muted/50 flex items-center justify-center`}>
-            <Icon className={`${layout === "compact" ? "h-4 w-4" : "h-5 w-5"} ${action.color}`} />
+      <div
+        className={`flex items-center ${layout === "list" ? "justify-between w-full" : layout === "compact" ? "gap-2" : "flex-col text-center"} ${isDisabled ? "opacity-50" : ""}`}
+      >
+        <div
+          className={`flex items-center ${layout === "compact" ? "gap-2" : layout === "list" ? "gap-3" : "flex-col gap-2"}`}
+        >
+          <div
+            className={`${layout === "compact" ? "w-8 h-8" : "w-10 h-10"} rounded-lg bg-muted/50 flex items-center justify-center`}
+          >
+            <Icon
+              className={`${layout === "compact" ? "h-4 w-4" : "h-5 w-5"} ${action.color}`}
+            />
           </div>
           <div className={layout === "list" ? "flex-1" : ""}>
-            <h4 className={`font-medium ${layout === "compact" ? "text-sm" : ""}`}>{action.title}</h4>
+            <h4
+              className={`font-medium ${layout === "compact" ? "text-sm" : ""}`}
+            >
+              {action.title}
+            </h4>
             {layout !== "compact" && (
-              <p className="text-xs text-muted-foreground">{action.description}</p>
+              <p className="text-xs text-muted-foreground">
+                {action.description}
+              </p>
             )}
           </div>
         </div>
-        
+
         <div className="flex items-center gap-2">
           {action.badge && (
             <Badge variant="secondary" className="text-xs">
@@ -419,7 +456,10 @@ export function QuickActions({
 
     if (isDisabled) {
       return (
-        <div key={action.id} className={`cursor-not-allowed ${layout === "grid" ? "p-4" : "p-3"} border border-border/50 rounded-lg`}>
+        <div
+          key={action.id}
+          className={`cursor-not-allowed ${layout === "grid" ? "p-4" : "p-3"} border border-border/50 rounded-lg`}
+        >
           {content}
         </div>
       );
@@ -428,7 +468,9 @@ export function QuickActions({
     if (action.link) {
       return (
         <Link key={action.id} to={action.link}>
-          <div className={`transition-all duration-200 hover:scale-105 hover:shadow-sm ${layout === "grid" ? "p-4" : "p-3"} border border-border rounded-lg hover:border-purple/50`}>
+          <div
+            className={`transition-all duration-200 hover:scale-105 hover:shadow-sm ${layout === "grid" ? "p-4" : "p-3"} border border-border rounded-lg hover:border-purple/50`}
+          >
             {content}
           </div>
         </Link>
@@ -448,18 +490,17 @@ export function QuickActions({
     }
 
     return (
-      <div key={action.id} className={`${layout === "grid" ? "p-4" : "p-3"} border border-border rounded-lg`}>
+      <div
+        key={action.id}
+        className={`${layout === "grid" ? "p-4" : "p-3"} border border-border rounded-lg`}
+      >
         {content}
       </div>
     );
   };
 
   if (layout === "compact") {
-    return (
-      <div className="space-y-2">
-        {filteredActions.map(renderAction)}
-      </div>
-    );
+    return <div className="space-y-2">{filteredActions.map(renderAction)}</div>;
   }
 
   return (
@@ -470,16 +511,18 @@ export function QuickActions({
             <Zap className="h-5 w-5 text-purple" />
             <span>Quick Actions</span>
           </CardTitle>
-          <CardDescription>
-            Common actions and shortcuts
-          </CardDescription>
+          <CardDescription>Common actions and shortcuts</CardDescription>
         </div>
 
         {showCategories && categories.length > 1 && (
           <DropdownMenu>
             <DropdownMenuTrigger asChild>
               <Button variant="outline" size="sm" className="gap-2">
-                {selectedCategory === "all" ? "All Actions" : categoryNames[selectedCategory as keyof typeof categoryNames]}
+                {selectedCategory === "all"
+                  ? "All Actions"
+                  : categoryNames[
+                      selectedCategory as keyof typeof categoryNames
+                    ]}
                 <ChevronDown className="h-3 w-3" />
               </Button>
             </DropdownMenuTrigger>
@@ -489,7 +532,7 @@ export function QuickActions({
               <DropdownMenuItem onClick={() => setSelectedCategory("all")}>
                 All Actions ({quickActions.length})
               </DropdownMenuItem>
-              {categories.map(category => (
+              {categories.map((category) => (
                 <DropdownMenuItem
                   key={category}
                   onClick={() => setSelectedCategory(category)}
@@ -509,16 +552,21 @@ export function QuickActions({
             <p className="text-muted-foreground">No actions available</p>
             {!isAuthenticated && (
               <p className="text-sm text-muted-foreground mt-1">
-                <Link to="/login" className="text-purple hover:underline">Login</Link> to access more actions
+                <Link to="/login" className="text-purple hover:underline">
+                  Login
+                </Link>{" "}
+                to access more actions
               </p>
             )}
           </div>
         ) : (
-          <div className={
-            layout === "grid" 
-              ? "grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3"
-              : "space-y-2"
-          }>
+          <div
+            className={
+              layout === "grid"
+                ? "grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3"
+                : "space-y-2"
+            }
+          >
             {filteredActions.map(renderAction)}
           </div>
         )}
@@ -530,13 +578,12 @@ export function QuickActions({
           <DialogHeader>
             <DialogTitle>Feature Coming Soon</DialogTitle>
             <DialogDescription>
-              This feature is currently in development and will be available soon.
+              This feature is currently in development and will be available
+              soon.
             </DialogDescription>
           </DialogHeader>
           <div className="flex justify-end">
-            <Button onClick={() => setShowCustomDialog(false)}>
-              Got it
-            </Button>
+            <Button onClick={() => setShowCustomDialog(false)}>Got it</Button>
           </div>
         </DialogContent>
       </Dialog>

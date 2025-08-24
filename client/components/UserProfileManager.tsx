@@ -148,7 +148,10 @@ interface UserProfileManagerProps {
   selectedUserId?: string;
 }
 
-export function UserProfileManager({ onUserSelect, selectedUserId }: UserProfileManagerProps) {
+export function UserProfileManager({
+  onUserSelect,
+  selectedUserId,
+}: UserProfileManagerProps) {
   const [users, setUsers] = useState<UserProfile[]>([]);
   const [filteredUsers, setFilteredUsers] = useState<UserProfile[]>([]);
   const [selectedUser, setSelectedUser] = useState<UserProfile | null>(null);
@@ -170,7 +173,7 @@ export function UserProfileManager({ onUserSelect, selectedUserId }: UserProfile
 
   useEffect(() => {
     if (selectedUserId) {
-      const user = users.find(u => u.id === selectedUserId);
+      const user = users.find((u) => u.id === selectedUserId);
       if (user) {
         setSelectedUser(user);
         setShowDetails(true);
@@ -180,35 +183,49 @@ export function UserProfileManager({ onUserSelect, selectedUserId }: UserProfile
 
   const loadUsers = () => {
     const baseUsers = getAllUsers();
-    
+
     // Enhance with mock profile data
-    const enhancedUsers: UserProfile[] = baseUsers.map(user => ({
+    const enhancedUsers: UserProfile[] = baseUsers.map((user) => ({
       ...user,
       personalInfo: {
-        firstName: user.name.split(' ')[0] || user.name,
-        lastName: user.name.split(' ')[1] || '',
-        phone: user.id === 'admin_1' ? '+1 (555) 123-4567' : '+1 (555) ' + Math.floor(Math.random() * 900 + 100) + '-' + Math.floor(Math.random() * 9000 + 1000),
+        firstName: user.name.split(" ")[0] || user.name,
+        lastName: user.name.split(" ")[1] || "",
+        phone:
+          user.id === "admin_1"
+            ? "+1 (555) 123-4567"
+            : "+1 (555) " +
+              Math.floor(Math.random() * 900 + 100) +
+              "-" +
+              Math.floor(Math.random() * 9000 + 1000),
         address: {
           street: `${Math.floor(Math.random() * 9999)} Main St`,
-          city: ['New York', 'Los Angeles', 'Chicago', 'Houston', 'Phoenix'][Math.floor(Math.random() * 5)],
-          state: ['NY', 'CA', 'IL', 'TX', 'AZ'][Math.floor(Math.random() * 5)],
+          city: ["New York", "Los Angeles", "Chicago", "Houston", "Phoenix"][
+            Math.floor(Math.random() * 5)
+          ],
+          state: ["NY", "CA", "IL", "TX", "AZ"][Math.floor(Math.random() * 5)],
           zipCode: Math.floor(Math.random() * 90000 + 10000).toString(),
-          country: 'USA'
-        }
+          country: "USA",
+        },
       },
       accountInfo: {
         level: Math.floor(Math.random() * 10) + 1,
         vipStatus: Math.random() > 0.8,
         accountLocked: false,
-        accountNotes: '',
-        riskLevel: user.totalLosses > 200 ? 'high' : user.totalLosses > 100 ? 'medium' : 'low',
+        accountNotes: "",
+        riskLevel:
+          user.totalLosses > 200
+            ? "high"
+            : user.totalLosses > 100
+              ? "medium"
+              : "low",
         totalDeposits: Math.random() * 1000 + user.totalLosses,
         totalWithdrawals: Math.random() * 500,
         netPosition: Math.random() * 200 - 100,
         lifetimeValue: Math.random() * 2000,
         averageSessionTime: Math.random() * 120 + 30,
         lastIP: `192.168.${Math.floor(Math.random() * 255)}.${Math.floor(Math.random() * 255)}`,
-        lastUserAgent: 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36'
+        lastUserAgent:
+          "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36",
       },
       preferences: {
         emailNotifications: true,
@@ -218,48 +235,64 @@ export function UserProfileManager({ onUserSelect, selectedUserId }: UserProfile
           dailyLossLimit: 100,
           weeklyLossLimit: 500,
           monthlyLossLimit: 2000,
-          sessionTimeLimit: 240
-        }
+          sessionTimeLimit: 240,
+        },
       },
       documents: [
         {
-          id: 'doc_1',
-          type: 'id',
-          filename: 'drivers_license.jpg',
-          uploadDate: new Date(Date.now() - Math.random() * 10 * 24 * 60 * 60 * 1000),
-          status: user.kycStatus === 'approved' ? 'approved' : user.kycStatus === 'pending' ? 'pending' : 'rejected'
+          id: "doc_1",
+          type: "id",
+          filename: "drivers_license.jpg",
+          uploadDate: new Date(
+            Date.now() - Math.random() * 10 * 24 * 60 * 60 * 1000,
+          ),
+          status:
+            user.kycStatus === "approved"
+              ? "approved"
+              : user.kycStatus === "pending"
+                ? "pending"
+                : "rejected",
         },
         {
-          id: 'doc_2',
-          type: 'proof_of_address',
-          filename: 'utility_bill.pdf',
-          uploadDate: new Date(Date.now() - Math.random() * 15 * 24 * 60 * 60 * 1000),
-          status: user.kycStatus === 'approved' ? 'approved' : user.kycStatus === 'pending' ? 'pending' : 'rejected'
-        }
+          id: "doc_2",
+          type: "proof_of_address",
+          filename: "utility_bill.pdf",
+          uploadDate: new Date(
+            Date.now() - Math.random() * 15 * 24 * 60 * 60 * 1000,
+          ),
+          status:
+            user.kycStatus === "approved"
+              ? "approved"
+              : user.kycStatus === "pending"
+                ? "pending"
+                : "rejected",
+        },
       ],
       activityLog: [
         {
-          id: 'act_1',
-          action: 'Login',
+          id: "act_1",
+          action: "Login",
           timestamp: user.lastLoginAt,
           ip: `192.168.${Math.floor(Math.random() * 255)}.${Math.floor(Math.random() * 255)}`,
-          details: 'Successful login from desktop'
+          details: "Successful login from desktop",
         },
         {
-          id: 'act_2',
-          action: 'Game Session',
+          id: "act_2",
+          action: "Game Session",
           timestamp: new Date(user.lastLoginAt.getTime() - 30 * 60 * 1000),
           ip: `192.168.${Math.floor(Math.random() * 255)}.${Math.floor(Math.random() * 255)}`,
-          details: 'Played slots for 45 minutes'
+          details: "Played slots for 45 minutes",
         },
         {
-          id: 'act_3',
-          action: 'Deposit',
-          timestamp: new Date(user.lastLoginAt.getTime() - 2 * 24 * 60 * 60 * 1000),
+          id: "act_3",
+          action: "Deposit",
+          timestamp: new Date(
+            user.lastLoginAt.getTime() - 2 * 24 * 60 * 60 * 1000,
+          ),
           ip: `192.168.${Math.floor(Math.random() * 255)}.${Math.floor(Math.random() * 255)}`,
-          details: 'Deposited $25.00 via credit card'
-        }
-      ]
+          details: "Deposited $25.00 via credit card",
+        },
+      ],
     }));
 
     setUsers(enhancedUsers);
@@ -270,61 +303,74 @@ export function UserProfileManager({ onUserSelect, selectedUserId }: UserProfile
 
     // Apply search filter
     if (searchTerm) {
-      filtered = filtered.filter(user => 
-        user.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
-        user.email.toLowerCase().includes(searchTerm.toLowerCase()) ||
-        user.personalInfo.phone?.includes(searchTerm) ||
-        user.id.toLowerCase().includes(searchTerm.toLowerCase())
+      filtered = filtered.filter(
+        (user) =>
+          user.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
+          user.email.toLowerCase().includes(searchTerm.toLowerCase()) ||
+          user.personalInfo.phone?.includes(searchTerm) ||
+          user.id.toLowerCase().includes(searchTerm.toLowerCase()),
       );
     }
 
     // Apply status filter
     switch (filterBy) {
-      case 'verified':
-        filtered = filtered.filter(user => user.verified);
+      case "verified":
+        filtered = filtered.filter((user) => user.verified);
         break;
-      case 'unverified':
-        filtered = filtered.filter(user => !user.verified);
+      case "unverified":
+        filtered = filtered.filter((user) => !user.verified);
         break;
-      case 'high_risk':
-        filtered = filtered.filter(user => user.accountInfo.riskLevel === 'high');
+      case "high_risk":
+        filtered = filtered.filter(
+          (user) => user.accountInfo.riskLevel === "high",
+        );
         break;
-      case 'vip':
-        filtered = filtered.filter(user => user.accountInfo.vipStatus);
+      case "vip":
+        filtered = filtered.filter((user) => user.accountInfo.vipStatus);
         break;
-      case 'locked':
-        filtered = filtered.filter(user => user.accountInfo.accountLocked);
+      case "locked":
+        filtered = filtered.filter((user) => user.accountInfo.accountLocked);
         break;
-      case 'kyc_pending':
-        filtered = filtered.filter(user => user.kycStatus === 'pending');
+      case "kyc_pending":
+        filtered = filtered.filter((user) => user.kycStatus === "pending");
         break;
-      case 'kyc_rejected':
-        filtered = filtered.filter(user => user.kycStatus === 'rejected');
+      case "kyc_rejected":
+        filtered = filtered.filter((user) => user.kycStatus === "rejected");
         break;
     }
 
     // Apply sorting
     switch (sortBy) {
-      case 'created_desc':
-        filtered.sort((a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime());
+      case "created_desc":
+        filtered.sort(
+          (a, b) =>
+            new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime(),
+        );
         break;
-      case 'created_asc':
-        filtered.sort((a, b) => new Date(a.createdAt).getTime() - new Date(b.createdAt).getTime());
+      case "created_asc":
+        filtered.sort(
+          (a, b) =>
+            new Date(a.createdAt).getTime() - new Date(b.createdAt).getTime(),
+        );
         break;
-      case 'name_asc':
+      case "name_asc":
         filtered.sort((a, b) => a.name.localeCompare(b.name));
         break;
-      case 'name_desc':
+      case "name_desc":
         filtered.sort((a, b) => b.name.localeCompare(a.name));
         break;
-      case 'losses_desc':
+      case "losses_desc":
         filtered.sort((a, b) => b.totalLosses - a.totalLosses);
         break;
-      case 'losses_asc':
+      case "losses_asc":
         filtered.sort((a, b) => a.totalLosses - b.totalLosses);
         break;
-      case 'last_active':
-        filtered.sort((a, b) => new Date(b.lastLoginAt).getTime() - new Date(a.lastLoginAt).getTime());
+      case "last_active":
+        filtered.sort(
+          (a, b) =>
+            new Date(b.lastLoginAt).getTime() -
+            new Date(a.lastLoginAt).getTime(),
+        );
         break;
     }
 
@@ -338,60 +384,68 @@ export function UserProfileManager({ onUserSelect, selectedUserId }: UserProfile
   };
 
   const handleUserUpdate = (updatedUser: UserProfile) => {
-    setUsers(prev => prev.map(u => u.id === updatedUser.id ? updatedUser : u));
+    setUsers((prev) =>
+      prev.map((u) => (u.id === updatedUser.id ? updatedUser : u)),
+    );
     setSelectedUser(updatedUser);
   };
 
-  const handleKycStatusChange = (userId: string, newStatus: User['kycStatus']) => {
-    const updatedUsers = users.map(user => 
-      user.id === userId ? { ...user, kycStatus: newStatus } : user
+  const handleKycStatusChange = (
+    userId: string,
+    newStatus: User["kycStatus"],
+  ) => {
+    const updatedUsers = users.map((user) =>
+      user.id === userId ? { ...user, kycStatus: newStatus } : user,
     );
     setUsers(updatedUsers);
-    
+
     if (selectedUser?.id === userId) {
       setSelectedUser({ ...selectedUser, kycStatus: newStatus });
     }
   };
 
   const handleAccountLock = (userId: string, locked: boolean) => {
-    const updatedUsers = users.map(user => 
-      user.id === userId 
-        ? { ...user, accountInfo: { ...user.accountInfo, accountLocked: locked } }
-        : user
+    const updatedUsers = users.map((user) =>
+      user.id === userId
+        ? {
+            ...user,
+            accountInfo: { ...user.accountInfo, accountLocked: locked },
+          }
+        : user,
     );
     setUsers(updatedUsers);
-    
+
     if (selectedUser?.id === userId) {
-      setSelectedUser({ 
-        ...selectedUser, 
-        accountInfo: { ...selectedUser.accountInfo, accountLocked: locked }
+      setSelectedUser({
+        ...selectedUser,
+        accountInfo: { ...selectedUser.accountInfo, accountLocked: locked },
       });
     }
   };
 
   const handleNotesUpdate = (userId: string, notes: string) => {
-    const updatedUsers = users.map(user => 
-      user.id === userId 
+    const updatedUsers = users.map((user) =>
+      user.id === userId
         ? { ...user, accountInfo: { ...user.accountInfo, accountNotes: notes } }
-        : user
+        : user,
     );
     setUsers(updatedUsers);
-    
+
     if (selectedUser?.id === userId) {
-      setSelectedUser({ 
-        ...selectedUser, 
-        accountInfo: { ...selectedUser.accountInfo, accountNotes: notes }
+      setSelectedUser({
+        ...selectedUser,
+        accountInfo: { ...selectedUser.accountInfo, accountNotes: notes },
       });
     }
   };
 
   const getKycStatusIcon = (status: string) => {
     switch (status) {
-      case 'approved':
+      case "approved":
         return <CheckCircle className="h-4 w-4 text-green-500" />;
-      case 'pending':
+      case "pending":
         return <Clock className="h-4 w-4 text-yellow-500" />;
-      case 'rejected':
+      case "rejected":
         return <XCircle className="h-4 w-4 text-red-500" />;
       default:
         return <AlertTriangle className="h-4 w-4 text-orange-500" />;
@@ -400,40 +454,40 @@ export function UserProfileManager({ onUserSelect, selectedUserId }: UserProfile
 
   const getRiskLevelColor = (level: string) => {
     switch (level) {
-      case 'high':
-        return 'text-red-500 bg-red-500/10 border-red-500/20';
-      case 'medium':
-        return 'text-yellow-500 bg-yellow-500/10 border-yellow-500/20';
+      case "high":
+        return "text-red-500 bg-red-500/10 border-red-500/20";
+      case "medium":
+        return "text-yellow-500 bg-yellow-500/10 border-yellow-500/20";
       default:
-        return 'text-green-500 bg-green-500/10 border-green-500/20';
+        return "text-green-500 bg-green-500/10 border-green-500/20";
     }
   };
 
   const exportUserData = () => {
-    const csv = filteredUsers.map(user => ({
+    const csv = filteredUsers.map((user) => ({
       ID: user.id,
       Name: user.name,
       Email: user.email,
-      'KYC Status': user.kycStatus,
-      'Risk Level': user.accountInfo.riskLevel,
-      'Total Losses': user.totalLosses,
-      'Total Deposits': user.accountInfo.totalDeposits,
-      'Account Level': user.accountInfo.level,
-      'VIP Status': user.accountInfo.vipStatus ? 'Yes' : 'No',
-      'Last Active': user.lastLoginAt.toISOString(),
-      'Created': user.createdAt.toISOString()
+      "KYC Status": user.kycStatus,
+      "Risk Level": user.accountInfo.riskLevel,
+      "Total Losses": user.totalLosses,
+      "Total Deposits": user.accountInfo.totalDeposits,
+      "Account Level": user.accountInfo.level,
+      "VIP Status": user.accountInfo.vipStatus ? "Yes" : "No",
+      "Last Active": user.lastLoginAt.toISOString(),
+      Created: user.createdAt.toISOString(),
     }));
 
     const csvContent = [
-      Object.keys(csv[0]).join(','),
-      ...csv.map(row => Object.values(row).join(','))
-    ].join('\n');
+      Object.keys(csv[0]).join(","),
+      ...csv.map((row) => Object.values(row).join(",")),
+    ].join("\n");
 
-    const blob = new Blob([csvContent], { type: 'text/csv' });
+    const blob = new Blob([csvContent], { type: "text/csv" });
     const url = URL.createObjectURL(blob);
-    const a = document.createElement('a');
+    const a = document.createElement("a");
     a.href = url;
-    a.download = `user_data_${new Date().toISOString().split('T')[0]}.csv`;
+    a.download = `user_data_${new Date().toISOString().split("T")[0]}.csv`;
     a.click();
     URL.revokeObjectURL(url);
   };
@@ -554,7 +608,10 @@ export function UserProfileManager({ onUserSelect, selectedUserId }: UserProfile
                     </TableRow>
                   ) : (
                     filteredUsers.map((user) => (
-                      <TableRow key={user.id} className="cursor-pointer hover:bg-muted/50">
+                      <TableRow
+                        key={user.id}
+                        className="cursor-pointer hover:bg-muted/50"
+                      >
                         <TableCell onClick={() => handleUserSelect(user)}>
                           <div className="flex items-center gap-3">
                             <div className="w-8 h-8 rounded-full bg-gradient-to-r from-purple-500 to-blue-500 flex items-center justify-center text-white text-sm font-medium">
@@ -563,11 +620,21 @@ export function UserProfileManager({ onUserSelect, selectedUserId }: UserProfile
                             <div>
                               <div className="font-medium flex items-center gap-2">
                                 {user.name}
-                                {user.isAdmin && <Crown className="h-3 w-3 text-gold" />}
-                                {user.accountInfo.vipStatus && <Badge className="text-xs bg-purple-500">VIP</Badge>}
+                                {user.isAdmin && (
+                                  <Crown className="h-3 w-3 text-gold" />
+                                )}
+                                {user.accountInfo.vipStatus && (
+                                  <Badge className="text-xs bg-purple-500">
+                                    VIP
+                                  </Badge>
+                                )}
                               </div>
-                              <div className="text-sm text-muted-foreground">{user.email}</div>
-                              <div className="text-xs text-muted-foreground">ID: {user.id}</div>
+                              <div className="text-sm text-muted-foreground">
+                                {user.email}
+                              </div>
+                              <div className="text-xs text-muted-foreground">
+                                ID: {user.id}
+                              </div>
                             </div>
                           </div>
                         </TableCell>
@@ -575,13 +642,18 @@ export function UserProfileManager({ onUserSelect, selectedUserId }: UserProfile
                         <TableCell>
                           <div className="flex items-center gap-2">
                             {getKycStatusIcon(user.kycStatus)}
-                            <span className="capitalize text-sm">{user.kycStatus}</span>
+                            <span className="capitalize text-sm">
+                              {user.kycStatus}
+                            </span>
                           </div>
                         </TableCell>
 
                         <TableCell>
                           <div className="space-y-1">
-                            <Badge variant={user.verified ? "default" : "secondary"} className="text-xs">
+                            <Badge
+                              variant={user.verified ? "default" : "secondary"}
+                              className="text-xs"
+                            >
                               {user.verified ? "Verified" : "Unverified"}
                             </Badge>
                             {user.accountInfo.accountLocked && (
@@ -593,7 +665,9 @@ export function UserProfileManager({ onUserSelect, selectedUserId }: UserProfile
                         </TableCell>
 
                         <TableCell>
-                          <Badge className={`text-xs ${getRiskLevelColor(user.accountInfo.riskLevel)}`}>
+                          <Badge
+                            className={`text-xs ${getRiskLevelColor(user.accountInfo.riskLevel)}`}
+                          >
                             {user.accountInfo.riskLevel.toUpperCase()}
                           </Badge>
                         </TableCell>
@@ -603,7 +677,8 @@ export function UserProfileManager({ onUserSelect, selectedUserId }: UserProfile
                             ${user.totalLosses.toFixed(2)}
                           </div>
                           <div className="text-xs text-muted-foreground">
-                            Deposits: ${user.accountInfo.totalDeposits.toFixed(2)}
+                            Deposits: $
+                            {user.accountInfo.totalDeposits.toFixed(2)}
                           </div>
                         </TableCell>
 
@@ -649,71 +724,106 @@ export function UserProfileManager({ onUserSelect, selectedUserId }: UserProfile
                                   variant="outline"
                                   onClick={(e) => {
                                     e.stopPropagation();
-                                    handleAccountLock(user.id, !user.accountInfo.accountLocked);
+                                    handleAccountLock(
+                                      user.id,
+                                      !user.accountInfo.accountLocked,
+                                    );
                                   }}
                                 >
-                                  {user.accountInfo.accountLocked ? 
-                                    <Unlock className="h-3 w-3" /> : 
+                                  {user.accountInfo.accountLocked ? (
+                                    <Unlock className="h-3 w-3" />
+                                  ) : (
                                     <Lock className="h-3 w-3" />
-                                  }
+                                  )}
                                 </Button>
                               </TooltipTrigger>
                               <TooltipContent>
-                                {user.accountInfo.accountLocked ? 'Unlock Account' : 'Lock Account'}
+                                {user.accountInfo.accountLocked
+                                  ? "Unlock Account"
+                                  : "Lock Account"}
                               </TooltipContent>
                             </Tooltip>
 
                             <Dialog>
                               <DialogTrigger asChild>
-                                <Button size="sm" variant="outline" onClick={(e) => e.stopPropagation()}>
+                                <Button
+                                  size="sm"
+                                  variant="outline"
+                                  onClick={(e) => e.stopPropagation()}
+                                >
                                   <MoreHorizontal className="h-3 w-3" />
                                 </Button>
                               </DialogTrigger>
                               <DialogContent className="max-w-md">
                                 <DialogHeader>
-                                  <DialogTitle>Quick Actions - {user.name}</DialogTitle>
+                                  <DialogTitle>
+                                    Quick Actions - {user.name}
+                                  </DialogTitle>
                                   <DialogDescription>
-                                    Choose an action to perform on this user account.
+                                    Choose an action to perform on this user
+                                    account.
                                   </DialogDescription>
                                 </DialogHeader>
                                 <div className="space-y-3">
                                   <div className="grid grid-cols-2 gap-2">
-                                    <Button 
-                                      variant="outline" 
+                                    <Button
+                                      variant="outline"
                                       className="h-auto flex-col p-4"
-                                      onClick={() => handleKycStatusChange(user.id, 'approved')}
-                                      disabled={user.kycStatus === 'approved'}
+                                      onClick={() =>
+                                        handleKycStatusChange(
+                                          user.id,
+                                          "approved",
+                                        )
+                                      }
+                                      disabled={user.kycStatus === "approved"}
                                     >
                                       <CheckCircle className="h-4 w-4 mb-1" />
-                                      <span className="text-xs">Approve KYC</span>
+                                      <span className="text-xs">
+                                        Approve KYC
+                                      </span>
                                     </Button>
-                                    
-                                    <Button 
-                                      variant="outline" 
+
+                                    <Button
+                                      variant="outline"
                                       className="h-auto flex-col p-4"
-                                      onClick={() => handleKycStatusChange(user.id, 'rejected')}
-                                      disabled={user.kycStatus === 'rejected'}
+                                      onClick={() =>
+                                        handleKycStatusChange(
+                                          user.id,
+                                          "rejected",
+                                        )
+                                      }
+                                      disabled={user.kycStatus === "rejected"}
                                     >
                                       <XCircle className="h-4 w-4 mb-1" />
-                                      <span className="text-xs">Reject KYC</span>
+                                      <span className="text-xs">
+                                        Reject KYC
+                                      </span>
                                     </Button>
-                                    
-                                    <Button 
-                                      variant="outline" 
+
+                                    <Button
+                                      variant="outline"
                                       className="h-auto flex-col p-4"
-                                      onClick={() => alert('Send message functionality would be implemented here')}
+                                      onClick={() =>
+                                        alert(
+                                          "Send message functionality would be implemented here",
+                                        )
+                                      }
                                     >
                                       <MessageSquare className="h-4 w-4 mb-1" />
-                                      <span className="text-xs">Send Message</span>
+                                      <span className="text-xs">
+                                        Send Message
+                                      </span>
                                     </Button>
-                                    
-                                    <Button 
-                                      variant="outline" 
+
+                                    <Button
+                                      variant="outline"
                                       className="h-auto flex-col p-4"
                                       onClick={() => handleUserSelect(user)}
                                     >
                                       <Settings className="h-4 w-4 mb-1" />
-                                      <span className="text-xs">Edit Profile</span>
+                                      <span className="text-xs">
+                                        Edit Profile
+                                      </span>
                                     </Button>
                                   </div>
                                 </div>
@@ -741,8 +851,12 @@ export function UserProfileManager({ onUserSelect, selectedUserId }: UserProfile
                 <div>
                   <div className="flex items-center gap-2">
                     {selectedUser?.name}
-                    {selectedUser?.isAdmin && <Crown className="h-4 w-4 text-gold" />}
-                    {selectedUser?.accountInfo.vipStatus && <Badge className="text-xs bg-purple-500">VIP</Badge>}
+                    {selectedUser?.isAdmin && (
+                      <Crown className="h-4 w-4 text-gold" />
+                    )}
+                    {selectedUser?.accountInfo.vipStatus && (
+                      <Badge className="text-xs bg-purple-500">VIP</Badge>
+                    )}
                   </div>
                   <div className="text-sm text-muted-foreground font-normal">
                     {selectedUser?.email} • ID: {selectedUser?.id}
@@ -768,7 +882,9 @@ export function UserProfileManager({ onUserSelect, selectedUserId }: UserProfile
                     <Card>
                       <CardContent className="p-4 text-center">
                         <TrendingDown className="h-6 w-6 mx-auto mb-2 text-red-500" />
-                        <div className="text-sm text-muted-foreground">Total Losses</div>
+                        <div className="text-sm text-muted-foreground">
+                          Total Losses
+                        </div>
                         <div className="text-lg font-bold text-red-500">
                           ${selectedUser.totalLosses.toFixed(2)}
                         </div>
@@ -778,7 +894,9 @@ export function UserProfileManager({ onUserSelect, selectedUserId }: UserProfile
                     <Card>
                       <CardContent className="p-4 text-center">
                         <TrendingUp className="h-6 w-6 mx-auto mb-2 text-green-500" />
-                        <div className="text-sm text-muted-foreground">Total Deposits</div>
+                        <div className="text-sm text-muted-foreground">
+                          Total Deposits
+                        </div>
                         <div className="text-lg font-bold text-green-500">
                           ${selectedUser.accountInfo.totalDeposits.toFixed(2)}
                         </div>
@@ -788,7 +906,9 @@ export function UserProfileManager({ onUserSelect, selectedUserId }: UserProfile
                     <Card>
                       <CardContent className="p-4 text-center">
                         <Target className="h-6 w-6 mx-auto mb-2 text-blue-500" />
-                        <div className="text-sm text-muted-foreground">Account Level</div>
+                        <div className="text-sm text-muted-foreground">
+                          Account Level
+                        </div>
                         <div className="text-lg font-bold text-blue-500">
                           Level {selectedUser.accountInfo.level}
                         </div>
@@ -798,12 +918,18 @@ export function UserProfileManager({ onUserSelect, selectedUserId }: UserProfile
                     <Card>
                       <CardContent className="p-4 text-center">
                         <Activity className="h-6 w-6 mx-auto mb-2 text-purple-500" />
-                        <div className="text-sm text-muted-foreground">Risk Level</div>
-                        <div className={`text-lg font-bold ${
-                          selectedUser.accountInfo.riskLevel === 'high' ? 'text-red-500' :
-                          selectedUser.accountInfo.riskLevel === 'medium' ? 'text-yellow-500' :
-                          'text-green-500'
-                        }`}>
+                        <div className="text-sm text-muted-foreground">
+                          Risk Level
+                        </div>
+                        <div
+                          className={`text-lg font-bold ${
+                            selectedUser.accountInfo.riskLevel === "high"
+                              ? "text-red-500"
+                              : selectedUser.accountInfo.riskLevel === "medium"
+                                ? "text-yellow-500"
+                                : "text-green-500"
+                          }`}
+                        >
                           {selectedUser.accountInfo.riskLevel.toUpperCase()}
                         </div>
                       </CardContent>
@@ -821,29 +947,41 @@ export function UserProfileManager({ onUserSelect, selectedUserId }: UserProfile
                           <Label>KYC Status</Label>
                           <div className="flex items-center gap-2 mt-1">
                             {getKycStatusIcon(selectedUser.kycStatus)}
-                            <span className="capitalize">{selectedUser.kycStatus}</span>
+                            <span className="capitalize">
+                              {selectedUser.kycStatus}
+                            </span>
                           </div>
                         </div>
 
                         <div>
                           <Label>Verification</Label>
                           <div className="flex items-center gap-2 mt-1">
-                            {selectedUser.verified ? 
-                              <CheckCircle className="h-4 w-4 text-green-500" /> :
+                            {selectedUser.verified ? (
+                              <CheckCircle className="h-4 w-4 text-green-500" />
+                            ) : (
                               <XCircle className="h-4 w-4 text-red-500" />
-                            }
-                            <span>{selectedUser.verified ? 'Verified' : 'Unverified'}</span>
+                            )}
+                            <span>
+                              {selectedUser.verified
+                                ? "Verified"
+                                : "Unverified"}
+                            </span>
                           </div>
                         </div>
 
                         <div>
                           <Label>Account Lock</Label>
                           <div className="flex items-center gap-2 mt-1">
-                            {selectedUser.accountInfo.accountLocked ? 
-                              <Lock className="h-4 w-4 text-red-500" /> :
+                            {selectedUser.accountInfo.accountLocked ? (
+                              <Lock className="h-4 w-4 text-red-500" />
+                            ) : (
                               <Unlock className="h-4 w-4 text-green-500" />
-                            }
-                            <span>{selectedUser.accountInfo.accountLocked ? 'Locked' : 'Active'}</span>
+                            )}
+                            <span>
+                              {selectedUser.accountInfo.accountLocked
+                                ? "Locked"
+                                : "Active"}
+                            </span>
                           </div>
                         </div>
 
@@ -870,7 +1008,11 @@ export function UserProfileManager({ onUserSelect, selectedUserId }: UserProfile
                             setTempNotes(selectedUser.accountInfo.accountNotes);
                           }}
                         >
-                          {editingNotes ? <X className="h-4 w-4" /> : <Edit className="h-4 w-4" />}
+                          {editingNotes ? (
+                            <X className="h-4 w-4" />
+                          ) : (
+                            <Edit className="h-4 w-4" />
+                          )}
                         </Button>
                       </CardTitle>
                     </CardHeader>
@@ -899,7 +1041,9 @@ export function UserProfileManager({ onUserSelect, selectedUserId }: UserProfile
                               variant="outline"
                               onClick={() => {
                                 setEditingNotes(false);
-                                setTempNotes(selectedUser.accountInfo.accountNotes);
+                                setTempNotes(
+                                  selectedUser.accountInfo.accountNotes,
+                                );
                               }}
                             >
                               Cancel
@@ -909,7 +1053,9 @@ export function UserProfileManager({ onUserSelect, selectedUserId }: UserProfile
                       ) : (
                         <div className="text-sm">
                           {selectedUser.accountInfo.accountNotes || (
-                            <span className="text-muted-foreground italic">No notes added yet.</span>
+                            <span className="text-muted-foreground italic">
+                              No notes added yet.
+                            </span>
                           )}
                         </div>
                       )}
@@ -927,26 +1073,30 @@ export function UserProfileManager({ onUserSelect, selectedUserId }: UserProfile
                         <div>
                           <Label>Full Name</Label>
                           <div className="text-sm mt-1">
-                            {selectedUser.personalInfo.firstName} {selectedUser.personalInfo.lastName}
+                            {selectedUser.personalInfo.firstName}{" "}
+                            {selectedUser.personalInfo.lastName}
                           </div>
                         </div>
 
                         <div>
                           <Label>Email Address</Label>
-                          <div className="text-sm mt-1">{selectedUser.email}</div>
+                          <div className="text-sm mt-1">
+                            {selectedUser.email}
+                          </div>
                         </div>
 
                         <div>
                           <Label>Phone Number</Label>
                           <div className="text-sm mt-1">
-                            {selectedUser.personalInfo.phone || 'Not provided'}
+                            {selectedUser.personalInfo.phone || "Not provided"}
                           </div>
                         </div>
 
                         <div>
                           <Label>Date of Birth</Label>
                           <div className="text-sm mt-1">
-                            {selectedUser.personalInfo.dateOfBirth?.toLocaleDateString() || 'Not provided'}
+                            {selectedUser.personalInfo.dateOfBirth?.toLocaleDateString() ||
+                              "Not provided"}
                           </div>
                         </div>
                       </div>
@@ -956,9 +1106,13 @@ export function UserProfileManager({ onUserSelect, selectedUserId }: UserProfile
                         <div className="text-sm mt-1 space-y-1">
                           <div>{selectedUser.personalInfo.address?.street}</div>
                           <div>
-                            {selectedUser.personalInfo.address?.city}, {selectedUser.personalInfo.address?.state} {selectedUser.personalInfo.address?.zipCode}
+                            {selectedUser.personalInfo.address?.city},{" "}
+                            {selectedUser.personalInfo.address?.state}{" "}
+                            {selectedUser.personalInfo.address?.zipCode}
                           </div>
-                          <div>{selectedUser.personalInfo.address?.country}</div>
+                          <div>
+                            {selectedUser.personalInfo.address?.country}
+                          </div>
                         </div>
                       </div>
                     </CardContent>
@@ -975,27 +1129,37 @@ export function UserProfileManager({ onUserSelect, selectedUserId }: UserProfile
                         <div className="space-y-4">
                           <div>
                             <Label>Account Level</Label>
-                            <div className="text-sm mt-1">Level {selectedUser.accountInfo.level}</div>
+                            <div className="text-sm mt-1">
+                              Level {selectedUser.accountInfo.level}
+                            </div>
                           </div>
 
                           <div>
                             <Label>VIP Status</Label>
                             <div className="text-sm mt-1">
-                              {selectedUser.accountInfo.vipStatus ? 'VIP Member' : 'Regular Member'}
+                              {selectedUser.accountInfo.vipStatus
+                                ? "VIP Member"
+                                : "Regular Member"}
                             </div>
                           </div>
 
                           <div>
                             <Label>Risk Assessment</Label>
-                            <Badge className={`mt-1 ${getRiskLevelColor(selectedUser.accountInfo.riskLevel)}`}>
-                              {selectedUser.accountInfo.riskLevel.toUpperCase()} RISK
+                            <Badge
+                              className={`mt-1 ${getRiskLevelColor(selectedUser.accountInfo.riskLevel)}`}
+                            >
+                              {selectedUser.accountInfo.riskLevel.toUpperCase()}{" "}
+                              RISK
                             </Badge>
                           </div>
 
                           <div>
                             <Label>Average Session Time</Label>
                             <div className="text-sm mt-1">
-                              {Math.round(selectedUser.accountInfo.averageSessionTime)} minutes
+                              {Math.round(
+                                selectedUser.accountInfo.averageSessionTime,
+                              )}{" "}
+                              minutes
                             </div>
                           </div>
                         </div>
@@ -1004,22 +1168,32 @@ export function UserProfileManager({ onUserSelect, selectedUserId }: UserProfile
                           <div>
                             <Label>Total Deposits</Label>
                             <div className="text-sm mt-1 text-green-500 font-medium">
-                              ${selectedUser.accountInfo.totalDeposits.toFixed(2)}
+                              $
+                              {selectedUser.accountInfo.totalDeposits.toFixed(
+                                2,
+                              )}
                             </div>
                           </div>
 
                           <div>
                             <Label>Total Withdrawals</Label>
                             <div className="text-sm mt-1 text-blue-500 font-medium">
-                              ${selectedUser.accountInfo.totalWithdrawals.toFixed(2)}
+                              $
+                              {selectedUser.accountInfo.totalWithdrawals.toFixed(
+                                2,
+                              )}
                             </div>
                           </div>
 
                           <div>
                             <Label>Net Position</Label>
-                            <div className={`text-sm mt-1 font-medium ${
-                              selectedUser.accountInfo.netPosition >= 0 ? 'text-green-500' : 'text-red-500'
-                            }`}>
+                            <div
+                              className={`text-sm mt-1 font-medium ${
+                                selectedUser.accountInfo.netPosition >= 0
+                                  ? "text-green-500"
+                                  : "text-red-500"
+                              }`}
+                            >
                               ${selectedUser.accountInfo.netPosition.toFixed(2)}
                             </div>
                           </div>
@@ -1027,7 +1201,10 @@ export function UserProfileManager({ onUserSelect, selectedUserId }: UserProfile
                           <div>
                             <Label>Lifetime Value</Label>
                             <div className="text-sm mt-1 font-medium">
-                              ${selectedUser.accountInfo.lifetimeValue.toFixed(2)}
+                              $
+                              {selectedUser.accountInfo.lifetimeValue.toFixed(
+                                2,
+                              )}
                             </div>
                           </div>
                         </div>
@@ -1063,27 +1240,35 @@ export function UserProfileManager({ onUserSelect, selectedUserId }: UserProfile
                     <CardContent>
                       <div className="space-y-4">
                         {selectedUser.documents.map((doc) => (
-                          <div key={doc.id} className="flex items-center justify-between p-4 border rounded-lg">
+                          <div
+                            key={doc.id}
+                            className="flex items-center justify-between p-4 border rounded-lg"
+                          >
                             <div className="flex items-center gap-3">
                               <FileText className="h-5 w-5 text-muted-foreground" />
                               <div>
                                 <div className="font-medium">
-                                  {doc.type.replace('_', ' ').replace(/\b\w/g, l => l.toUpperCase())}
+                                  {doc.type
+                                    .replace("_", " ")
+                                    .replace(/\b\w/g, (l) => l.toUpperCase())}
                                 </div>
                                 <div className="text-sm text-muted-foreground">
                                   {doc.filename}
                                 </div>
                                 <div className="text-xs text-muted-foreground">
-                                  Uploaded: {doc.uploadDate.toLocaleDateString()}
+                                  Uploaded:{" "}
+                                  {doc.uploadDate.toLocaleDateString()}
                                 </div>
                               </div>
                             </div>
                             <div className="flex items-center gap-2">
-                              <Badge 
+                              <Badge
                                 variant={
-                                  doc.status === 'approved' ? 'default' :
-                                  doc.status === 'rejected' ? 'destructive' :
-                                  'secondary'
+                                  doc.status === "approved"
+                                    ? "default"
+                                    : doc.status === "rejected"
+                                      ? "destructive"
+                                      : "secondary"
                                 }
                               >
                                 {doc.status}
@@ -1111,7 +1296,10 @@ export function UserProfileManager({ onUserSelect, selectedUserId }: UserProfile
                     <CardContent>
                       <div className="space-y-3">
                         {selectedUser.activityLog.map((log) => (
-                          <div key={log.id} className="flex items-start gap-3 p-3 border rounded-lg">
+                          <div
+                            key={log.id}
+                            className="flex items-start gap-3 p-3 border rounded-lg"
+                          >
                             <Activity className="h-4 w-4 mt-1 text-muted-foreground" />
                             <div className="flex-1">
                               <div className="flex items-center justify-between">
@@ -1141,7 +1329,9 @@ export function UserProfileManager({ onUserSelect, selectedUserId }: UserProfile
                     </CardHeader>
                     <CardContent className="space-y-4">
                       <div className="flex items-center justify-between">
-                        <Label htmlFor="email-notifications">Email Notifications</Label>
+                        <Label htmlFor="email-notifications">
+                          Email Notifications
+                        </Label>
                         <Switch
                           id="email-notifications"
                           checked={selectedUser.preferences.emailNotifications}
@@ -1150,7 +1340,9 @@ export function UserProfileManager({ onUserSelect, selectedUserId }: UserProfile
                       </div>
 
                       <div className="flex items-center justify-between">
-                        <Label htmlFor="sms-notifications">SMS Notifications</Label>
+                        <Label htmlFor="sms-notifications">
+                          SMS Notifications
+                        </Label>
                         <Switch
                           id="sms-notifications"
                           checked={selectedUser.preferences.smsNotifications}
@@ -1159,7 +1351,9 @@ export function UserProfileManager({ onUserSelect, selectedUserId }: UserProfile
                       </div>
 
                       <div className="flex items-center justify-between">
-                        <Label htmlFor="marketing-emails">Marketing Emails</Label>
+                        <Label htmlFor="marketing-emails">
+                          Marketing Emails
+                        </Label>
                         <Switch
                           id="marketing-emails"
                           checked={selectedUser.preferences.marketingEmails}
@@ -1178,28 +1372,36 @@ export function UserProfileManager({ onUserSelect, selectedUserId }: UserProfile
                         <div>
                           <Label>Daily Loss Limit</Label>
                           <div className="text-sm mt-1">
-                            ${selectedUser.preferences.responsibleGamingLimits.dailyLossLimit || 'Not set'}
+                            $
+                            {selectedUser.preferences.responsibleGamingLimits
+                              .dailyLossLimit || "Not set"}
                           </div>
                         </div>
 
                         <div>
                           <Label>Weekly Loss Limit</Label>
                           <div className="text-sm mt-1">
-                            ${selectedUser.preferences.responsibleGamingLimits.weeklyLossLimit || 'Not set'}
+                            $
+                            {selectedUser.preferences.responsibleGamingLimits
+                              .weeklyLossLimit || "Not set"}
                           </div>
                         </div>
 
                         <div>
                           <Label>Monthly Loss Limit</Label>
                           <div className="text-sm mt-1">
-                            ${selectedUser.preferences.responsibleGamingLimits.monthlyLossLimit || 'Not set'}
+                            $
+                            {selectedUser.preferences.responsibleGamingLimits
+                              .monthlyLossLimit || "Not set"}
                           </div>
                         </div>
 
                         <div>
                           <Label>Session Time Limit</Label>
                           <div className="text-sm mt-1">
-                            {selectedUser.preferences.responsibleGamingLimits.sessionTimeLimit || 'Not set'} minutes
+                            {selectedUser.preferences.responsibleGamingLimits
+                              .sessionTimeLimit || "Not set"}{" "}
+                            minutes
                           </div>
                         </div>
                       </div>

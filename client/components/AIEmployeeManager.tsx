@@ -92,7 +92,13 @@ interface AIEmployee {
   id: string;
   name: string;
   avatar: string;
-  role: "customer_support" | "game_host" | "vip_manager" | "security" | "analytics" | "content_moderator";
+  role:
+    | "customer_support"
+    | "game_host"
+    | "vip_manager"
+    | "security"
+    | "analytics"
+    | "content_moderator";
   status: "active" | "training" | "offline" | "maintenance";
   personality: {
     friendliness: number; // 1-10
@@ -149,9 +155,14 @@ interface AIEmployeeManagerProps {
   selectedEmployeeId?: string;
 }
 
-export function AIEmployeeManager({ onEmployeeSelect, selectedEmployeeId }: AIEmployeeManagerProps) {
+export function AIEmployeeManager({
+  onEmployeeSelect,
+  selectedEmployeeId,
+}: AIEmployeeManagerProps) {
   const [employees, setEmployees] = useState<AIEmployee[]>([]);
-  const [selectedEmployee, setSelectedEmployee] = useState<AIEmployee | null>(null);
+  const [selectedEmployee, setSelectedEmployee] = useState<AIEmployee | null>(
+    null,
+  );
   const [showCreateDialog, setShowCreateDialog] = useState(false);
   const [showTrainingDialog, setShowTrainingDialog] = useState(false);
   const [activeTab, setActiveTab] = useState("overview");
@@ -174,7 +185,7 @@ export function AIEmployeeManager({ onEmployeeSelect, selectedEmployeeId }: AIEm
 
   useEffect(() => {
     if (selectedEmployeeId) {
-      const employee = employees.find(e => e.id === selectedEmployeeId);
+      const employee = employees.find((e) => e.id === selectedEmployeeId);
       if (employee) {
         setSelectedEmployee(employee);
       }
@@ -215,20 +226,35 @@ export function AIEmployeeManager({ onEmployeeSelect, selectedEmployeeId }: AIEm
         schedule: {
           timezone: "EST",
           workingHours: { start: "09:00", end: "17:00" },
-          availableDays: ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday"],
+          availableDays: [
+            "Monday",
+            "Tuesday",
+            "Wednesday",
+            "Thursday",
+            "Friday",
+          ],
         },
         training: {
           currentLevel: 8,
           experience: 2340,
           skillPoints: 145,
-          completedCourses: ["Customer Service 101", "Conflict Resolution", "Payment Processing"],
+          completedCourses: [
+            "Customer Service 101",
+            "Conflict Resolution",
+            "Payment Processing",
+          ],
           certifications: ["Level 1 Support", "Payment Specialist"],
         },
         settings: {
           autoRespond: true,
-          escalationRules: ["Withdrawal > $500", "Account Locked", "Fraud Suspicion"],
+          escalationRules: [
+            "Withdrawal > $500",
+            "Account Locked",
+            "Fraud Suspicion",
+          ],
           maxConcurrentChats: 5,
-          customInstructions: "Always verify identity before discussing account details.",
+          customInstructions:
+            "Always verify identity before discussing account details.",
           knowledgeBase: ["FAQ", "Account Procedures", "Payment Methods"],
         },
         createdAt: new Date("2024-01-15"),
@@ -273,15 +299,28 @@ export function AIEmployeeManager({ onEmployeeSelect, selectedEmployeeId }: AIEm
           currentLevel: 9,
           experience: 3100,
           skillPoints: 189,
-          completedCourses: ["Game Rules Mastery", "Entertainment Hosting", "Player Engagement"],
+          completedCourses: [
+            "Game Rules Mastery",
+            "Entertainment Hosting",
+            "Player Engagement",
+          ],
           certifications: ["Game Host Pro", "Live Dealer Certified"],
         },
         settings: {
           autoRespond: true,
-          escalationRules: ["Cheating Accusation", "Technical Issues", "Player Disputes"],
+          escalationRules: [
+            "Cheating Accusation",
+            "Technical Issues",
+            "Player Disputes",
+          ],
           maxConcurrentChats: 3,
-          customInstructions: "Keep conversations fun and engaging while maintaining game integrity.",
-          knowledgeBase: ["Game Rules", "Odds & Probabilities", "Tournament Procedures"],
+          customInstructions:
+            "Keep conversations fun and engaging while maintaining game integrity.",
+          knowledgeBase: [
+            "Game Rules",
+            "Odds & Probabilities",
+            "Tournament Procedures",
+          ],
         },
         createdAt: new Date("2024-01-10"),
         lastActive: new Date(Date.now() - 30 * 60 * 1000),
@@ -303,7 +342,11 @@ export function AIEmployeeManager({ onEmployeeSelect, selectedEmployeeId }: AIEm
         },
         capabilities: {
           languages: ["English", "Italian", "Portuguese"],
-          specialties: ["VIP Services", "High Roller Support", "Exclusive Events"],
+          specialties: [
+            "VIP Services",
+            "High Roller Support",
+            "Exclusive Events",
+          ],
           responseTime: 500,
           accuracy: 98,
           learningRate: 91,
@@ -319,21 +362,38 @@ export function AIEmployeeManager({ onEmployeeSelect, selectedEmployeeId }: AIEm
         schedule: {
           timezone: "EST",
           workingHours: { start: "12:00", end: "20:00" },
-          availableDays: ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday"],
+          availableDays: [
+            "Monday",
+            "Tuesday",
+            "Wednesday",
+            "Thursday",
+            "Friday",
+            "Saturday",
+            "Sunday",
+          ],
         },
         training: {
           currentLevel: 10,
           experience: 4500,
           skillPoints: 234,
-          completedCourses: ["VIP Relations", "Luxury Service", "High-Value Customer Management"],
+          completedCourses: [
+            "VIP Relations",
+            "Luxury Service",
+            "High-Value Customer Management",
+          ],
           certifications: ["VIP Specialist", "Premium Service Excellence"],
         },
         settings: {
           autoRespond: false,
           escalationRules: ["VIP Complaint", "Large Withdrawal Request"],
           maxConcurrentChats: 2,
-          customInstructions: "Provide white-glove service with personal attention to detail.",
-          knowledgeBase: ["VIP Benefits", "Exclusive Offers", "Premium Services"],
+          customInstructions:
+            "Provide white-glove service with personal attention to detail.",
+          knowledgeBase: [
+            "VIP Benefits",
+            "Exclusive Offers",
+            "Premium Services",
+          ],
         },
         createdAt: new Date("2024-01-05"),
         lastActive: new Date(Date.now() - 15 * 60 * 1000),
@@ -355,7 +415,11 @@ export function AIEmployeeManager({ onEmployeeSelect, selectedEmployeeId }: AIEm
         },
         capabilities: {
           languages: ["English"],
-          specialties: ["Fraud Detection", "Account Security", "Risk Assessment"],
+          specialties: [
+            "Fraud Detection",
+            "Account Security",
+            "Risk Assessment",
+          ],
           responseTime: 300,
           accuracy: 99,
           learningRate: 95,
@@ -371,7 +435,15 @@ export function AIEmployeeManager({ onEmployeeSelect, selectedEmployeeId }: AIEm
         schedule: {
           timezone: "EST",
           workingHours: { start: "00:00", end: "23:59" },
-          availableDays: ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday"],
+          availableDays: [
+            "Monday",
+            "Tuesday",
+            "Wednesday",
+            "Thursday",
+            "Friday",
+            "Saturday",
+            "Sunday",
+          ],
         },
         training: {
           currentLevel: 6,
@@ -384,8 +456,13 @@ export function AIEmployeeManager({ onEmployeeSelect, selectedEmployeeId }: AIEm
           autoRespond: true,
           escalationRules: ["High Risk Transaction", "Multiple Failed Logins"],
           maxConcurrentChats: 10,
-          customInstructions: "Prioritize security over customer satisfaction when necessary.",
-          knowledgeBase: ["Security Procedures", "Fraud Patterns", "Risk Indicators"],
+          customInstructions:
+            "Prioritize security over customer satisfaction when necessary.",
+          knowledgeBase: [
+            "Security Procedures",
+            "Fraud Patterns",
+            "Risk Indicators",
+          ],
         },
         createdAt: new Date("2024-01-22"),
         lastActive: new Date(Date.now() - 2 * 60 * 60 * 1000),
@@ -476,38 +553,62 @@ export function AIEmployeeManager({ onEmployeeSelect, selectedEmployeeId }: AIEm
     setShowCreateDialog(false);
   };
 
-  const updateEmployeeStatus = (employeeId: string, status: AIEmployee["status"]) => {
-    setEmployees(prev => prev.map(emp => 
-      emp.id === employeeId ? { ...emp, status, lastActive: new Date() } : emp
-    ));
-    
+  const updateEmployeeStatus = (
+    employeeId: string,
+    status: AIEmployee["status"],
+  ) => {
+    setEmployees((prev) =>
+      prev.map((emp) =>
+        emp.id === employeeId
+          ? { ...emp, status, lastActive: new Date() }
+          : emp,
+      ),
+    );
+
     if (selectedEmployee?.id === employeeId) {
-      setSelectedEmployee(prev => prev ? { ...prev, status, lastActive: new Date() } : null);
+      setSelectedEmployee((prev) =>
+        prev ? { ...prev, status, lastActive: new Date() } : null,
+      );
     }
   };
 
   const trainEmployee = (employeeId: string, course: string) => {
-    setEmployees(prev => prev.map(emp => 
-      emp.id === employeeId 
-        ? { 
-            ...emp, 
-            training: {
-              ...emp.training,
-              completedCourses: [...emp.training.completedCourses, course],
-              experience: emp.training.experience + 100,
-              skillPoints: emp.training.skillPoints + 10,
-              currentLevel: emp.training.currentLevel + (emp.training.experience + 100 > emp.training.currentLevel * 500 ? 1 : 0)
+    setEmployees((prev) =>
+      prev.map((emp) =>
+        emp.id === employeeId
+          ? {
+              ...emp,
+              training: {
+                ...emp.training,
+                completedCourses: [...emp.training.completedCourses, course],
+                experience: emp.training.experience + 100,
+                skillPoints: emp.training.skillPoints + 10,
+                currentLevel:
+                  emp.training.currentLevel +
+                  (emp.training.experience + 100 >
+                  emp.training.currentLevel * 500
+                    ? 1
+                    : 0),
+              },
             }
-          }
-        : emp
-    ));
+          : emp,
+      ),
+    );
   };
 
   const getPerformanceColor = (value: number, reverse = false) => {
     if (reverse) {
-      return value < 30 ? "text-green-500" : value < 70 ? "text-yellow-500" : "text-red-500";
+      return value < 30
+        ? "text-green-500"
+        : value < 70
+          ? "text-yellow-500"
+          : "text-red-500";
     }
-    return value >= 80 ? "text-green-500" : value >= 60 ? "text-yellow-500" : "text-red-500";
+    return value >= 80
+      ? "text-green-500"
+      : value >= 60
+        ? "text-yellow-500"
+        : "text-red-500";
   };
 
   const handleEmployeeSelect = (employee: AIEmployee) => {
@@ -530,7 +631,10 @@ export function AIEmployeeManager({ onEmployeeSelect, selectedEmployeeId }: AIEm
             </p>
           </div>
           <div className="flex items-center gap-2">
-            <Button onClick={() => setShowCreateDialog(true)} className="btn-primary">
+            <Button
+              onClick={() => setShowCreateDialog(true)}
+              className="btn-primary"
+            >
               <Plus className="h-4 w-4 mr-2" />
               Create AI Employee
             </Button>
@@ -546,7 +650,9 @@ export function AIEmployeeManager({ onEmployeeSelect, selectedEmployeeId }: AIEm
           <Card>
             <CardContent className="p-4 text-center">
               <Bot className="h-6 w-6 mx-auto mb-2 text-blue-500" />
-              <div className="text-sm text-muted-foreground">Total Employees</div>
+              <div className="text-sm text-muted-foreground">
+                Total Employees
+              </div>
               <div className="text-2xl font-bold">{employees.length}</div>
             </CardContent>
           </Card>
@@ -556,7 +662,7 @@ export function AIEmployeeManager({ onEmployeeSelect, selectedEmployeeId }: AIEm
               <Activity className="h-6 w-6 mx-auto mb-2 text-green-500" />
               <div className="text-sm text-muted-foreground">Active Now</div>
               <div className="text-2xl font-bold text-green-500">
-                {employees.filter(e => e.status === "active").length}
+                {employees.filter((e) => e.status === "active").length}
               </div>
             </CardContent>
           </Card>
@@ -564,9 +670,14 @@ export function AIEmployeeManager({ onEmployeeSelect, selectedEmployeeId }: AIEm
           <Card>
             <CardContent className="p-4 text-center">
               <MessageSquare className="h-6 w-6 mx-auto mb-2 text-purple-500" />
-              <div className="text-sm text-muted-foreground">Conversations Today</div>
+              <div className="text-sm text-muted-foreground">
+                Conversations Today
+              </div>
               <div className="text-2xl font-bold text-purple-500">
-                {employees.reduce((sum, e) => sum + e.performance.conversationsToday, 0)}
+                {employees.reduce(
+                  (sum, e) => sum + e.performance.conversationsToday,
+                  0,
+                )}
               </div>
             </CardContent>
           </Card>
@@ -576,7 +687,12 @@ export function AIEmployeeManager({ onEmployeeSelect, selectedEmployeeId }: AIEm
               <Star className="h-6 w-6 mx-auto mb-2 text-gold" />
               <div className="text-sm text-muted-foreground">Avg Rating</div>
               <div className="text-2xl font-bold text-gold">
-                {(employees.reduce((sum, e) => sum + e.performance.averageRating, 0) / employees.length).toFixed(1)}
+                {(
+                  employees.reduce(
+                    (sum, e) => sum + e.performance.averageRating,
+                    0,
+                  ) / employees.length
+                ).toFixed(1)}
               </div>
             </CardContent>
           </Card>
@@ -585,8 +701,8 @@ export function AIEmployeeManager({ onEmployeeSelect, selectedEmployeeId }: AIEm
         {/* Employee Grid */}
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
           {employees.map((employee) => (
-            <Card 
-              key={employee.id} 
+            <Card
+              key={employee.id}
               className="cursor-pointer transition-all hover:shadow-lg hover:scale-105"
               onClick={() => handleEmployeeSelect(employee)}
             >
@@ -596,7 +712,9 @@ export function AIEmployeeManager({ onEmployeeSelect, selectedEmployeeId }: AIEm
                     <div className="text-3xl">{employee.avatar}</div>
                     <div>
                       <CardTitle className="text-lg">{employee.name}</CardTitle>
-                      <CardDescription>{roleLabels[employee.role]}</CardDescription>
+                      <CardDescription>
+                        {roleLabels[employee.role]}
+                      </CardDescription>
                     </div>
                   </div>
                   <Badge className={statusColors[employee.status]}>
@@ -617,13 +735,17 @@ export function AIEmployeeManager({ onEmployeeSelect, selectedEmployeeId }: AIEm
                   </div>
                   <div>
                     <div className="text-muted-foreground">Resolution</div>
-                    <div className={`font-semibold ${getPerformanceColor(employee.performance.resolutionRate)}`}>
+                    <div
+                      className={`font-semibold ${getPerformanceColor(employee.performance.resolutionRate)}`}
+                    >
                       {employee.performance.resolutionRate}%
                     </div>
                   </div>
                   <div>
                     <div className="text-muted-foreground">Chats Today</div>
-                    <div className="font-semibold">{employee.performance.conversationsToday}</div>
+                    <div className="font-semibold">
+                      {employee.performance.conversationsToday}
+                    </div>
                   </div>
                   <div>
                     <div className="text-muted-foreground">Level</div>
@@ -643,19 +765,22 @@ export function AIEmployeeManager({ onEmployeeSelect, selectedEmployeeId }: AIEm
                         onClick={(e) => {
                           e.stopPropagation();
                           updateEmployeeStatus(
-                            employee.id, 
-                            employee.status === "active" ? "offline" : "active"
+                            employee.id,
+                            employee.status === "active" ? "offline" : "active",
                           );
                         }}
                       >
-                        {employee.status === "active" ? 
-                          <Pause className="h-3 w-3" /> : 
+                        {employee.status === "active" ? (
+                          <Pause className="h-3 w-3" />
+                        ) : (
                           <Play className="h-3 w-3" />
-                        }
+                        )}
                       </Button>
                     </TooltipTrigger>
                     <TooltipContent>
-                      {employee.status === "active" ? "Set Offline" : "Set Active"}
+                      {employee.status === "active"
+                        ? "Set Offline"
+                        : "Set Active"}
                     </TooltipContent>
                   </Tooltip>
 
@@ -695,7 +820,8 @@ export function AIEmployeeManager({ onEmployeeSelect, selectedEmployeeId }: AIEm
 
                 {/* Status Indicator */}
                 <div className="text-xs text-muted-foreground">
-                  Last active: {employee.lastActive.toRelativeTimeString?.() || 
+                  Last active:{" "}
+                  {employee.lastActive.toRelativeTimeString?.() ||
                     `${Math.floor((Date.now() - employee.lastActive.getTime()) / 60000)}m ago`}
                 </div>
               </CardContent>
@@ -712,14 +838,16 @@ export function AIEmployeeManager({ onEmployeeSelect, selectedEmployeeId }: AIEm
                 Set up a new AI employee with custom personality and role
               </DialogDescription>
             </DialogHeader>
-            
+
             <div className="space-y-4">
               <div>
                 <Label htmlFor="name">Employee Name</Label>
                 <Input
                   id="name"
                   value={newEmployee.name}
-                  onChange={(e) => setNewEmployee({...newEmployee, name: e.target.value})}
+                  onChange={(e) =>
+                    setNewEmployee({ ...newEmployee, name: e.target.value })
+                  }
                   placeholder="Enter employee name"
                 />
               </div>
@@ -728,51 +856,70 @@ export function AIEmployeeManager({ onEmployeeSelect, selectedEmployeeId }: AIEm
                 <Label htmlFor="role">Role</Label>
                 <Select
                   value={newEmployee.role}
-                  onValueChange={(value) => setNewEmployee({...newEmployee, role: value as AIEmployee["role"]})}
+                  onValueChange={(value) =>
+                    setNewEmployee({
+                      ...newEmployee,
+                      role: value as AIEmployee["role"],
+                    })
+                  }
                 >
                   <SelectTrigger>
                     <SelectValue />
                   </SelectTrigger>
                   <SelectContent>
-                    <SelectItem value="customer_support">Customer Support</SelectItem>
+                    <SelectItem value="customer_support">
+                      Customer Support
+                    </SelectItem>
                     <SelectItem value="game_host">Game Host</SelectItem>
                     <SelectItem value="vip_manager">VIP Manager</SelectItem>
                     <SelectItem value="security">Security</SelectItem>
                     <SelectItem value="analytics">Analytics</SelectItem>
-                    <SelectItem value="content_moderator">Content Moderator</SelectItem>
+                    <SelectItem value="content_moderator">
+                      Content Moderator
+                    </SelectItem>
                   </SelectContent>
                 </Select>
               </div>
 
               <div className="space-y-3">
                 <Label>Personality Traits</Label>
-                
-                {Object.entries(newEmployee.personality).map(([trait, value]) => (
-                  <div key={trait} className="space-y-2">
-                    <div className="flex justify-between">
-                      <span className="text-sm capitalize">{trait}</span>
-                      <span className="text-sm font-medium">{value}/10</span>
+
+                {Object.entries(newEmployee.personality).map(
+                  ([trait, value]) => (
+                    <div key={trait} className="space-y-2">
+                      <div className="flex justify-between">
+                        <span className="text-sm capitalize">{trait}</span>
+                        <span className="text-sm font-medium">{value}/10</span>
+                      </div>
+                      <Slider
+                        value={[value]}
+                        onValueChange={(values) =>
+                          setNewEmployee({
+                            ...newEmployee,
+                            personality: {
+                              ...newEmployee.personality,
+                              [trait]: values[0],
+                            },
+                          })
+                        }
+                        max={10}
+                        min={1}
+                        step={1}
+                        className="w-full"
+                      />
                     </div>
-                    <Slider
-                      value={[value]}
-                      onValueChange={(values) => setNewEmployee({
-                        ...newEmployee,
-                        personality: { ...newEmployee.personality, [trait]: values[0] }
-                      })}
-                      max={10}
-                      min={1}
-                      step={1}
-                      className="w-full"
-                    />
-                  </div>
-                ))}
+                  ),
+                )}
               </div>
 
               <div className="flex gap-2 pt-4">
                 <Button onClick={createAIEmployee} className="flex-1">
                   Create Employee
                 </Button>
-                <Button variant="outline" onClick={() => setShowCreateDialog(false)}>
+                <Button
+                  variant="outline"
+                  onClick={() => setShowCreateDialog(false)}
+                >
                   Cancel
                 </Button>
               </div>
@@ -796,7 +943,8 @@ export function AIEmployeeManager({ onEmployeeSelect, selectedEmployeeId }: AIEm
                   <div className="text-3xl mb-2">{selectedEmployee.avatar}</div>
                   <div className="font-semibold">{selectedEmployee.name}</div>
                   <div className="text-sm text-muted-foreground">
-                    Level {selectedEmployee.training.currentLevel} • {selectedEmployee.training.experience} XP
+                    Level {selectedEmployee.training.currentLevel} •{" "}
+                    {selectedEmployee.training.experience} XP
                   </div>
                 </div>
 
@@ -804,9 +952,13 @@ export function AIEmployeeManager({ onEmployeeSelect, selectedEmployeeId }: AIEm
                   <div>
                     <div className="flex justify-between text-sm mb-1">
                       <span>Progress to Next Level</span>
-                      <span>{selectedEmployee.training.experience % 500}/500 XP</span>
+                      <span>
+                        {selectedEmployee.training.experience % 500}/500 XP
+                      </span>
                     </div>
-                    <Progress value={(selectedEmployee.training.experience % 500) / 5} />
+                    <Progress
+                      value={(selectedEmployee.training.experience % 500) / 5}
+                    />
                   </div>
 
                   <div>
@@ -817,39 +969,55 @@ export function AIEmployeeManager({ onEmployeeSelect, selectedEmployeeId }: AIEm
                         "Conflict Resolution",
                         "Customer Psychology",
                         "Technical Troubleshooting",
-                        "Sales Techniques"
-                      ].filter(course => !selectedEmployee.training.completedCourses.includes(course))
-                      .map(course => (
-                        <Button
-                          key={course}
-                          variant="outline"
-                          className="w-full justify-start"
-                          onClick={() => {
-                            trainEmployee(selectedEmployee.id, course);
-                            setShowTrainingDialog(false);
-                          }}
-                        >
-                          <GraduationCap className="h-4 w-4 mr-2" />
-                          {course}
-                          <Badge className="ml-auto">+100 XP</Badge>
-                        </Button>
-                      ))}
+                        "Sales Techniques",
+                      ]
+                        .filter(
+                          (course) =>
+                            !selectedEmployee.training.completedCourses.includes(
+                              course,
+                            ),
+                        )
+                        .map((course) => (
+                          <Button
+                            key={course}
+                            variant="outline"
+                            className="w-full justify-start"
+                            onClick={() => {
+                              trainEmployee(selectedEmployee.id, course);
+                              setShowTrainingDialog(false);
+                            }}
+                          >
+                            <GraduationCap className="h-4 w-4 mr-2" />
+                            {course}
+                            <Badge className="ml-auto">+100 XP</Badge>
+                          </Button>
+                        ))}
                     </div>
                   </div>
 
                   <div>
                     <Label>Completed Courses</Label>
                     <div className="mt-2 flex flex-wrap gap-1">
-                      {selectedEmployee.training.completedCourses.map(course => (
-                        <Badge key={course} variant="secondary" className="text-xs">
-                          {course}
-                        </Badge>
-                      ))}
+                      {selectedEmployee.training.completedCourses.map(
+                        (course) => (
+                          <Badge
+                            key={course}
+                            variant="secondary"
+                            className="text-xs"
+                          >
+                            {course}
+                          </Badge>
+                        ),
+                      )}
                     </div>
                   </div>
                 </div>
 
-                <Button variant="outline" onClick={() => setShowTrainingDialog(false)} className="w-full">
+                <Button
+                  variant="outline"
+                  onClick={() => setShowTrainingDialog(false)}
+                  className="w-full"
+                >
                   Close
                 </Button>
               </div>
@@ -859,7 +1027,10 @@ export function AIEmployeeManager({ onEmployeeSelect, selectedEmployeeId }: AIEm
 
         {/* Employee Details Dialog */}
         {selectedEmployee && (
-          <Dialog open={!!selectedEmployee} onOpenChange={() => setSelectedEmployee(null)}>
+          <Dialog
+            open={!!selectedEmployee}
+            onOpenChange={() => setSelectedEmployee(null)}
+          >
             <DialogContent className="max-w-4xl max-h-[90vh] overflow-y-auto">
               <DialogHeader>
                 <DialogTitle className="flex items-center gap-3">
@@ -872,7 +1043,8 @@ export function AIEmployeeManager({ onEmployeeSelect, selectedEmployeeId }: AIEm
                       </Badge>
                     </div>
                     <div className="text-sm text-muted-foreground font-normal">
-                      {roleLabels[selectedEmployee.role]} • Level {selectedEmployee.training.currentLevel}
+                      {roleLabels[selectedEmployee.role]} • Level{" "}
+                      {selectedEmployee.training.currentLevel}
                     </div>
                   </div>
                 </DialogTitle>
@@ -892,23 +1064,33 @@ export function AIEmployeeManager({ onEmployeeSelect, selectedEmployeeId }: AIEm
                     <Card>
                       <CardContent className="p-4 text-center">
                         <MessageSquare className="h-6 w-6 mx-auto mb-2 text-blue-500" />
-                        <div className="text-sm text-muted-foreground">Total Interactions</div>
-                        <div className="text-xl font-bold">{selectedEmployee.totalInteractions.toLocaleString()}</div>
+                        <div className="text-sm text-muted-foreground">
+                          Total Interactions
+                        </div>
+                        <div className="text-xl font-bold">
+                          {selectedEmployee.totalInteractions.toLocaleString()}
+                        </div>
                       </CardContent>
                     </Card>
 
                     <Card>
                       <CardContent className="p-4 text-center">
                         <TrendingUp className="h-6 w-6 mx-auto mb-2 text-green-500" />
-                        <div className="text-sm text-muted-foreground">Success Rate</div>
-                        <div className="text-xl font-bold text-green-500">{selectedEmployee.successRate}%</div>
+                        <div className="text-sm text-muted-foreground">
+                          Success Rate
+                        </div>
+                        <div className="text-xl font-bold text-green-500">
+                          {selectedEmployee.successRate}%
+                        </div>
                       </CardContent>
                     </Card>
 
                     <Card>
                       <CardContent className="p-4 text-center">
                         <Clock className="h-6 w-6 mx-auto mb-2 text-purple-500" />
-                        <div className="text-sm text-muted-foreground">Avg Response Time</div>
+                        <div className="text-sm text-muted-foreground">
+                          Avg Response Time
+                        </div>
                         <div className="text-xl font-bold text-purple-500">
                           {selectedEmployee.capabilities.responseTime}ms
                         </div>
@@ -924,33 +1106,47 @@ export function AIEmployeeManager({ onEmployeeSelect, selectedEmployeeId }: AIEm
                       <div>
                         <Label>Languages</Label>
                         <div className="flex flex-wrap gap-1 mt-1">
-                          {selectedEmployee.capabilities.languages.map(lang => (
-                            <Badge key={lang} variant="outline">{lang}</Badge>
-                          ))}
+                          {selectedEmployee.capabilities.languages.map(
+                            (lang) => (
+                              <Badge key={lang} variant="outline">
+                                {lang}
+                              </Badge>
+                            ),
+                          )}
                         </div>
                       </div>
 
                       <div>
                         <Label>Specialties</Label>
                         <div className="flex flex-wrap gap-1 mt-1">
-                          {selectedEmployee.capabilities.specialties.map(specialty => (
-                            <Badge key={specialty} variant="secondary">{specialty}</Badge>
-                          ))}
+                          {selectedEmployee.capabilities.specialties.map(
+                            (specialty) => (
+                              <Badge key={specialty} variant="secondary">
+                                {specialty}
+                              </Badge>
+                            ),
+                          )}
                         </div>
                       </div>
 
                       <div className="grid grid-cols-3 gap-4">
                         <div>
                           <Label>Accuracy</Label>
-                          <div className="text-lg font-semibold">{selectedEmployee.capabilities.accuracy}%</div>
+                          <div className="text-lg font-semibold">
+                            {selectedEmployee.capabilities.accuracy}%
+                          </div>
                         </div>
                         <div>
                           <Label>Learning Rate</Label>
-                          <div className="text-lg font-semibold">{selectedEmployee.capabilities.learningRate}%</div>
+                          <div className="text-lg font-semibold">
+                            {selectedEmployee.capabilities.learningRate}%
+                          </div>
                         </div>
                         <div>
                           <Label>Max Concurrent</Label>
-                          <div className="text-lg font-semibold">{selectedEmployee.settings.maxConcurrentChats}</div>
+                          <div className="text-lg font-semibold">
+                            {selectedEmployee.settings.maxConcurrentChats}
+                          </div>
                         </div>
                       </div>
                     </CardContent>
@@ -961,23 +1157,33 @@ export function AIEmployeeManager({ onEmployeeSelect, selectedEmployeeId }: AIEm
                   <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
                     <Card>
                       <CardContent className="p-4 text-center">
-                        <div className="text-sm text-muted-foreground">Today's Chats</div>
-                        <div className="text-2xl font-bold">{selectedEmployee.performance.conversationsToday}</div>
-                      </CardContent>
-                    </Card>
-
-                    <Card>
-                      <CardContent className="p-4 text-center">
-                        <div className="text-sm text-muted-foreground">Avg Rating</div>
-                        <div className="text-2xl font-bold text-gold">
-                          {selectedEmployee.performance.averageRating.toFixed(1)}
+                        <div className="text-sm text-muted-foreground">
+                          Today's Chats
+                        </div>
+                        <div className="text-2xl font-bold">
+                          {selectedEmployee.performance.conversationsToday}
                         </div>
                       </CardContent>
                     </Card>
 
                     <Card>
                       <CardContent className="p-4 text-center">
-                        <div className="text-sm text-muted-foreground">Resolution Rate</div>
+                        <div className="text-sm text-muted-foreground">
+                          Avg Rating
+                        </div>
+                        <div className="text-2xl font-bold text-gold">
+                          {selectedEmployee.performance.averageRating.toFixed(
+                            1,
+                          )}
+                        </div>
+                      </CardContent>
+                    </Card>
+
+                    <Card>
+                      <CardContent className="p-4 text-center">
+                        <div className="text-sm text-muted-foreground">
+                          Resolution Rate
+                        </div>
                         <div className="text-2xl font-bold text-green-500">
                           {selectedEmployee.performance.resolutionRate}%
                         </div>
@@ -986,7 +1192,9 @@ export function AIEmployeeManager({ onEmployeeSelect, selectedEmployeeId }: AIEm
 
                     <Card>
                       <CardContent className="p-4 text-center">
-                        <div className="text-sm text-muted-foreground">Uptime</div>
+                        <div className="text-sm text-muted-foreground">
+                          Uptime
+                        </div>
                         <div className="text-2xl font-bold text-blue-500">
                           {selectedEmployee.performance.uptime.toFixed(1)}%
                         </div>
@@ -1002,25 +1210,44 @@ export function AIEmployeeManager({ onEmployeeSelect, selectedEmployeeId }: AIEm
                       <div>
                         <div className="flex justify-between mb-2">
                           <span>Resolution Rate</span>
-                          <span className="font-semibold">{selectedEmployee.performance.resolutionRate}%</span>
+                          <span className="font-semibold">
+                            {selectedEmployee.performance.resolutionRate}%
+                          </span>
                         </div>
-                        <Progress value={selectedEmployee.performance.resolutionRate} />
+                        <Progress
+                          value={selectedEmployee.performance.resolutionRate}
+                        />
                       </div>
 
                       <div>
                         <div className="flex justify-between mb-2">
                           <span>Customer Satisfaction</span>
-                          <span className="font-semibold">{(selectedEmployee.performance.averageRating * 20).toFixed(0)}%</span>
+                          <span className="font-semibold">
+                            {(
+                              selectedEmployee.performance.averageRating * 20
+                            ).toFixed(0)}
+                            %
+                          </span>
                         </div>
-                        <Progress value={selectedEmployee.performance.averageRating * 20} />
+                        <Progress
+                          value={
+                            selectedEmployee.performance.averageRating * 20
+                          }
+                        />
                       </div>
 
                       <div>
                         <div className="flex justify-between mb-2">
                           <span>Escalation Rate (Lower is Better)</span>
-                          <span className="font-semibold">{selectedEmployee.performance.escalationRate}%</span>
+                          <span className="font-semibold">
+                            {selectedEmployee.performance.escalationRate}%
+                          </span>
                         </div>
-                        <Progress value={100 - selectedEmployee.performance.escalationRate} />
+                        <Progress
+                          value={
+                            100 - selectedEmployee.performance.escalationRate
+                          }
+                        />
                       </div>
                     </CardContent>
                   </Card>
@@ -1031,19 +1258,24 @@ export function AIEmployeeManager({ onEmployeeSelect, selectedEmployeeId }: AIEm
                     <CardHeader>
                       <CardTitle>Personality Profile</CardTitle>
                       <CardDescription>
-                        Personality traits that define this AI employee's interaction style
+                        Personality traits that define this AI employee's
+                        interaction style
                       </CardDescription>
                     </CardHeader>
                     <CardContent className="space-y-4">
-                      {Object.entries(selectedEmployee.personality).map(([trait, value]) => (
-                        <div key={trait} className="space-y-2">
-                          <div className="flex justify-between">
-                            <span className="capitalize font-medium">{trait}</span>
-                            <span className="text-sm">{value}/10</span>
+                      {Object.entries(selectedEmployee.personality).map(
+                        ([trait, value]) => (
+                          <div key={trait} className="space-y-2">
+                            <div className="flex justify-between">
+                              <span className="capitalize font-medium">
+                                {trait}
+                              </span>
+                              <span className="text-sm">{value}/10</span>
+                            </div>
+                            <Progress value={value * 10} />
                           </div>
-                          <Progress value={value * 10} />
-                        </div>
-                      ))}
+                        ),
+                      )}
                     </CardContent>
                   </Card>
                 </TabsContent>
@@ -1059,45 +1291,65 @@ export function AIEmployeeManager({ onEmployeeSelect, selectedEmployeeId }: AIEm
                           <div className="text-2xl font-bold text-purple-500">
                             {selectedEmployee.training.currentLevel}
                           </div>
-                          <div className="text-sm text-muted-foreground">Current Level</div>
+                          <div className="text-sm text-muted-foreground">
+                            Current Level
+                          </div>
                         </div>
                         <div className="text-center">
                           <div className="text-2xl font-bold text-blue-500">
                             {selectedEmployee.training.experience.toLocaleString()}
                           </div>
-                          <div className="text-sm text-muted-foreground">Experience Points</div>
+                          <div className="text-sm text-muted-foreground">
+                            Experience Points
+                          </div>
                         </div>
                         <div className="text-center">
                           <div className="text-2xl font-bold text-green-500">
                             {selectedEmployee.training.skillPoints}
                           </div>
-                          <div className="text-sm text-muted-foreground">Skill Points</div>
+                          <div className="text-sm text-muted-foreground">
+                            Skill Points
+                          </div>
                         </div>
                       </div>
 
                       <div>
                         <div className="flex justify-between mb-2">
                           <span>Progress to Next Level</span>
-                          <span>{selectedEmployee.training.experience % 500}/500 XP</span>
+                          <span>
+                            {selectedEmployee.training.experience % 500}/500 XP
+                          </span>
                         </div>
-                        <Progress value={(selectedEmployee.training.experience % 500) / 5} />
+                        <Progress
+                          value={
+                            (selectedEmployee.training.experience % 500) / 5
+                          }
+                        />
                       </div>
 
                       <div>
                         <Label>Completed Courses</Label>
                         <div className="flex flex-wrap gap-1 mt-2">
-                          {selectedEmployee.training.completedCourses.map(course => (
-                            <Badge key={course} variant="secondary">{course}</Badge>
-                          ))}
+                          {selectedEmployee.training.completedCourses.map(
+                            (course) => (
+                              <Badge key={course} variant="secondary">
+                                {course}
+                              </Badge>
+                            ),
+                          )}
                         </div>
                       </div>
 
                       <div>
                         <Label>Certifications</Label>
                         <div className="flex flex-wrap gap-1 mt-2">
-                          {selectedEmployee.training.certifications.map(cert => (
-                            <Badge key={cert} className="bg-gold text-black">{cert}</Badge>
-                          ))}
+                          {selectedEmployee.training.certifications.map(
+                            (cert) => (
+                              <Badge key={cert} className="bg-gold text-black">
+                                {cert}
+                              </Badge>
+                            ),
+                          )}
                         </div>
                       </div>
                     </CardContent>
@@ -1112,33 +1364,47 @@ export function AIEmployeeManager({ onEmployeeSelect, selectedEmployeeId }: AIEm
                     <CardContent className="space-y-4">
                       <div className="flex items-center justify-between">
                         <Label>Auto Respond</Label>
-                        <Switch checked={selectedEmployee.settings.autoRespond} disabled />
+                        <Switch
+                          checked={selectedEmployee.settings.autoRespond}
+                          disabled
+                        />
                       </div>
 
                       <div>
                         <Label>Working Hours</Label>
                         <div className="text-sm mt-1">
-                          {selectedEmployee.schedule.workingHours.start} - {selectedEmployee.schedule.workingHours.end} ({selectedEmployee.schedule.timezone})
+                          {selectedEmployee.schedule.workingHours.start} -{" "}
+                          {selectedEmployee.schedule.workingHours.end} (
+                          {selectedEmployee.schedule.timezone})
                         </div>
                       </div>
 
                       <div>
                         <Label>Available Days</Label>
                         <div className="flex flex-wrap gap-1 mt-1">
-                          {selectedEmployee.schedule.availableDays.map(day => (
-                            <Badge key={day} variant="outline">{day}</Badge>
-                          ))}
+                          {selectedEmployee.schedule.availableDays.map(
+                            (day) => (
+                              <Badge key={day} variant="outline">
+                                {day}
+                              </Badge>
+                            ),
+                          )}
                         </div>
                       </div>
 
                       <div>
                         <Label>Escalation Rules</Label>
                         <div className="space-y-1 mt-1">
-                          {selectedEmployee.settings.escalationRules.map((rule, index) => (
-                            <div key={index} className="text-sm p-2 bg-muted rounded">
-                              {rule}
-                            </div>
-                          ))}
+                          {selectedEmployee.settings.escalationRules.map(
+                            (rule, index) => (
+                              <div
+                                key={index}
+                                className="text-sm p-2 bg-muted rounded"
+                              >
+                                {rule}
+                              </div>
+                            ),
+                          )}
                         </div>
                       </div>
 

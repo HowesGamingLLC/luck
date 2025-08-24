@@ -77,7 +77,8 @@ export default function WalletEnhanced() {
 
   // Mock enhanced data
   const walletData = {
-    totalValue: (user?.balance.goldCoins || 0) * 0.01 + (user?.balance.sweepCoins || 0),
+    totalValue:
+      (user?.balance.goldCoins || 0) * 0.01 + (user?.balance.sweepCoins || 0),
     dayChange: 12.5,
     weekChange: -5.2,
     monthChange: 23.8,
@@ -122,7 +123,7 @@ export default function WalletEnhanced() {
       id: "1",
       type: "win",
       description: "Poker Tournament Win",
-      amount: 45.50,
+      amount: 45.5,
       timestamp: new Date(Date.now() - 30 * 60 * 1000),
       status: "completed",
     },
@@ -130,7 +131,7 @@ export default function WalletEnhanced() {
       id: "2",
       type: "withdrawal",
       description: "PayPal Withdrawal",
-      amount: -100.00,
+      amount: -100.0,
       timestamp: new Date(Date.now() - 2 * 60 * 60 * 1000),
       status: "processing",
     },
@@ -138,7 +139,7 @@ export default function WalletEnhanced() {
       id: "3",
       type: "bonus",
       description: "Daily Login Bonus",
-      amount: 5.00,
+      amount: 5.0,
       timestamp: new Date(Date.now() - 4 * 60 * 60 * 1000),
       status: "completed",
     },
@@ -164,7 +165,7 @@ export default function WalletEnhanced() {
     const diff = now.getTime() - date.getTime();
     const minutes = Math.floor(diff / 60000);
     const hours = Math.floor(diff / 3600000);
-    
+
     if (minutes < 60) return `${minutes}m ago`;
     if (hours < 24) return `${hours}h ago`;
     return date.toLocaleDateString();
@@ -198,7 +199,11 @@ export default function WalletEnhanced() {
               size="sm"
               onClick={() => setShowBalance(!showBalance)}
             >
-              {showBalance ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
+              {showBalance ? (
+                <EyeOff className="h-4 w-4" />
+              ) : (
+                <Eye className="h-4 w-4" />
+              )}
             </Button>
           </div>
         </div>
@@ -208,12 +213,16 @@ export default function WalletEnhanced() {
           {/* Gold Coins */}
           <Card className="glass border-gold/50 hover:border-gold transition-colors">
             <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-              <CardTitle className="text-sm font-medium text-gold">Gold Coins</CardTitle>
+              <CardTitle className="text-sm font-medium text-gold">
+                Gold Coins
+              </CardTitle>
               <Coins className="h-4 w-4 text-gold" />
             </CardHeader>
             <CardContent>
               <div className="text-3xl font-bold text-gold">
-                {showBalance ? (user?.balance.goldCoins.toLocaleString() || 0) : "••••••"}
+                {showBalance
+                  ? user?.balance.goldCoins.toLocaleString() || 0
+                  : "••••••"}
               </div>
               <p className="text-xs text-muted-foreground mt-2">
                 Fun Play Currency • Non-Withdrawable
@@ -228,12 +237,16 @@ export default function WalletEnhanced() {
           {/* Sweep Coins */}
           <Card className="glass border-teal/50 hover:border-teal transition-colors">
             <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-              <CardTitle className="text-sm font-medium text-teal">Sweep Coins</CardTitle>
+              <CardTitle className="text-sm font-medium text-teal">
+                Sweep Coins
+              </CardTitle>
               <Gem className="h-4 w-4 text-teal" />
             </CardHeader>
             <CardContent>
               <div className="text-3xl font-bold text-teal">
-                {showBalance ? (user?.balance.sweepCoins.toFixed(2) || "0.00") : "••••••"}
+                {showBalance
+                  ? user?.balance.sweepCoins.toFixed(2) || "0.00"
+                  : "••••••"}
               </div>
               <p className="text-xs text-muted-foreground mt-2">
                 Real Money Value • Withdrawable
@@ -248,19 +261,25 @@ export default function WalletEnhanced() {
           {/* Total Portfolio Value */}
           <Card className="glass border-purple/50 hover:border-purple transition-colors">
             <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-              <CardTitle className="text-sm font-medium text-purple">Portfolio Value</CardTitle>
+              <CardTitle className="text-sm font-medium text-purple">
+                Portfolio Value
+              </CardTitle>
               <BarChart3 className="h-4 w-4 text-purple" />
             </CardHeader>
             <CardContent>
               <div className="text-3xl font-bold text-purple">
-                {showBalance ? `$${walletData.totalValue.toFixed(2)}` : "••••••"}
+                {showBalance
+                  ? `$${walletData.totalValue.toFixed(2)}`
+                  : "••••••"}
               </div>
               <p className="text-xs text-muted-foreground mt-2">
                 Combined Asset Value
               </p>
               <div className="flex items-center gap-1 mt-2">
                 <TrendingUp className="h-3 w-3 text-green-500" />
-                <span className="text-xs text-green-500">+{walletData.monthChange}% this month</span>
+                <span className="text-xs text-green-500">
+                  +{walletData.monthChange}% this month
+                </span>
               </div>
             </CardContent>
           </Card>
@@ -268,7 +287,9 @@ export default function WalletEnhanced() {
           {/* Performance Score */}
           <Card className="glass border-green/50 hover:border-green transition-colors">
             <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-              <CardTitle className="text-sm font-medium text-green-500">Performance Score</CardTitle>
+              <CardTitle className="text-sm font-medium text-green-500">
+                Performance Score
+              </CardTitle>
               <Award className="h-4 w-4 text-green-500" />
             </CardHeader>
             <CardContent>
@@ -298,12 +319,15 @@ export default function WalletEnhanced() {
                       <Icon className={`h-5 w-5 ${stat.color}`} />
                     </div>
                     <div className="text-lg font-bold">{stat.value}</div>
-                    <div className="text-sm text-muted-foreground">{stat.label}</div>
-                    <Badge 
+                    <div className="text-sm text-muted-foreground">
+                      {stat.label}
+                    </div>
+                    <Badge
                       variant={stat.change >= 0 ? "default" : "secondary"}
                       className="mt-1 text-xs"
                     >
-                      {stat.change >= 0 ? "+" : ""}{stat.change}%
+                      {stat.change >= 0 ? "+" : ""}
+                      {stat.change}%
                     </Badge>
                   </div>
                 );
@@ -313,7 +337,11 @@ export default function WalletEnhanced() {
         </Card>
 
         {/* Main Content Tabs */}
-        <Tabs value={activeTab} onValueChange={setActiveTab} className="space-y-6">
+        <Tabs
+          value={activeTab}
+          onValueChange={setActiveTab}
+          className="space-y-6"
+        >
           <TabsList className="grid w-full grid-cols-6">
             <TabsTrigger value="overview">Overview</TabsTrigger>
             <TabsTrigger value="transactions">Transactions</TabsTrigger>
@@ -339,23 +367,40 @@ export default function WalletEnhanced() {
                 </CardHeader>
                 <CardContent className="space-y-3">
                   {recentActivity.map((activity) => (
-                    <div key={activity.id} className="flex items-center gap-3 p-3 border rounded-lg">
+                    <div
+                      key={activity.id}
+                      className="flex items-center gap-3 p-3 border rounded-lg"
+                    >
                       <div className="p-2 rounded-full bg-muted">
                         {getActivityIcon(activity.type)}
                       </div>
                       <div className="flex-1">
-                        <div className="font-medium">{activity.description}</div>
+                        <div className="font-medium">
+                          {activity.description}
+                        </div>
                         <div className="text-sm text-muted-foreground">
                           {formatTimeAgo(activity.timestamp)}
                         </div>
                       </div>
                       <div className="text-right">
-                        <div className={`font-semibold ${
-                          activity.amount > 0 ? "text-green-500" : "text-red-500"
-                        }`}>
-                          {activity.amount > 0 ? "+" : ""}${Math.abs(activity.amount).toFixed(2)}
+                        <div
+                          className={`font-semibold ${
+                            activity.amount > 0
+                              ? "text-green-500"
+                              : "text-red-500"
+                          }`}
+                        >
+                          {activity.amount > 0 ? "+" : ""}$
+                          {Math.abs(activity.amount).toFixed(2)}
                         </div>
-                        <Badge variant={activity.status === "completed" ? "default" : "secondary"} className="text-xs">
+                        <Badge
+                          variant={
+                            activity.status === "completed"
+                              ? "default"
+                              : "secondary"
+                          }
+                          className="text-xs"
+                        >
                           {activity.status}
                         </Badge>
                       </div>
@@ -383,24 +428,31 @@ export default function WalletEnhanced() {
                     <Target className="h-5 w-5 text-purple-500" />
                     Quick Actions
                   </CardTitle>
-                  <CardDescription>
-                    Common wallet operations
-                  </CardDescription>
+                  <CardDescription>Common wallet operations</CardDescription>
                 </CardHeader>
                 <CardContent className="grid grid-cols-2 gap-3">
                   <Button className="h-auto flex-col p-4 gap-2">
                     <ArrowUpRight className="h-5 w-5" />
                     <span>Withdraw</span>
                   </Button>
-                  <Button variant="outline" className="h-auto flex-col p-4 gap-2">
+                  <Button
+                    variant="outline"
+                    className="h-auto flex-col p-4 gap-2"
+                  >
                     <Plus className="h-5 w-5" />
                     <span>Add Payment</span>
                   </Button>
-                  <Button variant="outline" className="h-auto flex-col p-4 gap-2">
+                  <Button
+                    variant="outline"
+                    className="h-auto flex-col p-4 gap-2"
+                  >
                     <Settings className="h-5 w-5" />
                     <span>Limits</span>
                   </Button>
-                  <Button variant="outline" className="h-auto flex-col p-4 gap-2">
+                  <Button
+                    variant="outline"
+                    className="h-auto flex-col p-4 gap-2"
+                  >
                     <Shield className="h-5 w-5" />
                     <span>Security</span>
                   </Button>
@@ -413,9 +465,12 @@ export default function WalletEnhanced() {
           <TabsContent value="transactions" className="space-y-6">
             <div className="text-center py-8">
               <History className="h-12 w-12 mx-auto mb-4 text-muted-foreground" />
-              <h3 className="text-lg font-semibold mb-2">Advanced Transaction Management</h3>
+              <h3 className="text-lg font-semibold mb-2">
+                Advanced Transaction Management
+              </h3>
               <p className="text-muted-foreground mb-4">
-                Detailed transaction history with advanced filtering and search capabilities
+                Detailed transaction history with advanced filtering and search
+                capabilities
               </p>
               <Button asChild>
                 <Link to="/wallet">
@@ -555,20 +610,35 @@ export default function WalletEnhanced() {
               </CardHeader>
               <CardContent>
                 <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-                  <Button variant="outline" className="h-auto flex-col p-4 gap-2">
+                  <Button
+                    variant="outline"
+                    className="h-auto flex-col p-4 gap-2"
+                  >
                     <Download className="h-5 w-5" />
                     <span>Export CSV</span>
-                    <span className="text-xs text-muted-foreground">Transaction history</span>
+                    <span className="text-xs text-muted-foreground">
+                      Transaction history
+                    </span>
                   </Button>
-                  <Button variant="outline" className="h-auto flex-col p-4 gap-2">
+                  <Button
+                    variant="outline"
+                    className="h-auto flex-col p-4 gap-2"
+                  >
                     <FileText className="h-5 w-5" />
                     <span>Generate Report</span>
-                    <span className="text-xs text-muted-foreground">Monthly summary</span>
+                    <span className="text-xs text-muted-foreground">
+                      Monthly summary
+                    </span>
                   </Button>
-                  <Button variant="outline" className="h-auto flex-col p-4 gap-2">
+                  <Button
+                    variant="outline"
+                    className="h-auto flex-col p-4 gap-2"
+                  >
                     <Upload className="h-5 w-5" />
                     <span>Backup Settings</span>
-                    <span className="text-xs text-muted-foreground">Save preferences</span>
+                    <span className="text-xs text-muted-foreground">
+                      Save preferences
+                    </span>
                   </Button>
                 </div>
               </CardContent>

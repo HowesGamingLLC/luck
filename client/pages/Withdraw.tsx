@@ -135,23 +135,25 @@ export default function Withdraw() {
   };
 
   const canWithdraw = () => {
-    if (!user) return {
-      canWithdraw: false,
-      reason: "Not logged in",
-      details: "Please log in to your account to request withdrawals."
-    };
+    if (!user)
+      return {
+        canWithdraw: false,
+        reason: "Not logged in",
+        details: "Please log in to your account to request withdrawals.",
+      };
 
     if (user.kycStatus !== "approved") {
-      const kycMessage = user.kycStatus === "pending"
-        ? "Your KYC verification is being reviewed. Please wait for approval."
-        : user.kycStatus === "rejected"
-        ? "Your KYC verification was rejected. Please contact support."
-        : "Complete identity verification to enable withdrawals.";
+      const kycMessage =
+        user.kycStatus === "pending"
+          ? "Your KYC verification is being reviewed. Please wait for approval."
+          : user.kycStatus === "rejected"
+            ? "Your KYC verification was rejected. Please contact support."
+            : "Complete identity verification to enable withdrawals.";
 
       return {
         canWithdraw: false,
         reason: "KYC verification required",
-        details: kycMessage
+        details: kycMessage,
       };
     }
 
@@ -159,7 +161,7 @@ export default function Withdraw() {
       return {
         canWithdraw: false,
         reason: `Minimum withdrawal is ${minWithdrawal} SC`,
-        details: `You need at least ${minWithdrawal} Sweep Coins to request a withdrawal. You currently have ${availableBalance.toFixed(2)} SC.`
+        details: `You need at least ${minWithdrawal} Sweep Coins to request a withdrawal. You currently have ${availableBalance.toFixed(2)} SC.`,
       };
     }
 
@@ -329,11 +331,15 @@ export default function Withdraw() {
               <div className="space-y-3">
                 <div>
                   <strong>Withdrawal Requirements Not Met:</strong>
-                  <p className="mt-1 text-sm">{withdrawalEligibility.details}</p>
+                  <p className="mt-1 text-sm">
+                    {withdrawalEligibility.details}
+                  </p>
                 </div>
 
                 <div className="space-y-2">
-                  <h4 className="font-medium">To request withdrawals, you need:</h4>
+                  <h4 className="font-medium">
+                    To request withdrawals, you need:
+                  </h4>
                   <ul className="text-sm space-y-1 ml-4">
                     <li className="flex items-center gap-2">
                       {user?.kycStatus === "approved" ? (
@@ -421,7 +427,8 @@ export default function Withdraw() {
                   </div>
                   {availableBalance < minWithdrawal && (
                     <p className="text-xs text-red-500 mt-1">
-                      You need {(minWithdrawal - availableBalance).toFixed(2)} more SC to withdraw
+                      You need {(minWithdrawal - availableBalance).toFixed(2)}{" "}
+                      more SC to withdraw
                     </p>
                   )}
                 </div>

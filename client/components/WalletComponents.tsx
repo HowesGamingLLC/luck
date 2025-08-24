@@ -151,9 +151,9 @@ export function SpendingLimitsManager() {
   });
 
   const updateLimit = (id: string, updates: Partial<SpendingLimit>) => {
-    setLimits(prev => prev.map(limit => 
-      limit.id === id ? { ...limit, ...updates } : limit
-    ));
+    setLimits((prev) =>
+      prev.map((limit) => (limit.id === id ? { ...limit, ...updates } : limit)),
+    );
   };
 
   const addLimit = () => {
@@ -212,7 +212,9 @@ export function SpendingLimitsManager() {
               <div className="flex items-center gap-2">
                 <Switch
                   checked={limit.enabled}
-                  onCheckedChange={(enabled) => updateLimit(limit.id, { enabled })}
+                  onCheckedChange={(enabled) =>
+                    updateLimit(limit.id, { enabled })
+                  }
                 />
                 <Badge
                   variant={limit.enabled ? "default" : "secondary"}
@@ -229,14 +231,14 @@ export function SpendingLimitsManager() {
                   <span>Used: ${limit.currentUsed}</span>
                   <span>Limit: ${limit.amount}</span>
                 </div>
-                <Progress 
-                  value={(limit.currentUsed / limit.amount) * 100} 
+                <Progress
+                  value={(limit.currentUsed / limit.amount) * 100}
                   className={
-                    limit.currentUsed / limit.amount > 0.8 
+                    limit.currentUsed / limit.amount > 0.8
                       ? "bg-red-100 [&>div]:bg-red-500"
                       : limit.currentUsed / limit.amount > 0.6
-                      ? "bg-yellow-100 [&>div]:bg-yellow-500"
-                      : "bg-green-100 [&>div]:bg-green-500"
+                        ? "bg-yellow-100 [&>div]:bg-yellow-500"
+                        : "bg-green-100 [&>div]:bg-green-500"
                   }
                 />
                 <div className="text-xs text-muted-foreground">
@@ -261,7 +263,9 @@ export function SpendingLimitsManager() {
                 <Label>Limit Name</Label>
                 <Input
                   value={newLimit.name}
-                  onChange={(e) => setNewLimit({...newLimit, name: e.target.value})}
+                  onChange={(e) =>
+                    setNewLimit({ ...newLimit, name: e.target.value })
+                  }
                   placeholder="e.g., Weekend Gaming Budget"
                 />
               </div>
@@ -271,7 +275,9 @@ export function SpendingLimitsManager() {
                   <Label>Time Period</Label>
                   <Select
                     value={newLimit.type}
-                    onValueChange={(value) => setNewLimit({...newLimit, type: value as any})}
+                    onValueChange={(value) =>
+                      setNewLimit({ ...newLimit, type: value as any })
+                    }
                   >
                     <SelectTrigger>
                       <SelectValue />
@@ -288,7 +294,9 @@ export function SpendingLimitsManager() {
                   <Label>Category</Label>
                   <Select
                     value={newLimit.category}
-                    onValueChange={(value) => setNewLimit({...newLimit, category: value as any})}
+                    onValueChange={(value) =>
+                      setNewLimit({ ...newLimit, category: value as any })
+                    }
                   >
                     <SelectTrigger>
                       <SelectValue />
@@ -307,7 +315,9 @@ export function SpendingLimitsManager() {
                 <Input
                   type="number"
                   value={newLimit.amount}
-                  onChange={(e) => setNewLimit({...newLimit, amount: Number(e.target.value)})}
+                  onChange={(e) =>
+                    setNewLimit({ ...newLimit, amount: Number(e.target.value) })
+                  }
                   min="1"
                   step="0.01"
                 />
@@ -317,7 +327,10 @@ export function SpendingLimitsManager() {
                 <Button onClick={addLimit} className="flex-1">
                   Create Limit
                 </Button>
-                <Button variant="outline" onClick={() => setIsAddingLimit(false)}>
+                <Button
+                  variant="outline"
+                  onClick={() => setIsAddingLimit(false)}
+                >
                   Cancel
                 </Button>
               </div>
@@ -361,7 +374,9 @@ export function AutoWithdrawalSettings() {
           </div>
           <Switch
             checked={autoWithdrawal.enabled}
-            onCheckedChange={(enabled) => setAutoWithdrawal({...autoWithdrawal, enabled})}
+            onCheckedChange={(enabled) =>
+              setAutoWithdrawal({ ...autoWithdrawal, enabled })
+            }
           />
         </div>
 
@@ -372,10 +387,12 @@ export function AutoWithdrawalSettings() {
               <Input
                 type="number"
                 value={autoWithdrawal.threshold}
-                onChange={(e) => setAutoWithdrawal({
-                  ...autoWithdrawal, 
-                  threshold: Number(e.target.value)
-                })}
+                onChange={(e) =>
+                  setAutoWithdrawal({
+                    ...autoWithdrawal,
+                    threshold: Number(e.target.value),
+                  })
+                }
                 min="100"
                 step="0.01"
               />
@@ -390,16 +407,20 @@ export function AutoWithdrawalSettings() {
                 <Input
                   type="number"
                   value={autoWithdrawal.percentage}
-                  onChange={(e) => setAutoWithdrawal({
-                    ...autoWithdrawal, 
-                    percentage: Number(e.target.value)
-                  })}
+                  onChange={(e) =>
+                    setAutoWithdrawal({
+                      ...autoWithdrawal,
+                      percentage: Number(e.target.value),
+                    })
+                  }
                   min="1"
                   max="100"
                   step="1"
                   className="w-20"
                 />
-                <span className="text-sm text-muted-foreground">% of balance</span>
+                <span className="text-sm text-muted-foreground">
+                  % of balance
+                </span>
               </div>
             </div>
 
@@ -407,7 +428,9 @@ export function AutoWithdrawalSettings() {
               <Label>Payment Method</Label>
               <Select
                 value={autoWithdrawal.method}
-                onValueChange={(method) => setAutoWithdrawal({...autoWithdrawal, method})}
+                onValueChange={(method) =>
+                  setAutoWithdrawal({ ...autoWithdrawal, method })
+                }
               >
                 <SelectTrigger>
                   <SelectValue />
@@ -423,9 +446,15 @@ export function AutoWithdrawalSettings() {
             <Alert>
               <AlertTriangle className="h-4 w-4" />
               <AlertDescription className="text-sm">
-                <strong>Preview:</strong> When your balance reaches {autoWithdrawal.threshold} SC, 
-                {autoWithdrawal.percentage}% ({(autoWithdrawal.threshold * autoWithdrawal.percentage / 100).toFixed(2)} SC) 
-                will be automatically withdrawn to your {autoWithdrawal.method}.
+                <strong>Preview:</strong> When your balance reaches{" "}
+                {autoWithdrawal.threshold} SC,
+                {autoWithdrawal.percentage}% (
+                {(
+                  (autoWithdrawal.threshold * autoWithdrawal.percentage) /
+                  100
+                ).toFixed(2)}{" "}
+                SC) will be automatically withdrawn to your{" "}
+                {autoWithdrawal.method}.
               </AlertDescription>
             </Alert>
           </div>
@@ -509,14 +538,19 @@ export function WalletInsights() {
       </CardHeader>
       <CardContent className="space-y-4">
         {insights.map((insight) => (
-          <div key={insight.id} className={`p-4 border rounded-lg ${getSeverityColor(insight.severity)}`}>
+          <div
+            key={insight.id}
+            className={`p-4 border rounded-lg ${getSeverityColor(insight.severity)}`}
+          >
             <div className="flex items-start gap-3">
               <div className="p-2 rounded-full bg-white">
                 {getInsightIcon(insight.type)}
               </div>
               <div className="flex-1">
                 <h4 className="font-medium">{insight.title}</h4>
-                <p className="text-sm text-muted-foreground mb-2">{insight.description}</p>
+                <p className="text-sm text-muted-foreground mb-2">
+                  {insight.description}
+                </p>
                 {insight.recommendation && (
                   <p className="text-sm font-medium text-blue-600">
                     💡 {insight.recommendation}
@@ -527,7 +561,8 @@ export function WalletInsights() {
                 variant={insight.change >= 0 ? "default" : "secondary"}
                 className="text-xs"
               >
-                {insight.change >= 0 ? "+" : ""}{insight.change}%
+                {insight.change >= 0 ? "+" : ""}
+                {insight.change}%
               </Badge>
             </div>
           </div>
@@ -568,8 +603,8 @@ export function BalanceProtection() {
           </div>
           <Switch
             checked={protection.lowBalanceAlert}
-            onCheckedChange={(checked) => 
-              setProtection({...protection, lowBalanceAlert: checked})
+            onCheckedChange={(checked) =>
+              setProtection({ ...protection, lowBalanceAlert: checked })
             }
           />
         </div>
@@ -581,22 +616,26 @@ export function BalanceProtection() {
               <Input
                 type="number"
                 value={protection.threshold}
-                onChange={(e) => setProtection({
-                  ...protection, 
-                  threshold: Number(e.target.value)
-                })}
+                onChange={(e) =>
+                  setProtection({
+                    ...protection,
+                    threshold: Number(e.target.value),
+                  })
+                }
                 min="1"
                 step="0.01"
                 className="w-32"
               />
             </div>
-            
+
             <div className="flex items-center justify-between">
-              <span className="text-sm">Pause gaming when threshold reached</span>
+              <span className="text-sm">
+                Pause gaming when threshold reached
+              </span>
               <Switch
                 checked={protection.pauseGaming}
-                onCheckedChange={(checked) => 
-                  setProtection({...protection, pauseGaming: checked})
+                onCheckedChange={(checked) =>
+                  setProtection({ ...protection, pauseGaming: checked })
                 }
               />
             </div>
@@ -605,7 +644,7 @@ export function BalanceProtection() {
 
         <div className="border-t pt-4 space-y-3">
           <h4 className="font-medium">Notification Methods</h4>
-          
+
           <div className="flex items-center justify-between">
             <div className="flex items-center gap-2">
               <Mail className="h-4 w-4 text-blue-500" />
@@ -613,8 +652,8 @@ export function BalanceProtection() {
             </div>
             <Switch
               checked={protection.emailNotifications}
-              onCheckedChange={(checked) => 
-                setProtection({...protection, emailNotifications: checked})
+              onCheckedChange={(checked) =>
+                setProtection({ ...protection, emailNotifications: checked })
               }
             />
           </div>
@@ -626,8 +665,8 @@ export function BalanceProtection() {
             </div>
             <Switch
               checked={protection.smsNotifications}
-              onCheckedChange={(checked) => 
-                setProtection({...protection, smsNotifications: checked})
+              onCheckedChange={(checked) =>
+                setProtection({ ...protection, smsNotifications: checked })
               }
             />
           </div>
@@ -644,13 +683,13 @@ export function TransactionAnalytics() {
     totalTransactions: 47,
     totalVolume: 1256.75,
     avgTransactionSize: 26.74,
-    largestTransaction: 150.00,
+    largestTransaction: 150.0,
     winRate: 68,
-    netProfit: 234.50,
+    netProfit: 234.5,
     categories: [
       { name: "Winnings", value: 45, amount: 890.25 },
-      { name: "Withdrawals", value: 15, amount: -450.00 },
-      { name: "Bonuses", value: 25, amount: 125.50 },
+      { name: "Withdrawals", value: 15, amount: -450.0 },
+      { name: "Bonuses", value: 25, amount: 125.5 },
       { name: "Referrals", value: 15, amount: 78.25 },
     ],
   });
@@ -685,19 +724,29 @@ export function TransactionAnalytics() {
         {/* Summary Stats */}
         <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
           <div className="text-center p-3 border rounded-lg">
-            <div className="text-lg font-bold">{analytics.totalTransactions}</div>
-            <div className="text-xs text-muted-foreground">Total Transactions</div>
+            <div className="text-lg font-bold">
+              {analytics.totalTransactions}
+            </div>
+            <div className="text-xs text-muted-foreground">
+              Total Transactions
+            </div>
           </div>
           <div className="text-center p-3 border rounded-lg">
-            <div className="text-lg font-bold">${analytics.totalVolume.toFixed(2)}</div>
+            <div className="text-lg font-bold">
+              ${analytics.totalVolume.toFixed(2)}
+            </div>
             <div className="text-xs text-muted-foreground">Total Volume</div>
           </div>
           <div className="text-center p-3 border rounded-lg">
-            <div className="text-lg font-bold">${analytics.avgTransactionSize.toFixed(2)}</div>
+            <div className="text-lg font-bold">
+              ${analytics.avgTransactionSize.toFixed(2)}
+            </div>
             <div className="text-xs text-muted-foreground">Avg Size</div>
           </div>
           <div className="text-center p-3 border rounded-lg">
-            <div className="text-lg font-bold text-green-500">{analytics.winRate}%</div>
+            <div className="text-lg font-bold text-green-500">
+              {analytics.winRate}%
+            </div>
             <div className="text-xs text-muted-foreground">Win Rate</div>
           </div>
         </div>
@@ -709,20 +758,26 @@ export function TransactionAnalytics() {
             {analytics.categories.map((category, index) => (
               <div key={index} className="flex items-center justify-between">
                 <div className="flex items-center gap-2">
-                  <div className={`w-3 h-3 rounded-full ${
-                    index === 0 ? "bg-green-500" :
-                    index === 1 ? "bg-red-500" :
-                    index === 2 ? "bg-blue-500" : "bg-purple-500"
-                  }`} />
+                  <div
+                    className={`w-3 h-3 rounded-full ${
+                      index === 0
+                        ? "bg-green-500"
+                        : index === 1
+                          ? "bg-red-500"
+                          : index === 2
+                            ? "bg-blue-500"
+                            : "bg-purple-500"
+                    }`}
+                  />
                   <span className="text-sm">{category.name}</span>
                 </div>
                 <div className="text-right">
-                  <div className="text-sm font-medium">
-                    {category.value}%
-                  </div>
-                  <div className={`text-xs ${
-                    category.amount >= 0 ? "text-green-600" : "text-red-600"
-                  }`}>
+                  <div className="text-sm font-medium">{category.value}%</div>
+                  <div
+                    className={`text-xs ${
+                      category.amount >= 0 ? "text-green-600" : "text-red-600"
+                    }`}
+                  >
                     ${Math.abs(category.amount).toFixed(2)}
                   </div>
                 </div>

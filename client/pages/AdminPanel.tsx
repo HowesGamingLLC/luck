@@ -690,7 +690,8 @@ export default function AdminPanel() {
                   AI Employee Management
                 </CardTitle>
                 <CardDescription>
-                  Manage your AI-powered virtual employees and customer service team
+                  Manage your AI-powered virtual employees and customer service
+                  team
                 </CardDescription>
               </CardHeader>
               <CardContent>
@@ -700,8 +701,9 @@ export default function AdminPanel() {
                     AI Employee Management Center
                   </h3>
                   <p className="text-muted-foreground mb-6 max-w-md mx-auto">
-                    Access the comprehensive AI employee management system with training,
-                    analytics, and performance monitoring capabilities.
+                    Access the comprehensive AI employee management system with
+                    training, analytics, and performance monitoring
+                    capabilities.
                   </p>
                   <div className="space-y-4">
                     <div className="grid grid-cols-1 md:grid-cols-3 gap-4 text-sm">
@@ -710,7 +712,8 @@ export default function AdminPanel() {
                           🤖 Virtual Employees
                         </h4>
                         <p className="text-muted-foreground">
-                          Create and manage AI-powered customer service agents with unique personalities
+                          Create and manage AI-powered customer service agents
+                          with unique personalities
                         </p>
                       </div>
                       <div className="p-4 border rounded-lg">
@@ -718,7 +721,8 @@ export default function AdminPanel() {
                           📊 Performance Analytics
                         </h4>
                         <p className="text-muted-foreground">
-                          Monitor response times, customer satisfaction, and resolution rates
+                          Monitor response times, customer satisfaction, and
+                          resolution rates
                         </p>
                       </div>
                       <div className="p-4 border rounded-lg">
@@ -726,13 +730,16 @@ export default function AdminPanel() {
                           🎓 Training System
                         </h4>
                         <p className="text-muted-foreground">
-                          Advanced AI training modules to improve employee capabilities
+                          Advanced AI training modules to improve employee
+                          capabilities
                         </p>
                       </div>
                     </div>
                     <Button
                       className="btn-primary"
-                      onClick={() => window.open("/admin/ai-employees", "_blank")}
+                      onClick={() =>
+                        window.open("/admin/ai-employees", "_blank")
+                      }
                     >
                       <User className="h-4 w-4 mr-2" />
                       Open AI Employee Manager
