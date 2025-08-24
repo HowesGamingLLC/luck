@@ -67,6 +67,7 @@ import {
   History,
   Filter,
   Search,
+  FileText,
 } from "lucide-react";
 
 export default function WalletEnhanced() {
