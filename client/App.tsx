@@ -146,6 +146,14 @@ function App() {
                       }
                     />
                     <Route
+                      path="/wallet/enhanced"
+                      element={
+                        <AuthGuard>
+                          <WalletEnhanced />
+                        </AuthGuard>
+                      }
+                    />
+                    <Route
                       path="/settings"
                       element={
                         <AuthGuard>
