@@ -176,7 +176,7 @@ export default function SportsbookPage() {
           value: 3.5,
         },
         {
-          gameId: "game-2", 
+          gameId: "game-2",
           game: liveGames[1],
           type: "overunder",
           selection: "Over 218.5",
@@ -192,52 +192,67 @@ export default function SportsbookPage() {
           value: 0,
         },
       ],
-      wager: 1.00,
-      potentialPayout: 7.50,
+      wager: 1.0,
+      potentialPayout: 7.5,
       odds: 650,
       status: "pending",
       createdAt: new Date(Date.now() - 30 * 60 * 1000),
     },
   ];
 
-  const filteredGames = selectedSport === "all" 
-    ? liveGames 
-    : liveGames.filter(game => game.sport === selectedSport);
+  const filteredGames =
+    selectedSport === "all"
+      ? liveGames
+      : liveGames.filter((game) => game.sport === selectedSport);
 
-  const addBetSelection = (game: Game, type: "spread" | "overunder" | "moneyline", selection: string, odds: number, value: number) => {
+  const addBetSelection = (
+    game: Game,
+    type: "spread" | "overunder" | "moneyline",
+    selection: string,
+    odds: number,
+    value: number,
+  ) => {
     // Check if already selected
-    const existingIndex = betSelections.findIndex(bet => bet.gameId === game.id && bet.type === type);
-    
+    const existingIndex = betSelections.findIndex(
+      (bet) => bet.gameId === game.id && bet.type === type,
+    );
+
     if (existingIndex >= 0) {
       // Update existing selection
-      setBetSelections(prev => prev.map((bet, index) => 
-        index === existingIndex 
-          ? { gameId: game.id, game, type, selection, odds, value }
-          : bet
-      ));
+      setBetSelections((prev) =>
+        prev.map((bet, index) =>
+          index === existingIndex
+            ? { gameId: game.id, game, type, selection, odds, value }
+            : bet,
+        ),
+      );
     } else {
       // Add new selection (max 5)
       if (betSelections.length < 5) {
-        setBetSelections(prev => [...prev, { gameId: game.id, game, type, selection, odds, value }]);
+        setBetSelections((prev) => [
+          ...prev,
+          { gameId: game.id, game, type, selection, odds, value },
+        ]);
       }
     }
   };
 
   const removeBetSelection = (index: number) => {
-    setBetSelections(prev => prev.filter((_, i) => i !== index));
+    setBetSelections((prev) => prev.filter((_, i) => i !== index));
   };
 
   const calculateParlayOdds = (selections: BetSelection[]): number => {
     if (selections.length === 0) return 0;
-    
+
     let totalOdds = 1;
-    selections.forEach(selection => {
-      const decimal = selection.odds > 0 
-        ? (selection.odds / 100) + 1 
-        : (100 / Math.abs(selection.odds)) + 1;
+    selections.forEach((selection) => {
+      const decimal =
+        selection.odds > 0
+          ? selection.odds / 100 + 1
+          : 100 / Math.abs(selection.odds) + 1;
       totalOdds *= decimal;
     });
-    
+
     return Math.round((totalOdds - 1) * 100);
   };
 
@@ -269,8 +284,13 @@ export default function SportsbookPage() {
       createdAt: new Date(),
     };
 
-    setParlayTickets(prev => [newTicket, ...prev]);
-    updateBalance(CurrencyType.SC, -wagerAmount, `Parlay bet: ${betSelections.length} picks`, "wager");
+    setParlayTickets((prev) => [newTicket, ...prev]);
+    updateBalance(
+      CurrencyType.SC,
+      -wagerAmount,
+      `Parlay bet: ${betSelections.length} picks`,
+      "wager",
+    );
     setBetSelections([]);
     setWagerAmount(0.25);
   };
@@ -282,16 +302,24 @@ export default function SportsbookPage() {
   const getGameTime = (gameTime: Date): string => {
     const now = new Date();
     const diff = gameTime.getTime() - now.getTime();
-    
+
     if (diff < 0) return "Live";
     if (diff < 60 * 60 * 1000) return `${Math.floor(diff / (60 * 1000))}m`;
-    if (diff < 24 * 60 * 60 * 1000) return `${Math.floor(diff / (60 * 60 * 1000))}h`;
+    if (diff < 24 * 60 * 60 * 1000)
+      return `${Math.floor(diff / (60 * 60 * 1000))}h`;
     return `${Math.floor(diff / (24 * 60 * 60 * 1000))}d`;
   };
 
-  const isSelectionActive = (gameId: string, type: string, selection: string): boolean => {
-    return betSelections.some(bet => 
-      bet.gameId === gameId && bet.type === type && bet.selection === selection
+  const isSelectionActive = (
+    gameId: string,
+    type: string,
+    selection: string,
+  ): boolean => {
+    return betSelections.some(
+      (bet) =>
+        bet.gameId === gameId &&
+        bet.type === type &&
+        bet.selection === selection,
     );
   };
 
@@ -332,7 +360,7 @@ export default function SportsbookPage() {
               <Trophy className="h-6 w-6 mx-auto mb-2 text-success" />
               <div className="text-sm text-muted-foreground">Tickets Won</div>
               <div className="font-bold text-success">
-                {parlayTickets.filter(t => t.status === "won").length}
+                {parlayTickets.filter((t) => t.status === "won").length}
               </div>
             </CardContent>
           </Card>
@@ -341,9 +369,14 @@ export default function SportsbookPage() {
               <Target className="h-6 w-6 mx-auto mb-2 text-purple" />
               <div className="text-sm text-muted-foreground">Win Rate</div>
               <div className="font-bold text-purple">
-                {parlayTickets.length > 0 
-                  ? Math.round((parlayTickets.filter(t => t.status === "won").length / parlayTickets.length) * 100)
-                  : 0}%
+                {parlayTickets.length > 0
+                  ? Math.round(
+                      (parlayTickets.filter((t) => t.status === "won").length /
+                        parlayTickets.length) *
+                        100,
+                    )
+                  : 0}
+                %
               </div>
             </CardContent>
           </Card>
@@ -352,7 +385,10 @@ export default function SportsbookPage() {
               <Calculator className="h-6 w-6 mx-auto mb-2 text-gold" />
               <div className="text-sm text-muted-foreground">Total Wagered</div>
               <div className="font-bold text-gold">
-                {parlayTickets.reduce((sum, ticket) => sum + ticket.wager, 0).toFixed(2)} SC
+                {parlayTickets
+                  .reduce((sum, ticket) => sum + ticket.wager, 0)
+                  .toFixed(2)}{" "}
+                SC
               </div>
             </CardContent>
           </Card>
@@ -374,7 +410,9 @@ export default function SportsbookPage() {
                   return (
                     <Button
                       key={sport.id}
-                      variant={selectedSport === sport.id ? "default" : "outline"}
+                      variant={
+                        selectedSport === sport.id ? "default" : "outline"
+                      }
                       className="w-full justify-start"
                       onClick={() => setSelectedSport(sport.id)}
                     >
@@ -409,10 +447,14 @@ export default function SportsbookPage() {
                     {/* Selections */}
                     <div className="space-y-2 max-h-60 overflow-y-auto">
                       {betSelections.map((selection, index) => (
-                        <div key={index} className="p-2 bg-card/50 rounded text-xs">
+                        <div
+                          key={index}
+                          className="p-2 bg-card/50 rounded text-xs"
+                        >
                           <div className="flex items-center justify-between mb-1">
                             <span className="font-medium">
-                              {selection.game.awayTeam} @ {selection.game.homeTeam}
+                              {selection.game.awayTeam} @{" "}
+                              {selection.game.homeTeam}
                             </span>
                             <Button
                               size="sm"
@@ -439,7 +481,11 @@ export default function SportsbookPage() {
                             <Button
                               size="sm"
                               variant="outline"
-                              onClick={() => setWagerAmount(Math.max(0.25, wagerAmount - 0.25))}
+                              onClick={() =>
+                                setWagerAmount(
+                                  Math.max(0.25, wagerAmount - 0.25),
+                                )
+                              }
                             >
                               <Minus className="h-3 w-3" />
                             </Button>
@@ -447,7 +493,9 @@ export default function SportsbookPage() {
                               id="wager"
                               type="number"
                               value={wagerAmount}
-                              onChange={(e) => setWagerAmount(parseFloat(e.target.value) || 0)}
+                              onChange={(e) =>
+                                setWagerAmount(parseFloat(e.target.value) || 0)
+                              }
                               step="0.25"
                               min="0.25"
                               max="25.00"
@@ -456,7 +504,9 @@ export default function SportsbookPage() {
                             <Button
                               size="sm"
                               variant="outline"
-                              onClick={() => setWagerAmount(Math.min(25, wagerAmount + 0.25))}
+                              onClick={() =>
+                                setWagerAmount(Math.min(25, wagerAmount + 0.25))
+                              }
                             >
                               <Plus className="h-3 w-3" />
                             </Button>
@@ -467,12 +517,18 @@ export default function SportsbookPage() {
                         <div className="p-3 bg-purple/10 border border-purple/20 rounded">
                           <div className="flex justify-between text-sm mb-1">
                             <span>Parlay Odds:</span>
-                            <span className="font-bold">+{calculateParlayOdds(betSelections)}</span>
+                            <span className="font-bold">
+                              +{calculateParlayOdds(betSelections)}
+                            </span>
                           </div>
                           <div className="flex justify-between text-sm">
                             <span>Potential Payout:</span>
                             <span className="font-bold text-success">
-                              {calculatePayout(wagerAmount, calculateParlayOdds(betSelections)).toFixed(2)} SC
+                              {calculatePayout(
+                                wagerAmount,
+                                calculateParlayOdds(betSelections),
+                              ).toFixed(2)}{" "}
+                              SC
                             </span>
                           </div>
                         </div>
@@ -481,7 +537,10 @@ export default function SportsbookPage() {
                         <Button
                           className="w-full btn-primary"
                           onClick={placeParlayBet}
-                          disabled={!user || !canAffordWager(CurrencyType.SC, wagerAmount)}
+                          disabled={
+                            !user ||
+                            !canAffordWager(CurrencyType.SC, wagerAmount)
+                          }
                         >
                           <Target className="h-4 w-4 mr-2" />
                           Place Parlay Bet
@@ -493,7 +552,9 @@ export default function SportsbookPage() {
                       <div className="p-3 bg-yellow-500/10 border border-yellow-500/20 rounded">
                         <div className="flex items-center gap-2 text-yellow-600">
                           <AlertCircle className="h-4 w-4" />
-                          <span className="text-xs">Need {3 - betSelections.length} more picks</span>
+                          <span className="text-xs">
+                            Need {3 - betSelections.length} more picks
+                          </span>
                         </div>
                       </div>
                     )}
@@ -508,7 +569,9 @@ export default function SportsbookPage() {
             <Tabs defaultValue="games" className="space-y-6">
               <TabsList className="grid w-full grid-cols-2">
                 <TabsTrigger value="games">Live Games</TabsTrigger>
-                <TabsTrigger value="tickets">My Tickets ({parlayTickets.length})</TabsTrigger>
+                <TabsTrigger value="tickets">
+                  My Tickets ({parlayTickets.length})
+                </TabsTrigger>
               </TabsList>
 
               <TabsContent value="games">
@@ -529,11 +592,13 @@ export default function SportsbookPage() {
                               {getGameTime(game.gameTime)}
                             </CardDescription>
                           </div>
-                          <Badge 
+                          <Badge
                             className={
-                              game.status === "live" ? "bg-red-500 text-white" :
-                              game.status === "upcoming" ? "bg-green-500 text-white" :
-                              "bg-gray-500 text-white"
+                              game.status === "live"
+                                ? "bg-red-500 text-white"
+                                : game.status === "upcoming"
+                                  ? "bg-green-500 text-white"
+                                  : "bg-gray-500 text-white"
                             }
                           >
                             {game.status}
@@ -544,41 +609,69 @@ export default function SportsbookPage() {
                         <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
                           {/* Spread */}
                           <div>
-                            <Label className="text-sm font-medium mb-2 block">Point Spread</Label>
+                            <Label className="text-sm font-medium mb-2 block">
+                              Point Spread
+                            </Label>
                             <div className="space-y-2">
                               <Button
-                                variant={isSelectionActive(game.id, "spread", `${game.awayTeam} ${game.awaySpread > 0 ? '+' : ''}${game.awaySpread}`) ? "default" : "outline"}
+                                variant={
+                                  isSelectionActive(
+                                    game.id,
+                                    "spread",
+                                    `${game.awayTeam} ${game.awaySpread > 0 ? "+" : ""}${game.awaySpread}`,
+                                  )
+                                    ? "default"
+                                    : "outline"
+                                }
                                 size="sm"
                                 className="w-full text-xs"
-                                onClick={() => addBetSelection(
-                                  game, 
-                                  "spread", 
-                                  `${game.awayTeam} ${game.awaySpread > 0 ? '+' : ''}${game.awaySpread}`,
-                                  -110,
-                                  game.awaySpread
-                                )}
+                                onClick={() =>
+                                  addBetSelection(
+                                    game,
+                                    "spread",
+                                    `${game.awayTeam} ${game.awaySpread > 0 ? "+" : ""}${game.awaySpread}`,
+                                    -110,
+                                    game.awaySpread,
+                                  )
+                                }
                               >
                                 <div className="flex justify-between w-full">
-                                  <span>{game.awayTeam.split(' ').pop()}</span>
-                                  <span>{game.awaySpread > 0 ? '+' : ''}{game.awaySpread}</span>
+                                  <span>{game.awayTeam.split(" ").pop()}</span>
+                                  <span>
+                                    {game.awaySpread > 0 ? "+" : ""}
+                                    {game.awaySpread}
+                                  </span>
                                   <span>-110</span>
                                 </div>
                               </Button>
                               <Button
-                                variant={isSelectionActive(game.id, "spread", `${game.homeTeam} ${game.homeSpread > 0 ? '+' : ''}${game.homeSpread}`) ? "default" : "outline"}
+                                variant={
+                                  isSelectionActive(
+                                    game.id,
+                                    "spread",
+                                    `${game.homeTeam} ${game.homeSpread > 0 ? "+" : ""}${game.homeSpread}`,
+                                  )
+                                    ? "default"
+                                    : "outline"
+                                }
                                 size="sm"
                                 className="w-full text-xs"
-                                onClick={() => addBetSelection(
-                                  game, 
-                                  "spread", 
-                                  `${game.homeTeam} ${game.homeSpread > 0 ? '+' : ''}${game.homeSpread}`,
-                                  -110,
-                                  game.homeSpread
-                                )}
+                                onClick={() =>
+                                  addBetSelection(
+                                    game,
+                                    "spread",
+                                    `${game.homeTeam} ${game.homeSpread > 0 ? "+" : ""}${game.homeSpread}`,
+                                    -110,
+                                    game.homeSpread,
+                                  )
+                                }
                               >
                                 <div className="flex justify-between w-full">
-                                  <span>{game.homeTeam.split(' ').pop()}</span>
-                                  <span>{game.homeSpread > 0 ? '+' : ''}{game.homeSpread}</span>
+                                  <span>{game.homeTeam.split(" ").pop()}</span>
+                                  <span>
+                                    {game.homeSpread > 0 ? "+" : ""}
+                                    {game.homeSpread}
+                                  </span>
                                   <span>-110</span>
                                 </div>
                               </Button>
@@ -587,19 +680,31 @@ export default function SportsbookPage() {
 
                           {/* Over/Under */}
                           <div>
-                            <Label className="text-sm font-medium mb-2 block">Total Points</Label>
+                            <Label className="text-sm font-medium mb-2 block">
+                              Total Points
+                            </Label>
                             <div className="space-y-2">
                               <Button
-                                variant={isSelectionActive(game.id, "overunder", `Over ${game.overUnder}`) ? "default" : "outline"}
+                                variant={
+                                  isSelectionActive(
+                                    game.id,
+                                    "overunder",
+                                    `Over ${game.overUnder}`,
+                                  )
+                                    ? "default"
+                                    : "outline"
+                                }
                                 size="sm"
                                 className="w-full text-xs"
-                                onClick={() => addBetSelection(
-                                  game, 
-                                  "overunder", 
-                                  `Over ${game.overUnder}`,
-                                  game.overOdds,
-                                  game.overUnder
-                                )}
+                                onClick={() =>
+                                  addBetSelection(
+                                    game,
+                                    "overunder",
+                                    `Over ${game.overUnder}`,
+                                    game.overOdds,
+                                    game.overUnder,
+                                  )
+                                }
                               >
                                 <div className="flex justify-between w-full">
                                   <span>Over</span>
@@ -608,16 +713,26 @@ export default function SportsbookPage() {
                                 </div>
                               </Button>
                               <Button
-                                variant={isSelectionActive(game.id, "overunder", `Under ${game.overUnder}`) ? "default" : "outline"}
+                                variant={
+                                  isSelectionActive(
+                                    game.id,
+                                    "overunder",
+                                    `Under ${game.overUnder}`,
+                                  )
+                                    ? "default"
+                                    : "outline"
+                                }
                                 size="sm"
                                 className="w-full text-xs"
-                                onClick={() => addBetSelection(
-                                  game, 
-                                  "overunder", 
-                                  `Under ${game.overUnder}`,
-                                  game.underOdds,
-                                  game.overUnder
-                                )}
+                                onClick={() =>
+                                  addBetSelection(
+                                    game,
+                                    "overunder",
+                                    `Under ${game.overUnder}`,
+                                    game.underOdds,
+                                    game.overUnder,
+                                  )
+                                }
                               >
                                 <div className="flex justify-between w-full">
                                   <span>Under</span>
@@ -630,39 +745,61 @@ export default function SportsbookPage() {
 
                           {/* Moneyline */}
                           <div>
-                            <Label className="text-sm font-medium mb-2 block">Moneyline</Label>
+                            <Label className="text-sm font-medium mb-2 block">
+                              Moneyline
+                            </Label>
                             <div className="space-y-2">
                               <Button
-                                variant={isSelectionActive(game.id, "moneyline", game.awayTeam) ? "default" : "outline"}
+                                variant={
+                                  isSelectionActive(
+                                    game.id,
+                                    "moneyline",
+                                    game.awayTeam,
+                                  )
+                                    ? "default"
+                                    : "outline"
+                                }
                                 size="sm"
                                 className="w-full text-xs"
-                                onClick={() => addBetSelection(
-                                  game, 
-                                  "moneyline", 
-                                  game.awayTeam,
-                                  game.awayOdds,
-                                  0
-                                )}
+                                onClick={() =>
+                                  addBetSelection(
+                                    game,
+                                    "moneyline",
+                                    game.awayTeam,
+                                    game.awayOdds,
+                                    0,
+                                  )
+                                }
                               >
                                 <div className="flex justify-between w-full">
-                                  <span>{game.awayTeam.split(' ').pop()}</span>
+                                  <span>{game.awayTeam.split(" ").pop()}</span>
                                   <span>{formatOdds(game.awayOdds)}</span>
                                 </div>
                               </Button>
                               <Button
-                                variant={isSelectionActive(game.id, "moneyline", game.homeTeam) ? "default" : "outline"}
+                                variant={
+                                  isSelectionActive(
+                                    game.id,
+                                    "moneyline",
+                                    game.homeTeam,
+                                  )
+                                    ? "default"
+                                    : "outline"
+                                }
                                 size="sm"
                                 className="w-full text-xs"
-                                onClick={() => addBetSelection(
-                                  game, 
-                                  "moneyline", 
-                                  game.homeTeam,
-                                  game.homeOdds,
-                                  0
-                                )}
+                                onClick={() =>
+                                  addBetSelection(
+                                    game,
+                                    "moneyline",
+                                    game.homeTeam,
+                                    game.homeOdds,
+                                    0,
+                                  )
+                                }
                               >
                                 <div className="flex justify-between w-full">
-                                  <span>{game.homeTeam.split(' ').pop()}</span>
+                                  <span>{game.homeTeam.split(" ").pop()}</span>
                                   <span>{formatOdds(game.homeOdds)}</span>
                                 </div>
                               </Button>
@@ -681,7 +818,9 @@ export default function SportsbookPage() {
                     <Card className="glass">
                       <CardContent className="p-8 text-center">
                         <Target className="h-12 w-12 mx-auto mb-4 text-muted-foreground" />
-                        <h3 className="text-lg font-semibold mb-2">No Parlay Tickets</h3>
+                        <h3 className="text-lg font-semibold mb-2">
+                          No Parlay Tickets
+                        </h3>
                         <p className="text-muted-foreground">
                           Place your first parlay bet by selecting 3-5 games
                         </p>
@@ -696,11 +835,13 @@ export default function SportsbookPage() {
                               {ticket.selections.length}-Pick Parlay
                             </CardTitle>
                             <div className="flex items-center gap-2">
-                              <Badge 
+                              <Badge
                                 className={
-                                  ticket.status === "won" ? "bg-success text-white" :
-                                  ticket.status === "lost" ? "bg-destructive text-white" :
-                                  "bg-yellow-500 text-black"
+                                  ticket.status === "won"
+                                    ? "bg-success text-white"
+                                    : ticket.status === "lost"
+                                      ? "bg-destructive text-white"
+                                      : "bg-yellow-500 text-black"
                                 }
                               >
                                 {ticket.status}
@@ -716,14 +857,22 @@ export default function SportsbookPage() {
                             {/* Selections */}
                             <div className="space-y-1">
                               {ticket.selections.map((selection, index) => (
-                                <div key={index} className="text-xs p-2 bg-card/50 rounded">
+                                <div
+                                  key={index}
+                                  className="text-xs p-2 bg-card/50 rounded"
+                                >
                                   <div className="flex justify-between">
-                                    <span>{selection.game.awayTeam} @ {selection.game.homeTeam}</span>
+                                    <span>
+                                      {selection.game.awayTeam} @{" "}
+                                      {selection.game.homeTeam}
+                                    </span>
                                     <span className="text-muted-foreground">
                                       {formatOdds(selection.odds)}
                                     </span>
                                   </div>
-                                  <div className="text-muted-foreground">{selection.selection}</div>
+                                  <div className="text-muted-foreground">
+                                    {selection.selection}
+                                  </div>
                                 </div>
                               ))}
                             </div>
@@ -731,15 +880,25 @@ export default function SportsbookPage() {
                             {/* Ticket Summary */}
                             <div className="grid grid-cols-3 gap-4 pt-2 border-t">
                               <div className="text-center">
-                                <div className="text-xs text-muted-foreground">Wager</div>
-                                <div className="font-semibold">{ticket.wager.toFixed(2)} SC</div>
+                                <div className="text-xs text-muted-foreground">
+                                  Wager
+                                </div>
+                                <div className="font-semibold">
+                                  {ticket.wager.toFixed(2)} SC
+                                </div>
                               </div>
                               <div className="text-center">
-                                <div className="text-xs text-muted-foreground">Odds</div>
-                                <div className="font-semibold">+{ticket.odds}</div>
+                                <div className="text-xs text-muted-foreground">
+                                  Odds
+                                </div>
+                                <div className="font-semibold">
+                                  +{ticket.odds}
+                                </div>
                               </div>
                               <div className="text-center">
-                                <div className="text-xs text-muted-foreground">Payout</div>
+                                <div className="text-xs text-muted-foreground">
+                                  Payout
+                                </div>
                                 <div className="font-semibold text-success">
                                   {ticket.potentialPayout.toFixed(2)} SC
                                 </div>
@@ -767,19 +926,26 @@ export default function SportsbookPage() {
               </CardHeader>
               <CardContent className="space-y-3 text-sm">
                 <div className="p-3 bg-blue-500/10 border border-blue-500/20 rounded">
-                  <div className="font-medium text-blue-400 mb-1">How to Play</div>
+                  <div className="font-medium text-blue-400 mb-1">
+                    How to Play
+                  </div>
                   <p className="text-muted-foreground text-xs">
-                    Pick 3, 4, or 5 games. All picks must win for the parlay to pay out.
+                    Pick 3, 4, or 5 games. All picks must win for the parlay to
+                    pay out.
                   </p>
                 </div>
                 <div className="p-3 bg-green-500/10 border border-green-500/20 rounded">
-                  <div className="font-medium text-green-400 mb-1">Higher Risk, Higher Reward</div>
+                  <div className="font-medium text-green-400 mb-1">
+                    Higher Risk, Higher Reward
+                  </div>
                   <p className="text-muted-foreground text-xs">
                     More picks = bigger payouts but lower chance of winning.
                   </p>
                 </div>
                 <div className="p-3 bg-purple-500/10 border border-purple-500/20 rounded">
-                  <div className="font-medium text-purple-400 mb-1">SC Only</div>
+                  <div className="font-medium text-purple-400 mb-1">
+                    SC Only
+                  </div>
                   <p className="text-muted-foreground text-xs">
                     Sportsbook bets use Sweep Coins only. Minimum bet: 0.25 SC
                   </p>
@@ -830,23 +996,35 @@ export default function SportsbookPage() {
                 <div className="text-sm">
                   <div className="flex justify-between items-center mb-1">
                     <span className="font-medium">Parlay_King***</span>
-                    <span className="text-success font-semibold">+47.50 SC</span>
+                    <span className="text-success font-semibold">
+                      +47.50 SC
+                    </span>
                   </div>
-                  <p className="text-muted-foreground text-xs">5-Pick Parlay • 2h ago</p>
+                  <p className="text-muted-foreground text-xs">
+                    5-Pick Parlay • 2h ago
+                  </p>
                 </div>
                 <div className="text-sm">
                   <div className="flex justify-between items-center mb-1">
                     <span className="font-medium">Sports_Pro***</span>
-                    <span className="text-success font-semibold">+23.75 SC</span>
+                    <span className="text-success font-semibold">
+                      +23.75 SC
+                    </span>
                   </div>
-                  <p className="text-muted-foreground text-xs">4-Pick Parlay • 5h ago</p>
+                  <p className="text-muted-foreground text-xs">
+                    4-Pick Parlay • 5h ago
+                  </p>
                 </div>
                 <div className="text-sm">
                   <div className="flex justify-between items-center mb-1">
                     <span className="font-medium">Lucky_Bet***</span>
-                    <span className="text-success font-semibold">+12.50 SC</span>
+                    <span className="text-success font-semibold">
+                      +12.50 SC
+                    </span>
                   </div>
-                  <p className="text-muted-foreground text-xs">3-Pick Parlay • 1d ago</p>
+                  <p className="text-muted-foreground text-xs">
+                    3-Pick Parlay • 1d ago
+                  </p>
                 </div>
               </CardContent>
             </Card>

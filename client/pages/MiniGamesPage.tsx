@@ -62,15 +62,17 @@ interface GameResult {
 export default function MiniGamesPage() {
   const { user, canAffordWager, updateBalance } = useCurrency();
   const [selectedGame, setSelectedGame] = useState<string>("crash");
-  const [selectedCurrency, setSelectedCurrency] = useState<CurrencyType>(CurrencyType.GC);
+  const [selectedCurrency, setSelectedCurrency] = useState<CurrencyType>(
+    CurrencyType.GC,
+  );
   const [betAmount, setBetAmount] = useState<number>(1);
   const [gameActive, setGameActive] = useState(false);
   const [gameResult, setGameResult] = useState<GameResult | null>(null);
-  
+
   // Crash game state
-  const [crashMultiplier, setCrashMultiplier] = useState<number>(1.00);
+  const [crashMultiplier, setCrashMultiplier] = useState<number>(1.0);
   const [crashedAt, setCrashedAt] = useState<number | null>(null);
-  const [cashOutAt, setCashOutAt] = useState<number>(2.00);
+  const [cashOutAt, setCashOutAt] = useState<number>(2.0);
   const [hasCashedOut, setHasCashedOut] = useState(false);
 
   // Dice game state
@@ -84,7 +86,9 @@ export default function MiniGamesPage() {
 
   // Mines state
   const [mineField, setMineField] = useState<boolean[]>(Array(25).fill(false));
-  const [revealedCells, setRevealedCells] = useState<boolean[]>(Array(25).fill(false));
+  const [revealedCells, setRevealedCells] = useState<boolean[]>(
+    Array(25).fill(false),
+  );
   const [minesCount, setMinesCount] = useState<number>(5);
   const [safeRevealed, setSafeRevealed] = useState<number>(0);
 
@@ -96,7 +100,7 @@ export default function MiniGamesPage() {
       icon: TrendingUp,
       type: "crash",
       minBet: { gc: 1, sc: 0.01 },
-      maxBet: { gc: 1000, sc: 10.00 },
+      maxBet: { gc: 1000, sc: 10.0 },
       maxMultiplier: 1000,
       difficulty: "Medium",
       players: 234,
@@ -108,7 +112,7 @@ export default function MiniGamesPage() {
       icon: Dice6,
       type: "dice",
       minBet: { gc: 1, sc: 0.01 },
-      maxBet: { gc: 500, sc: 5.00 },
+      maxBet: { gc: 500, sc: 5.0 },
       maxMultiplier: 99,
       difficulty: "Easy",
       players: 156,
@@ -120,7 +124,7 @@ export default function MiniGamesPage() {
       icon: Circle,
       type: "plinko",
       minBet: { gc: 1, sc: 0.01 },
-      maxBet: { gc: 100, sc: 1.00 },
+      maxBet: { gc: 100, sc: 1.0 },
       maxMultiplier: 1000,
       difficulty: "Easy",
       players: 89,
@@ -133,7 +137,7 @@ export default function MiniGamesPage() {
       icon: Square,
       type: "mines",
       minBet: { gc: 1, sc: 0.01 },
-      maxBet: { gc: 200, sc: 2.00 },
+      maxBet: { gc: 200, sc: 2.0 },
       maxMultiplier: 100,
       difficulty: "Hard",
       players: 67,
@@ -145,7 +149,7 @@ export default function MiniGamesPage() {
       icon: Target,
       type: "keno",
       minBet: { gc: 1, sc: 0.01 },
-      maxBet: { gc: 100, sc: 1.00 },
+      maxBet: { gc: 100, sc: 1.0 },
       maxMultiplier: 1000,
       difficulty: "Medium",
       players: 123,
@@ -157,20 +161,45 @@ export default function MiniGamesPage() {
       icon: Circle,
       type: "wheel",
       minBet: { gc: 1, sc: 0.01 },
-      maxBet: { gc: 100, sc: 1.00 },
+      maxBet: { gc: 100, sc: 1.0 },
       maxMultiplier: 50,
       difficulty: "Easy",
       players: 178,
     },
   ];
 
-  const currentGame = miniGames.find(game => game.id === selectedGame) || miniGames[0];
+  const currentGame =
+    miniGames.find((game) => game.id === selectedGame) || miniGames[0];
 
   const recentWins = [
-    { player: "MiniGamer***", game: "Crash", amount: "47.50 SC", multiplier: "95.0x", time: "2m ago" },
-    { player: "LuckyDice***", game: "Dice", amount: "23.75 SC", multiplier: "47.5x", time: "5m ago" },
-    { player: "PlinkoKing***", game: "Plinko", amount: "125.00 SC", multiplier: "250.0x", time: "8m ago" },
-    { player: "MineHunter***", game: "Mines", amount: "88.88 SC", multiplier: "177.8x", time: "12m ago" },
+    {
+      player: "MiniGamer***",
+      game: "Crash",
+      amount: "47.50 SC",
+      multiplier: "95.0x",
+      time: "2m ago",
+    },
+    {
+      player: "LuckyDice***",
+      game: "Dice",
+      amount: "23.75 SC",
+      multiplier: "47.5x",
+      time: "5m ago",
+    },
+    {
+      player: "PlinkoKing***",
+      game: "Plinko",
+      amount: "125.00 SC",
+      multiplier: "250.0x",
+      time: "8m ago",
+    },
+    {
+      player: "MineHunter***",
+      game: "Mines",
+      amount: "88.88 SC",
+      multiplier: "177.8x",
+      time: "12m ago",
+    },
   ];
 
   // Crash Game Logic
@@ -181,24 +210,24 @@ export default function MiniGamesPage() {
     }
 
     setGameActive(true);
-    setCrashMultiplier(1.00);
+    setCrashMultiplier(1.0);
     setCrashedAt(null);
     setHasCashedOut(false);
     updateBalance(selectedCurrency, -betAmount, "Crash game bet", "wager");
 
     // Simulate crash multiplier increasing
     const interval = setInterval(() => {
-      setCrashMultiplier(prev => {
+      setCrashMultiplier((prev) => {
         const newMultiplier = prev + 0.01;
-        
+
         // Random crash point between 1.01x and 50x
         const crashPoint = 1.01 + Math.random() * Math.random() * 49;
-        
+
         if (newMultiplier >= crashPoint) {
           clearInterval(interval);
           setCrashedAt(newMultiplier);
           setGameActive(false);
-          
+
           if (!hasCashedOut) {
             setGameResult({
               win: false,
@@ -209,7 +238,7 @@ export default function MiniGamesPage() {
           }
           return newMultiplier;
         }
-        
+
         return newMultiplier;
       });
     }, 100);
@@ -220,7 +249,12 @@ export default function MiniGamesPage() {
       setHasCashedOut(true);
       setGameActive(false);
       const winAmount = betAmount * crashMultiplier;
-      updateBalance(selectedCurrency, winAmount, `Crash cashout at ${crashMultiplier.toFixed(2)}x`, "win");
+      updateBalance(
+        selectedCurrency,
+        winAmount,
+        `Crash cashout at ${crashMultiplier.toFixed(2)}x`,
+        "win",
+      );
       setGameResult({
         win: true,
         amount: winAmount,
@@ -241,8 +275,9 @@ export default function MiniGamesPage() {
     const roll = Math.floor(Math.random() * 100) + 1;
     setDiceRoll(roll);
 
-    const won = (diceOver && roll > diceTarget) || (!diceOver && roll < diceTarget);
-    
+    const won =
+      (diceOver && roll > diceTarget) || (!diceOver && roll < diceTarget);
+
     if (won) {
       const winChance = diceOver ? (100 - diceTarget) / 100 : diceTarget / 100;
       const multiplier = 0.99 / winChance; // 99% RTP
@@ -276,15 +311,22 @@ export default function MiniGamesPage() {
 
     // Simulate ball dropping
     setTimeout(() => {
-      const multipliers = [1000, 130, 26, 9, 4, 2, 1.5, 1.5, 2, 4, 9, 26, 130, 1000];
+      const multipliers = [
+        1000, 130, 26, 9, 4, 2, 1.5, 1.5, 2, 4, 9, 26, 130, 1000,
+      ];
       const slot = Math.floor(Math.random() * multipliers.length);
       const multiplier = multipliers[slot];
-      
+
       setPlinkoResult(slot);
       setPlinkoDropping(false);
-      
+
       const winAmount = betAmount * multiplier;
-      updateBalance(selectedCurrency, winAmount, `Plinko win: ${multiplier}x`, "win");
+      updateBalance(
+        selectedCurrency,
+        winAmount,
+        `Plinko win: ${multiplier}x`,
+        "win",
+      );
       setGameResult({
         win: multiplier > 1,
         amount: winAmount,
@@ -298,15 +340,15 @@ export default function MiniGamesPage() {
   const initializeMines = () => {
     const newField = Array(25).fill(false);
     const minePositions = new Set<number>();
-    
+
     while (minePositions.size < minesCount) {
       minePositions.add(Math.floor(Math.random() * 25));
     }
-    
-    minePositions.forEach(pos => {
+
+    minePositions.forEach((pos) => {
       newField[pos] = true;
     });
-    
+
     setMineField(newField);
     setRevealedCells(Array(25).fill(false));
     setSafeRevealed(0);
@@ -332,15 +374,20 @@ export default function MiniGamesPage() {
       // Safe cell
       const newSafeRevealed = safeRevealed + 1;
       setSafeRevealed(newSafeRevealed);
-      
+
       // Calculate current multiplier
       const multiplier = Math.pow(1.2, newSafeRevealed);
-      
+
       if (newSafeRevealed === 25 - minesCount) {
         // All safe cells revealed
         setGameActive(false);
         const winAmount = betAmount * multiplier;
-        updateBalance(selectedCurrency, winAmount, `Mines complete: ${multiplier.toFixed(2)}x`, "win");
+        updateBalance(
+          selectedCurrency,
+          winAmount,
+          `Mines complete: ${multiplier.toFixed(2)}x`,
+          "win",
+        );
         setGameResult({
           win: true,
           amount: winAmount,
@@ -367,7 +414,12 @@ export default function MiniGamesPage() {
       setGameActive(false);
       const multiplier = Math.pow(1.2, safeRevealed);
       const winAmount = betAmount * multiplier;
-      updateBalance(selectedCurrency, winAmount, `Mines cashout: ${multiplier.toFixed(2)}x`, "win");
+      updateBalance(
+        selectedCurrency,
+        winAmount,
+        `Mines cashout: ${multiplier.toFixed(2)}x`,
+        "win",
+      );
       setGameResult({
         win: true,
         amount: winAmount,
@@ -379,10 +431,14 @@ export default function MiniGamesPage() {
 
   const getDifficultyColor = (difficulty: string) => {
     switch (difficulty) {
-      case "Easy": return "text-green-500 bg-green-500/20";
-      case "Medium": return "text-yellow-500 bg-yellow-500/20";
-      case "Hard": return "text-red-500 bg-red-500/20";
-      default: return "text-gray-500 bg-gray-500/20";
+      case "Easy":
+        return "text-green-500 bg-green-500/20";
+      case "Medium":
+        return "text-yellow-500 bg-yellow-500/20";
+      case "Hard":
+        return "text-red-500 bg-red-500/20";
+      default:
+        return "text-gray-500 bg-gray-500/20";
     }
   };
 
@@ -441,7 +497,9 @@ export default function MiniGamesPage() {
           <Card className="glass">
             <CardContent className="p-4 text-center">
               <Zap className="h-6 w-6 mx-auto mb-2 text-purple" />
-              <div className="text-sm text-muted-foreground">Best Multiplier</div>
+              <div className="text-sm text-muted-foreground">
+                Best Multiplier
+              </div>
               <div className="font-bold text-purple">247.5x</div>
             </CardContent>
           </Card>
@@ -472,20 +530,26 @@ export default function MiniGamesPage() {
                         <div className="flex items-center justify-between">
                           <div className="flex items-center gap-2">
                             <Icon className="h-5 w-5 text-purple" />
-                            <div className="font-medium text-sm">{game.name}</div>
+                            <div className="font-medium text-sm">
+                              {game.name}
+                            </div>
                           </div>
                           <div className="flex gap-1">
-                            {game.isNew && <Badge className="text-xs bg-blue-500">NEW</Badge>}
-                            <Badge className={getDifficultyColor(game.difficulty)}>
+                            {game.isNew && (
+                              <Badge className="text-xs bg-blue-500">NEW</Badge>
+                            )}
+                            <Badge
+                              className={getDifficultyColor(game.difficulty)}
+                            >
                               {game.difficulty}
                             </Badge>
                           </div>
                         </div>
-                        
+
                         <div className="text-xs text-muted-foreground">
                           {game.description}
                         </div>
-                        
+
                         <div className="flex items-center justify-between text-xs">
                           <span className="text-muted-foreground">
                             Max: {game.maxMultiplier}x
@@ -509,7 +573,11 @@ export default function MiniGamesPage() {
               <CardContent className="space-y-4">
                 <div className="flex gap-2">
                   <Button
-                    variant={selectedCurrency === CurrencyType.GC ? "default" : "outline"}
+                    variant={
+                      selectedCurrency === CurrencyType.GC
+                        ? "default"
+                        : "outline"
+                    }
                     size="sm"
                     className="flex-1"
                     onClick={() => setSelectedCurrency(CurrencyType.GC)}
@@ -518,7 +586,11 @@ export default function MiniGamesPage() {
                     GC
                   </Button>
                   <Button
-                    variant={selectedCurrency === CurrencyType.SC ? "default" : "outline"}
+                    variant={
+                      selectedCurrency === CurrencyType.SC
+                        ? "default"
+                        : "outline"
+                    }
                     size="sm"
                     className="flex-1"
                     onClick={() => setSelectedCurrency(CurrencyType.SC)}
@@ -533,10 +605,17 @@ export default function MiniGamesPage() {
                     <Button
                       size="sm"
                       variant="outline"
-                      onClick={() => setBetAmount(Math.max(
-                        selectedCurrency === CurrencyType.GC ? currentGame.minBet.gc : currentGame.minBet.sc,
-                        betAmount - (selectedCurrency === CurrencyType.GC ? 1 : 0.01)
-                      ))}
+                      onClick={() =>
+                        setBetAmount(
+                          Math.max(
+                            selectedCurrency === CurrencyType.GC
+                              ? currentGame.minBet.gc
+                              : currentGame.minBet.sc,
+                            betAmount -
+                              (selectedCurrency === CurrencyType.GC ? 1 : 0.01),
+                          ),
+                        )
+                      }
                     >
                       <Minus className="h-3 w-3" />
                     </Button>
@@ -546,27 +625,40 @@ export default function MiniGamesPage() {
                     <Button
                       size="sm"
                       variant="outline"
-                      onClick={() => setBetAmount(Math.min(
-                        selectedCurrency === CurrencyType.GC ? currentGame.maxBet.gc : currentGame.maxBet.sc,
-                        betAmount + (selectedCurrency === CurrencyType.GC ? 1 : 0.01)
-                      ))}
+                      onClick={() =>
+                        setBetAmount(
+                          Math.min(
+                            selectedCurrency === CurrencyType.GC
+                              ? currentGame.maxBet.gc
+                              : currentGame.maxBet.sc,
+                            betAmount +
+                              (selectedCurrency === CurrencyType.GC ? 1 : 0.01),
+                          ),
+                        )
+                      }
                     >
                       <Plus className="h-3 w-3" />
                     </Button>
                   </div>
-                  
+
                   <div className="flex gap-1">
-                    {[1, 5, 10, 25].map(amount => (
+                    {[1, 5, 10, 25].map((amount) => (
                       <Button
                         key={amount}
                         size="sm"
                         variant="outline"
                         className="flex-1 text-xs"
-                        onClick={() => setBetAmount(
-                          selectedCurrency === CurrencyType.GC ? amount : amount * 0.01
-                        )}
+                        onClick={() =>
+                          setBetAmount(
+                            selectedCurrency === CurrencyType.GC
+                              ? amount
+                              : amount * 0.01,
+                          )
+                        }
                       >
-                        {selectedCurrency === CurrencyType.GC ? amount : (amount * 0.01).toFixed(2)}
+                        {selectedCurrency === CurrencyType.GC
+                          ? amount
+                          : (amount * 0.01).toFixed(2)}
                       </Button>
                     ))}
                   </div>
@@ -585,7 +677,13 @@ export default function MiniGamesPage() {
                     {currentGame.name}
                   </span>
                   {gameResult && (
-                    <Badge className={gameResult.win ? "bg-success text-white" : "bg-destructive text-white"}>
+                    <Badge
+                      className={
+                        gameResult.win
+                          ? "bg-success text-white"
+                          : "bg-destructive text-white"
+                      }
+                    >
                       {gameResult.result}
                     </Badge>
                   )}
@@ -606,14 +704,18 @@ export default function MiniGamesPage() {
                         </div>
                       )}
                     </div>
-                    
+
                     <div className="space-y-2">
-                      <label className="text-sm font-medium">Auto Cash Out At:</label>
+                      <label className="text-sm font-medium">
+                        Auto Cash Out At:
+                      </label>
                       <div className="flex items-center gap-2">
                         <Button
                           size="sm"
                           variant="outline"
-                          onClick={() => setCashOutAt(Math.max(1.01, cashOutAt - 0.1))}
+                          onClick={() =>
+                            setCashOutAt(Math.max(1.01, cashOutAt - 0.1))
+                          }
                         >
                           <Minus className="h-3 w-3" />
                         </Button>
@@ -635,7 +737,10 @@ export default function MiniGamesPage() {
                         <Button
                           onClick={startCrash}
                           className="flex-1 btn-primary"
-                          disabled={!user || !canAffordWager(selectedCurrency, betAmount)}
+                          disabled={
+                            !user ||
+                            !canAffordWager(selectedCurrency, betAmount)
+                          }
                         >
                           <Play className="h-4 w-4 mr-2" />
                           Start Crash ({betAmount} {selectedCurrency})
@@ -646,7 +751,8 @@ export default function MiniGamesPage() {
                           className="flex-1 btn-primary"
                           disabled={hasCashedOut}
                         >
-                          Cash Out ({(betAmount * crashMultiplier).toFixed(2)} {selectedCurrency})
+                          Cash Out ({(betAmount * crashMultiplier).toFixed(2)}{" "}
+                          {selectedCurrency})
                         </Button>
                       )}
                     </div>
@@ -663,17 +769,21 @@ export default function MiniGamesPage() {
                         </div>
                       )}
                     </div>
-                    
+
                     <div className="space-y-4">
                       <div>
-                        <label className="text-sm font-medium">Target Number: {diceTarget}</label>
+                        <label className="text-sm font-medium">
+                          Target Number: {diceTarget}
+                        </label>
                         <div className="mt-2">
                           <input
                             type="range"
                             min="1"
                             max="99"
                             value={diceTarget}
-                            onChange={(e) => setDiceTarget(parseInt(e.target.value))}
+                            onChange={(e) =>
+                              setDiceTarget(parseInt(e.target.value))
+                            }
                             className="w-full"
                           />
                         </div>
@@ -699,7 +809,9 @@ export default function MiniGamesPage() {
                       <Button
                         onClick={rollDice}
                         className="w-full btn-primary"
-                        disabled={!user || !canAffordWager(selectedCurrency, betAmount)}
+                        disabled={
+                          !user || !canAffordWager(selectedCurrency, betAmount)
+                        }
                       >
                         <Dice6 className="h-4 w-4 mr-2" />
                         Roll Dice ({betAmount} {selectedCurrency})
@@ -720,15 +832,22 @@ export default function MiniGamesPage() {
                         )}
                         <div className="absolute bottom-0 w-full">
                           <div className="grid grid-cols-14 gap-px text-xs text-center">
-                            {[1000, 130, 26, 9, 4, 2, 1.5, 1.5, 2, 4, 9, 26, 130, 1000].map((mult, index) => (
+                            {[
+                              1000, 130, 26, 9, 4, 2, 1.5, 1.5, 2, 4, 9, 26,
+                              130, 1000,
+                            ].map((mult, index) => (
                               <div
                                 key={index}
                                 className={`p-2 text-white font-bold ${
-                                  mult >= 100 ? "bg-gold" :
-                                  mult >= 10 ? "bg-orange-500" :
-                                  mult >= 4 ? "bg-green-500" :
-                                  mult >= 2 ? "bg-blue-500" :
-                                  "bg-gray-500"
+                                  mult >= 100
+                                    ? "bg-gold"
+                                    : mult >= 10
+                                      ? "bg-orange-500"
+                                      : mult >= 4
+                                        ? "bg-green-500"
+                                        : mult >= 2
+                                          ? "bg-blue-500"
+                                          : "bg-gray-500"
                                 } ${plinkoResult === index ? "ring-2 ring-white" : ""}`}
                               >
                                 {mult}x
@@ -742,10 +861,16 @@ export default function MiniGamesPage() {
                     <Button
                       onClick={dropPlinko}
                       className="w-full btn-primary"
-                      disabled={plinkoDropping || !user || !canAffordWager(selectedCurrency, betAmount)}
+                      disabled={
+                        plinkoDropping ||
+                        !user ||
+                        !canAffordWager(selectedCurrency, betAmount)
+                      }
                     >
                       <Circle className="h-4 w-4 mr-2" />
-                      {plinkoDropping ? "Dropping..." : `Drop Ball (${betAmount} ${selectedCurrency})`}
+                      {plinkoDropping
+                        ? "Dropping..."
+                        : `Drop Ball (${betAmount} ${selectedCurrency})`}
                     </Button>
                   </div>
                 )}
@@ -755,12 +880,16 @@ export default function MiniGamesPage() {
                   <div className="space-y-4">
                     <div className="flex items-center justify-between">
                       <div>
-                        <label className="text-sm font-medium">Mines: {minesCount}</label>
+                        <label className="text-sm font-medium">
+                          Mines: {minesCount}
+                        </label>
                         <div className="flex items-center gap-2 mt-1">
                           <Button
                             size="sm"
                             variant="outline"
-                            onClick={() => setMinesCount(Math.max(1, minesCount - 1))}
+                            onClick={() =>
+                              setMinesCount(Math.max(1, minesCount - 1))
+                            }
                             disabled={gameActive}
                           >
                             <Minus className="h-3 w-3" />
@@ -769,17 +898,21 @@ export default function MiniGamesPage() {
                           <Button
                             size="sm"
                             variant="outline"
-                            onClick={() => setMinesCount(Math.min(24, minesCount + 1))}
+                            onClick={() =>
+                              setMinesCount(Math.min(24, minesCount + 1))
+                            }
                             disabled={gameActive}
                           >
                             <Plus className="h-3 w-3" />
                           </Button>
                         </div>
                       </div>
-                      
+
                       {gameActive && safeRevealed > 0 && (
                         <div className="text-right">
-                          <div className="text-sm text-muted-foreground">Current Multiplier</div>
+                          <div className="text-sm text-muted-foreground">
+                            Current Multiplier
+                          </div>
                           <div className="font-bold text-success">
                             {Math.pow(1.2, safeRevealed).toFixed(2)}x
                           </div>
@@ -793,18 +926,16 @@ export default function MiniGamesPage() {
                           key={index}
                           variant="outline"
                           className={`aspect-square p-0 ${
-                            revealedCells[index] 
-                              ? isMine 
-                                ? "bg-red-500 text-white" 
+                            revealedCells[index]
+                              ? isMine
+                                ? "bg-red-500 text-white"
                                 : "bg-green-500 text-white"
                               : "hover:bg-purple/20"
                           }`}
                           onClick={() => revealCell(index)}
                           disabled={!gameActive || revealedCells[index]}
                         >
-                          {revealedCells[index] && (
-                            isMine ? "💣" : "💎"
-                          )}
+                          {revealedCells[index] && (isMine ? "💣" : "💎")}
                         </Button>
                       ))}
                     </div>
@@ -814,7 +945,10 @@ export default function MiniGamesPage() {
                         <Button
                           onClick={startMines}
                           className="flex-1 btn-primary"
-                          disabled={!user || !canAffordWager(selectedCurrency, betAmount)}
+                          disabled={
+                            !user ||
+                            !canAffordWager(selectedCurrency, betAmount)
+                          }
                         >
                           <Play className="h-4 w-4 mr-2" />
                           Start Game ({betAmount} {selectedCurrency})
@@ -825,7 +959,9 @@ export default function MiniGamesPage() {
                           className="flex-1 btn-primary"
                           disabled={safeRevealed === 0}
                         >
-                          Cash Out ({(betAmount * Math.pow(1.2, safeRevealed)).toFixed(2)} {selectedCurrency})
+                          Cash Out (
+                          {(betAmount * Math.pow(1.2, safeRevealed)).toFixed(2)}{" "}
+                          {selectedCurrency})
                         </Button>
                       )}
                     </div>
@@ -833,14 +969,21 @@ export default function MiniGamesPage() {
                 )}
 
                 {/* Other Games - Placeholder */}
-                {!["crash", "dice", "plinko", "mines"].includes(selectedGame) && (
+                {!["crash", "dice", "plinko", "mines"].includes(
+                  selectedGame,
+                ) && (
                   <div className="text-center py-8">
                     <currentGame.icon className="h-16 w-16 mx-auto mb-4 text-muted-foreground" />
-                    <h3 className="text-xl font-semibold mb-2">{currentGame.name}</h3>
-                    <p className="text-muted-foreground mb-4">{currentGame.description}</p>
+                    <h3 className="text-xl font-semibold mb-2">
+                      {currentGame.name}
+                    </h3>
+                    <p className="text-muted-foreground mb-4">
+                      {currentGame.description}
+                    </p>
                     <Badge className="mb-4">Coming Soon</Badge>
                     <p className="text-sm text-muted-foreground">
-                      This game is currently under development. Try our other mini games!
+                      This game is currently under development. Try our other
+                      mini games!
                     </p>
                   </div>
                 )}
@@ -861,24 +1004,24 @@ export default function MiniGamesPage() {
               <CardContent className="space-y-3">
                 <div className="flex justify-between text-sm">
                   <span className="text-muted-foreground">Max Multiplier:</span>
-                  <span className="font-semibold text-purple">{currentGame.maxMultiplier}x</span>
+                  <span className="font-semibold text-purple">
+                    {currentGame.maxMultiplier}x
+                  </span>
                 </div>
                 <div className="flex justify-between text-sm">
                   <span className="text-muted-foreground">Min Bet:</span>
                   <span className="font-semibold">
-                    {selectedCurrency === CurrencyType.GC ? 
-                      `${currentGame.minBet.gc} GC` : 
-                      `${currentGame.minBet.sc} SC`
-                    }
+                    {selectedCurrency === CurrencyType.GC
+                      ? `${currentGame.minBet.gc} GC`
+                      : `${currentGame.minBet.sc} SC`}
                   </span>
                 </div>
                 <div className="flex justify-between text-sm">
                   <span className="text-muted-foreground">Max Bet:</span>
                   <span className="font-semibold">
-                    {selectedCurrency === CurrencyType.GC ? 
-                      `${currentGame.maxBet.gc} GC` : 
-                      `${currentGame.maxBet.sc} SC`
-                    }
+                    {selectedCurrency === CurrencyType.GC
+                      ? `${currentGame.maxBet.gc} GC`
+                      : `${currentGame.maxBet.sc} SC`}
                   </span>
                 </div>
                 <div className="flex justify-between text-sm">
@@ -907,10 +1050,14 @@ export default function MiniGamesPage() {
                   <div key={index} className="text-sm">
                     <div className="flex justify-between items-center mb-1">
                       <span className="font-medium">{win.player}</span>
-                      <span className="text-success font-semibold">{win.amount}</span>
+                      <span className="text-success font-semibold">
+                        {win.amount}
+                      </span>
                     </div>
                     <div className="flex justify-between text-xs text-muted-foreground">
-                      <span>{win.game} • {win.multiplier}</span>
+                      <span>
+                        {win.game} • {win.multiplier}
+                      </span>
                       <span>{win.time}</span>
                     </div>
                   </div>
@@ -929,25 +1076,34 @@ export default function MiniGamesPage() {
               <CardContent className="space-y-3 text-sm">
                 {selectedGame === "crash" && (
                   <div className="p-3 bg-blue-500/10 border border-blue-500/20 rounded">
-                    <div className="font-medium text-blue-400 mb-1">💡 Crash Tips</div>
+                    <div className="font-medium text-blue-400 mb-1">
+                      💡 Crash Tips
+                    </div>
                     <p className="text-muted-foreground text-xs">
-                      Set an auto-cashout target and stick to it. Greed often leads to crashes!
+                      Set an auto-cashout target and stick to it. Greed often
+                      leads to crashes!
                     </p>
                   </div>
                 )}
                 {selectedGame === "dice" && (
                   <div className="p-3 bg-green-500/10 border border-green-500/20 rounded">
-                    <div className="font-medium text-green-400 mb-1">🎯 Dice Tips</div>
+                    <div className="font-medium text-green-400 mb-1">
+                      🎯 Dice Tips
+                    </div>
                     <p className="text-muted-foreground text-xs">
-                      Lower targets have higher win chances but smaller multipliers.
+                      Lower targets have higher win chances but smaller
+                      multipliers.
                     </p>
                   </div>
                 )}
                 {selectedGame === "mines" && (
                   <div className="p-3 bg-purple-500/10 border border-purple-500/20 rounded">
-                    <div className="font-medium text-purple-400 mb-1">💎 Mines Tips</div>
+                    <div className="font-medium text-purple-400 mb-1">
+                      💎 Mines Tips
+                    </div>
                     <p className="text-muted-foreground text-xs">
-                      Fewer mines = safer but lower multipliers. Find your risk balance!
+                      Fewer mines = safer but lower multipliers. Find your risk
+                      balance!
                     </p>
                   </div>
                 )}
@@ -968,18 +1124,27 @@ export default function MiniGamesPage() {
                   { rank: 2, name: "MineHunter***", multiplier: "856.2x" },
                   { rank: 3, name: "DiceRoller***", multiplier: "432.1x" },
                 ].map((leader) => (
-                  <div key={leader.rank} className="flex items-center justify-between text-sm">
+                  <div
+                    key={leader.rank}
+                    className="flex items-center justify-between text-sm"
+                  >
                     <div className="flex items-center gap-2">
-                      <div className={`w-6 h-6 rounded-full flex items-center justify-center text-xs font-bold ${
-                        leader.rank === 1 ? "bg-gold text-black" :
-                        leader.rank === 2 ? "bg-gray-400 text-black" :
-                        "bg-amber-600 text-black"
-                      }`}>
+                      <div
+                        className={`w-6 h-6 rounded-full flex items-center justify-center text-xs font-bold ${
+                          leader.rank === 1
+                            ? "bg-gold text-black"
+                            : leader.rank === 2
+                              ? "bg-gray-400 text-black"
+                              : "bg-amber-600 text-black"
+                        }`}
+                      >
                         {leader.rank}
                       </div>
                       <span>{leader.name}</span>
                     </div>
-                    <span className="font-semibold text-success">{leader.multiplier}</span>
+                    <span className="font-semibold text-success">
+                      {leader.multiplier}
+                    </span>
                   </div>
                 ))}
               </CardContent>

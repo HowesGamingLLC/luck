@@ -61,7 +61,9 @@ interface CalledNumber {
 export default function BingoPage() {
   const { user, canAffordWager, updateBalance } = useCurrency();
   const [selectedRoom, setSelectedRoom] = useState<string>("speed-1");
-  const [selectedCurrency, setSelectedCurrency] = useState<CurrencyType>(CurrencyType.GC);
+  const [selectedCurrency, setSelectedCurrency] = useState<CurrencyType>(
+    CurrencyType.GC,
+  );
   const [bingoCards, setBingoCards] = useState<BingoCard[]>([]);
   const [gameActive, setGameActive] = useState(false);
   const [calledNumbers, setCalledNumbers] = useState<CalledNumber[]>([]);
@@ -74,8 +76,8 @@ export default function BingoPage() {
       id: "speed-1",
       name: "Speed Bingo",
       type: "speed",
-      buyIn: { gc: 10, sc: 0.10 },
-      prize: { gc: 150, sc: 1.50 },
+      buyIn: { gc: 10, sc: 0.1 },
+      prize: { gc: 150, sc: 1.5 },
       players: 47,
       maxPlayers: 50,
       nextGame: new Date(Date.now() + 2 * 60 * 1000), // 2 minutes
@@ -87,7 +89,7 @@ export default function BingoPage() {
       name: "Classic 75-Ball",
       type: "regular",
       buyIn: { gc: 25, sc: 0.25 },
-      prize: { gc: 400, sc: 4.00 },
+      prize: { gc: 400, sc: 4.0 },
       players: 89,
       maxPlayers: 100,
       nextGame: new Date(Date.now() + 5 * 60 * 1000), // 5 minutes
@@ -98,8 +100,8 @@ export default function BingoPage() {
       id: "coverall-1",
       name: "Coverall Challenge",
       type: "coverall",
-      buyIn: { gc: 50, sc: 0.50 },
-      prize: { gc: 1000, sc: 10.00 },
+      buyIn: { gc: 50, sc: 0.5 },
+      prize: { gc: 1000, sc: 10.0 },
       players: 124,
       maxPlayers: 150,
       nextGame: new Date(Date.now() + 8 * 60 * 1000), // 8 minutes
@@ -110,8 +112,8 @@ export default function BingoPage() {
       id: "progressive-1",
       name: "Progressive Jackpot",
       type: "progressive",
-      buyIn: { gc: 100, sc: 1.00 },
-      prize: { gc: 5000, sc: 50.00 },
+      buyIn: { gc: 100, sc: 1.0 },
+      prize: { gc: 5000, sc: 50.0 },
       players: 67,
       maxPlayers: 200,
       nextGame: new Date(Date.now() + 12 * 60 * 1000), // 12 minutes
@@ -122,30 +124,58 @@ export default function BingoPage() {
   ];
 
   const recentWinners = [
-    { name: "Bingo_King***", room: "Speed Bingo", amount: "1.25 SC", pattern: "Line", time: "2m ago" },
-    { name: "Lucky_B***", room: "Classic 75-Ball", amount: "3.50 SC", pattern: "X Pattern", time: "5m ago" },
-    { name: "Pattern_Pro***", room: "Coverall Challenge", amount: "8.75 SC", pattern: "Coverall", time: "12m ago" },
-    { name: "Jackpot_Jane***", room: "Progressive", amount: "25.00 SC", pattern: "Full House", time: "18m ago" },
+    {
+      name: "Bingo_King***",
+      room: "Speed Bingo",
+      amount: "1.25 SC",
+      pattern: "Line",
+      time: "2m ago",
+    },
+    {
+      name: "Lucky_B***",
+      room: "Classic 75-Ball",
+      amount: "3.50 SC",
+      pattern: "X Pattern",
+      time: "5m ago",
+    },
+    {
+      name: "Pattern_Pro***",
+      room: "Coverall Challenge",
+      amount: "8.75 SC",
+      pattern: "Coverall",
+      time: "12m ago",
+    },
+    {
+      name: "Jackpot_Jane***",
+      room: "Progressive",
+      amount: "25.00 SC",
+      pattern: "Full House",
+      time: "18m ago",
+    },
   ];
 
   // Generate a random bingo card
   const generateBingoCard = (): BingoCard => {
-    const card: (number | null)[][] = Array(5).fill(null).map(() => Array(5).fill(null));
-    const marked: boolean[][] = Array(5).fill(false).map(() => Array(5).fill(false));
-    
+    const card: (number | null)[][] = Array(5)
+      .fill(null)
+      .map(() => Array(5).fill(null));
+    const marked: boolean[][] = Array(5)
+      .fill(false)
+      .map(() => Array(5).fill(false));
+
     // B column: 1-15, I column: 16-30, N column: 31-45, G column: 46-60, O column: 61-75
     const ranges = [
-      [1, 15],   // B
-      [16, 30],  // I
-      [31, 45],  // N
-      [46, 60],  // G
-      [61, 75]   // O
+      [1, 15], // B
+      [16, 30], // I
+      [31, 45], // N
+      [46, 60], // G
+      [61, 75], // O
     ];
 
     for (let col = 0; col < 5; col++) {
       const [min, max] = ranges[col];
       const usedNumbers = new Set<number>();
-      
+
       for (let row = 0; row < 5; row++) {
         if (col === 2 && row === 2) {
           // Center FREE space
@@ -169,74 +199,90 @@ export default function BingoPage() {
     };
   };
 
-  const currentRoom = bingoRooms.find(room => room.id === selectedRoom) || bingoRooms[0];
+  const currentRoom =
+    bingoRooms.find((room) => room.id === selectedRoom) || bingoRooms[0];
 
   const getTimeUntilNextGame = (nextGame: Date) => {
     const diff = Math.max(0, nextGame.getTime() - Date.now());
     const minutes = Math.floor(diff / 60000);
     const seconds = Math.floor((diff % 60000) / 1000);
-    return `${minutes}:${seconds.toString().padStart(2, '0')}`;
+    return `${minutes}:${seconds.toString().padStart(2, "0")}`;
   };
 
   const handleJoinRoom = (room: BingoRoom) => {
-    const cost = selectedCurrency === CurrencyType.GC ? room.buyIn.gc : room.buyIn.sc;
-    
+    const cost =
+      selectedCurrency === CurrencyType.GC ? room.buyIn.gc : room.buyIn.sc;
+
     if (!canAffordWager(selectedCurrency, cost)) {
       alert(`Insufficient ${selectedCurrency} balance`);
       return;
     }
 
     // Generate 4 bingo cards for the player
-    const newCards = Array(4).fill(null).map(() => generateBingoCard());
+    const newCards = Array(4)
+      .fill(null)
+      .map(() => generateBingoCard());
     setBingoCards(newCards);
     setSelectedRoom(room.id);
-    
+
     // Deduct buy-in cost
-    updateBalance(selectedCurrency, -cost, `Bingo room buy-in: ${room.name}`, "wager");
+    updateBalance(
+      selectedCurrency,
+      -cost,
+      `Bingo room buy-in: ${room.name}`,
+      "wager",
+    );
   };
 
   const markNumber = (cardIndex: number, row: number, col: number) => {
-    setBingoCards(prev => prev.map((card, idx) => {
-      if (idx === cardIndex) {
-        const newMarked = [...card.marked];
-        newMarked[row] = [...newMarked[row]];
-        newMarked[row][col] = !newMarked[row][col];
-        return { ...card, marked: newMarked };
-      }
-      return card;
-    }));
+    setBingoCards((prev) =>
+      prev.map((card, idx) => {
+        if (idx === cardIndex) {
+          const newMarked = [...card.marked];
+          newMarked[row] = [...newMarked[row]];
+          newMarked[row][col] = !newMarked[row][col];
+          return { ...card, marked: newMarked };
+        }
+        return card;
+      }),
+    );
   };
 
   const checkWinPattern = (card: BingoCard): string | null => {
     const { marked } = card;
-    
+
     // Check rows
     for (let row = 0; row < 5; row++) {
-      if (marked[row].every(cell => cell)) return "Line";
+      if (marked[row].every((cell) => cell)) return "Line";
     }
-    
+
     // Check columns
     for (let col = 0; col < 5; col++) {
-      if (marked.every(row => row[col])) return "Line";
+      if (marked.every((row) => row[col])) return "Line";
     }
-    
+
     // Check diagonals
     if (marked.every((row, idx) => row[idx])) return "Diagonal";
     if (marked.every((row, idx) => row[4 - idx])) return "Diagonal";
-    
+
     // Check coverall
-    if (marked.every(row => row.every(cell => cell))) return "Coverall";
-    
+    if (marked.every((row) => row.every((cell) => cell))) return "Coverall";
+
     return null;
   };
 
   const getRoomTypeColor = (type: string) => {
     switch (type) {
-      case "speed": return "text-red-500 bg-red-500/20";
-      case "regular": return "text-blue-500 bg-blue-500/20";
-      case "coverall": return "text-purple-500 bg-purple-500/20";
-      case "progressive": return "text-gold bg-gold/20";
-      default: return "text-gray-500 bg-gray-500/20";
+      case "speed":
+        return "text-red-500 bg-red-500/20";
+      case "regular":
+        return "text-blue-500 bg-blue-500/20";
+      case "coverall":
+        return "text-purple-500 bg-purple-500/20";
+      case "progressive":
+        return "text-gold bg-gold/20";
+      default:
+        return "text-gray-500 bg-gray-500/20";
     }
   };
 
@@ -244,27 +290,34 @@ export default function BingoPage() {
     let interval: NodeJS.Timeout;
     if (gameActive) {
       interval = setInterval(() => {
-        setGameTime(prev => prev + 1);
-        
+        setGameTime((prev) => prev + 1);
+
         // Simulate calling numbers
-        if (Math.random() < 0.3) { // 30% chance each second
-          const letters = ['B', 'I', 'N', 'G', 'O'];
-          const ranges = [[1, 15], [16, 30], [31, 45], [46, 60], [61, 75]];
+        if (Math.random() < 0.3) {
+          // 30% chance each second
+          const letters = ["B", "I", "N", "G", "O"];
+          const ranges = [
+            [1, 15],
+            [16, 30],
+            [31, 45],
+            [46, 60],
+            [61, 75],
+          ];
           const letterIndex = Math.floor(Math.random() * 5);
           const [min, max] = ranges[letterIndex];
           const number = Math.floor(Math.random() * (max - min + 1)) + min;
-          
+
           const newCall: CalledNumber = {
             letter: letters[letterIndex],
             number: number,
             timestamp: new Date(),
           };
-          
-          setCalledNumbers(prev => [newCall, ...prev].slice(0, 20));
+
+          setCalledNumbers((prev) => [newCall, ...prev].slice(0, 20));
         }
       }, 1000);
     }
-    
+
     return () => clearInterval(interval);
   }, [gameActive]);
 
@@ -351,7 +404,7 @@ export default function BingoPage() {
                         <div className="font-medium text-sm">{room.name}</div>
                         {room.isVip && <Crown className="h-4 w-4 text-gold" />}
                       </div>
-                      
+
                       <div className="flex items-center gap-2">
                         <Badge className={getRoomTypeColor(room.type)}>
                           {room.type}
@@ -364,24 +417,36 @@ export default function BingoPage() {
                       <div className="text-xs space-y-1">
                         <div className="flex justify-between">
                           <span className="text-muted-foreground">Buy-in:</span>
-                          <span>{room.buyIn.gc} GC / {room.buyIn.sc} SC</span>
+                          <span>
+                            {room.buyIn.gc} GC / {room.buyIn.sc} SC
+                          </span>
                         </div>
                         <div className="flex justify-between">
                           <span className="text-muted-foreground">Prize:</span>
-                          <span className="text-success">{room.prize.gc} GC / {room.prize.sc} SC</span>
+                          <span className="text-success">
+                            {room.prize.gc} GC / {room.prize.sc} SC
+                          </span>
                         </div>
                         <div className="flex justify-between">
-                          <span className="text-muted-foreground">Players:</span>
-                          <span>{room.players}/{room.maxPlayers}</span>
+                          <span className="text-muted-foreground">
+                            Players:
+                          </span>
+                          <span>
+                            {room.players}/{room.maxPlayers}
+                          </span>
                         </div>
                         <div className="flex justify-between">
-                          <span className="text-muted-foreground">Next game:</span>
-                          <span className="font-mono">{getTimeUntilNextGame(room.nextGame)}</span>
+                          <span className="text-muted-foreground">
+                            Next game:
+                          </span>
+                          <span className="font-mono">
+                            {getTimeUntilNextGame(room.nextGame)}
+                          </span>
                         </div>
                       </div>
 
-                      <Progress 
-                        value={(room.players / room.maxPlayers) * 100} 
+                      <Progress
+                        value={(room.players / room.maxPlayers) * 100}
                         className="h-2"
                       />
                     </div>
@@ -410,7 +475,13 @@ export default function BingoPage() {
                         <Button
                           variant="outline"
                           size="sm"
-                          onClick={() => setSelectedCurrency(selectedCurrency === CurrencyType.GC ? CurrencyType.SC : CurrencyType.GC)}
+                          onClick={() =>
+                            setSelectedCurrency(
+                              selectedCurrency === CurrencyType.GC
+                                ? CurrencyType.SC
+                                : CurrencyType.GC,
+                            )
+                          }
                         >
                           {selectedCurrency === CurrencyType.GC ? (
                             <>
@@ -427,7 +498,8 @@ export default function BingoPage() {
                       </div>
                     </CardTitle>
                     <CardDescription>
-                      {currentRoom.players} players joined • Next game in {getTimeUntilNextGame(currentRoom.nextGame)}
+                      {currentRoom.players} players joined • Next game in{" "}
+                      {getTimeUntilNextGame(currentRoom.nextGame)}
                     </CardDescription>
                   </CardHeader>
                   <CardContent>
@@ -436,33 +508,43 @@ export default function BingoPage() {
                       <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
                         <div className="text-center p-3 bg-card/50 rounded-lg">
                           <Clock className="h-5 w-5 mx-auto mb-1 text-blue-500" />
-                          <div className="text-sm font-medium">{currentRoom.gameLength} min</div>
-                          <div className="text-xs text-muted-foreground">Game Length</div>
+                          <div className="text-sm font-medium">
+                            {currentRoom.gameLength} min
+                          </div>
+                          <div className="text-xs text-muted-foreground">
+                            Game Length
+                          </div>
                         </div>
                         <div className="text-center p-3 bg-card/50 rounded-lg">
                           <Target className="h-5 w-5 mx-auto mb-1 text-purple-500" />
-                          <div className="text-sm font-medium">{currentRoom.type}</div>
-                          <div className="text-xs text-muted-foreground">Game Type</div>
+                          <div className="text-sm font-medium">
+                            {currentRoom.type}
+                          </div>
+                          <div className="text-xs text-muted-foreground">
+                            Game Type
+                          </div>
                         </div>
                         <div className="text-center p-3 bg-card/50 rounded-lg">
                           <Coins className="h-5 w-5 mx-auto mb-1 text-gold" />
                           <div className="text-sm font-medium">
-                            {selectedCurrency === CurrencyType.GC ? 
-                              `${currentRoom.buyIn.gc} GC` : 
-                              `${currentRoom.buyIn.sc} SC`
-                            }
+                            {selectedCurrency === CurrencyType.GC
+                              ? `${currentRoom.buyIn.gc} GC`
+                              : `${currentRoom.buyIn.sc} SC`}
                           </div>
-                          <div className="text-xs text-muted-foreground">Buy-in</div>
+                          <div className="text-xs text-muted-foreground">
+                            Buy-in
+                          </div>
                         </div>
                         <div className="text-center p-3 bg-card/50 rounded-lg">
                           <Trophy className="h-5 w-5 mx-auto mb-1 text-success" />
                           <div className="text-sm font-medium">
-                            {selectedCurrency === CurrencyType.GC ? 
-                              `${currentRoom.prize.gc} GC` : 
-                              `${currentRoom.prize.sc} SC`
-                            }
+                            {selectedCurrency === CurrencyType.GC
+                              ? `${currentRoom.prize.gc} GC`
+                              : `${currentRoom.prize.sc} SC`}
                           </div>
-                          <div className="text-xs text-muted-foreground">Prize Pool</div>
+                          <div className="text-xs text-muted-foreground">
+                            Prize Pool
+                          </div>
                         </div>
                       </div>
 
@@ -472,29 +554,47 @@ export default function BingoPage() {
                           size="lg"
                           className="btn-primary"
                           onClick={() => handleJoinRoom(currentRoom)}
-                          disabled={!user || !canAffordWager(
-                            selectedCurrency, 
-                            selectedCurrency === CurrencyType.GC ? currentRoom.buyIn.gc : currentRoom.buyIn.sc
-                          )}
+                          disabled={
+                            !user ||
+                            !canAffordWager(
+                              selectedCurrency,
+                              selectedCurrency === CurrencyType.GC
+                                ? currentRoom.buyIn.gc
+                                : currentRoom.buyIn.sc,
+                            )
+                          }
                         >
                           <Play className="h-5 w-5 mr-2" />
-                          Join Game ({selectedCurrency === CurrencyType.GC ? 
-                            `${currentRoom.buyIn.gc} GC` : 
-                            `${currentRoom.buyIn.sc} SC`
-                          })
+                          Join Game (
+                          {selectedCurrency === CurrencyType.GC
+                            ? `${currentRoom.buyIn.gc} GC`
+                            : `${currentRoom.buyIn.sc} SC`}
+                          )
                         </Button>
                       </div>
 
                       {/* Game Rules */}
                       <div className="p-4 bg-blue-500/10 border border-blue-500/20 rounded-lg">
-                        <h4 className="font-semibold text-blue-400 mb-2">Game Rules</h4>
+                        <h4 className="font-semibold text-blue-400 mb-2">
+                          Game Rules
+                        </h4>
                         <ul className="text-sm text-muted-foreground space-y-1">
-                          <li>• Mark numbers on your bingo cards as they're called</li>
-                          <li>• First to complete a winning pattern gets the prize</li>
-                          <li>• {currentRoom.type === 'speed' ? 'Fast-paced 5-minute games' : 
-                                currentRoom.type === 'coverall' ? 'Mark all numbers on your card' :
-                                currentRoom.type === 'progressive' ? 'Growing jackpot with each game' :
-                                'Classic 75-ball bingo'}</li>
+                          <li>
+                            • Mark numbers on your bingo cards as they're called
+                          </li>
+                          <li>
+                            • First to complete a winning pattern gets the prize
+                          </li>
+                          <li>
+                            •{" "}
+                            {currentRoom.type === "speed"
+                              ? "Fast-paced 5-minute games"
+                              : currentRoom.type === "coverall"
+                                ? "Mark all numbers on your card"
+                                : currentRoom.type === "progressive"
+                                  ? "Growing jackpot with each game"
+                                  : "Classic 75-ball bingo"}
+                          </li>
                           <li>• Auto-mark feature available for convenience</li>
                         </ul>
                       </div>
@@ -514,15 +614,24 @@ export default function BingoPage() {
                             variant={gameActive ? "destructive" : "default"}
                             onClick={() => setGameActive(!gameActive)}
                           >
-                            {gameActive ? <Pause className="h-4 w-4 mr-2" /> : <Play className="h-4 w-4 mr-2" />}
+                            {gameActive ? (
+                              <Pause className="h-4 w-4 mr-2" />
+                            ) : (
+                              <Play className="h-4 w-4 mr-2" />
+                            )}
                             {gameActive ? "Pause" : "Start"} Game
                           </Button>
                           <div className="text-sm">
-                            <span className="text-muted-foreground">Game Time: </span>
-                            <span className="font-mono">{Math.floor(gameTime / 60)}:{(gameTime % 60).toString().padStart(2, '0')}</span>
+                            <span className="text-muted-foreground">
+                              Game Time:{" "}
+                            </span>
+                            <span className="font-mono">
+                              {Math.floor(gameTime / 60)}:
+                              {(gameTime % 60).toString().padStart(2, "0")}
+                            </span>
                           </div>
                         </div>
-                        
+
                         <div className="flex items-center gap-2">
                           <Button
                             variant="outline"
@@ -537,7 +646,11 @@ export default function BingoPage() {
                             size="sm"
                             onClick={() => setSoundEnabled(!soundEnabled)}
                           >
-                            {soundEnabled ? <Volume2 className="h-4 w-4" /> : <VolumeX className="h-4 w-4" />}
+                            {soundEnabled ? (
+                              <Volume2 className="h-4 w-4" />
+                            ) : (
+                              <VolumeX className="h-4 w-4" />
+                            )}
                           </Button>
                         </div>
                       </div>
@@ -562,13 +675,16 @@ export default function BingoPage() {
                           <div className="space-y-2">
                             {/* BINGO Header */}
                             <div className="grid grid-cols-5 gap-1 text-center font-bold text-sm">
-                              {['B', 'I', 'N', 'G', 'O'].map(letter => (
-                                <div key={letter} className="p-2 bg-purple text-white rounded">
+                              {["B", "I", "N", "G", "O"].map((letter) => (
+                                <div
+                                  key={letter}
+                                  className="p-2 bg-purple text-white rounded"
+                                >
                                   {letter}
                                 </div>
                               ))}
                             </div>
-                            
+
                             {/* Bingo Numbers */}
                             <div className="grid grid-cols-5 gap-1">
                               {card.numbers.map((row, rowIndex) =>
@@ -582,11 +698,13 @@ export default function BingoPage() {
                                         ? "bg-success text-white border-success"
                                         : "hover:bg-purple/20"
                                     }`}
-                                    onClick={() => markNumber(cardIndex, rowIndex, colIndex)}
+                                    onClick={() =>
+                                      markNumber(cardIndex, rowIndex, colIndex)
+                                    }
                                   >
                                     {number === null ? "FREE" : number}
                                   </Button>
-                                ))
+                                )),
                               )}
                             </div>
                           </div>
@@ -620,7 +738,9 @@ export default function BingoPage() {
                       <div
                         key={index}
                         className={`flex items-center justify-between p-2 rounded ${
-                          index === 0 ? "bg-gold text-black font-bold" : "bg-card/50"
+                          index === 0
+                            ? "bg-gold text-black font-bold"
+                            : "bg-card/50"
                         }`}
                       >
                         <span className="font-mono">
@@ -649,10 +769,14 @@ export default function BingoPage() {
                   <div key={index} className="text-sm">
                     <div className="flex justify-between items-center mb-1">
                       <span className="font-medium">{winner.name}</span>
-                      <span className="text-success font-semibold">{winner.amount}</span>
+                      <span className="text-success font-semibold">
+                        {winner.amount}
+                      </span>
                     </div>
                     <div className="flex justify-between text-xs text-muted-foreground">
-                      <span>{winner.room} • {winner.pattern}</span>
+                      <span>
+                        {winner.room} • {winner.pattern}
+                      </span>
                       <span>{winner.time}</span>
                     </div>
                   </div>
@@ -671,13 +795,15 @@ export default function BingoPage() {
               <CardContent>
                 <div className="space-y-2 max-h-40 overflow-y-auto text-sm">
                   <div className="text-muted-foreground text-xs">
-                    <span className="font-medium">Player123:</span> Good luck everyone!
+                    <span className="font-medium">Player123:</span> Good luck
+                    everyone!
                   </div>
                   <div className="text-muted-foreground text-xs">
                     <span className="font-medium">BingoQueen:</span> Need N-42!
                   </div>
                   <div className="text-muted-foreground text-xs">
-                    <span className="font-medium">Lucky777:</span> So close to bingo!
+                    <span className="font-medium">Lucky777:</span> So close to
+                    bingo!
                   </div>
                 </div>
               </CardContent>

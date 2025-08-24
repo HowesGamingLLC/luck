@@ -73,7 +73,8 @@ export default function Games() {
     {
       id: "table-games",
       name: "Table Games",
-      description: "Blackjack, Roulette, Baccarat and more classic casino games",
+      description:
+        "Blackjack, Roulette, Baccarat and more classic casino games",
       icon: Spade,
       color: "text-emerald-400",
       bgGradient: "from-emerald-500/20 to-teal-500/20",
@@ -171,23 +172,43 @@ export default function Games() {
   ];
 
   const recentWinners = [
-    { name: "Lucky_Player***", game: "Mega Slots", amount: "12.50 SC", time: "2m ago" },
-    { name: "Bingo_King***", game: "Power Bingo", amount: "8.75 SC", time: "5m ago" },
-    { name: "Card_Master***", game: "Blackjack", amount: "15.00 SC", time: "8m ago" },
-    { name: "Slot_Queen***", game: "Diamond Rush", amount: "6.25 SC", time: "12m ago" },
+    {
+      name: "Lucky_Player***",
+      game: "Mega Slots",
+      amount: "12.50 SC",
+      time: "2m ago",
+    },
+    {
+      name: "Bingo_King***",
+      game: "Power Bingo",
+      amount: "8.75 SC",
+      time: "5m ago",
+    },
+    {
+      name: "Card_Master***",
+      game: "Blackjack",
+      amount: "15.00 SC",
+      time: "8m ago",
+    },
+    {
+      name: "Slot_Queen***",
+      game: "Diamond Rush",
+      amount: "6.25 SC",
+      time: "12m ago",
+    },
   ];
 
   const handleGameSelect = (category: GameCategory) => {
     if (category.isComingSoon) {
       return;
     }
-    
+
     if (!isAuthenticated) {
       // Redirect to login for unauthenticated users
-      navigate('/login');
+      navigate("/login");
       return;
     }
-    
+
     navigate(category.route);
   };
 
@@ -200,8 +221,8 @@ export default function Games() {
             Casino Games
           </h1>
           <p className="text-xl text-muted-foreground max-w-3xl mx-auto">
-            Choose from our exciting collection of casino games. Play with Gold Coins for fun 
-            or Sweep Coins for real prizes!
+            Choose from our exciting collection of casino games. Play with Gold
+            Coins for fun or Sweep Coins for real prizes!
           </p>
         </div>
 
@@ -213,9 +234,13 @@ export default function Games() {
               <Card key={index} className="glass">
                 <CardContent className="p-4 text-center">
                   <Icon className={`h-6 w-6 mx-auto mb-2 ${stat.color}`} />
-                  <div className="text-sm text-muted-foreground">{stat.label}</div>
+                  <div className="text-sm text-muted-foreground">
+                    {stat.label}
+                  </div>
                   <div className={`font-bold ${stat.color}`}>{stat.value}</div>
-                  <div className="text-xs text-muted-foreground">{stat.subValue}</div>
+                  <div className="text-xs text-muted-foreground">
+                    {stat.subValue}
+                  </div>
                 </CardContent>
               </Card>
             );
@@ -232,35 +257,47 @@ export default function Games() {
                   <Card
                     key={category.id}
                     className={`glass hover:glow transition-all duration-300 cursor-pointer group relative overflow-hidden ${
-                      category.isComingSoon 
-                        ? 'opacity-60 cursor-not-allowed' 
-                        : 'hover:scale-105'
+                      category.isComingSoon
+                        ? "opacity-60 cursor-not-allowed"
+                        : "hover:scale-105"
                     }`}
                     onClick={() => handleGameSelect(category)}
                   >
                     {/* Background Gradient */}
-                    <div className={`absolute inset-0 bg-gradient-to-br ${category.bgGradient} opacity-50 group-hover:opacity-70 transition-opacity`} />
-                    
+                    <div
+                      className={`absolute inset-0 bg-gradient-to-br ${category.bgGradient} opacity-50 group-hover:opacity-70 transition-opacity`}
+                    />
+
                     {/* Badges */}
                     <div className="absolute top-3 right-3 flex flex-col gap-1">
                       {category.isNew && (
-                        <Badge className="bg-blue-500 text-white text-xs">NEW</Badge>
+                        <Badge className="bg-blue-500 text-white text-xs">
+                          NEW
+                        </Badge>
                       )}
                       {category.isHot && (
-                        <Badge className="bg-red-500 text-white text-xs">🔥 HOT</Badge>
+                        <Badge className="bg-red-500 text-white text-xs">
+                          🔥 HOT
+                        </Badge>
                       )}
                       {category.isComingSoon && (
-                        <Badge variant="outline" className="text-xs">Soon</Badge>
+                        <Badge variant="outline" className="text-xs">
+                          Soon
+                        </Badge>
                       )}
                     </div>
 
                     <CardHeader className="relative pb-3">
                       <div className="flex items-center gap-3 mb-2">
-                        <div className={`p-3 rounded-xl bg-gradient-to-br ${category.bgGradient} border`}>
+                        <div
+                          className={`p-3 rounded-xl bg-gradient-to-br ${category.bgGradient} border`}
+                        >
                           <Icon className={`h-6 w-6 ${category.color}`} />
                         </div>
                         <div>
-                          <CardTitle className="text-lg">{category.name}</CardTitle>
+                          <CardTitle className="text-lg">
+                            {category.name}
+                          </CardTitle>
                           <div className="flex items-center gap-2 text-sm text-muted-foreground">
                             <Users className="h-3 w-3" />
                             <span>{category.playerCount} playing</span>
@@ -278,34 +315,40 @@ export default function Games() {
                         <div className="grid grid-cols-2 gap-3 text-sm">
                           <div>
                             <div className="text-muted-foreground">Min Bet</div>
-                            <div className="font-semibold">{category.minBet}</div>
+                            <div className="font-semibold">
+                              {category.minBet}
+                            </div>
                           </div>
                           <div>
                             <div className="text-muted-foreground">Max Win</div>
-                            <div className="font-semibold text-success">{category.maxWin}</div>
+                            <div className="font-semibold text-success">
+                              {category.maxWin}
+                            </div>
                           </div>
                         </div>
 
                         {/* Currency Support */}
                         <div className="flex items-center justify-between">
                           <div className="flex items-center gap-2">
-                            {(category.currency === "Both" || category.currency === "GC") && (
+                            {(category.currency === "Both" ||
+                              category.currency === "GC") && (
                               <div className="flex items-center gap-1">
                                 <Coins className="h-3 w-3 text-gold" />
                                 <span className="text-xs text-gold">GC</span>
                               </div>
                             )}
-                            {(category.currency === "Both" || category.currency === "SC") && (
+                            {(category.currency === "Both" ||
+                              category.currency === "SC") && (
                               <div className="flex items-center gap-1">
                                 <Gem className="h-3 w-3 text-teal" />
                                 <span className="text-xs text-teal">SC</span>
                               </div>
                             )}
                           </div>
-                          
+
                           {!category.isComingSoon && (
-                            <Button 
-                              size="sm" 
+                            <Button
+                              size="sm"
                               className="btn-primary group-hover:scale-110 transition-transform"
                             >
                               <Play className="h-3 w-3 mr-1" />
@@ -331,19 +374,31 @@ export default function Games() {
                 </CardHeader>
                 <CardContent>
                   <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
-                    <Button variant="outline" className="h-auto p-4 flex-col gap-2">
+                    <Button
+                      variant="outline"
+                      className="h-auto p-4 flex-col gap-2"
+                    >
                       <Gift className="h-5 w-5 text-purple" />
                       <span className="text-sm">Daily Bonus</span>
                     </Button>
-                    <Button variant="outline" className="h-auto p-4 flex-col gap-2">
+                    <Button
+                      variant="outline"
+                      className="h-auto p-4 flex-col gap-2"
+                    >
                       <Trophy className="h-5 w-5 text-gold" />
                       <span className="text-sm">Tournaments</span>
                     </Button>
-                    <Button variant="outline" className="h-auto p-4 flex-col gap-2">
+                    <Button
+                      variant="outline"
+                      className="h-auto p-4 flex-col gap-2"
+                    >
                       <BarChart3 className="h-5 w-5 text-green-500" />
                       <span className="text-sm">My Stats</span>
                     </Button>
-                    <Button variant="outline" className="h-auto p-4 flex-col gap-2">
+                    <Button
+                      variant="outline"
+                      className="h-auto p-4 flex-col gap-2"
+                    >
                       <Star className="h-5 w-5 text-blue-500" />
                       <span className="text-sm">Leaderboard</span>
                     </Button>
@@ -365,14 +420,23 @@ export default function Games() {
               </CardHeader>
               <CardContent className="space-y-3">
                 {recentWinners.map((winner, index) => (
-                  <div key={index} className="flex items-center justify-between">
+                  <div
+                    key={index}
+                    className="flex items-center justify-between"
+                  >
                     <div>
                       <div className="font-medium text-sm">{winner.name}</div>
-                      <div className="text-xs text-muted-foreground">{winner.game}</div>
+                      <div className="text-xs text-muted-foreground">
+                        {winner.game}
+                      </div>
                     </div>
                     <div className="text-right">
-                      <div className="font-bold text-success text-sm">{winner.amount}</div>
-                      <div className="text-xs text-muted-foreground">{winner.time}</div>
+                      <div className="font-bold text-success text-sm">
+                        {winner.amount}
+                      </div>
+                      <div className="text-xs text-muted-foreground">
+                        {winner.time}
+                      </div>
                     </div>
                   </div>
                 ))}
@@ -389,19 +453,27 @@ export default function Games() {
               </CardHeader>
               <CardContent className="space-y-3 text-sm">
                 <div className="p-3 bg-blue-500/10 border border-blue-500/20 rounded-lg">
-                  <div className="font-medium text-blue-400 mb-1">💡 Pro Tip</div>
+                  <div className="font-medium text-blue-400 mb-1">
+                    💡 Pro Tip
+                  </div>
                   <p className="text-muted-foreground">
-                    Start with Gold Coins to learn game mechanics before playing with Sweep Coins.
+                    Start with Gold Coins to learn game mechanics before playing
+                    with Sweep Coins.
                   </p>
                 </div>
                 <div className="p-3 bg-green-500/10 border border-green-500/20 rounded-lg">
-                  <div className="font-medium text-green-400 mb-1">🎯 Strategy</div>
+                  <div className="font-medium text-green-400 mb-1">
+                    🎯 Strategy
+                  </div>
                   <p className="text-muted-foreground">
-                    Set a budget and stick to it. Remember, gambling should be fun!
+                    Set a budget and stick to it. Remember, gambling should be
+                    fun!
                   </p>
                 </div>
                 <div className="p-3 bg-purple-500/10 border border-purple-500/20 rounded-lg">
-                  <div className="font-medium text-purple-400 mb-1">⭐ Bonus</div>
+                  <div className="font-medium text-purple-400 mb-1">
+                    ⭐ Bonus
+                  </div>
                   <p className="text-muted-foreground">
                     Check daily for free spins and bonus coin opportunities.
                   </p>
@@ -420,11 +492,15 @@ export default function Games() {
               <CardContent className="space-y-3">
                 <div className="text-center">
                   <div className="text-2xl font-bold text-gold">87.50 SC</div>
-                  <div className="text-sm text-muted-foreground">Mega Jackpot</div>
+                  <div className="text-sm text-muted-foreground">
+                    Mega Jackpot
+                  </div>
                 </div>
                 <div className="grid grid-cols-2 gap-2 text-sm">
                   <div className="text-center p-2 bg-card rounded">
-                    <div className="font-semibold text-purple-400">23.75 SC</div>
+                    <div className="font-semibold text-purple-400">
+                      23.75 SC
+                    </div>
                     <div className="text-xs text-muted-foreground">Major</div>
                   </div>
                   <div className="text-center p-2 bg-card rounded">

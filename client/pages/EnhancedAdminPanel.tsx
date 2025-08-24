@@ -92,7 +92,9 @@ interface GameMetrics {
 
 export default function EnhancedAdminPanel() {
   const [loading, setLoading] = useState(true);
-  const [selectedTimeframe, setSelectedTimeframe] = useState<"24h" | "7d" | "30d">("24h");
+  const [selectedTimeframe, setSelectedTimeframe] = useState<
+    "24h" | "7d" | "30d"
+  >("24h");
   const [gameFilter, setGameFilter] = useState<string>("all");
   const { jackpots, recentWins } = useJackpot();
 
@@ -103,7 +105,7 @@ export default function EnhancedAdminPanel() {
       name: "Diamond Deluxe Slots",
       type: "slots",
       players: 347,
-      revenue24h: 2847.50,
+      revenue24h: 2847.5,
       totalPlayed: 15678,
       avgSessionTime: 18.5,
       isActive: true,
@@ -139,7 +141,7 @@ export default function EnhancedAdminPanel() {
       name: "Texas Hold'em",
       type: "poker",
       players: 89,
-      revenue24h: 987.50,
+      revenue24h: 987.5,
       totalPlayed: 3456,
       avgSessionTime: 35.2,
       isActive: true,
@@ -163,7 +165,7 @@ export default function EnhancedAdminPanel() {
       name: "Parlay Betting",
       type: "sportsbook",
       players: 67,
-      revenue24h: 2134.50,
+      revenue24h: 2134.5,
       totalPlayed: 2341,
       avgSessionTime: 15.6,
       isActive: true,
@@ -198,12 +200,17 @@ export default function EnhancedAdminPanel() {
   ];
 
   const calculateMetrics = (): GameMetrics => {
-    const totalRevenue = gameData.reduce((sum, game) => sum + game.revenue24h, 0);
+    const totalRevenue = gameData.reduce(
+      (sum, game) => sum + game.revenue24h,
+      0,
+    );
     const totalPlayers = gameData.reduce((sum, game) => sum + game.players, 0);
-    const totalGames = gameData.filter(game => game.isActive).length;
-    const averageRTP = gameData.reduce((sum, game) => sum + game.rtp, 0) / gameData.length;
-    const topGame = gameData.sort((a, b) => b.revenue24h - a.revenue24h)[0]?.name || "N/A";
-    
+    const totalGames = gameData.filter((game) => game.isActive).length;
+    const averageRTP =
+      gameData.reduce((sum, game) => sum + game.rtp, 0) / gameData.length;
+    const topGame =
+      gameData.sort((a, b) => b.revenue24h - a.revenue24h)[0]?.name || "N/A";
+
     return {
       totalRevenue,
       totalPlayers,
@@ -216,20 +223,25 @@ export default function EnhancedAdminPanel() {
 
   const metrics = calculateMetrics();
 
-  const filteredGames = gameFilter === "all" 
-    ? gameData 
-    : gameData.filter(game => game.type === gameFilter);
+  const filteredGames =
+    gameFilter === "all"
+      ? gameData
+      : gameData.filter((game) => game.type === gameFilter);
 
   const toggleGameStatus = (gameId: string) => {
-    setGameData(prev => prev.map(game => 
-      game.id === gameId ? { ...game, isActive: !game.isActive } : game
-    ));
+    setGameData((prev) =>
+      prev.map((game) =>
+        game.id === gameId ? { ...game, isActive: !game.isActive } : game,
+      ),
+    );
   };
 
   const updateGameRTP = (gameId: string, newRTP: number) => {
-    setGameData(prev => prev.map(game => 
-      game.id === gameId ? { ...game, rtp: newRTP } : game
-    ));
+    setGameData((prev) =>
+      prev.map((game) =>
+        game.id === gameId ? { ...game, rtp: newRTP } : game,
+      ),
+    );
   };
 
   useEffect(() => {
@@ -239,13 +251,20 @@ export default function EnhancedAdminPanel() {
 
   const getGameTypeColor = (type: string) => {
     switch (type) {
-      case "slots": return "text-purple-500 bg-purple-500/20";
-      case "table": return "text-green-500 bg-green-500/20";
-      case "bingo": return "text-blue-500 bg-blue-500/20";
-      case "poker": return "text-red-500 bg-red-500/20";
-      case "mini": return "text-pink-500 bg-pink-500/20";
-      case "sportsbook": return "text-orange-500 bg-orange-500/20";
-      default: return "text-gray-500 bg-gray-500/20";
+      case "slots":
+        return "text-purple-500 bg-purple-500/20";
+      case "table":
+        return "text-green-500 bg-green-500/20";
+      case "bingo":
+        return "text-blue-500 bg-blue-500/20";
+      case "poker":
+        return "text-red-500 bg-red-500/20";
+      case "mini":
+        return "text-pink-500 bg-pink-500/20";
+      case "sportsbook":
+        return "text-orange-500 bg-orange-500/20";
+      default:
+        return "text-gray-500 bg-gray-500/20";
     }
   };
 
@@ -271,7 +290,9 @@ export default function EnhancedAdminPanel() {
           </div>
           <div className="flex items-center gap-4">
             <Button onClick={() => setLoading(true)} disabled={loading}>
-              <RefreshCw className={`h-4 w-4 mr-2 ${loading ? "animate-spin" : ""}`} />
+              <RefreshCw
+                className={`h-4 w-4 mr-2 ${loading ? "animate-spin" : ""}`}
+              />
               Refresh Data
             </Button>
             <Button variant="outline">
@@ -286,7 +307,8 @@ export default function EnhancedAdminPanel() {
           <Alert className="border-orange-500 bg-orange-500/5 mb-6">
             <AlertTriangle className="h-4 w-4 text-orange-500" />
             <AlertDescription>
-              <strong>Maintenance Mode Active</strong> - New registrations and games are currently disabled.
+              <strong>Maintenance Mode Active</strong> - New registrations and
+              games are currently disabled.
             </AlertDescription>
           </Alert>
         )}
@@ -414,7 +436,9 @@ export default function EnhancedAdminPanel() {
                         return (
                           <Button
                             key={type.id}
-                            variant={gameFilter === type.id ? "default" : "outline"}
+                            variant={
+                              gameFilter === type.id ? "default" : "outline"
+                            }
                             size="sm"
                             onClick={() => setGameFilter(type.id)}
                             className="flex items-center gap-2"
@@ -431,7 +455,9 @@ export default function EnhancedAdminPanel() {
                     <select
                       id="timeframe"
                       value={selectedTimeframe}
-                      onChange={(e) => setSelectedTimeframe(e.target.value as any)}
+                      onChange={(e) =>
+                        setSelectedTimeframe(e.target.value as any)
+                      }
                       className="flex h-10 w-[120px] rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50"
                     >
                       <option value="24h">24 Hours</option>
@@ -475,7 +501,9 @@ export default function EnhancedAdminPanel() {
                             <TableCell>
                               <div className="flex items-center gap-3">
                                 <div className="flex items-center gap-2">
-                                  <Badge className={getGameTypeColor(game.type)}>
+                                  <Badge
+                                    className={getGameTypeColor(game.type)}
+                                  >
                                     {game.type}
                                   </Badge>
                                 </div>
@@ -491,9 +519,17 @@ export default function EnhancedAdminPanel() {
                               <div className="flex items-center gap-2">
                                 <Switch
                                   checked={game.isActive}
-                                  onCheckedChange={() => toggleGameStatus(game.id)}
+                                  onCheckedChange={() =>
+                                    toggleGameStatus(game.id)
+                                  }
                                 />
-                                <span className={game.isActive ? "text-success" : "text-muted-foreground"}>
+                                <span
+                                  className={
+                                    game.isActive
+                                      ? "text-success"
+                                      : "text-muted-foreground"
+                                  }
+                                >
                                   {game.isActive ? "Active" : "Inactive"}
                                 </span>
                               </div>
@@ -501,7 +537,9 @@ export default function EnhancedAdminPanel() {
                             <TableCell>
                               <div className="flex items-center gap-2">
                                 <Users className="h-4 w-4 text-blue-500" />
-                                <span className="font-medium">{game.players}</span>
+                                <span className="font-medium">
+                                  {game.players}
+                                </span>
                               </div>
                             </TableCell>
                             <TableCell>
@@ -517,7 +555,12 @@ export default function EnhancedAdminPanel() {
                                 <Input
                                   type="number"
                                   value={game.rtp}
-                                  onChange={(e) => updateGameRTP(game.id, parseFloat(e.target.value))}
+                                  onChange={(e) =>
+                                    updateGameRTP(
+                                      game.id,
+                                      parseFloat(e.target.value),
+                                    )
+                                  }
                                   min="80"
                                   max="99"
                                   step="0.1"
@@ -528,13 +571,17 @@ export default function EnhancedAdminPanel() {
                             </TableCell>
                             <TableCell>
                               <div className="flex items-center gap-2">
-                                <div className={`text-sm font-medium ${getPopularityColor(game.popularityScore)}`}>
+                                <div
+                                  className={`text-sm font-medium ${getPopularityColor(game.popularityScore)}`}
+                                >
                                   {game.popularityScore}
                                 </div>
                                 <div className="w-12 bg-border rounded-full h-2">
-                                  <div 
+                                  <div
                                     className="h-2 rounded-full bg-gradient-to-r from-red-500 via-yellow-500 to-green-500"
-                                    style={{ width: `${game.popularityScore}%` }}
+                                    style={{
+                                      width: `${game.popularityScore}%`,
+                                    }}
                                   ></div>
                                 </div>
                               </div>
@@ -581,19 +628,25 @@ export default function EnhancedAdminPanel() {
                   <div className="space-y-4">
                     {gameTypes.slice(1).map((type) => {
                       const typeRevenue = gameData
-                        .filter(game => game.type === type.id)
+                        .filter((game) => game.type === type.id)
                         .reduce((sum, game) => sum + game.revenue24h, 0);
-                      const percentage = (typeRevenue / metrics.totalRevenue) * 100;
-                      
+                      const percentage =
+                        (typeRevenue / metrics.totalRevenue) * 100;
+
                       return (
-                        <div key={type.id} className="flex items-center justify-between">
+                        <div
+                          key={type.id}
+                          className="flex items-center justify-between"
+                        >
                           <div className="flex items-center gap-2">
                             <type.icon className="h-4 w-4" />
-                            <span className="text-sm capitalize">{type.name}</span>
+                            <span className="text-sm capitalize">
+                              {type.name}
+                            </span>
                           </div>
                           <div className="flex items-center gap-2">
                             <div className="w-24 bg-border rounded-full h-2">
-                              <div 
+                              <div
                                 className="h-2 rounded-full bg-purple"
                                 style={{ width: `${percentage}%` }}
                               ></div>
@@ -619,33 +672,55 @@ export default function EnhancedAdminPanel() {
                 <CardContent>
                   <div className="space-y-4">
                     <div className="flex justify-between">
-                      <span className="text-sm text-muted-foreground">Total Games Played:</span>
+                      <span className="text-sm text-muted-foreground">
+                        Total Games Played:
+                      </span>
                       <span className="font-semibold">
-                        {gameData.reduce((sum, game) => sum + game.totalPlayed, 0).toLocaleString()}
+                        {gameData
+                          .reduce((sum, game) => sum + game.totalPlayed, 0)
+                          .toLocaleString()}
                       </span>
                     </div>
                     <div className="flex justify-between">
-                      <span className="text-sm text-muted-foreground">Average Session Time:</span>
+                      <span className="text-sm text-muted-foreground">
+                        Average Session Time:
+                      </span>
                       <span className="font-semibold">
-                        {(gameData.reduce((sum, game) => sum + game.avgSessionTime, 0) / gameData.length).toFixed(1)}m
+                        {(
+                          gameData.reduce(
+                            (sum, game) => sum + game.avgSessionTime,
+                            0,
+                          ) / gameData.length
+                        ).toFixed(1)}
+                        m
                       </span>
                     </div>
                     <div className="flex justify-between">
-                      <span className="text-sm text-muted-foreground">System RTP:</span>
+                      <span className="text-sm text-muted-foreground">
+                        System RTP:
+                      </span>
                       <span className="font-semibold text-teal">
                         {metrics.averageRTP.toFixed(2)}%
                       </span>
                     </div>
                     <div className="flex justify-between">
-                      <span className="text-sm text-muted-foreground">Revenue per Player:</span>
+                      <span className="text-sm text-muted-foreground">
+                        Revenue per Player:
+                      </span>
                       <span className="font-semibold text-green-500">
-                        ${(metrics.totalRevenue / metrics.totalPlayers).toFixed(2)}
+                        $
+                        {(metrics.totalRevenue / metrics.totalPlayers).toFixed(
+                          2,
+                        )}
                       </span>
                     </div>
                     <div className="flex justify-between">
-                      <span className="text-sm text-muted-foreground">Games Online:</span>
+                      <span className="text-sm text-muted-foreground">
+                        Games Online:
+                      </span>
                       <span className="font-semibold text-blue-500">
-                        {gameData.filter(g => g.isActive).length}/{gameData.length}
+                        {gameData.filter((g) => g.isActive).length}/
+                        {gameData.length}
                       </span>
                     </div>
                   </div>
@@ -668,17 +743,17 @@ export default function EnhancedAdminPanel() {
                   {Array.from({ length: 24 }, (_, hour) => {
                     const activity = Math.random() * 100;
                     const intensity = activity / 100;
-                    
+
                     return (
                       <div
                         key={hour}
                         className="aspect-square flex items-center justify-center text-xs rounded"
                         style={{
                           backgroundColor: `rgba(147, 51, 234, ${intensity})`,
-                          color: intensity > 0.5 ? 'white' : 'inherit',
+                          color: intensity > 0.5 ? "white" : "inherit",
                         }}
                       >
-                        {hour.toString().padStart(2, '0')}
+                        {hour.toString().padStart(2, "0")}
                       </div>
                     );
                   })}
@@ -715,8 +790,11 @@ export default function EnhancedAdminPanel() {
                       </div>
                       <Switch
                         checked={systemSettings.maintenanceMode}
-                        onCheckedChange={(checked) => 
-                          setSystemSettings(prev => ({ ...prev, maintenanceMode: checked }))
+                        onCheckedChange={(checked) =>
+                          setSystemSettings((prev) => ({
+                            ...prev,
+                            maintenanceMode: checked,
+                          }))
                         }
                       />
                     </div>
@@ -730,8 +808,11 @@ export default function EnhancedAdminPanel() {
                       </div>
                       <Switch
                         checked={systemSettings.newRegistrations}
-                        onCheckedChange={(checked) => 
-                          setSystemSettings(prev => ({ ...prev, newRegistrations: checked }))
+                        onCheckedChange={(checked) =>
+                          setSystemSettings((prev) => ({
+                            ...prev,
+                            newRegistrations: checked,
+                          }))
                         }
                       />
                     </div>
@@ -745,8 +826,11 @@ export default function EnhancedAdminPanel() {
                       </div>
                       <Switch
                         checked={systemSettings.gamesSoundEnabled}
-                        onCheckedChange={(checked) => 
-                          setSystemSettings(prev => ({ ...prev, gamesSoundEnabled: checked }))
+                        onCheckedChange={(checked) =>
+                          setSystemSettings((prev) => ({
+                            ...prev,
+                            gamesSoundEnabled: checked,
+                          }))
                         }
                       />
                     </div>
@@ -760,8 +844,11 @@ export default function EnhancedAdminPanel() {
                       </div>
                       <Switch
                         checked={systemSettings.chatEnabled}
-                        onCheckedChange={(checked) => 
-                          setSystemSettings(prev => ({ ...prev, chatEnabled: checked }))
+                        onCheckedChange={(checked) =>
+                          setSystemSettings((prev) => ({
+                            ...prev,
+                            chatEnabled: checked,
+                          }))
                         }
                       />
                     </div>
@@ -775,8 +862,11 @@ export default function EnhancedAdminPanel() {
                       </div>
                       <Switch
                         checked={systemSettings.bonusesEnabled}
-                        onCheckedChange={(checked) => 
-                          setSystemSettings(prev => ({ ...prev, bonusesEnabled: checked }))
+                        onCheckedChange={(checked) =>
+                          setSystemSettings((prev) => ({
+                            ...prev,
+                            bonusesEnabled: checked,
+                          }))
                         }
                       />
                     </div>
@@ -790,8 +880,11 @@ export default function EnhancedAdminPanel() {
                       </div>
                       <Switch
                         checked={systemSettings.withdrawalsEnabled}
-                        onCheckedChange={(checked) => 
-                          setSystemSettings(prev => ({ ...prev, withdrawalsEnabled: checked }))
+                        onCheckedChange={(checked) =>
+                          setSystemSettings((prev) => ({
+                            ...prev,
+                            withdrawalsEnabled: checked,
+                          }))
                         }
                       />
                     </div>
@@ -808,30 +901,38 @@ export default function EnhancedAdminPanel() {
                 </CardHeader>
                 <CardContent className="space-y-4">
                   <div>
-                    <Label htmlFor="maxDailyWithdrawal">Max Daily Withdrawal (SC)</Label>
+                    <Label htmlFor="maxDailyWithdrawal">
+                      Max Daily Withdrawal (SC)
+                    </Label>
                     <Input
                       id="maxDailyWithdrawal"
                       type="number"
                       value={systemSettings.maxDailyWithdrawal}
-                      onChange={(e) => setSystemSettings(prev => ({
-                        ...prev,
-                        maxDailyWithdrawal: parseInt(e.target.value) || 0
-                      }))}
+                      onChange={(e) =>
+                        setSystemSettings((prev) => ({
+                          ...prev,
+                          maxDailyWithdrawal: parseInt(e.target.value) || 0,
+                        }))
+                      }
                       min="100"
                       max="50000"
                     />
                   </div>
 
                   <div>
-                    <Label htmlFor="minWithdrawal">Min Withdrawal Amount (SC)</Label>
+                    <Label htmlFor="minWithdrawal">
+                      Min Withdrawal Amount (SC)
+                    </Label>
                     <Input
                       id="minWithdrawal"
                       type="number"
                       value={systemSettings.minWithdrawalAmount}
-                      onChange={(e) => setSystemSettings(prev => ({
-                        ...prev,
-                        minWithdrawalAmount: parseInt(e.target.value) || 0
-                      }))}
+                      onChange={(e) =>
+                        setSystemSettings((prev) => ({
+                          ...prev,
+                          minWithdrawalAmount: parseInt(e.target.value) || 0,
+                        }))
+                      }
                       min="1"
                       max="100"
                     />
@@ -843,25 +944,31 @@ export default function EnhancedAdminPanel() {
                       id="maxLoginAttempts"
                       type="number"
                       value={systemSettings.maxLoginAttempts}
-                      onChange={(e) => setSystemSettings(prev => ({
-                        ...prev,
-                        maxLoginAttempts: parseInt(e.target.value) || 0
-                      }))}
+                      onChange={(e) =>
+                        setSystemSettings((prev) => ({
+                          ...prev,
+                          maxLoginAttempts: parseInt(e.target.value) || 0,
+                        }))
+                      }
                       min="3"
                       max="10"
                     />
                   </div>
 
                   <div>
-                    <Label htmlFor="sessionTimeout">Session Timeout (minutes)</Label>
+                    <Label htmlFor="sessionTimeout">
+                      Session Timeout (minutes)
+                    </Label>
                     <Input
                       id="sessionTimeout"
                       type="number"
                       value={systemSettings.sessionTimeout}
-                      onChange={(e) => setSystemSettings(prev => ({
-                        ...prev,
-                        sessionTimeout: parseInt(e.target.value) || 0
-                      }))}
+                      onChange={(e) =>
+                        setSystemSettings((prev) => ({
+                          ...prev,
+                          sessionTimeout: parseInt(e.target.value) || 0,
+                        }))
+                      }
                       min="5"
                       max="120"
                     />
@@ -873,10 +980,12 @@ export default function EnhancedAdminPanel() {
                       id="supportEmail"
                       type="email"
                       value={systemSettings.supportEmail}
-                      onChange={(e) => setSystemSettings(prev => ({
-                        ...prev,
-                        supportEmail: e.target.value
-                      }))}
+                      onChange={(e) =>
+                        setSystemSettings((prev) => ({
+                          ...prev,
+                          supportEmail: e.target.value,
+                        }))
+                      }
                     />
                   </div>
 
@@ -933,7 +1042,9 @@ export default function EnhancedAdminPanel() {
                 <CardContent className="space-y-3">
                   <div className="flex justify-between">
                     <span className="text-sm">Players Online:</span>
-                    <span className="font-semibold text-blue-500">{metrics.totalPlayers}</span>
+                    <span className="font-semibold text-blue-500">
+                      {metrics.totalPlayers}
+                    </span>
                   </div>
                   <div className="flex justify-between">
                     <span className="text-sm">Games Playing:</span>
@@ -949,7 +1060,9 @@ export default function EnhancedAdminPanel() {
                   </div>
                   <div className="flex justify-between">
                     <span className="text-sm">Support Tickets:</span>
-                    <span className="font-semibold text-orange-500">4 Open</span>
+                    <span className="font-semibold text-orange-500">
+                      4 Open
+                    </span>
                   </div>
                 </CardContent>
               </Card>
@@ -963,7 +1076,8 @@ export default function EnhancedAdminPanel() {
                 </CardHeader>
                 <CardContent className="space-y-3">
                   <div className="p-2 bg-yellow-500/10 border border-yellow-500/20 rounded text-sm">
-                    <strong>High Activity:</strong> Crash game showing unusual popularity
+                    <strong>High Activity:</strong> Crash game showing unusual
+                    popularity
                   </div>
                   <div className="p-2 bg-blue-500/10 border border-blue-500/20 rounded text-sm">
                     <strong>Info:</strong> Scheduled maintenance in 2 hours
@@ -988,13 +1102,17 @@ export default function EnhancedAdminPanel() {
               <CardContent>
                 <div className="space-y-3 max-h-64 overflow-y-auto">
                   {recentWins.slice(0, 10).map((win, index) => (
-                    <div key={index} className="flex items-center justify-between p-2 bg-card/50 rounded">
+                    <div
+                      key={index}
+                      className="flex items-center justify-between p-2 bg-card/50 rounded"
+                    >
                       <div className="flex items-center gap-3">
                         <div className="w-2 h-2 bg-green-500 rounded-full animate-pulse"></div>
                         <div>
                           <span className="font-medium">Big Win!</span>
                           <span className="text-sm text-muted-foreground ml-2">
-                            Player*** won ${win.amount.toFixed(2)} SC in {win.type}
+                            Player*** won ${win.amount.toFixed(2)} SC in{" "}
+                            {win.type}
                           </span>
                         </div>
                       </div>
@@ -1020,14 +1138,14 @@ export default function EnhancedAdminPanel() {
               <CardContent>
                 <div className="text-center py-8">
                   <Users className="h-16 w-16 mx-auto mb-4 text-muted-foreground" />
-                  <h3 className="text-lg font-semibold mb-2">Player Management</h3>
+                  <h3 className="text-lg font-semibold mb-2">
+                    Player Management
+                  </h3>
                   <p className="text-muted-foreground mb-4">
-                    Advanced player management tools including KYC verification, 
+                    Advanced player management tools including KYC verification,
                     responsible gaming limits, and player behavior analytics.
                   </p>
-                  <Button variant="outline">
-                    Go to Player Analytics
-                  </Button>
+                  <Button variant="outline">Go to Player Analytics</Button>
                 </div>
               </CardContent>
             </Card>
@@ -1039,52 +1157,73 @@ export default function EnhancedAdminPanel() {
               <CardHeader>
                 <CardTitle>Advanced Reporting Suite</CardTitle>
                 <CardDescription>
-                  Generate comprehensive reports for compliance, analytics, and business intelligence
+                  Generate comprehensive reports for compliance, analytics, and
+                  business intelligence
                 </CardDescription>
               </CardHeader>
               <CardContent>
                 <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-                  <Button variant="outline" className="h-auto p-4 flex-col gap-2">
+                  <Button
+                    variant="outline"
+                    className="h-auto p-4 flex-col gap-2"
+                  >
                     <BarChart3 className="h-8 w-8" />
                     <span className="font-medium">Revenue Analytics</span>
                     <span className="text-xs text-muted-foreground">
-                      Detailed revenue breakdown by game, time, and player segments
+                      Detailed revenue breakdown by game, time, and player
+                      segments
                     </span>
                   </Button>
-                  
-                  <Button variant="outline" className="h-auto p-4 flex-col gap-2">
+
+                  <Button
+                    variant="outline"
+                    className="h-auto p-4 flex-col gap-2"
+                  >
                     <Users className="h-8 w-8" />
                     <span className="font-medium">Player Behavior</span>
                     <span className="text-xs text-muted-foreground">
-                      Player activity patterns, retention, and engagement metrics
+                      Player activity patterns, retention, and engagement
+                      metrics
                     </span>
                   </Button>
-                  
-                  <Button variant="outline" className="h-auto p-4 flex-col gap-2">
+
+                  <Button
+                    variant="outline"
+                    className="h-auto p-4 flex-col gap-2"
+                  >
                     <Shield className="h-8 w-8" />
                     <span className="font-medium">Compliance Report</span>
                     <span className="text-xs text-muted-foreground">
                       KYC status, responsible gaming, and regulatory compliance
                     </span>
                   </Button>
-                  
-                  <Button variant="outline" className="h-auto p-4 flex-col gap-2">
+
+                  <Button
+                    variant="outline"
+                    className="h-auto p-4 flex-col gap-2"
+                  >
                     <Gamepad2 className="h-8 w-8" />
                     <span className="font-medium">Game Performance</span>
                     <span className="text-xs text-muted-foreground">
                       Individual game analytics, RTP tracking, and optimization
                     </span>
                   </Button>
-                  
-                  <Button variant="outline" className="h-auto p-4 flex-col gap-2">
+
+                  <Button
+                    variant="outline"
+                    className="h-auto p-4 flex-col gap-2"
+                  >
                     <TrendingUp className="h-8 w-8" />
                     <span className="font-medium">Financial Summary</span>
                     <span className="text-xs text-muted-foreground">
                       P&L statements, cash flow, and financial performance
                     </span>
                   </Button>
-                  
-                  <Button variant="outline" className="h-auto p-4 flex-col gap-2">
+
+                  <Button
+                    variant="outline"
+                    className="h-auto p-4 flex-col gap-2"
+                  >
                     <AlertTriangle className="h-8 w-8" />
                     <span className="font-medium">Risk Assessment</span>
                     <span className="text-xs text-muted-foreground">

@@ -521,29 +521,47 @@ export default function AdminPanel() {
               <CardContent>
                 <div className="text-center py-8">
                   <Package className="h-12 w-12 mx-auto mb-4 text-muted-foreground" />
-                  <h3 className="text-lg font-semibold mb-2">Package Management System</h3>
+                  <h3 className="text-lg font-semibold mb-2">
+                    Package Management System
+                  </h3>
                   <p className="text-muted-foreground mb-6 max-w-md mx-auto">
-                    The comprehensive package management system is available as a dedicated admin feature.
-                    Access full package creation, editing, and analytics capabilities.
+                    The comprehensive package management system is available as
+                    a dedicated admin feature. Access full package creation,
+                    editing, and analytics capabilities.
                   </p>
                   <div className="space-y-4">
                     <div className="grid grid-cols-1 md:grid-cols-3 gap-4 text-sm">
                       <div className="p-4 border rounded-lg">
-                        <h4 className="font-semibold mb-2">✨ Package Creation</h4>
-                        <p className="text-muted-foreground">Create custom Gold Coin packages with bonus Sweep Coins, pricing, and visual themes</p>
+                        <h4 className="font-semibold mb-2">
+                          ✨ Package Creation
+                        </h4>
+                        <p className="text-muted-foreground">
+                          Create custom Gold Coin packages with bonus Sweep
+                          Coins, pricing, and visual themes
+                        </p>
                       </div>
                       <div className="p-4 border rounded-lg">
-                        <h4 className="font-semibold mb-2">📊 Sales Analytics</h4>
-                        <p className="text-muted-foreground">Track package performance, revenue, and popular choices</p>
+                        <h4 className="font-semibold mb-2">
+                          📊 Sales Analytics
+                        </h4>
+                        <p className="text-muted-foreground">
+                          Track package performance, revenue, and popular
+                          choices
+                        </p>
                       </div>
                       <div className="p-4 border rounded-lg">
-                        <h4 className="font-semibold mb-2">⚡ Real-time Management</h4>
-                        <p className="text-muted-foreground">Edit, disable, or create promotional packages instantly</p>
+                        <h4 className="font-semibold mb-2">
+                          ⚡ Real-time Management
+                        </h4>
+                        <p className="text-muted-foreground">
+                          Edit, disable, or create promotional packages
+                          instantly
+                        </p>
                       </div>
                     </div>
                     <Button
                       className="btn-primary"
-                      onClick={() => window.open('/admin/packages', '_blank')}
+                      onClick={() => window.open("/admin/packages", "_blank")}
                     >
                       <Package className="h-4 w-4 mr-2" />
                       Open Package Manager

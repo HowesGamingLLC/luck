@@ -88,7 +88,9 @@ interface Tournament {
 export default function PokerPage() {
   const { user, canAffordWager, updateBalance } = useCurrency();
   const [selectedTable, setSelectedTable] = useState<string | null>(null);
-  const [selectedCurrency, setSelectedCurrency] = useState<CurrencyType>(CurrencyType.GC);
+  const [selectedCurrency, setSelectedCurrency] = useState<CurrencyType>(
+    CurrencyType.GC,
+  );
   const [playerAction, setPlayerAction] = useState<string | null>(null);
   const [betAmount, setBetAmount] = useState<number>(0);
 
@@ -99,7 +101,7 @@ export default function PokerPage() {
       name: "Beginner Texas Hold'em",
       gameType: "holdem",
       stakes: "1/2",
-      buyIn: { gc: 100, sc: 1.00 },
+      buyIn: { gc: 100, sc: 1.0 },
       blinds: { small: 1, big: 2 },
       maxPlayers: 6,
       currentPlayers: 4,
@@ -109,15 +111,15 @@ export default function PokerPage() {
       gameStage: "flop",
     },
     {
-      id: "table-2", 
+      id: "table-2",
       name: "Intermediate Hold'em",
       gameType: "holdem",
       stakes: "5/10",
-      buyIn: { gc: 500, sc: 5.00 },
+      buyIn: { gc: 500, sc: 5.0 },
       blinds: { small: 5, big: 10 },
       maxPlayers: 9,
       currentPlayers: 7,
-      currency: "Both", 
+      currency: "Both",
       isActive: true,
       pot: 87,
       gameStage: "preflop",
@@ -127,7 +129,7 @@ export default function PokerPage() {
       name: "High Stakes VIP",
       gameType: "holdem",
       stakes: "25/50",
-      buyIn: { gc: 2500, sc: 25.00 },
+      buyIn: { gc: 2500, sc: 25.0 },
       blinds: { small: 25, big: 50 },
       maxPlayers: 6,
       currentPlayers: 3,
@@ -156,8 +158,8 @@ export default function PokerPage() {
       id: "tourney-2",
       name: "Sit & Go Turbo",
       type: "sit-n-go",
-      buyIn: { gc: 100, sc: 1.00 },
-      prize: { gc: 1000, sc: 10.00 },
+      buyIn: { gc: 100, sc: 1.0 },
+      prize: { gc: 1000, sc: 10.0 },
       startTime: new Date(),
       registered: 8,
       maxPlayers: 9,
@@ -168,8 +170,8 @@ export default function PokerPage() {
       id: "tourney-3",
       name: "Weekend Warrior",
       type: "scheduled",
-      buyIn: { gc: 500, sc: 5.00 },
-      prize: { gc: 25000, sc: 250.00 },
+      buyIn: { gc: 500, sc: 5.0 },
+      prize: { gc: 25000, sc: 250.0 },
       startTime: new Date(Date.now() + 2 * 60 * 60 * 1000), // 2 hours
       registered: 67,
       maxPlayers: 200,
@@ -256,45 +258,74 @@ export default function PokerPage() {
     spades: { symbol: "♠", color: "text-black", icon: Spade },
   };
 
-  const currentTable = selectedTable ? pokerTables.find(t => t.id === selectedTable) : null;
+  const currentTable = selectedTable
+    ? pokerTables.find((t) => t.id === selectedTable)
+    : null;
   const currentPot = currentTable?.pot || 0;
   const minimumBet = currentTable?.blinds.big || 2;
-  const callAmount = Math.max(...players.map(p => p.currentBet)) - (players[0]?.currentBet || 0);
+  const callAmount =
+    Math.max(...players.map((p) => p.currentBet)) -
+    (players[0]?.currentBet || 0);
 
   const joinTable = (table: PokerTable) => {
-    const cost = selectedCurrency === CurrencyType.GC ? table.buyIn.gc : table.buyIn.sc;
-    
+    const cost =
+      selectedCurrency === CurrencyType.GC ? table.buyIn.gc : table.buyIn.sc;
+
     if (!canAffordWager(selectedCurrency, cost)) {
       alert(`Insufficient ${selectedCurrency} balance`);
       return;
     }
 
     setSelectedTable(table.id);
-    updateBalance(selectedCurrency, -cost, `Poker table buy-in: ${table.name}`, "wager");
+    updateBalance(
+      selectedCurrency,
+      -cost,
+      `Poker table buy-in: ${table.name}`,
+      "wager",
+    );
   };
 
   const handlePokerAction = (action: string, amount?: number) => {
     setPlayerAction(action);
-    
+
     if (action === "fold") {
-      setPlayers(prev => prev.map(p => 
-        p.id === "player-1" ? { ...p, isFolded: true, isActive: false } : p
-      ));
+      setPlayers((prev) =>
+        prev.map((p) =>
+          p.id === "player-1" ? { ...p, isFolded: true, isActive: false } : p,
+        ),
+      );
     } else if (action === "call" && callAmount > 0) {
       updateBalance(selectedCurrency, -callAmount, "Poker call", "wager");
-      setPlayers(prev => prev.map(p => 
-        p.id === "player-1" ? { ...p, currentBet: p.currentBet + callAmount, chips: p.chips - callAmount } : p
-      ));
+      setPlayers((prev) =>
+        prev.map((p) =>
+          p.id === "player-1"
+            ? {
+                ...p,
+                currentBet: p.currentBet + callAmount,
+                chips: p.chips - callAmount,
+              }
+            : p,
+        ),
+      );
     } else if (action === "bet" || action === "raise") {
       const betAmountToUse = amount || betAmount;
-      updateBalance(selectedCurrency, -betAmountToUse, `Poker ${action}`, "wager");
-      setPlayers(prev => prev.map(p => 
-        p.id === "player-1" ? { 
-          ...p, 
-          currentBet: p.currentBet + betAmountToUse, 
-          chips: p.chips - betAmountToUse 
-        } : p
-      ));
+      updateBalance(
+        selectedCurrency,
+        -betAmountToUse,
+        `Poker ${action}`,
+        "wager",
+      );
+      setPlayers((prev) =>
+        prev.map((p) =>
+          p.id === "player-1"
+            ? {
+                ...p,
+                currentBet: p.currentBet + betAmountToUse,
+                chips: p.chips - betAmountToUse,
+              }
+            : p,
+        ),
+      );
     }
 
     // Simulate next player action after a delay
@@ -305,25 +336,38 @@ export default function PokerPage() {
 
   const simulatePlayerAction = () => {
     // Simple AI logic for demo
-    const activePlayer = players.find(p => !p.isFolded && !p.isActive && p.id !== "player-1");
+    const activePlayer = players.find(
+      (p) => !p.isFolded && !p.isActive && p.id !== "player-1",
+    );
     if (activePlayer) {
       const actions = ["call", "fold", "raise"];
       const randomAction = actions[Math.floor(Math.random() * actions.length)];
-      
-      setPlayers(prev => prev.map(p => {
-        if (p.id === activePlayer.id) {
-          if (randomAction === "fold") {
-            return { ...p, isFolded: true };
-          } else if (randomAction === "call") {
-            const callAmt = Math.max(...prev.map(pl => pl.currentBet)) - p.currentBet;
-            return { ...p, currentBet: p.currentBet + callAmt, chips: p.chips - callAmt };
-          } else if (randomAction === "raise") {
-            const raiseAmt = minimumBet * 2;
-            return { ...p, currentBet: p.currentBet + raiseAmt, chips: p.chips - raiseAmt };
+
+      setPlayers((prev) =>
+        prev.map((p) => {
+          if (p.id === activePlayer.id) {
+            if (randomAction === "fold") {
+              return { ...p, isFolded: true };
+            } else if (randomAction === "call") {
+              const callAmt =
+                Math.max(...prev.map((pl) => pl.currentBet)) - p.currentBet;
+              return {
+                ...p,
+                currentBet: p.currentBet + callAmt,
+                chips: p.chips - callAmt,
+              };
+            } else if (randomAction === "raise") {
+              const raiseAmt = minimumBet * 2;
+              return {
+                ...p,
+                currentBet: p.currentBet + raiseAmt,
+                chips: p.chips - raiseAmt,
+              };
+            }
           }
-        }
-        return p;
-      }));
+          return p;
+        }),
+      );
     }
   };
 
@@ -335,22 +379,30 @@ export default function PokerPage() {
     return `${seconds}s`;
   };
 
-  const getHandStrength = (hand: PokerCard[], community: PokerCard[]): string => {
+  const getHandStrength = (
+    hand: PokerCard[],
+    community: PokerCard[],
+  ): string => {
     // Simplified hand evaluation for demo
     const allCards = [...hand, ...community];
-    const suits = allCards.map(c => c.suit);
-    const ranks = allCards.map(c => c.rank);
-    
+    const suits = allCards.map((c) => c.suit);
+    const ranks = allCards.map((c) => c.rank);
+
     // Check for flush
-    const suitCounts = suits.reduce((acc, suit) => {
-      acc[suit] = (acc[suit] || 0) + 1;
-      return acc;
-    }, {} as Record<string, number>);
-    
-    const hasFlush = Object.values(suitCounts).some(count => count >= 5);
-    
+    const suitCounts = suits.reduce(
+      (acc, suit) => {
+        acc[suit] = (acc[suit] || 0) + 1;
+        return acc;
+      },
+      {} as Record<string, number>,
+    );
+
+    const hasFlush = Object.values(suitCounts).some((count) => count >= 5);
+
     // Check for straight
-    const uniqueValues = [...new Set(allCards.map(c => c.value))].sort((a, b) => b - a);
+    const uniqueValues = [...new Set(allCards.map((c) => c.value))].sort(
+      (a, b) => b - a,
+    );
     let hasConsecutive = false;
     for (let i = 0; i <= uniqueValues.length - 5; i++) {
       if (uniqueValues[i] - uniqueValues[i + 4] === 4) {
@@ -358,25 +410,28 @@ export default function PokerPage() {
         break;
       }
     }
-    
+
     if (hasFlush && hasConsecutive) return "Straight Flush";
     if (hasFlush) return "Flush";
     if (hasConsecutive) return "Straight";
-    
+
     // Check for pairs, trips, etc.
-    const rankCounts = ranks.reduce((acc, rank) => {
-      acc[rank] = (acc[rank] || 0) + 1;
-      return acc;
-    }, {} as Record<string, number>);
-    
+    const rankCounts = ranks.reduce(
+      (acc, rank) => {
+        acc[rank] = (acc[rank] || 0) + 1;
+        return acc;
+      },
+      {} as Record<string, number>,
+    );
+
     const counts = Object.values(rankCounts).sort((a, b) => b - a);
-    
+
     if (counts[0] === 4) return "Four of a Kind";
     if (counts[0] === 3 && counts[1] === 2) return "Full House";
     if (counts[0] === 3) return "Three of a Kind";
     if (counts[0] === 2 && counts[1] === 2) return "Two Pair";
     if (counts[0] === 2) return "One Pair";
-    
+
     return "High Card";
   };
 
@@ -424,7 +479,9 @@ export default function PokerPage() {
           <Card className="glass">
             <CardContent className="p-4 text-center">
               <Trophy className="h-6 w-6 mx-auto mb-2 text-success" />
-              <div className="text-sm text-muted-foreground">Tournaments Won</div>
+              <div className="text-sm text-muted-foreground">
+                Tournaments Won
+              </div>
               <div className="font-bold text-success">3</div>
             </CardContent>
           </Card>
@@ -467,38 +524,57 @@ export default function PokerPage() {
                       >
                         <div className="space-y-2">
                           <div className="flex items-center justify-between">
-                            <div className="font-medium text-sm">{table.name}</div>
-                            <Badge variant={table.isActive ? "default" : "secondary"}>
+                            <div className="font-medium text-sm">
+                              {table.name}
+                            </div>
+                            <Badge
+                              variant={table.isActive ? "default" : "secondary"}
+                            >
                               {table.isActive ? "Active" : "Waiting"}
                             </Badge>
                           </div>
-                          
+
                           <div className="text-xs space-y-1">
                             <div className="flex justify-between">
-                              <span className="text-muted-foreground">Stakes:</span>
-                              <span>{table.stakes} {selectedCurrency}</span>
-                            </div>
-                            <div className="flex justify-between">
-                              <span className="text-muted-foreground">Buy-in:</span>
+                              <span className="text-muted-foreground">
+                                Stakes:
+                              </span>
                               <span>
-                                {selectedCurrency === CurrencyType.GC ? 
-                                  `${table.buyIn.gc} GC` : 
-                                  `${table.buyIn.sc} SC`
-                                }
+                                {table.stakes} {selectedCurrency}
                               </span>
                             </div>
                             <div className="flex justify-between">
-                              <span className="text-muted-foreground">Players:</span>
-                              <span>{table.currentPlayers}/{table.maxPlayers}</span>
+                              <span className="text-muted-foreground">
+                                Buy-in:
+                              </span>
+                              <span>
+                                {selectedCurrency === CurrencyType.GC
+                                  ? `${table.buyIn.gc} GC`
+                                  : `${table.buyIn.sc} SC`}
+                              </span>
                             </div>
                             <div className="flex justify-between">
-                              <span className="text-muted-foreground">Pot:</span>
-                              <span className="text-success font-medium">{table.pot} {selectedCurrency}</span>
+                              <span className="text-muted-foreground">
+                                Players:
+                              </span>
+                              <span>
+                                {table.currentPlayers}/{table.maxPlayers}
+                              </span>
+                            </div>
+                            <div className="flex justify-between">
+                              <span className="text-muted-foreground">
+                                Pot:
+                              </span>
+                              <span className="text-success font-medium">
+                                {table.pot} {selectedCurrency}
+                              </span>
                             </div>
                           </div>
 
-                          <Progress 
-                            value={(table.currentPlayers / table.maxPlayers) * 100} 
+                          <Progress
+                            value={
+                              (table.currentPlayers / table.maxPlayers) * 100
+                            }
                             className="h-2"
                           />
 
@@ -510,10 +586,15 @@ export default function PokerPage() {
                                 e.stopPropagation();
                                 joinTable(table);
                               }}
-                              disabled={!user || !canAffordWager(
-                                selectedCurrency, 
-                                selectedCurrency === CurrencyType.GC ? table.buyIn.gc : table.buyIn.sc
-                              )}
+                              disabled={
+                                !user ||
+                                !canAffordWager(
+                                  selectedCurrency,
+                                  selectedCurrency === CurrencyType.GC
+                                    ? table.buyIn.gc
+                                    : table.buyIn.sc,
+                                )
+                              }
                             >
                               <Play className="h-3 w-3 mr-1" />
                               Join Table
@@ -542,53 +623,72 @@ export default function PokerPage() {
                       >
                         <div className="space-y-2">
                           <div className="flex items-center justify-between">
-                            <div className="font-medium text-sm">{tournament.name}</div>
-                            <Badge 
+                            <div className="font-medium text-sm">
+                              {tournament.name}
+                            </div>
+                            <Badge
                               className={
-                                tournament.status === "registering" ? "bg-green-500 text-white" :
-                                tournament.status === "starting" ? "bg-yellow-500 text-black" :
-                                tournament.status === "playing" ? "bg-blue-500 text-white" :
-                                "bg-gray-500 text-white"
+                                tournament.status === "registering"
+                                  ? "bg-green-500 text-white"
+                                  : tournament.status === "starting"
+                                    ? "bg-yellow-500 text-black"
+                                    : tournament.status === "playing"
+                                      ? "bg-blue-500 text-white"
+                                      : "bg-gray-500 text-white"
                               }
                             >
                               {tournament.status}
                             </Badge>
                           </div>
-                          
+
                           <div className="text-xs space-y-1">
                             <div className="flex justify-between">
-                              <span className="text-muted-foreground">Buy-in:</span>
+                              <span className="text-muted-foreground">
+                                Buy-in:
+                              </span>
                               <span>
-                                {tournament.buyIn.gc === 0 ? "FREE" :
-                                  selectedCurrency === CurrencyType.GC ? 
-                                    `${tournament.buyIn.gc} GC` : 
-                                    `${tournament.buyIn.sc} SC`
-                                }
+                                {tournament.buyIn.gc === 0
+                                  ? "FREE"
+                                  : selectedCurrency === CurrencyType.GC
+                                    ? `${tournament.buyIn.gc} GC`
+                                    : `${tournament.buyIn.sc} SC`}
                               </span>
                             </div>
                             <div className="flex justify-between">
-                              <span className="text-muted-foreground">Prize:</span>
+                              <span className="text-muted-foreground">
+                                Prize:
+                              </span>
                               <span className="text-success font-medium">
-                                {selectedCurrency === CurrencyType.GC ? 
-                                  `${tournament.prize.gc} GC` : 
-                                  `${tournament.prize.sc} SC`
-                                }
+                                {selectedCurrency === CurrencyType.GC
+                                  ? `${tournament.prize.gc} GC`
+                                  : `${tournament.prize.sc} SC`}
                               </span>
                             </div>
                             <div className="flex justify-between">
-                              <span className="text-muted-foreground">Registered:</span>
-                              <span>{tournament.registered}/{tournament.maxPlayers}</span>
+                              <span className="text-muted-foreground">
+                                Registered:
+                              </span>
+                              <span>
+                                {tournament.registered}/{tournament.maxPlayers}
+                              </span>
                             </div>
                             {tournament.status === "registering" && (
                               <div className="flex justify-between">
-                                <span className="text-muted-foreground">Starts in:</span>
-                                <span className="font-mono text-xs">{getTimeUntilStart(tournament.startTime)}</span>
+                                <span className="text-muted-foreground">
+                                  Starts in:
+                                </span>
+                                <span className="font-mono text-xs">
+                                  {getTimeUntilStart(tournament.startTime)}
+                                </span>
                               </div>
                             )}
                           </div>
 
-                          <Progress 
-                            value={(tournament.registered / tournament.maxPlayers) * 100} 
+                          <Progress
+                            value={
+                              (tournament.registered / tournament.maxPlayers) *
+                              100
+                            }
                             className="h-2"
                           />
 
@@ -596,10 +696,16 @@ export default function PokerPage() {
                             <Button
                               size="sm"
                               className="w-full mt-2"
-                              disabled={!user || (tournament.buyIn.gc > 0 && !canAffordWager(
-                                selectedCurrency, 
-                                selectedCurrency === CurrencyType.GC ? tournament.buyIn.gc : tournament.buyIn.sc
-                              ))}
+                              disabled={
+                                !user ||
+                                (tournament.buyIn.gc > 0 &&
+                                  !canAffordWager(
+                                    selectedCurrency,
+                                    selectedCurrency === CurrencyType.GC
+                                      ? tournament.buyIn.gc
+                                      : tournament.buyIn.sc,
+                                  ))
+                              }
                             >
                               <Crown className="h-3 w-3 mr-1" />
                               Register
@@ -625,7 +731,9 @@ export default function PokerPage() {
                       {currentTable?.name}
                     </span>
                     <div className="flex items-center gap-2">
-                      <Badge variant="outline">Pot: {currentPot} {selectedCurrency}</Badge>
+                      <Badge variant="outline">
+                        Pot: {currentPot} {selectedCurrency}
+                      </Badge>
                       <Badge variant="outline">{currentTable?.gameStage}</Badge>
                     </div>
                   </CardTitle>
@@ -633,14 +741,18 @@ export default function PokerPage() {
                 <CardContent className="space-y-6">
                   {/* Community Cards */}
                   <div className="text-center">
-                    <div className="text-sm font-medium mb-3">Community Cards</div>
+                    <div className="text-sm font-medium mb-3">
+                      Community Cards
+                    </div>
                     <div className="flex justify-center gap-2">
                       {communityCards.map((card, index) => (
                         <div
                           key={index}
                           className="w-12 h-16 bg-white border-2 border-gray-300 rounded-lg flex flex-col items-center justify-center text-black shadow-md"
                         >
-                          <div className={`text-sm font-bold ${suits[card.suit].color}`}>
+                          <div
+                            className={`text-sm font-bold ${suits[card.suit].color}`}
+                          >
                             {card.rank}
                           </div>
                           <div className={`text-lg ${suits[card.suit].color}`}>
@@ -649,14 +761,18 @@ export default function PokerPage() {
                         </div>
                       ))}
                       {/* Empty slots for remaining community cards */}
-                      {Array(5 - communityCards.length).fill(null).map((_, index) => (
-                        <div
-                          key={`empty-${index}`}
-                          className="w-12 h-16 border-2 border-dashed border-border rounded-lg flex items-center justify-center"
-                        >
-                          <span className="text-muted-foreground text-xs">?</span>
-                        </div>
-                      ))}
+                      {Array(5 - communityCards.length)
+                        .fill(null)
+                        .map((_, index) => (
+                          <div
+                            key={`empty-${index}`}
+                            className="w-12 h-16 border-2 border-dashed border-border rounded-lg flex items-center justify-center"
+                          >
+                            <span className="text-muted-foreground text-xs">
+                              ?
+                            </span>
+                          </div>
+                        ))}
                     </div>
                   </div>
 
@@ -666,29 +782,49 @@ export default function PokerPage() {
                       <div
                         key={player.id}
                         className={`p-3 rounded-lg border ${
-                          player.isActive ? "border-purple bg-purple/10" :
-                          player.isFolded ? "border-red-500 bg-red-500/10" :
-                          "border-border"
+                          player.isActive
+                            ? "border-purple bg-purple/10"
+                            : player.isFolded
+                              ? "border-red-500 bg-red-500/10"
+                              : "border-border"
                         }`}
                       >
                         <div className="space-y-2">
                           <div className="flex items-center justify-between">
-                            <span className="font-medium text-sm">{player.name}</span>
+                            <span className="font-medium text-sm">
+                              {player.name}
+                            </span>
                             <div className="flex gap-1">
-                              {player.isDealer && <Crown className="h-3 w-3 text-gold" />}
-                              {player.isBigBlind && <Badge className="text-xs bg-red-500">BB</Badge>}
-                              {player.isSmallBlind && <Badge className="text-xs bg-yellow-500">SB</Badge>}
+                              {player.isDealer && (
+                                <Crown className="h-3 w-3 text-gold" />
+                              )}
+                              {player.isBigBlind && (
+                                <Badge className="text-xs bg-red-500">BB</Badge>
+                              )}
+                              {player.isSmallBlind && (
+                                <Badge className="text-xs bg-yellow-500">
+                                  SB
+                                </Badge>
+                              )}
                             </div>
                           </div>
-                          
+
                           <div className="text-xs space-y-1">
                             <div className="flex justify-between">
-                              <span className="text-muted-foreground">Chips:</span>
-                              <span className="font-medium">{player.chips}</span>
+                              <span className="text-muted-foreground">
+                                Chips:
+                              </span>
+                              <span className="font-medium">
+                                {player.chips}
+                              </span>
                             </div>
                             <div className="flex justify-between">
-                              <span className="text-muted-foreground">Bet:</span>
-                              <span className="font-medium">{player.currentBet}</span>
+                              <span className="text-muted-foreground">
+                                Bet:
+                              </span>
+                              <span className="font-medium">
+                                {player.currentBet}
+                              </span>
                             </div>
                           </div>
 
@@ -697,7 +833,7 @@ export default function PokerPage() {
                               ALL IN
                             </Badge>
                           )}
-                          
+
                           {player.isFolded && (
                             <Badge className="w-full justify-center bg-gray-500 text-white text-xs">
                               FOLDED
@@ -712,7 +848,9 @@ export default function PokerPage() {
                                   key={cardIndex}
                                   className="w-8 h-10 bg-white border border-gray-300 rounded flex flex-col items-center justify-center text-black text-xs"
                                 >
-                                  <div className={`font-bold ${suits[card.suit].color}`}>
+                                  <div
+                                    className={`font-bold ${suits[card.suit].color}`}
+                                  >
                                     {card.rank}
                                   </div>
                                   <div className={`${suits[card.suit].color}`}>
@@ -734,7 +872,11 @@ export default function PokerPage() {
                         <Button
                           size="sm"
                           variant="outline"
-                          onClick={() => setBetAmount(Math.max(minimumBet, betAmount - minimumBet))}
+                          onClick={() =>
+                            setBetAmount(
+                              Math.max(minimumBet, betAmount - minimumBet),
+                            )
+                          }
                         >
                           <Minus className="h-3 w-3" />
                         </Button>
@@ -758,7 +900,7 @@ export default function PokerPage() {
                         >
                           Fold
                         </Button>
-                        
+
                         {callAmount > 0 ? (
                           <Button
                             onClick={() => handlePokerAction("call")}
@@ -774,7 +916,7 @@ export default function PokerPage() {
                             Check
                           </Button>
                         )}
-                        
+
                         <Button
                           onClick={() => handlePokerAction("bet", betAmount)}
                           disabled={betAmount < minimumBet}
@@ -782,10 +924,12 @@ export default function PokerPage() {
                         >
                           {callAmount > 0 ? "Raise" : "Bet"}
                         </Button>
-                        
+
                         <Button
                           variant="outline"
-                          onClick={() => handlePokerAction("all-in", players[0]?.chips || 0)}
+                          onClick={() =>
+                            handlePokerAction("all-in", players[0]?.chips || 0)
+                          }
                           className="text-sm"
                         >
                           All In
@@ -799,20 +943,30 @@ export default function PokerPage() {
               <Card className="glass">
                 <CardContent className="p-8 text-center">
                   <Spade className="h-16 w-16 mx-auto mb-4 text-muted-foreground" />
-                  <h3 className="text-xl font-semibold mb-2">Select a Poker Table</h3>
+                  <h3 className="text-xl font-semibold mb-2">
+                    Select a Poker Table
+                  </h3>
                   <p className="text-muted-foreground mb-4">
                     Choose from Texas Hold'em cash games or tournaments
                   </p>
                   <div className="flex items-center gap-2 justify-center">
                     <Button
-                      variant={selectedCurrency === CurrencyType.GC ? "default" : "outline"}
+                      variant={
+                        selectedCurrency === CurrencyType.GC
+                          ? "default"
+                          : "outline"
+                      }
                       onClick={() => setSelectedCurrency(CurrencyType.GC)}
                     >
                       <Coins className="h-4 w-4 mr-2 text-gold" />
                       Play with GC
                     </Button>
                     <Button
-                      variant={selectedCurrency === CurrencyType.SC ? "default" : "outline"}
+                      variant={
+                        selectedCurrency === CurrencyType.SC
+                          ? "default"
+                          : "outline"
+                      }
                       onClick={() => setSelectedCurrency(CurrencyType.SC)}
                     >
                       <Gem className="h-4 w-4 mr-2 text-teal" />
@@ -847,7 +1001,9 @@ export default function PokerPage() {
                             key={index}
                             className="w-10 h-12 bg-white border border-gray-300 rounded flex flex-col items-center justify-center text-black text-xs"
                           >
-                            <div className={`font-bold ${suits[card.suit].color}`}>
+                            <div
+                              className={`font-bold ${suits[card.suit].color}`}
+                            >
                               {card.rank}
                             </div>
                             <div className={`${suits[card.suit].color}`}>
@@ -856,7 +1012,9 @@ export default function PokerPage() {
                           </div>
                         ))}
                       </div>
-                      <div className="text-xs text-muted-foreground">Your Hole Cards</div>
+                      <div className="text-xs text-muted-foreground">
+                        Your Hole Cards
+                      </div>
                     </div>
                   </div>
                 </CardContent>
@@ -907,23 +1065,35 @@ export default function PokerPage() {
                 <div className="text-sm">
                   <div className="flex justify-between items-center mb-1">
                     <span className="font-medium">PokerAce***</span>
-                    <span className="text-success font-semibold">+47.50 SC</span>
+                    <span className="text-success font-semibold">
+                      +47.50 SC
+                    </span>
                   </div>
-                  <p className="text-muted-foreground text-xs">High Stakes • Full House</p>
+                  <p className="text-muted-foreground text-xs">
+                    High Stakes • Full House
+                  </p>
                 </div>
                 <div className="text-sm">
                   <div className="flex justify-between items-center mb-1">
                     <span className="font-medium">BluffMaster***</span>
-                    <span className="text-success font-semibold">+23.75 SC</span>
+                    <span className="text-success font-semibold">
+                      +23.75 SC
+                    </span>
                   </div>
-                  <p className="text-muted-foreground text-xs">Tournament • Straight</p>
+                  <p className="text-muted-foreground text-xs">
+                    Tournament • Straight
+                  </p>
                 </div>
                 <div className="text-sm">
                   <div className="flex justify-between items-center mb-1">
                     <span className="font-medium">RiverRat***</span>
-                    <span className="text-success font-semibold">+15.25 SC</span>
+                    <span className="text-success font-semibold">
+                      +15.25 SC
+                    </span>
                   </div>
-                  <p className="text-muted-foreground text-xs">Beginner • Two Pair</p>
+                  <p className="text-muted-foreground text-xs">
+                    Beginner • Two Pair
+                  </p>
                 </div>
               </CardContent>
             </Card>
@@ -938,19 +1108,25 @@ export default function PokerPage() {
               </CardHeader>
               <CardContent className="space-y-3 text-sm">
                 <div className="p-3 bg-blue-500/10 border border-blue-500/20 rounded">
-                  <div className="font-medium text-blue-400 mb-1">💡 Position Matters</div>
+                  <div className="font-medium text-blue-400 mb-1">
+                    💡 Position Matters
+                  </div>
                   <p className="text-muted-foreground text-xs">
                     Play tighter in early position, looser in late position.
                   </p>
                 </div>
                 <div className="p-3 bg-green-500/10 border border-green-500/20 rounded">
-                  <div className="font-medium text-green-400 mb-1">🎯 Bankroll Management</div>
+                  <div className="font-medium text-green-400 mb-1">
+                    🎯 Bankroll Management
+                  </div>
                   <p className="text-muted-foreground text-xs">
                     Never play at stakes higher than 5% of your bankroll.
                   </p>
                 </div>
                 <div className="p-3 bg-purple-500/10 border border-purple-500/20 rounded">
-                  <div className="font-medium text-purple-400 mb-1">🧠 Read Your Opponents</div>
+                  <div className="font-medium text-purple-400 mb-1">
+                    🧠 Read Your Opponents
+                  </div>
                   <p className="text-muted-foreground text-xs">
                     Watch betting patterns and timing tells to gain an edge.
                   </p>

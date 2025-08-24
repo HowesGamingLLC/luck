@@ -52,10 +52,12 @@ interface Card {
 export default function TableGamesPage() {
   const { user, canAffordWager, updateBalance } = useCurrency();
   const [selectedGame, setSelectedGame] = useState<string>("blackjack-1");
-  const [selectedCurrency, setSelectedCurrency] = useState<CurrencyType>(CurrencyType.GC);
+  const [selectedCurrency, setSelectedCurrency] = useState<CurrencyType>(
+    CurrencyType.GC,
+  );
   const [betAmount, setBetAmount] = useState<number>(1);
   const [gameActive, setGameActive] = useState(false);
-  
+
   // Blackjack state
   const [playerHand, setPlayerHand] = useState<Card[]>([]);
   const [dealerHand, setDealerHand] = useState<Card[]>([]);
@@ -70,7 +72,7 @@ export default function TableGamesPage() {
       type: "blackjack",
       description: "Beat the dealer by getting as close to 21 as possible",
       minBet: { gc: 5, sc: 0.05 },
-      maxBet: { gc: 500, sc: 5.00 },
+      maxBet: { gc: 500, sc: 5.0 },
       players: 3,
       maxPlayers: 6,
       houseEdge: 0.5,
@@ -82,7 +84,7 @@ export default function TableGamesPage() {
       type: "roulette",
       description: "Spin the wheel and bet on where the ball will land",
       minBet: { gc: 1, sc: 0.01 },
-      maxBet: { gc: 100, sc: 1.00 },
+      maxBet: { gc: 100, sc: 1.0 },
       players: 8,
       maxPlayers: 12,
       houseEdge: 2.7,
@@ -93,8 +95,8 @@ export default function TableGamesPage() {
       name: "Punto Banco",
       type: "baccarat",
       description: "Bet on Player, Banker, or Tie in this classic card game",
-      minBet: { gc: 10, sc: 0.10 },
-      maxBet: { gc: 1000, sc: 10.00 },
+      minBet: { gc: 10, sc: 0.1 },
+      maxBet: { gc: 1000, sc: 10.0 },
       players: 5,
       maxPlayers: 8,
       houseEdge: 1.06,
@@ -105,8 +107,8 @@ export default function TableGamesPage() {
       name: "Casino Hold'em",
       type: "poker",
       description: "Play poker against the house with ante and call bets",
-      minBet: { gc: 10, sc: 0.10 },
-      maxBet: { gc: 200, sc: 2.00 },
+      minBet: { gc: 10, sc: 0.1 },
+      maxBet: { gc: 200, sc: 2.0 },
       players: 4,
       maxPlayers: 6,
       houseEdge: 2.16,
@@ -114,7 +116,8 @@ export default function TableGamesPage() {
     },
   ];
 
-  const currentGame = tableGames.find(game => game.id === selectedGame) || tableGames[0];
+  const currentGame =
+    tableGames.find((game) => game.id === selectedGame) || tableGames[0];
 
   const suits = {
     hearts: { symbol: "♥", color: "text-red-500", icon: Heart },
@@ -125,10 +128,24 @@ export default function TableGamesPage() {
 
   const createDeck = (): Card[] => {
     const suits = ["hearts", "diamonds", "clubs", "spades"] as const;
-    const values = ["A", "2", "3", "4", "5", "6", "7", "8", "9", "10", "J", "Q", "K"];
+    const values = [
+      "A",
+      "2",
+      "3",
+      "4",
+      "5",
+      "6",
+      "7",
+      "8",
+      "9",
+      "10",
+      "J",
+      "Q",
+      "K",
+    ];
     const deck: Card[] = [];
 
-    suits.forEach(suit => {
+    suits.forEach((suit) => {
       values.forEach((value, index) => {
         deck.push({
           suit,
@@ -145,7 +162,7 @@ export default function TableGamesPage() {
     let score = 0;
     let aces = 0;
 
-    hand.forEach(card => {
+    hand.forEach((card) => {
       if (card.value === "A") {
         aces++;
         score += 11;
@@ -234,7 +251,12 @@ export default function TableGamesPage() {
     }
 
     if (payout > 0) {
-      updateBalance(selectedCurrency, payout, `Blackjack win: ${result}`, "win");
+      updateBalance(
+        selectedCurrency,
+        payout,
+        `Blackjack win: ${result}`,
+        "win",
+      );
     }
 
     setGameResult(result);
@@ -243,10 +265,14 @@ export default function TableGamesPage() {
 
   const getDifficultyColor = (difficulty: string) => {
     switch (difficulty) {
-      case "Easy": return "text-green-500 bg-green-500/20";
-      case "Medium": return "text-yellow-500 bg-yellow-500/20";
-      case "Hard": return "text-red-500 bg-red-500/20";
-      default: return "text-gray-500 bg-gray-500/20";
+      case "Easy":
+        return "text-green-500 bg-green-500/20";
+      case "Medium":
+        return "text-yellow-500 bg-yellow-500/20";
+      case "Hard":
+        return "text-red-500 bg-red-500/20";
+      default:
+        return "text-gray-500 bg-gray-500/20";
     }
   };
 
@@ -337,10 +363,10 @@ export default function TableGamesPage() {
                       </div>
                       <div className="flex items-center justify-between text-xs">
                         <span className="text-muted-foreground">
-                          Min: {selectedCurrency === CurrencyType.GC ? 
-                            `${game.minBet.gc} GC` : 
-                            `${game.minBet.sc} SC`
-                          }
+                          Min:{" "}
+                          {selectedCurrency === CurrencyType.GC
+                            ? `${game.minBet.gc} GC`
+                            : `${game.minBet.sc} SC`}
                         </span>
                         <span className="text-muted-foreground">
                           Players: {game.players}/{game.maxPlayers}
@@ -363,7 +389,11 @@ export default function TableGamesPage() {
               <CardContent className="space-y-4">
                 <div className="flex gap-2">
                   <Button
-                    variant={selectedCurrency === CurrencyType.GC ? "default" : "outline"}
+                    variant={
+                      selectedCurrency === CurrencyType.GC
+                        ? "default"
+                        : "outline"
+                    }
                     size="sm"
                     className="flex-1"
                     onClick={() => setSelectedCurrency(CurrencyType.GC)}
@@ -372,7 +402,11 @@ export default function TableGamesPage() {
                     GC
                   </Button>
                   <Button
-                    variant={selectedCurrency === CurrencyType.SC ? "default" : "outline"}
+                    variant={
+                      selectedCurrency === CurrencyType.SC
+                        ? "default"
+                        : "outline"
+                    }
                     size="sm"
                     className="flex-1"
                     onClick={() => setSelectedCurrency(CurrencyType.SC)}
@@ -387,10 +421,17 @@ export default function TableGamesPage() {
                     <Button
                       size="sm"
                       variant="outline"
-                      onClick={() => setBetAmount(Math.max(
-                        selectedCurrency === CurrencyType.GC ? currentGame.minBet.gc : currentGame.minBet.sc,
-                        betAmount - (selectedCurrency === CurrencyType.GC ? 1 : 0.01)
-                      ))}
+                      onClick={() =>
+                        setBetAmount(
+                          Math.max(
+                            selectedCurrency === CurrencyType.GC
+                              ? currentGame.minBet.gc
+                              : currentGame.minBet.sc,
+                            betAmount -
+                              (selectedCurrency === CurrencyType.GC ? 1 : 0.01),
+                          ),
+                        )
+                      }
                     >
                       <Minus className="h-3 w-3" />
                     </Button>
@@ -400,27 +441,40 @@ export default function TableGamesPage() {
                     <Button
                       size="sm"
                       variant="outline"
-                      onClick={() => setBetAmount(Math.min(
-                        selectedCurrency === CurrencyType.GC ? currentGame.maxBet.gc : currentGame.maxBet.sc,
-                        betAmount + (selectedCurrency === CurrencyType.GC ? 1 : 0.01)
-                      ))}
+                      onClick={() =>
+                        setBetAmount(
+                          Math.min(
+                            selectedCurrency === CurrencyType.GC
+                              ? currentGame.maxBet.gc
+                              : currentGame.maxBet.sc,
+                            betAmount +
+                              (selectedCurrency === CurrencyType.GC ? 1 : 0.01),
+                          ),
+                        )
+                      }
                     >
                       <Plus className="h-3 w-3" />
                     </Button>
                   </div>
-                  
+
                   <div className="flex gap-1">
-                    {[1, 5, 10, 25].map(amount => (
+                    {[1, 5, 10, 25].map((amount) => (
                       <Button
                         key={amount}
                         size="sm"
                         variant="outline"
                         className="flex-1 text-xs"
-                        onClick={() => setBetAmount(
-                          selectedCurrency === CurrencyType.GC ? amount : amount * 0.01
-                        )}
+                        onClick={() =>
+                          setBetAmount(
+                            selectedCurrency === CurrencyType.GC
+                              ? amount
+                              : amount * 0.01,
+                          )
+                        }
                       >
-                        {selectedCurrency === CurrencyType.GC ? amount : (amount * 0.01).toFixed(2)}
+                        {selectedCurrency === CurrencyType.GC
+                          ? amount
+                          : (amount * 0.01).toFixed(2)}
                       </Button>
                     ))}
                   </div>
@@ -430,7 +484,11 @@ export default function TableGamesPage() {
                   <Button
                     className="w-full btn-primary"
                     onClick={startBlackjack}
-                    disabled={gameActive || !user || !canAffordWager(selectedCurrency, betAmount)}
+                    disabled={
+                      gameActive ||
+                      !user ||
+                      !canAffordWager(selectedCurrency, betAmount)
+                    }
                   >
                     <Play className="h-4 w-4 mr-2" />
                     Deal Cards
@@ -451,12 +509,16 @@ export default function TableGamesPage() {
                       {currentGame.name}
                     </span>
                     {gameResult && (
-                      <Badge className={
-                        gameResult.includes("win") || gameResult.includes("Win") ? 
-                        "bg-success text-white" : 
-                        gameResult.includes("Push") ? "bg-yellow-500 text-black" :
-                        "bg-destructive text-white"
-                      }>
+                      <Badge
+                        className={
+                          gameResult.includes("win") ||
+                          gameResult.includes("Win")
+                            ? "bg-success text-white"
+                            : gameResult.includes("Push")
+                              ? "bg-yellow-500 text-black"
+                              : "bg-destructive text-white"
+                        }
+                      >
                         {gameResult}
                       </Badge>
                     )}
@@ -475,14 +537,18 @@ export default function TableGamesPage() {
                           key={index}
                           className="w-16 h-24 bg-white border-2 border-gray-300 rounded-lg flex flex-col items-center justify-center text-black shadow-md"
                         >
-                          {(gameActive && index === 1) ? (
+                          {gameActive && index === 1 ? (
                             <div className="text-blue-500 font-bold">?</div>
                           ) : (
                             <>
-                              <div className={`text-lg font-bold ${suits[card.suit].color}`}>
+                              <div
+                                className={`text-lg font-bold ${suits[card.suit].color}`}
+                              >
                                 {card.value}
                               </div>
-                              <div className={`text-xl ${suits[card.suit].color}`}>
+                              <div
+                                className={`text-xl ${suits[card.suit].color}`}
+                              >
                                 {suits[card.suit].symbol}
                               </div>
                             </>
@@ -498,7 +564,9 @@ export default function TableGamesPage() {
                       <span className="font-semibold">You</span>
                       <Badge variant="outline">Score: {playerScore}</Badge>
                       {playerScore > 21 && (
-                        <Badge className="bg-destructive text-white">BUST</Badge>
+                        <Badge className="bg-destructive text-white">
+                          BUST
+                        </Badge>
                       )}
                     </div>
                     <div className="flex gap-2">
@@ -507,7 +575,9 @@ export default function TableGamesPage() {
                           key={index}
                           className="w-16 h-24 bg-white border-2 border-gray-300 rounded-lg flex flex-col items-center justify-center text-black shadow-md"
                         >
-                          <div className={`text-lg font-bold ${suits[card.suit].color}`}>
+                          <div
+                            className={`text-lg font-bold ${suits[card.suit].color}`}
+                          >
                             {card.value}
                           </div>
                           <div className={`text-xl ${suits[card.suit].color}`}>
@@ -525,7 +595,11 @@ export default function TableGamesPage() {
                         <Plus className="h-4 w-4 mr-2" />
                         Hit
                       </Button>
-                      <Button onClick={stand} variant="outline" className="flex-1">
+                      <Button
+                        onClick={stand}
+                        variant="outline"
+                        className="flex-1"
+                      >
                         <Pause className="h-4 w-4 mr-2" />
                         Stand
                       </Button>
@@ -533,13 +607,16 @@ export default function TableGamesPage() {
                   )}
 
                   {!gameActive && playerHand.length > 0 && (
-                    <Button onClick={() => {
-                      setPlayerHand([]);
-                      setDealerHand([]);
-                      setPlayerScore(0);
-                      setDealerScore(0);
-                      setGameResult(null);
-                    }} className="w-full">
+                    <Button
+                      onClick={() => {
+                        setPlayerHand([]);
+                        setDealerHand([]);
+                        setPlayerScore(0);
+                        setDealerScore(0);
+                        setGameResult(null);
+                      }}
+                      className="w-full"
+                    >
                       <Shuffle className="h-4 w-4 mr-2" />
                       New Game
                     </Button>
@@ -553,11 +630,16 @@ export default function TableGamesPage() {
               <Card className="glass">
                 <CardContent className="p-8 text-center">
                   <Spade className="h-16 w-16 mx-auto mb-4 text-muted-foreground" />
-                  <h3 className="text-xl font-semibold mb-2">{currentGame.name}</h3>
-                  <p className="text-muted-foreground mb-4">{currentGame.description}</p>
+                  <h3 className="text-xl font-semibold mb-2">
+                    {currentGame.name}
+                  </h3>
+                  <p className="text-muted-foreground mb-4">
+                    {currentGame.description}
+                  </p>
                   <Badge className="mb-4">Coming Soon</Badge>
                   <p className="text-sm text-muted-foreground">
-                    This game is currently under development. Try our Blackjack table for now!
+                    This game is currently under development. Try our Blackjack
+                    table for now!
                   </p>
                 </CardContent>
               </Card>
@@ -577,29 +659,31 @@ export default function TableGamesPage() {
               <CardContent className="space-y-3">
                 <div className="flex justify-between text-sm">
                   <span className="text-muted-foreground">House Edge:</span>
-                  <span className="font-semibold">{currentGame.houseEdge}%</span>
+                  <span className="font-semibold">
+                    {currentGame.houseEdge}%
+                  </span>
                 </div>
                 <div className="flex justify-between text-sm">
                   <span className="text-muted-foreground">Min Bet:</span>
                   <span className="font-semibold">
-                    {selectedCurrency === CurrencyType.GC ? 
-                      `${currentGame.minBet.gc} GC` : 
-                      `${currentGame.minBet.sc} SC`
-                    }
+                    {selectedCurrency === CurrencyType.GC
+                      ? `${currentGame.minBet.gc} GC`
+                      : `${currentGame.minBet.sc} SC`}
                   </span>
                 </div>
                 <div className="flex justify-between text-sm">
                   <span className="text-muted-foreground">Max Bet:</span>
                   <span className="font-semibold">
-                    {selectedCurrency === CurrencyType.GC ? 
-                      `${currentGame.maxBet.gc} GC` : 
-                      `${currentGame.maxBet.sc} SC`
-                    }
+                    {selectedCurrency === CurrencyType.GC
+                      ? `${currentGame.maxBet.gc} GC`
+                      : `${currentGame.maxBet.sc} SC`}
                   </span>
                 </div>
                 <div className="flex justify-between text-sm">
                   <span className="text-muted-foreground">Players:</span>
-                  <span className="font-semibold">{currentGame.players}/{currentGame.maxPlayers}</span>
+                  <span className="font-semibold">
+                    {currentGame.players}/{currentGame.maxPlayers}
+                  </span>
                 </div>
               </CardContent>
             </Card>
@@ -618,21 +702,31 @@ export default function TableGamesPage() {
                     <span className="font-medium">Card_Master***</span>
                     <span className="text-success font-semibold">+8.75 SC</span>
                   </div>
-                  <p className="text-muted-foreground text-xs">Blackjack • 3m ago</p>
+                  <p className="text-muted-foreground text-xs">
+                    Blackjack • 3m ago
+                  </p>
                 </div>
                 <div className="text-sm">
                   <div className="flex justify-between items-center mb-1">
                     <span className="font-medium">Table_King***</span>
-                    <span className="text-success font-semibold">+12.50 SC</span>
+                    <span className="text-success font-semibold">
+                      +12.50 SC
+                    </span>
                   </div>
-                  <p className="text-muted-foreground text-xs">Roulette • 8m ago</p>
+                  <p className="text-muted-foreground text-xs">
+                    Roulette • 8m ago
+                  </p>
                 </div>
                 <div className="text-sm">
                   <div className="flex justify-between items-center mb-1">
                     <span className="font-medium">Lucky_21***</span>
-                    <span className="text-success font-semibold">+25.00 SC</span>
+                    <span className="text-success font-semibold">
+                      +25.00 SC
+                    </span>
                   </div>
-                  <p className="text-muted-foreground text-xs">Blackjack • 15m ago</p>
+                  <p className="text-muted-foreground text-xs">
+                    Blackjack • 15m ago
+                  </p>
                 </div>
               </CardContent>
             </Card>
@@ -648,17 +742,37 @@ export default function TableGamesPage() {
               <CardContent className="space-y-3 text-sm">
                 {currentGame.type === "blackjack" && (
                   <div className="space-y-2">
-                    <p><strong>Objective:</strong> Beat the dealer by getting closer to 21 without going over.</p>
-                    <p><strong>Card Values:</strong> Face cards = 10, Aces = 1 or 11, Others = face value</p>
-                    <p><strong>Actions:</strong> Hit (take card) or Stand (keep current total)</p>
-                    <p><strong>Dealer Rules:</strong> Hits on 16, stands on 17</p>
+                    <p>
+                      <strong>Objective:</strong> Beat the dealer by getting
+                      closer to 21 without going over.
+                    </p>
+                    <p>
+                      <strong>Card Values:</strong> Face cards = 10, Aces = 1 or
+                      11, Others = face value
+                    </p>
+                    <p>
+                      <strong>Actions:</strong> Hit (take card) or Stand (keep
+                      current total)
+                    </p>
+                    <p>
+                      <strong>Dealer Rules:</strong> Hits on 16, stands on 17
+                    </p>
                   </div>
                 )}
                 {currentGame.type === "roulette" && (
                   <div className="space-y-2">
-                    <p><strong>Objective:</strong> Predict where the ball will land on the spinning wheel.</p>
-                    <p><strong>Bet Types:</strong> Single numbers, colors, odd/even, groups</p>
-                    <p><strong>Payouts:</strong> Vary by bet type (35:1 for single numbers)</p>
+                    <p>
+                      <strong>Objective:</strong> Predict where the ball will
+                      land on the spinning wheel.
+                    </p>
+                    <p>
+                      <strong>Bet Types:</strong> Single numbers, colors,
+                      odd/even, groups
+                    </p>
+                    <p>
+                      <strong>Payouts:</strong> Vary by bet type (35:1 for
+                      single numbers)
+                    </p>
                   </div>
                 )}
               </CardContent>

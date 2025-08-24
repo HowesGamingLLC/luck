@@ -46,7 +46,7 @@ export default function Index() {
     if (isAuthenticated) {
       setTimeout(() => {
         setShowResult(false);
-        navigate('/dashboard');
+        navigate("/dashboard");
       }, 3000);
     } else {
       // If not authenticated, show result and hide after 3 seconds

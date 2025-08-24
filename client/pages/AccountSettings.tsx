@@ -81,9 +81,9 @@ export default function AccountSettings() {
   });
 
   const [limits, setLimits] = useState({
-    dailySpendLimit: 50.00,
-    weeklySpendLimit: 200.00,
-    monthlySpendLimit: 500.00,
+    dailySpendLimit: 50.0,
+    weeklySpendLimit: 200.0,
+    monthlySpendLimit: 500.0,
     sessionTimeLimit: 120, // minutes
     enableLimits: true,
     cooldownPeriod: 24, // hours
@@ -108,14 +108,39 @@ export default function AccountSettings() {
     }
     // Update password logic here
     alert("Password updated successfully");
-    setFormData(prev => ({ ...prev, currentPassword: "", newPassword: "", confirmPassword: "" }));
+    setFormData((prev) => ({
+      ...prev,
+      currentPassword: "",
+      newPassword: "",
+      confirmPassword: "",
+    }));
   };
 
   const activityLog = [
-    { action: "Login", timestamp: new Date(Date.now() - 30 * 60 * 1000), ip: "192.168.1.1", device: "Chrome on Windows" },
-    { action: "Password Changed", timestamp: new Date(Date.now() - 2 * 24 * 60 * 60 * 1000), ip: "192.168.1.1", device: "Chrome on Windows" },
-    { action: "Email Updated", timestamp: new Date(Date.now() - 7 * 24 * 60 * 60 * 1000), ip: "192.168.1.2", device: "Safari on iPhone" },
-    { action: "Login", timestamp: new Date(Date.now() - 14 * 24 * 60 * 60 * 1000), ip: "192.168.1.1", device: "Chrome on Windows" },
+    {
+      action: "Login",
+      timestamp: new Date(Date.now() - 30 * 60 * 1000),
+      ip: "192.168.1.1",
+      device: "Chrome on Windows",
+    },
+    {
+      action: "Password Changed",
+      timestamp: new Date(Date.now() - 2 * 24 * 60 * 60 * 1000),
+      ip: "192.168.1.1",
+      device: "Chrome on Windows",
+    },
+    {
+      action: "Email Updated",
+      timestamp: new Date(Date.now() - 7 * 24 * 60 * 60 * 1000),
+      ip: "192.168.1.2",
+      device: "Safari on iPhone",
+    },
+    {
+      action: "Login",
+      timestamp: new Date(Date.now() - 14 * 24 * 60 * 60 * 1000),
+      ip: "192.168.1.1",
+      device: "Chrome on Windows",
+    },
   ];
 
   const paymentMethods = [
@@ -189,19 +214,25 @@ export default function AccountSettings() {
                 </div>
               </div>
               <div className="text-right">
-                <div className="text-sm text-muted-foreground">Account Balance</div>
+                <div className="text-sm text-muted-foreground">
+                  Account Balance
+                </div>
                 <div className="flex items-center gap-4">
                   <div className="text-right">
                     <div className="font-semibold text-gold">
                       {currencyUser?.balance.goldCoins.toLocaleString() || 0} GC
                     </div>
-                    <div className="text-xs text-muted-foreground">Gold Coins</div>
+                    <div className="text-xs text-muted-foreground">
+                      Gold Coins
+                    </div>
                   </div>
                   <div className="text-right">
                     <div className="font-semibold text-teal">
                       {currencyUser?.balance.sweepCoins.toFixed(2) || "0.00"} SC
                     </div>
-                    <div className="text-xs text-muted-foreground">Sweep Coins</div>
+                    <div className="text-xs text-muted-foreground">
+                      Sweep Coins
+                    </div>
                   </div>
                 </div>
               </div>
@@ -245,7 +276,12 @@ export default function AccountSettings() {
                       <Input
                         id="name"
                         value={formData.name}
-                        onChange={(e) => setFormData(prev => ({ ...prev, name: e.target.value }))}
+                        onChange={(e) =>
+                          setFormData((prev) => ({
+                            ...prev,
+                            name: e.target.value,
+                          }))
+                        }
                         disabled={!isEditing}
                       />
                     </div>
@@ -255,7 +291,12 @@ export default function AccountSettings() {
                         id="email"
                         type="email"
                         value={formData.email}
-                        onChange={(e) => setFormData(prev => ({ ...prev, email: e.target.value }))}
+                        onChange={(e) =>
+                          setFormData((prev) => ({
+                            ...prev,
+                            email: e.target.value,
+                          }))
+                        }
                         disabled={!isEditing}
                       />
                     </div>
@@ -264,7 +305,12 @@ export default function AccountSettings() {
                       <Input
                         id="phone"
                         value={formData.phone}
-                        onChange={(e) => setFormData(prev => ({ ...prev, phone: e.target.value }))}
+                        onChange={(e) =>
+                          setFormData((prev) => ({
+                            ...prev,
+                            phone: e.target.value,
+                          }))
+                        }
                         disabled={!isEditing}
                         placeholder="(555) 123-4567"
                       />
@@ -275,7 +321,12 @@ export default function AccountSettings() {
                         id="dob"
                         type="date"
                         value={formData.dateOfBirth}
-                        onChange={(e) => setFormData(prev => ({ ...prev, dateOfBirth: e.target.value }))}
+                        onChange={(e) =>
+                          setFormData((prev) => ({
+                            ...prev,
+                            dateOfBirth: e.target.value,
+                          }))
+                        }
                         disabled={!isEditing}
                       />
                     </div>
@@ -286,7 +337,12 @@ export default function AccountSettings() {
                     <Input
                       id="address"
                       value={formData.address}
-                      onChange={(e) => setFormData(prev => ({ ...prev, address: e.target.value }))}
+                      onChange={(e) =>
+                        setFormData((prev) => ({
+                          ...prev,
+                          address: e.target.value,
+                        }))
+                      }
                       disabled={!isEditing}
                       placeholder="123 Main Street"
                     />
@@ -298,7 +354,12 @@ export default function AccountSettings() {
                       <Input
                         id="city"
                         value={formData.city}
-                        onChange={(e) => setFormData(prev => ({ ...prev, city: e.target.value }))}
+                        onChange={(e) =>
+                          setFormData((prev) => ({
+                            ...prev,
+                            city: e.target.value,
+                          }))
+                        }
                         disabled={!isEditing}
                       />
                     </div>
@@ -307,7 +368,12 @@ export default function AccountSettings() {
                       <Input
                         id="state"
                         value={formData.state}
-                        onChange={(e) => setFormData(prev => ({ ...prev, state: e.target.value }))}
+                        onChange={(e) =>
+                          setFormData((prev) => ({
+                            ...prev,
+                            state: e.target.value,
+                          }))
+                        }
                         disabled={!isEditing}
                       />
                     </div>
@@ -316,7 +382,12 @@ export default function AccountSettings() {
                       <Input
                         id="zip"
                         value={formData.zipCode}
-                        onChange={(e) => setFormData(prev => ({ ...prev, zipCode: e.target.value }))}
+                        onChange={(e) =>
+                          setFormData((prev) => ({
+                            ...prev,
+                            zipCode: e.target.value,
+                          }))
+                        }
                         disabled={!isEditing}
                       />
                     </div>
@@ -328,7 +399,10 @@ export default function AccountSettings() {
                         <Save className="h-4 w-4 mr-2" />
                         Save Changes
                       </Button>
-                      <Button variant="outline" onClick={() => setIsEditing(false)}>
+                      <Button
+                        variant="outline"
+                        onClick={() => setIsEditing(false)}
+                      >
                         Cancel
                       </Button>
                     </div>
@@ -352,14 +426,22 @@ export default function AccountSettings() {
                     <div className="border-2 border-dashed border-border rounded-lg p-6 text-center">
                       <Upload className="h-8 w-8 mx-auto mb-2 text-muted-foreground" />
                       <p className="text-sm font-medium">Government ID</p>
-                      <p className="text-xs text-muted-foreground">Driver's License or Passport</p>
-                      <Button size="sm" className="mt-2">Upload</Button>
+                      <p className="text-xs text-muted-foreground">
+                        Driver's License or Passport
+                      </p>
+                      <Button size="sm" className="mt-2">
+                        Upload
+                      </Button>
                     </div>
                     <div className="border-2 border-dashed border-border rounded-lg p-6 text-center">
                       <Upload className="h-8 w-8 mx-auto mb-2 text-muted-foreground" />
                       <p className="text-sm font-medium">Proof of Address</p>
-                      <p className="text-xs text-muted-foreground">Utility Bill or Bank Statement</p>
-                      <Button size="sm" className="mt-2">Upload</Button>
+                      <p className="text-xs text-muted-foreground">
+                        Utility Bill or Bank Statement
+                      </p>
+                      <Button size="sm" className="mt-2">
+                        Upload
+                      </Button>
                     </div>
                   </div>
                 </CardContent>
@@ -385,7 +467,12 @@ export default function AccountSettings() {
                         id="currentPassword"
                         type={showPassword ? "text" : "password"}
                         value={formData.currentPassword}
-                        onChange={(e) => setFormData(prev => ({ ...prev, currentPassword: e.target.value }))}
+                        onChange={(e) =>
+                          setFormData((prev) => ({
+                            ...prev,
+                            currentPassword: e.target.value,
+                          }))
+                        }
                       />
                       <Button
                         type="button"
@@ -394,7 +481,11 @@ export default function AccountSettings() {
                         className="absolute right-0 top-0 h-full px-3"
                         onClick={() => setShowPassword(!showPassword)}
                       >
-                        {showPassword ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
+                        {showPassword ? (
+                          <EyeOff className="h-4 w-4" />
+                        ) : (
+                          <Eye className="h-4 w-4" />
+                        )}
                       </Button>
                     </div>
                   </div>
@@ -404,19 +495,34 @@ export default function AccountSettings() {
                       id="newPassword"
                       type="password"
                       value={formData.newPassword}
-                      onChange={(e) => setFormData(prev => ({ ...prev, newPassword: e.target.value }))}
+                      onChange={(e) =>
+                        setFormData((prev) => ({
+                          ...prev,
+                          newPassword: e.target.value,
+                        }))
+                      }
                     />
                   </div>
                   <div>
-                    <Label htmlFor="confirmPassword">Confirm New Password</Label>
+                    <Label htmlFor="confirmPassword">
+                      Confirm New Password
+                    </Label>
                     <Input
                       id="confirmPassword"
                       type="password"
                       value={formData.confirmPassword}
-                      onChange={(e) => setFormData(prev => ({ ...prev, confirmPassword: e.target.value }))}
+                      onChange={(e) =>
+                        setFormData((prev) => ({
+                          ...prev,
+                          confirmPassword: e.target.value,
+                        }))
+                      }
                     />
                   </div>
-                  <Button onClick={handlePasswordChange} className="btn-primary">
+                  <Button
+                    onClick={handlePasswordChange}
+                    className="btn-primary"
+                  >
                     Update Password
                   </Button>
                 </CardContent>
@@ -442,8 +548,11 @@ export default function AccountSettings() {
                     </div>
                     <Switch
                       checked={preferences.twoFactorAuth}
-                      onCheckedChange={(checked) => 
-                        setPreferences(prev => ({ ...prev, twoFactorAuth: checked }))
+                      onCheckedChange={(checked) =>
+                        setPreferences((prev) => ({
+                          ...prev,
+                          twoFactorAuth: checked,
+                        }))
                       }
                     />
                   </div>
@@ -451,7 +560,8 @@ export default function AccountSettings() {
                     <Alert>
                       <CheckCircle className="h-4 w-4" />
                       <AlertDescription>
-                        Two-factor authentication is enabled. You'll receive codes at {formData.phone || "your phone number"}.
+                        Two-factor authentication is enabled. You'll receive
+                        codes at {formData.phone || "your phone number"}.
                       </AlertDescription>
                     </Alert>
                   )}
@@ -483,8 +593,11 @@ export default function AccountSettings() {
                     </div>
                     <Switch
                       checked={preferences.emailNotifications}
-                      onCheckedChange={(checked) => 
-                        setPreferences(prev => ({ ...prev, emailNotifications: checked }))
+                      onCheckedChange={(checked) =>
+                        setPreferences((prev) => ({
+                          ...prev,
+                          emailNotifications: checked,
+                        }))
                       }
                     />
                   </div>
@@ -498,8 +611,11 @@ export default function AccountSettings() {
                     </div>
                     <Switch
                       checked={preferences.smsNotifications}
-                      onCheckedChange={(checked) => 
-                        setPreferences(prev => ({ ...prev, smsNotifications: checked }))
+                      onCheckedChange={(checked) =>
+                        setPreferences((prev) => ({
+                          ...prev,
+                          smsNotifications: checked,
+                        }))
                       }
                     />
                   </div>
@@ -513,8 +629,11 @@ export default function AccountSettings() {
                     </div>
                     <Switch
                       checked={preferences.pushNotifications}
-                      onCheckedChange={(checked) => 
-                        setPreferences(prev => ({ ...prev, pushNotifications: checked }))
+                      onCheckedChange={(checked) =>
+                        setPreferences((prev) => ({
+                          ...prev,
+                          pushNotifications: checked,
+                        }))
                       }
                     />
                   </div>
@@ -528,8 +647,11 @@ export default function AccountSettings() {
                     </div>
                     <Switch
                       checked={preferences.marketingEmails}
-                      onCheckedChange={(checked) => 
-                        setPreferences(prev => ({ ...prev, marketingEmails: checked }))
+                      onCheckedChange={(checked) =>
+                        setPreferences((prev) => ({
+                          ...prev,
+                          marketingEmails: checked,
+                        }))
                       }
                     />
                   </div>
@@ -558,8 +680,11 @@ export default function AccountSettings() {
                     </div>
                     <Switch
                       checked={preferences.soundEffects}
-                      onCheckedChange={(checked) => 
-                        setPreferences(prev => ({ ...prev, soundEffects: checked }))
+                      onCheckedChange={(checked) =>
+                        setPreferences((prev) => ({
+                          ...prev,
+                          soundEffects: checked,
+                        }))
                       }
                     />
                   </div>
@@ -573,8 +698,11 @@ export default function AccountSettings() {
                     </div>
                     <Switch
                       checked={preferences.animations}
-                      onCheckedChange={(checked) => 
-                        setPreferences(prev => ({ ...prev, animations: checked }))
+                      onCheckedChange={(checked) =>
+                        setPreferences((prev) => ({
+                          ...prev,
+                          animations: checked,
+                        }))
                       }
                     />
                   </div>
@@ -588,8 +716,11 @@ export default function AccountSettings() {
                     </div>
                     <Switch
                       checked={preferences.autoplay}
-                      onCheckedChange={(checked) => 
-                        setPreferences(prev => ({ ...prev, autoplay: checked }))
+                      onCheckedChange={(checked) =>
+                        setPreferences((prev) => ({
+                          ...prev,
+                          autoplay: checked,
+                        }))
                       }
                     />
                   </div>
@@ -600,7 +731,12 @@ export default function AccountSettings() {
                       <select
                         id="language"
                         value={preferences.language}
-                        onChange={(e) => setPreferences(prev => ({ ...prev, language: e.target.value }))}
+                        onChange={(e) =>
+                          setPreferences((prev) => ({
+                            ...prev,
+                            language: e.target.value,
+                          }))
+                        }
                         className="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50"
                       >
                         <option value="en">English</option>
@@ -614,13 +750,20 @@ export default function AccountSettings() {
                       <select
                         id="timezone"
                         value={preferences.timezone}
-                        onChange={(e) => setPreferences(prev => ({ ...prev, timezone: e.target.value }))}
+                        onChange={(e) =>
+                          setPreferences((prev) => ({
+                            ...prev,
+                            timezone: e.target.value,
+                          }))
+                        }
                         className="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50"
                       >
                         <option value="America/New_York">Eastern Time</option>
                         <option value="America/Chicago">Central Time</option>
                         <option value="America/Denver">Mountain Time</option>
-                        <option value="America/Los_Angeles">Pacific Time</option>
+                        <option value="America/Los_Angeles">
+                          Pacific Time
+                        </option>
                       </select>
                     </div>
                   </div>
@@ -645,8 +788,8 @@ export default function AccountSettings() {
                 <Alert>
                   <AlertTriangle className="h-4 w-4" />
                   <AlertDescription>
-                    These limits are designed to help you maintain control over your gaming. 
-                    Limit increases have a 24-hour cooling period.
+                    These limits are designed to help you maintain control over
+                    your gaming. Limit increases have a 24-hour cooling period.
                   </AlertDescription>
                 </Alert>
 
@@ -659,8 +802,8 @@ export default function AccountSettings() {
                   </div>
                   <Switch
                     checked={limits.enableLimits}
-                    onCheckedChange={(checked) => 
-                      setLimits(prev => ({ ...prev, enableLimits: checked }))
+                    onCheckedChange={(checked) =>
+                      setLimits((prev) => ({ ...prev, enableLimits: checked }))
                     }
                   />
                 </div>
@@ -674,10 +817,12 @@ export default function AccountSettings() {
                           id="dailyLimit"
                           type="number"
                           value={limits.dailySpendLimit}
-                          onChange={(e) => setLimits(prev => ({ 
-                            ...prev, 
-                            dailySpendLimit: parseFloat(e.target.value) || 0 
-                          }))}
+                          onChange={(e) =>
+                            setLimits((prev) => ({
+                              ...prev,
+                              dailySpendLimit: parseFloat(e.target.value) || 0,
+                            }))
+                          }
                           step="0.25"
                           min="0.25"
                           max="1000"
@@ -689,10 +834,12 @@ export default function AccountSettings() {
                           id="weeklyLimit"
                           type="number"
                           value={limits.weeklySpendLimit}
-                          onChange={(e) => setLimits(prev => ({ 
-                            ...prev, 
-                            weeklySpendLimit: parseFloat(e.target.value) || 0 
-                          }))}
+                          onChange={(e) =>
+                            setLimits((prev) => ({
+                              ...prev,
+                              weeklySpendLimit: parseFloat(e.target.value) || 0,
+                            }))
+                          }
                           step="0.25"
                           min="0.25"
                           max="5000"
@@ -704,10 +851,13 @@ export default function AccountSettings() {
                           id="monthlyLimit"
                           type="number"
                           value={limits.monthlySpendLimit}
-                          onChange={(e) => setLimits(prev => ({ 
-                            ...prev, 
-                            monthlySpendLimit: parseFloat(e.target.value) || 0 
-                          }))}
+                          onChange={(e) =>
+                            setLimits((prev) => ({
+                              ...prev,
+                              monthlySpendLimit:
+                                parseFloat(e.target.value) || 0,
+                            }))
+                          }
                           step="0.25"
                           min="0.25"
                           max="10000"
@@ -716,15 +866,19 @@ export default function AccountSettings() {
                     </div>
 
                     <div>
-                      <Label htmlFor="sessionLimit">Session Time Limit (minutes)</Label>
+                      <Label htmlFor="sessionLimit">
+                        Session Time Limit (minutes)
+                      </Label>
                       <Input
                         id="sessionLimit"
                         type="number"
                         value={limits.sessionTimeLimit}
-                        onChange={(e) => setLimits(prev => ({ 
-                          ...prev, 
-                          sessionTimeLimit: parseInt(e.target.value) || 0 
-                        }))}
+                        onChange={(e) =>
+                          setLimits((prev) => ({
+                            ...prev,
+                            sessionTimeLimit: parseInt(e.target.value) || 0,
+                          }))
+                        }
                         min="15"
                         max="480"
                       />
@@ -759,15 +913,22 @@ export default function AccountSettings() {
                 <CardContent>
                   <div className="space-y-4">
                     {activityLog.map((activity, index) => (
-                      <div key={index} className="flex items-center justify-between p-3 bg-card/50 rounded">
+                      <div
+                        key={index}
+                        className="flex items-center justify-between p-3 bg-card/50 rounded"
+                      >
                         <div>
-                          <p className="font-medium text-sm">{activity.action}</p>
+                          <p className="font-medium text-sm">
+                            {activity.action}
+                          </p>
                           <p className="text-xs text-muted-foreground">
                             {activity.device} • {activity.ip}
                           </p>
                         </div>
                         <div className="text-right">
-                          <p className="text-sm">{formatTimeAgo(activity.timestamp)}</p>
+                          <p className="text-sm">
+                            {formatTimeAgo(activity.timestamp)}
+                          </p>
                           <p className="text-xs text-muted-foreground">
                             {activity.timestamp.toLocaleDateString()}
                           </p>
@@ -790,14 +951,20 @@ export default function AccountSettings() {
                 </CardHeader>
                 <CardContent className="space-y-4">
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                    <Button variant="outline" className="h-auto p-4 flex-col gap-2">
+                    <Button
+                      variant="outline"
+                      className="h-auto p-4 flex-col gap-2"
+                    >
                       <Download className="h-5 w-5" />
                       <span className="text-sm">Download Account Data</span>
                       <span className="text-xs text-muted-foreground">
                         Personal information and settings
                       </span>
                     </Button>
-                    <Button variant="outline" className="h-auto p-4 flex-col gap-2">
+                    <Button
+                      variant="outline"
+                      className="h-auto p-4 flex-col gap-2"
+                    >
                       <Download className="h-5 w-5" />
                       <span className="text-sm">Download Game History</span>
                       <span className="text-xs text-muted-foreground">
@@ -815,15 +982,17 @@ export default function AccountSettings() {
                     Danger Zone
                   </CardTitle>
                   <CardDescription>
-                    Irreversible actions that will permanently affect your account
+                    Irreversible actions that will permanently affect your
+                    account
                   </CardDescription>
                 </CardHeader>
                 <CardContent className="space-y-4">
                   <Alert className="border-destructive">
                     <AlertTriangle className="h-4 w-4" />
                     <AlertDescription>
-                      Deleting your account is permanent and cannot be undone. 
-                      All your data, including game history and remaining balance, will be lost.
+                      Deleting your account is permanent and cannot be undone.
+                      All your data, including game history and remaining
+                      balance, will be lost.
                     </AlertDescription>
                   </Alert>
                   <Button variant="destructive" className="w-full">
