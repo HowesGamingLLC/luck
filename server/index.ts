@@ -50,5 +50,16 @@ export function createServer() {
   app.post("/api/tournaments/:id/start", startTournament);
   app.post("/api/tournaments/:id/cancel", cancelTournament);
 
+  // Slot provider routes
+  app.get("/api/slots/providers", getProviders);
+  app.get("/api/slots/games", getGames);
+  app.get("/api/slots/providers/:providerId/games/:gameId", getGameById);
+  app.post("/api/slots/launch", launchGame);
+  app.post("/api/slots/validate-session", validateSession);
+  app.post("/api/slots/end-session", endSession);
+  app.get("/api/slots/providers/:providerId/balance/:playerId", getPlayerBalance);
+  app.get("/api/slots/admin/sessions", getActiveSessions);
+  app.get("/api/slots/admin/health", checkProviderHealth);
+
   return app;
 }
