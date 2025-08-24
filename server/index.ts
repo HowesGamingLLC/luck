@@ -2,6 +2,16 @@ import "dotenv/config";
 import express from "express";
 import cors from "cors";
 import { handleDemo } from "./routes/demo";
+import {
+  getTournaments,
+  getTournament,
+  registerForTournament,
+  unregisterFromTournament,
+  getTournamentLeaderboard,
+  createTournament,
+  startTournament,
+  cancelTournament,
+} from "./routes/tournaments";
 
 export function createServer() {
   const app = express();
@@ -18,6 +28,16 @@ export function createServer() {
   });
 
   app.get("/api/demo", handleDemo);
+
+  // Tournament routes
+  app.get("/api/tournaments", getTournaments);
+  app.get("/api/tournaments/:id", getTournament);
+  app.post("/api/tournaments/:id/register", registerForTournament);
+  app.post("/api/tournaments/:id/unregister", unregisterFromTournament);
+  app.get("/api/tournaments/:id/leaderboard", getTournamentLeaderboard);
+  app.post("/api/tournaments", createTournament);
+  app.post("/api/tournaments/:id/start", startTournament);
+  app.post("/api/tournaments/:id/cancel", cancelTournament);
 
   return app;
 }
