@@ -352,7 +352,39 @@ export default function EnhancedSlotsPage() {
         {error && (
           <Alert variant="destructive" className="mb-6">
             <AlertTriangle className="h-4 w-4" />
-            <AlertDescription>{error}</AlertDescription>
+            <AlertDescription>
+              <div className="space-y-2">
+                <p>{error}</p>
+                {error.includes('demo') && (
+                  <div className="text-sm">
+                    <p className="font-medium">To enable live slot games:</p>
+                    <ol className="list-decimal list-inside mt-1 space-y-1">
+                      <li>Configure your BGaming API credentials in the environment variables</li>
+                      <li>Configure your Pragmatic Play API credentials</li>
+                      <li>Restart the development server</li>
+                    </ol>
+                  </div>
+                )}
+              </div>
+            </AlertDescription>
+          </Alert>
+        )}
+
+        {/* Demo Mode Info */}
+        {games.length === 0 && !error && !isLoading && (
+          <Alert className="mb-6">
+            <Sparkles className="h-4 w-4" />
+            <AlertDescription>
+              <div className="space-y-2">
+                <p className="font-medium">Demo Mode Active</p>
+                <p>You're currently running with demo API credentials. To see live slot games from BGaming and Pragmatic Play:</p>
+                <ol className="list-decimal list-inside mt-2 space-y-1 text-sm">
+                  <li>Obtain API credentials from BGaming and Pragmatic Play</li>
+                  <li>Set environment variables: BGAMING_API_KEY, PRAGMATIC_API_KEY, etc.</li>
+                  <li>Restart the server to load live games</li>
+                </ol>
+              </div>
+            </AlertDescription>
           </Alert>
         )}
 
