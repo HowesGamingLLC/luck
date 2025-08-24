@@ -843,16 +843,22 @@ export function HoldemGame({
                       )}
                     </div>
 
-                    <div className="text-xs space-y-1">
-                      <div className="flex justify-between">
+                    <div className="text-xs space-y-2">
+                      <div className="flex justify-between items-center">
                         <span className="text-gray-600">Chips:</span>
-                        <span className="font-bold">{player.chips}</span>
+                        <div className="flex items-center gap-1">
+                          <CoinKrazyChip value={100} size="sm" />
+                          <span className="font-bold">{player.chips}</span>
+                        </div>
                       </div>
-                      <div className="flex justify-between">
+                      <div className="flex justify-between items-center">
                         <span className="text-gray-600">Bet:</span>
-                        <span className="font-bold text-blue-600">
-                          {player.currentBet}
-                        </span>
+                        <div className="flex items-center gap-1">
+                          {player.currentBet > 0 && <CoinKrazyChip value={25} size="sm" />}
+                          <span className="font-bold text-blue-600">
+                            {player.currentBet}
+                          </span>
+                        </div>
                       </div>
                     </div>
 
