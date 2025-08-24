@@ -200,7 +200,7 @@ export function QuickActions({
       description: "View balance and transactions",
       icon: CreditCard,
       color: "text-purple",
-      link: "/wallet",
+      link: "/wallet/enhanced",
       category: "financial",
       requiresAuth: true,
     },
