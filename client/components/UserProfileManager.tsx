@@ -76,6 +76,7 @@ import {
   Activity,
   Flag,
   MessageSquare,
+  Crown,
   Save,
   X,
   Plus,
