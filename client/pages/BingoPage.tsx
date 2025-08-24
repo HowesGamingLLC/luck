@@ -11,6 +11,7 @@ import { Badge } from "@/components/ui/badge";
 import { Progress } from "@/components/ui/progress";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { useCurrency, CurrencyType } from "@/contexts/CurrencyContext";
+import { CurrencySelector } from "@/components/CurrencySelector";
 import {
   Target,
   Users,
@@ -471,31 +472,13 @@ export default function BingoPage() {
                   <CardHeader>
                     <CardTitle className="flex items-center justify-between">
                       <span>{currentRoom.name}</span>
-                      <div className="flex items-center gap-2">
-                        <Button
-                          variant="outline"
-                          size="sm"
-                          onClick={() =>
-                            setSelectedCurrency(
-                              selectedCurrency === CurrencyType.GC
-                                ? CurrencyType.SC
-                                : CurrencyType.GC,
-                            )
-                          }
-                        >
-                          {selectedCurrency === CurrencyType.GC ? (
-                            <>
-                              <Coins className="h-4 w-4 mr-1 text-gold" />
-                              GC Mode
-                            </>
-                          ) : (
-                            <>
-                              <Gem className="h-4 w-4 mr-1 text-teal" />
-                              SC Mode
-                            </>
-                          )}
-                        </Button>
-                      </div>
+                      <CurrencySelector
+                        selectedCurrency={selectedCurrency}
+                        onCurrencyChange={setSelectedCurrency}
+                        variant="inline"
+                        showBalance={false}
+                        className="w-auto"
+                      />
                     </CardTitle>
                     <CardDescription>
                       {currentRoom.players} players joined • Next game in{" "}
