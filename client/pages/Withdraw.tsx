@@ -168,21 +168,26 @@ export default function Withdraw() {
 
   const validateWithdrawal = (): string | null => {
     const amount = parseFloat(withdrawalAmount);
+    const eligibility = canWithdraw();
+
+    if (!eligibility.canWithdraw) {
+      return eligibility.reason;
+    }
 
     if (isNaN(amount) || amount <= 0) {
       return "Please enter a valid amount";
     }
 
     if (amount < minWithdrawal) {
-      return `Minimum withdrawal amount is $${minWithdrawal}`;
+      return `Minimum withdrawal amount is ${minWithdrawal} SC`;
     }
 
     if (amount > maxWithdrawal) {
-      return `Maximum withdrawal amount is $${maxWithdrawal}`;
+      return `Maximum withdrawal amount is ${maxWithdrawal} SC per transaction`;
     }
 
     if (amount > availableBalance) {
-      return "Insufficient balance";
+      return `Insufficient balance. You have ${availableBalance.toFixed(2)} SC available.`;
     }
 
     // Method-specific validation
