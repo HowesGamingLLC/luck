@@ -7,7 +7,15 @@ import { Progress } from "@/components/ui/progress";
 import { cn } from "@/lib/utils";
 import { useJackpot } from "@/contexts/JackpotContext";
 import { useAuth } from "@/contexts/AuthContext";
-import { Crown, TrendingUp, Clock, Settings, Info, Zap, Trophy } from "lucide-react";
+import {
+  Crown,
+  TrendingUp,
+  Clock,
+  Settings,
+  Info,
+  Zap,
+  Trophy,
+} from "lucide-react";
 
 interface ProgressiveJackpotProps {
   className?: string;
