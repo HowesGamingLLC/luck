@@ -68,5 +68,12 @@ export function createServer() {
   app.get("/api/slots/admin/sessions", getActiveSessions);
   app.get("/api/slots/admin/health", checkProviderHealth);
 
+  // Thumbnail routes
+  app.get("/api/thumbnails", getThumbnail);
+  app.post("/api/thumbnails/preload", preloadThumbnails);
+  app.get("/api/thumbnails/stats", getCacheStats);
+  app.delete("/api/thumbnails/cache", clearCache);
+  app.get("/thumbnails/:filename", serveThumbnail);
+
   return app;
 }
