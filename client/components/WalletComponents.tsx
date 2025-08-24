@@ -814,5 +814,4 @@ export function TransactionAnalytics() {
 export {
   SpendingLimitsManager,
   AutoWithdrawalSettings,
-  WalletInsights,
 };
