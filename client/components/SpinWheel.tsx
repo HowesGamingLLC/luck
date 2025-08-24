@@ -17,12 +17,12 @@ interface SpinWheelProps {
 }
 
 const defaultSegments: WheelSegment[] = [
-  { label: "$10", value: 10, color: "#8B5CF6", probability: 0.3 },
-  { label: "$25", value: 25, color: "#06B6D4", probability: 0.25 },
-  { label: "$50", value: 50, color: "#10B981", probability: 0.2 },
-  { label: "$100", value: 100, color: "#F59E0B", probability: 0.15 },
-  { label: "$250", value: 250, color: "#EF4444", probability: 0.08 },
-  { label: "$500", value: 500, color: "#EC4899", probability: 0.02 },
+  { label: "0.05 SC", value: 0.05, color: "#8B5CF6", probability: 0.4 },
+  { label: "0.10 SC", value: 0.10, color: "#06B6D4", probability: 0.25 },
+  { label: "0.25 SC", value: 0.25, color: "#10B981", probability: 0.20 },
+  { label: "0.50 SC", value: 0.50, color: "#F59E0B", probability: 0.10 },
+  { label: "0.75 SC", value: 0.75, color: "#EF4444", probability: 0.04 },
+  { label: "1.00 SC", value: 1.00, color: "#EC4899", probability: 0.01 },
 ];
 
 export function SpinWheel({

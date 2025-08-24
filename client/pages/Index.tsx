@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import {
   Card,
@@ -23,6 +23,7 @@ import {
   Play,
   CheckCircle,
 } from "lucide-react";
+import { useAuth } from "@/contexts/AuthContext";
 
 interface WheelSegment {
   label: string;
@@ -34,11 +35,23 @@ interface WheelSegment {
 export default function Index() {
   const [spinResult, setSpinResult] = useState<WheelSegment | null>(null);
   const [showResult, setShowResult] = useState(false);
+  const navigate = useNavigate();
+  const { isAuthenticated } = useAuth();
 
   const handleSpinResult = (result: WheelSegment) => {
     setSpinResult(result);
     setShowResult(true);
-    setTimeout(() => setShowResult(false), 3000);
+
+    // If user is authenticated, redirect to dashboard after showing result
+    if (isAuthenticated) {
+      setTimeout(() => {
+        setShowResult(false);
+        navigate('/dashboard');
+      }, 3000);
+    } else {
+      // If not authenticated, show result and hide after 3 seconds
+      setTimeout(() => setShowResult(false), 3000);
+    }
   };
 
   const features = [
@@ -183,9 +196,14 @@ export default function Index() {
                         <h3 className="text-2xl font-bold gradient-text">
                           Congratulations!
                         </h3>
-                        <p className="text-xl font-semibold text-gold">
+                        <p className="text-xl font-semibold text-teal">
                           You won {spinResult.label}!
                         </p>
+                        {isAuthenticated && (
+                          <p className="text-sm text-muted-foreground mt-2">
+                            Redirecting to dashboard...
+                          </p>
+                        )}
                       </CardContent>
                     </Card>
                   </div>
