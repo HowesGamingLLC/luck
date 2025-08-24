@@ -10,6 +10,7 @@ import {
 import { Badge } from "@/components/ui/badge";
 import { Progress } from "@/components/ui/progress";
 import { useCurrency, CurrencyType } from "@/contexts/CurrencyContext";
+import { CurrencySelector } from "@/components/CurrencySelector";
 import {
   Gamepad2,
   Coins,
@@ -571,34 +572,13 @@ export default function MiniGamesPage() {
                 <CardTitle className="text-lg">Place Bet</CardTitle>
               </CardHeader>
               <CardContent className="space-y-4">
-                <div className="flex gap-2">
-                  <Button
-                    variant={
-                      selectedCurrency === CurrencyType.GC
-                        ? "default"
-                        : "outline"
-                    }
-                    size="sm"
-                    className="flex-1"
-                    onClick={() => setSelectedCurrency(CurrencyType.GC)}
-                  >
-                    <Coins className="h-4 w-4 mr-1 text-gold" />
-                    GC
-                  </Button>
-                  <Button
-                    variant={
-                      selectedCurrency === CurrencyType.SC
-                        ? "default"
-                        : "outline"
-                    }
-                    size="sm"
-                    className="flex-1"
-                    onClick={() => setSelectedCurrency(CurrencyType.SC)}
-                  >
-                    <Gem className="h-4 w-4 mr-1 text-teal" />
-                    SC
-                  </Button>
-                </div>
+                <CurrencySelector
+                  selectedCurrency={selectedCurrency}
+                  onCurrencyChange={setSelectedCurrency}
+                  variant="inline"
+                  showBalance={false}
+                  minBetAmount={selectedCurrency === CurrencyType.GC ? currentGame.minBet.gc : currentGame.minBet.sc}
+                />
 
                 <div>
                   <div className="flex items-center gap-2 mb-2">
