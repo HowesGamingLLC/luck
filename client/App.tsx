@@ -97,6 +97,14 @@ function App() {
                       }
                     />
                     <Route
+                      path="/admin/packages"
+                      element={
+                        <AuthGuard requireAdmin={true}>
+                          <AdminPackages />
+                        </AuthGuard>
+                      }
+                    />
+                    <Route
                       path="/admin/*"
                       element={
                         <AuthGuard requireAdmin={true}>
