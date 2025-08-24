@@ -401,13 +401,13 @@ export default function TournamentsPage() {
                     {tournament.prizePool.gc > 0 && (
                       <div className="flex items-center gap-1 text-gold font-bold">
                         <Coins className="h-4 w-4" />
-                        {formatCurrency(tournament.prizePool.gc, "GC")}
+                        {formatCurrency(tournament.prizePool.gc, CurrencyType.GC)}
                       </div>
                     )}
                     {tournament.prizePool.sc > 0 && (
                       <div className="flex items-center gap-1 text-teal font-bold">
                         <Gem className="h-4 w-4" />
-                        {formatCurrency(tournament.prizePool.sc, "SC")}
+                        {formatCurrency(tournament.prizePool.sc, CurrencyType.SC)}
                       </div>
                     )}
                   </div>
