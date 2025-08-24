@@ -248,10 +248,10 @@ export default function TournamentsPage() {
     if (tournament.participants.length >= tournament.maxPlayers) return false;
 
     if (tournament.buyIn.gc > 0) {
-      return canAffordWager(CurrencyType.GC, tournament.buyIn.gc);
+      return canAffordWager("GC" as CurrencyType, tournament.buyIn.gc);
     }
     if (tournament.buyIn.sc > 0) {
-      return canAffordWager(CurrencyType.SC, tournament.buyIn.sc);
+      return canAffordWager("SC" as CurrencyType, tournament.buyIn.sc);
     }
 
     return true;
