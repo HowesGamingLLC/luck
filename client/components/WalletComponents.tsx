@@ -813,5 +813,4 @@ export function TransactionAnalytics() {
 // Export all components
 export {
   SpendingLimitsManager,
-  AutoWithdrawalSettings,
 };
