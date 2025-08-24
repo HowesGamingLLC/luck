@@ -460,14 +460,19 @@ export function SlotMachine({
 
         {/* Paytable Preview */}
         <div className="grid grid-cols-3 gap-2 text-xs">
-          {theme.symbols.slice(0, 6).map((symbol) => (
-            <div key={symbol.id} className="flex items-center gap-1 text-center">
-              <span className="text-lg">{symbol.symbol}</span>
-              <span className={cn("font-semibold", symbol.color)}>
-                ${symbol.value}
-              </span>
-            </div>
-          ))}
+          {theme.symbols.slice(0, 6).map((symbol) => {
+            const displayValue = currency === CurrencyType.SC
+              ? Math.min(symbol.value * 0.01, 10)
+              : symbol.value;
+            return (
+              <div key={symbol.id} className="flex items-center gap-1 text-center">
+                <span className="text-lg">{symbol.symbol}</span>
+                <span className={cn("font-semibold", getCurrencyColor(currency))}>
+                  {formatCurrency(displayValue, currency)}
+                </span>
+              </div>
+            );
+          })}
         </div>
 
         {/* Last Win Display */}
