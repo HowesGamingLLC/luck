@@ -27,6 +27,8 @@ import SlotsPage from "./pages/SlotsPage";
 import BingoPage from "./pages/BingoPage";
 import SportsbookPage from "./pages/SportsbookPage";
 import TableGamesPage from "./pages/TableGamesPage";
+import PokerPage from "./pages/PokerPage";
+import MiniGamesPage from "./pages/MiniGamesPage";
 import AccountSettings from "./pages/AccountSettings";
 import KYC from "./pages/KYC";
 import Withdraw from "./pages/Withdraw";
@@ -95,6 +97,22 @@ function App() {
                       element={
                         <AuthGuard>
                           <TableGamesPage />
+                        </AuthGuard>
+                      }
+                    />
+                    <Route
+                      path="/games/poker"
+                      element={
+                        <AuthGuard>
+                          <PokerPage />
+                        </AuthGuard>
+                      }
+                    />
+                    <Route
+                      path="/games/mini"
+                      element={
+                        <AuthGuard>
+                          <MiniGamesPage />
                         </AuthGuard>
                       }
                     />
