@@ -73,7 +73,10 @@ export function createServer() {
   app.post("/api/slots/launch", launchGame);
   app.post("/api/slots/validate-session", validateSession);
   app.post("/api/slots/end-session", endSession);
-  app.get("/api/slots/providers/:providerId/balance/:playerId", getPlayerBalance);
+  app.get(
+    "/api/slots/providers/:providerId/balance/:playerId",
+    getPlayerBalance,
+  );
   app.get("/api/slots/admin/sessions", getActiveSessions);
   app.get("/api/slots/admin/health", checkProviderHealth);
   app.get("/api/slots/admin/test", testProviders);

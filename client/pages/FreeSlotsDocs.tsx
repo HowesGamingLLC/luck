@@ -4,10 +4,10 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Alert, AlertDescription } from "@/components/ui/alert";
-import { 
-  Copy, 
-  ExternalLink, 
-  Code, 
+import {
+  Copy,
+  ExternalLink,
+  Code,
   Zap,
   Globe,
   Sparkles,
@@ -26,11 +26,11 @@ export default function FreeSlotsDocs() {
 
   const fetchApiStats = async () => {
     try {
-      const response = await fetch('/api/public/docs');
+      const response = await fetch("/api/public/docs");
       const data = await response.json();
       setApiStats(data);
     } catch (error) {
-      console.error('Failed to fetch API stats:', error);
+      console.error("Failed to fetch API stats:", error);
     }
   };
 
@@ -40,7 +40,7 @@ export default function FreeSlotsDocs() {
       setCopiedEndpoint(endpoint);
       setTimeout(() => setCopiedEndpoint(null), 2000);
     } catch (error) {
-      console.error('Failed to copy:', error);
+      console.error("Failed to copy:", error);
     }
   };
 
@@ -48,31 +48,31 @@ export default function FreeSlotsDocs() {
 
   const endpoints = [
     {
-      name: 'Get Free Providers',
-      method: 'GET',
+      name: "Get Free Providers",
+      method: "GET",
       url: `${baseUrl}/api/public/providers`,
-      description: 'Get list of available free slot providers',
+      description: "Get list of available free slot providers",
       example: `${baseUrl}/api/public/providers`,
     },
     {
-      name: 'Get Free Games',
-      method: 'GET', 
+      name: "Get Free Games",
+      method: "GET",
       url: `${baseUrl}/api/public/games`,
-      description: 'Get list of free slot games with filtering options',
+      description: "Get list of free slot games with filtering options",
       example: `${baseUrl}/api/public/games?search=book&limit=5`,
     },
     {
-      name: 'Get Game Details',
-      method: 'GET',
+      name: "Get Game Details",
+      method: "GET",
       url: `${baseUrl}/api/public/games/:providerId/:gameId`,
-      description: 'Get detailed information about a specific game',
+      description: "Get detailed information about a specific game",
       example: `${baseUrl}/api/public/games/freeslotsgames/book-of-ra`,
     },
     {
-      name: 'Get Embed Code',
-      method: 'GET',
+      name: "Get Embed Code",
+      method: "GET",
       url: `${baseUrl}/api/public/embed/:providerId/:gameId`,
-      description: 'Get iframe embed code for a game',
+      description: "Get iframe embed code for a game",
       example: `${baseUrl}/api/public/embed/freeslotsgames/book-of-ra?width=800&height=600`,
     },
   ];
@@ -152,7 +152,7 @@ fetch('${baseUrl}/api/public/embed/freeslotsgames/book-of-ra?width=600&height=40
               </p>
             </CardContent>
           </Card>
-          
+
           <Card className="glass">
             <CardContent className="p-6 text-center">
               <Globe className="h-8 w-8 mx-auto mb-3 text-blue-500" />
@@ -162,7 +162,7 @@ fetch('${baseUrl}/api/public/embed/freeslotsgames/book-of-ra?width=600&height=40
               </p>
             </CardContent>
           </Card>
-          
+
           <Card className="glass">
             <CardContent className="p-6 text-center">
               <Code className="h-8 w-8 mx-auto mb-3 text-purple" />
@@ -194,7 +194,9 @@ fetch('${baseUrl}/api/public/embed/freeslotsgames/book-of-ra?width=600&height=40
               <CardContent className="space-y-4">
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                   <div>
-                    <h4 className="font-semibold mb-2 text-success">✅ Free Features</h4>
+                    <h4 className="font-semibold mb-2 text-success">
+                      ✅ Free Features
+                    </h4>
                     <ul className="text-sm space-y-1 list-disc list-inside">
                       <li>13+ high-quality slot games</li>
                       <li>Multiple providers (Free-Slots.Games, iDev.Games)</li>
@@ -206,7 +208,9 @@ fetch('${baseUrl}/api/public/embed/freeslotsgames/book-of-ra?width=600&height=40
                     </ul>
                   </div>
                   <div>
-                    <h4 className="font-semibold mb-2 text-warning">⚠️ Limitations</h4>
+                    <h4 className="font-semibold mb-2 text-warning">
+                      ⚠️ Limitations
+                    </h4>
                     <ul className="text-sm space-y-1 list-disc list-inside">
                       <li>Free games only (no real money)</li>
                       <li>Attribution required</li>
@@ -223,8 +227,9 @@ fetch('${baseUrl}/api/public/embed/freeslotsgames/book-of-ra?width=600&height=40
             <Alert>
               <CheckCircle className="h-4 w-4" />
               <AlertDescription>
-                <strong>License:</strong> Free for non-commercial use. Attribution to "Powered by CoinKrazy.com" is required.
-                For commercial licensing, please contact us.
+                <strong>License:</strong> Free for non-commercial use.
+                Attribution to "Powered by CoinKrazy.com" is required. For
+                commercial licensing, please contact us.
               </AlertDescription>
             </Alert>
           </TabsContent>
@@ -235,7 +240,8 @@ fetch('${baseUrl}/api/public/embed/freeslotsgames/book-of-ra?width=600&height=40
               <Alert>
                 <Globe className="h-4 w-4" />
                 <AlertDescription>
-                  <strong>Rate Limit:</strong> {apiStats.rateLimit.limit} requests per {apiStats.rateLimit.window}
+                  <strong>Rate Limit:</strong> {apiStats.rateLimit.limit}{" "}
+                  requests per {apiStats.rateLimit.window}
                 </AlertDescription>
               </Alert>
             )}
@@ -248,11 +254,15 @@ fetch('${baseUrl}/api/public/embed/freeslotsgames/book-of-ra?width=600&height=40
                       <CardTitle className="text-lg">{endpoint.name}</CardTitle>
                       <Badge variant="outline">{endpoint.method}</Badge>
                     </div>
-                    <p className="text-sm text-muted-foreground">{endpoint.description}</p>
+                    <p className="text-sm text-muted-foreground">
+                      {endpoint.description}
+                    </p>
                   </CardHeader>
                   <CardContent className="space-y-3">
                     <div>
-                      <label className="text-sm font-medium mb-1 block">Endpoint URL:</label>
+                      <label className="text-sm font-medium mb-1 block">
+                        Endpoint URL:
+                      </label>
                       <div className="flex items-center gap-2">
                         <code className="flex-1 p-2 bg-muted rounded text-sm font-mono">
                           {endpoint.url}
@@ -260,7 +270,9 @@ fetch('${baseUrl}/api/public/embed/freeslotsgames/book-of-ra?width=600&height=40
                         <Button
                           size="sm"
                           variant="outline"
-                          onClick={() => copyToClipboard(endpoint.url, endpoint.name)}
+                          onClick={() =>
+                            copyToClipboard(endpoint.url, endpoint.name)
+                          }
                         >
                           {copiedEndpoint === endpoint.name ? (
                             <CheckCircle className="h-4 w-4" />
@@ -270,9 +282,11 @@ fetch('${baseUrl}/api/public/embed/freeslotsgames/book-of-ra?width=600&height=40
                         </Button>
                       </div>
                     </div>
-                    
+
                     <div>
-                      <label className="text-sm font-medium mb-1 block">Example:</label>
+                      <label className="text-sm font-medium mb-1 block">
+                        Example:
+                      </label>
                       <div className="flex items-center gap-2">
                         <code className="flex-1 p-2 bg-muted rounded text-sm font-mono">
                           {endpoint.example}
@@ -280,7 +294,9 @@ fetch('${baseUrl}/api/public/embed/freeslotsgames/book-of-ra?width=600&height=40
                         <Button
                           size="sm"
                           variant="outline"
-                          onClick={() => window.open(endpoint.example, '_blank')}
+                          onClick={() =>
+                            window.open(endpoint.example, "_blank")
+                          }
                         >
                           <ExternalLink className="h-4 w-4" />
                         </Button>
@@ -298,7 +314,8 @@ fetch('${baseUrl}/api/public/embed/freeslotsgames/book-of-ra?width=600&height=40
               <CardHeader>
                 <CardTitle>iframe Embed Code</CardTitle>
                 <p className="text-sm text-muted-foreground">
-                  Copy and paste this HTML code into your website to embed a free slot game
+                  Copy and paste this HTML code into your website to embed a
+                  free slot game
                 </p>
               </CardHeader>
               <CardContent>
@@ -306,9 +323,9 @@ fetch('${baseUrl}/api/public/embed/freeslotsgames/book-of-ra?width=600&height=40
                   <div className="flex items-center gap-2 mb-2">
                     <Button
                       size="sm"
-                      onClick={() => copyToClipboard(embedExample, 'embed')}
+                      onClick={() => copyToClipboard(embedExample, "embed")}
                     >
-                      {copiedEndpoint === 'embed' ? (
+                      {copiedEndpoint === "embed" ? (
                         <CheckCircle className="h-4 w-4 mr-2" />
                       ) : (
                         <Copy className="h-4 w-4 mr-2" />
@@ -316,7 +333,7 @@ fetch('${baseUrl}/api/public/embed/freeslotsgames/book-of-ra?width=600&height=40
                       Copy Embed Code
                     </Button>
                   </div>
-                  
+
                   <pre className="p-4 bg-muted rounded-lg text-sm font-mono overflow-x-auto">
                     <code>{embedExample}</code>
                   </pre>
@@ -327,8 +344,10 @@ fetch('${baseUrl}/api/public/embed/freeslotsgames/book-of-ra?width=600&height=40
             <Alert>
               <Code className="h-4 w-4" />
               <AlertDescription>
-                <strong>Customization:</strong> You can adjust the width and height parameters in the API call to customize the embed size.
-                The iframe will automatically be responsive within the container.
+                <strong>Customization:</strong> You can adjust the width and
+                height parameters in the API call to customize the embed size.
+                The iframe will automatically be responsive within the
+                container.
               </AlertDescription>
             </Alert>
           </TabsContent>
@@ -339,7 +358,8 @@ fetch('${baseUrl}/api/public/embed/freeslotsgames/book-of-ra?width=600&height=40
               <CardHeader>
                 <CardTitle>JavaScript Integration Example</CardTitle>
                 <p className="text-sm text-muted-foreground">
-                  Use our API with JavaScript to dynamically load and embed slot games
+                  Use our API with JavaScript to dynamically load and embed slot
+                  games
                 </p>
               </CardHeader>
               <CardContent>
@@ -347,9 +367,9 @@ fetch('${baseUrl}/api/public/embed/freeslotsgames/book-of-ra?width=600&height=40
                   <div className="flex items-center gap-2 mb-2">
                     <Button
                       size="sm"
-                      onClick={() => copyToClipboard(jsExample, 'javascript')}
+                      onClick={() => copyToClipboard(jsExample, "javascript")}
                     >
-                      {copiedEndpoint === 'javascript' ? (
+                      {copiedEndpoint === "javascript" ? (
                         <CheckCircle className="h-4 w-4 mr-2" />
                       ) : (
                         <Copy className="h-4 w-4 mr-2" />
@@ -357,7 +377,7 @@ fetch('${baseUrl}/api/public/embed/freeslotsgames/book-of-ra?width=600&height=40
                       Copy JavaScript Code
                     </Button>
                   </div>
-                  
+
                   <pre className="p-4 bg-muted rounded-lg text-sm font-mono overflow-x-auto">
                     <code>{jsExample}</code>
                   </pre>
@@ -373,25 +393,34 @@ fetch('${baseUrl}/api/public/embed/freeslotsgames/book-of-ra?width=600&height=40
                 </p>
               </CardHeader>
               <CardContent className="space-y-3">
-                <Button 
-                  onClick={() => window.open(`${baseUrl}/api/public/games?limit=5`, '_blank')}
+                <Button
+                  onClick={() =>
+                    window.open(`${baseUrl}/api/public/games?limit=5`, "_blank")
+                  }
                   className="w-full"
                 >
                   <ExternalLink className="h-4 w-4 mr-2" />
                   Test: Get 5 Free Games
                 </Button>
-                
-                <Button 
-                  onClick={() => window.open(`${baseUrl}/api/public/providers`, '_blank')}
+
+                <Button
+                  onClick={() =>
+                    window.open(`${baseUrl}/api/public/providers`, "_blank")
+                  }
                   variant="outline"
                   className="w-full"
                 >
                   <ExternalLink className="h-4 w-4 mr-2" />
                   Test: Get Providers
                 </Button>
-                
-                <Button 
-                  onClick={() => window.open(`${baseUrl}/api/public/games/freeslotsgames/book-of-ra`, '_blank')}
+
+                <Button
+                  onClick={() =>
+                    window.open(
+                      `${baseUrl}/api/public/games/freeslotsgames/book-of-ra`,
+                      "_blank",
+                    )
+                  }
                   variant="outline"
                   className="w-full"
                 >
@@ -408,18 +437,15 @@ fetch('${baseUrl}/api/public/embed/freeslotsgames/book-of-ra?width=600&height=40
           <CardContent className="p-6 text-center">
             <h3 className="font-semibold mb-2">Need More?</h3>
             <p className="text-sm text-muted-foreground mb-4">
-              Looking for premium slot games, real money integration, or commercial licensing?
+              Looking for premium slot games, real money integration, or
+              commercial licensing?
             </p>
             <div className="flex gap-2 justify-center">
               <Link to="/games/slots">
-                <Button>
-                  View All Slots
-                </Button>
+                <Button>View All Slots</Button>
               </Link>
               <Link to="/help">
-                <Button variant="outline">
-                  Contact Support
-                </Button>
+                <Button variant="outline">Contact Support</Button>
               </Link>
             </div>
           </CardContent>

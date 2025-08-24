@@ -4,8 +4,8 @@ import { IdevGamesProvider } from "./slotProviders/idevGames";
 
 // Initialize free providers for public API
 const freeProviders = new Map();
-freeProviders.set('freeslotsgames', new FreeSlotsGamesProvider());
-freeProviders.set('idevgames', new IdevGamesProvider());
+freeProviders.set("freeslotsgames", new FreeSlotsGamesProvider());
+freeProviders.set("idevgames", new IdevGamesProvider());
 
 // Rate limiting storage (in production, use Redis)
 const apiUsage = new Map<string, { count: number; resetTime: number }>();
@@ -33,24 +33,24 @@ function checkRateLimit(clientId: string): boolean {
 
 // Get client identifier
 function getClientId(req: any): string {
-  return req.ip || req.connection.remoteAddress || 'unknown';
+  return req.ip || req.connection.remoteAddress || "unknown";
 }
 
 // Public API: Get free slot providers
 export const getPublicProviders: RequestHandler = async (req, res) => {
   const clientId = getClientId(req);
-  
+
   if (!checkRateLimit(clientId)) {
     return res.status(429).json({
       success: false,
-      error: 'Rate limit exceeded. Please try again later.',
+      error: "Rate limit exceeded. Please try again later.",
       limit: RATE_LIMIT,
-      window: '1 hour',
+      window: "1 hour",
     });
   }
 
   try {
-    const providerList = Array.from(freeProviders.values()).map(provider => ({
+    const providerList = Array.from(freeProviders.values()).map((provider) => ({
       ...provider.getProvider(),
       isActive: provider.isActive(),
     }));
@@ -60,16 +60,16 @@ export const getPublicProviders: RequestHandler = async (req, res) => {
       providers: providerList,
       meta: {
         total: providerList.length,
-        type: 'free_games_only',
-        license: 'Free for non-commercial use',
-        attribution: 'Powered by CoinKrazy.com',
+        type: "free_games_only",
+        license: "Free for non-commercial use",
+        attribution: "Powered by CoinKrazy.com",
       },
     });
   } catch (error) {
-    console.error('Public API get providers error:', error);
+    console.error("Public API get providers error:", error);
     res.status(500).json({
       success: false,
-      error: 'Internal server error',
+      error: "Internal server error",
     });
   }
 };
@@ -77,13 +77,13 @@ export const getPublicProviders: RequestHandler = async (req, res) => {
 // Public API: Get free slot games
 export const getPublicGames: RequestHandler = async (req, res) => {
   const clientId = getClientId(req);
-  
+
   if (!checkRateLimit(clientId)) {
     return res.status(429).json({
       success: false,
-      error: 'Rate limit exceeded. Please try again later.',
+      error: "Rate limit exceeded. Please try again later.",
       limit: RATE_LIMIT,
-      window: '1 hour',
+      window: "1 hour",
     });
   }
 
@@ -95,17 +95,17 @@ export const getPublicGames: RequestHandler = async (req, res) => {
       limit: Math.min(parseInt(limit as string) || 20, 50), // Max 50 per request
       offset: parseInt(offset as string) || 0,
       search: search as string,
-      sortBy: 'name' as const,
-      sortOrder: 'asc' as const,
+      sortBy: "name" as const,
+      sortOrder: "asc" as const,
     };
 
-    if (providerId && typeof providerId === 'string') {
+    if (providerId && typeof providerId === "string") {
       // Get games from specific free provider
       const provider = freeProviders.get(providerId);
       if (!provider) {
         return res.status(404).json({
           success: false,
-          error: 'Free provider not found',
+          error: "Free provider not found",
         });
       }
 
@@ -114,9 +114,9 @@ export const getPublicGames: RequestHandler = async (req, res) => {
         ...result,
         meta: {
           provider: providerId,
-          type: 'free_games_only',
-          license: 'Free for non-commercial use',
-          attribution: 'Powered by CoinKrazy.com',
+          type: "free_games_only",
+          license: "Free for non-commercial use",
+          attribution: "Powered by CoinKrazy.com",
         },
       });
     } else {
@@ -137,7 +137,10 @@ export const getPublicGames: RequestHandler = async (req, res) => {
       }
 
       // Apply pagination to combined results
-      const paginatedGames = allGames.slice(params.offset, params.offset + params.limit);
+      const paginatedGames = allGames.slice(
+        params.offset,
+        params.offset + params.limit,
+      );
 
       res.json({
         success: true,
@@ -146,17 +149,17 @@ export const getPublicGames: RequestHandler = async (req, res) => {
         hasMore: params.offset + params.limit < allGames.length,
         meta: {
           providers: Array.from(freeProviders.keys()),
-          type: 'free_games_only',
-          license: 'Free for non-commercial use',
-          attribution: 'Powered by CoinKrazy.com',
+          type: "free_games_only",
+          license: "Free for non-commercial use",
+          attribution: "Powered by CoinKrazy.com",
         },
       });
     }
   } catch (error) {
-    console.error('Public API get games error:', error);
+    console.error("Public API get games error:", error);
     res.status(500).json({
       success: false,
-      error: 'Internal server error',
+      error: "Internal server error",
     });
   }
 };
@@ -164,13 +167,13 @@ export const getPublicGames: RequestHandler = async (req, res) => {
 // Public API: Get game details
 export const getPublicGameDetails: RequestHandler = async (req, res) => {
   const clientId = getClientId(req);
-  
+
   if (!checkRateLimit(clientId)) {
     return res.status(429).json({
       success: false,
-      error: 'Rate limit exceeded. Please try again later.',
+      error: "Rate limit exceeded. Please try again later.",
       limit: RATE_LIMIT,
-      window: '1 hour',
+      window: "1 hour",
     });
   }
 
@@ -181,7 +184,7 @@ export const getPublicGameDetails: RequestHandler = async (req, res) => {
     if (!provider) {
       return res.status(404).json({
         success: false,
-        error: 'Free provider not found',
+        error: "Free provider not found",
       });
     }
 
@@ -189,7 +192,7 @@ export const getPublicGameDetails: RequestHandler = async (req, res) => {
     if (!game) {
       return res.status(404).json({
         success: false,
-        error: 'Game not found',
+        error: "Game not found",
       });
     }
 
@@ -198,16 +201,16 @@ export const getPublicGameDetails: RequestHandler = async (req, res) => {
       game,
       meta: {
         provider: providerId,
-        type: 'free_game',
-        license: 'Free for non-commercial use',
-        attribution: 'Powered by CoinKrazy.com',
+        type: "free_game",
+        license: "Free for non-commercial use",
+        attribution: "Powered by CoinKrazy.com",
       },
     });
   } catch (error) {
-    console.error('Public API get game details error:', error);
+    console.error("Public API get game details error:", error);
     res.status(500).json({
       success: false,
-      error: 'Internal server error',
+      error: "Internal server error",
     });
   }
 };
@@ -215,13 +218,13 @@ export const getPublicGameDetails: RequestHandler = async (req, res) => {
 // Public API: Get embed URL for game
 export const getPublicGameEmbed: RequestHandler = async (req, res) => {
   const clientId = getClientId(req);
-  
+
   if (!checkRateLimit(clientId)) {
     return res.status(429).json({
       success: false,
-      error: 'Rate limit exceeded. Please try again later.',
+      error: "Rate limit exceeded. Please try again later.",
       limit: RATE_LIMIT,
-      window: '1 hour',
+      window: "1 hour",
     });
   }
 
@@ -233,7 +236,7 @@ export const getPublicGameEmbed: RequestHandler = async (req, res) => {
     if (!provider) {
       return res.status(404).json({
         success: false,
-        error: 'Free provider not found',
+        error: "Free provider not found",
       });
     }
 
@@ -241,23 +244,23 @@ export const getPublicGameEmbed: RequestHandler = async (req, res) => {
     if (!game) {
       return res.status(404).json({
         success: false,
-        error: 'Game not found',
+        error: "Game not found",
       });
     }
 
     // Generate embed URL
     const launchResult = await provider.launchGame({
       gameId,
-      playerId: 'public-api-user',
-      currency: 'GC',
-      mode: 'real',
-      language: 'en',
+      playerId: "public-api-user",
+      currency: "GC",
+      mode: "real",
+      language: "en",
     });
 
     if (!launchResult.success || !launchResult.iframeUrl) {
       return res.status(500).json({
         success: false,
-        error: 'Failed to generate embed URL',
+        error: "Failed to generate embed URL",
       });
     }
 
@@ -295,64 +298,66 @@ export const getPublicGameEmbed: RequestHandler = async (req, res) => {
         provider: providerId,
       },
       meta: {
-        type: 'free_game_embed',
-        license: 'Free for non-commercial use',
-        attribution: 'Required - Powered by CoinKrazy.com',
+        type: "free_game_embed",
+        license: "Free for non-commercial use",
+        attribution: "Required - Powered by CoinKrazy.com",
       },
     });
   } catch (error) {
-    console.error('Public API get embed error:', error);
+    console.error("Public API get embed error:", error);
     res.status(500).json({
       success: false,
-      error: 'Internal server error',
+      error: "Internal server error",
     });
   }
 };
 
 // Public API: Get API documentation
 export const getPublicApiDocs: RequestHandler = async (req, res) => {
-  const baseUrl = `${req.protocol}://${req.get('host')}`;
-  
+  const baseUrl = `${req.protocol}://${req.get("host")}`;
+
   res.json({
-    title: 'CoinKrazy.com Free Slots Public API',
-    version: '1.0.0',
-    description: 'Public API for accessing free slot games via iframe integration',
-    license: 'Free for non-commercial use',
-    attribution: 'Required - Powered by CoinKrazy.com',
+    title: "CoinKrazy.com Free Slots Public API",
+    version: "1.0.0",
+    description:
+      "Public API for accessing free slot games via iframe integration",
+    license: "Free for non-commercial use",
+    attribution: "Required - Powered by CoinKrazy.com",
     rateLimit: {
       limit: RATE_LIMIT,
-      window: '1 hour',
+      window: "1 hour",
     },
     endpoints: {
       providers: {
         url: `${baseUrl}/api/public/providers`,
-        method: 'GET',
-        description: 'Get list of available free slot providers',
+        method: "GET",
+        description: "Get list of available free slot providers",
       },
       games: {
         url: `${baseUrl}/api/public/games`,
-        method: 'GET',
-        description: 'Get list of free slot games',
+        method: "GET",
+        description: "Get list of free slot games",
         params: {
-          providerId: 'Optional - Filter by provider (freeslotsgames, idevgames)',
-          category: 'Optional - Filter by game category',
-          search: 'Optional - Search games by name',
-          limit: 'Optional - Max 50 (default: 20)',
-          offset: 'Optional - Pagination offset (default: 0)',
+          providerId:
+            "Optional - Filter by provider (freeslotsgames, idevgames)",
+          category: "Optional - Filter by game category",
+          search: "Optional - Search games by name",
+          limit: "Optional - Max 50 (default: 20)",
+          offset: "Optional - Pagination offset (default: 0)",
         },
       },
       gameDetails: {
         url: `${baseUrl}/api/public/games/:providerId/:gameId`,
-        method: 'GET',
-        description: 'Get detailed information about a specific game',
+        method: "GET",
+        description: "Get detailed information about a specific game",
       },
       embed: {
         url: `${baseUrl}/api/public/embed/:providerId/:gameId`,
-        method: 'GET',
-        description: 'Get iframe embed code for a game',
+        method: "GET",
+        description: "Get iframe embed code for a game",
         params: {
-          width: 'Optional - Embed width in pixels (default: 800)',
-          height: 'Optional - Embed height in pixels (default: 600)',
+          width: "Optional - Embed width in pixels (default: 800)",
+          height: "Optional - Embed height in pixels (default: 600)",
         },
       },
     },
@@ -376,14 +381,14 @@ export const getRateLimitStatus: RequestHandler = async (req, res) => {
       limit: RATE_LIMIT,
       remaining: RATE_LIMIT,
       resetTime: now + RATE_WINDOW,
-      window: '1 hour',
+      window: "1 hour",
     });
   } else {
     res.json({
       limit: RATE_LIMIT,
       remaining: Math.max(0, RATE_LIMIT - usage.count),
       resetTime: usage.resetTime,
-      window: '1 hour',
+      window: "1 hour",
     });
   }
 };

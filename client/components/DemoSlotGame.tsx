@@ -1,43 +1,45 @@
-import { useState } from 'react';
-import { Button } from '@/components/ui/button';
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import { Badge } from '@/components/ui/badge';
-import { Alert, AlertDescription } from '@/components/ui/alert';
-import { Sparkles, Play, Info } from 'lucide-react';
-import { useCurrency, CurrencyType } from '@/contexts/CurrencyContext';
-import { SlotMachine } from '@/components/SlotMachine';
-import { getSlotTheme } from '@/components/SlotThemes';
-import { cn } from '@/lib/utils';
+import { useState } from "react";
+import { Button } from "@/components/ui/button";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Badge } from "@/components/ui/badge";
+import { Alert, AlertDescription } from "@/components/ui/alert";
+import { Sparkles, Play, Info } from "lucide-react";
+import { useCurrency, CurrencyType } from "@/contexts/CurrencyContext";
+import { SlotMachine } from "@/components/SlotMachine";
+import { getSlotTheme } from "@/components/SlotThemes";
+import { cn } from "@/lib/utils";
 
 interface DemoSlotGameProps {
   className?: string;
 }
 
 export function DemoSlotGame({ className }: DemoSlotGameProps) {
-  const [selectedCurrency, setSelectedCurrency] = useState<CurrencyType>(CurrencyType.GC);
+  const [selectedCurrency, setSelectedCurrency] = useState<CurrencyType>(
+    CurrencyType.GC,
+  );
   const [showSlot, setShowSlot] = useState(false);
   const { user } = useCurrency();
 
   const demoGames = [
     {
-      id: 'demo-classic',
-      name: 'Classic Fruits Demo',
-      description: 'Traditional fruit machine with classic symbols',
-      theme: 'classic',
-      provider: 'Demo',
+      id: "demo-classic",
+      name: "Classic Fruits Demo",
+      description: "Traditional fruit machine with classic symbols",
+      theme: "classic",
+      provider: "Demo",
       rtp: 96.5,
-      volatility: 'medium',
-      features: ['Wild Symbols', 'Scatter Pays', 'Auto Spin'],
+      volatility: "medium",
+      features: ["Wild Symbols", "Scatter Pays", "Auto Spin"],
     },
     {
-      id: 'demo-diamond',
-      name: 'Diamond Deluxe Demo',
-      description: 'Luxury gems and precious stones',
-      theme: 'diamond',
-      provider: 'Demo',
+      id: "demo-diamond",
+      name: "Diamond Deluxe Demo",
+      description: "Luxury gems and precious stones",
+      theme: "diamond",
+      provider: "Demo",
       rtp: 97.2,
-      volatility: 'high',
-      features: ['Free Spins', 'Multipliers', 'Bonus Round'],
+      volatility: "high",
+      features: ["Free Spins", "Multipliers", "Bonus Round"],
     },
   ];
 
@@ -45,15 +47,25 @@ export function DemoSlotGame({ className }: DemoSlotGameProps) {
 
   const getVolatilityColor = (volatility: string) => {
     switch (volatility) {
-      case 'low': return 'text-green-500 bg-green-500/20';
-      case 'medium': return 'text-yellow-500 bg-yellow-500/20';
-      case 'high': return 'text-red-500 bg-red-500/20';
-      default: return 'text-gray-500 bg-gray-500/20';
+      case "low":
+        return "text-green-500 bg-green-500/20";
+      case "medium":
+        return "text-yellow-500 bg-yellow-500/20";
+      case "high":
+        return "text-red-500 bg-red-500/20";
+      default:
+        return "text-gray-500 bg-gray-500/20";
     }
   };
 
-  const handleWin = (amount: number, combination: string[], currency: CurrencyType) => {
-    console.log(`Demo win: ${amount} ${currency} with ${combination.join(', ')}`);
+  const handleWin = (
+    amount: number,
+    combination: string[],
+    currency: CurrencyType,
+  ) => {
+    console.log(
+      `Demo win: ${amount} ${currency} with ${combination.join(", ")}`,
+    );
   };
 
   if (showSlot) {
@@ -62,17 +74,20 @@ export function DemoSlotGame({ className }: DemoSlotGameProps) {
         <div className="flex items-center justify-between">
           <div>
             <h3 className="text-lg font-semibold">{selectedGame.name}</h3>
-            <p className="text-sm text-muted-foreground">Demo Mode - {selectedGame.description}</p>
+            <p className="text-sm text-muted-foreground">
+              Demo Mode - {selectedGame.description}
+            </p>
           </div>
           <Button variant="outline" onClick={() => setShowSlot(false)}>
             Back to Games
           </Button>
         </div>
-        
+
         <Alert>
           <Info className="h-4 w-4" />
           <AlertDescription>
-            This is a demo slot machine. Configure real API credentials to access live games from BGaming and Pragmatic Play.
+            This is a demo slot machine. Configure real API credentials to
+            access live games from BGaming and Pragmatic Play.
           </AlertDescription>
         </Alert>
 
@@ -90,13 +105,17 @@ export function DemoSlotGame({ className }: DemoSlotGameProps) {
 
         <div className="flex justify-center gap-2">
           <Button
-            variant={selectedCurrency === CurrencyType.GC ? 'default' : 'outline'}
+            variant={
+              selectedCurrency === CurrencyType.GC ? "default" : "outline"
+            }
             onClick={() => setSelectedCurrency(CurrencyType.GC)}
           >
             Play with GC
           </Button>
           <Button
-            variant={selectedCurrency === CurrencyType.SC ? 'default' : 'outline'}
+            variant={
+              selectedCurrency === CurrencyType.SC ? "default" : "outline"
+            }
             onClick={() => setSelectedCurrency(CurrencyType.SC)}
           >
             Play with SC
@@ -111,17 +130,18 @@ export function DemoSlotGame({ className }: DemoSlotGameProps) {
       <div className="text-center">
         <h3 className="text-xl font-semibold mb-2">Demo Slot Games</h3>
         <p className="text-muted-foreground">
-          Try these demo slot machines while you configure your provider API credentials
+          Try these demo slot machines while you configure your provider API
+          credentials
         </p>
       </div>
 
       <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
         {demoGames.map((game) => (
-          <Card 
-            key={game.id} 
+          <Card
+            key={game.id}
             className={cn(
               "glass cursor-pointer transition-all duration-200 hover:scale-105",
-              selectedGame.id === game.id && "ring-2 ring-purple"
+              selectedGame.id === game.id && "ring-2 ring-purple",
             )}
             onClick={() => setSelectedGame(game)}
           >
@@ -133,12 +153,16 @@ export function DemoSlotGame({ className }: DemoSlotGameProps) {
                 <Badge className="absolute top-2 left-2 bg-purple text-white">
                   {game.provider}
                 </Badge>
-                <Badge className={`absolute top-2 right-2 ${getVolatilityColor(game.volatility)}`}>
+                <Badge
+                  className={`absolute top-2 right-2 ${getVolatilityColor(game.volatility)}`}
+                >
                   {game.volatility.toUpperCase()}
                 </Badge>
               </div>
               <CardTitle className="text-lg">{game.name}</CardTitle>
-              <p className="text-sm text-muted-foreground">{game.description}</p>
+              <p className="text-sm text-muted-foreground">
+                {game.description}
+              </p>
             </CardHeader>
 
             <CardContent className="space-y-4">
@@ -195,7 +219,8 @@ export function DemoSlotGame({ className }: DemoSlotGameProps) {
               <li>Experience the full slot interface</li>
             </ul>
             <p className="text-sm text-muted-foreground mt-2">
-              Configure BGaming and Pragmatic Play API credentials to access hundreds of real slot games.
+              Configure BGaming and Pragmatic Play API credentials to access
+              hundreds of real slot games.
             </p>
           </div>
         </AlertDescription>

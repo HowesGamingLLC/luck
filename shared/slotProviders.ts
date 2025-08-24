@@ -5,7 +5,7 @@ export interface SlotProvider {
   isActive: boolean;
   apiEndpoint: string;
   websiteUrl: string;
-  supportedCurrencies: ('GC' | 'SC')[];
+  supportedCurrencies: ("GC" | "SC")[];
   features: ProviderFeatures;
 }
 
@@ -30,7 +30,7 @@ export interface SlotGame {
   minBet: number;
   maxBet: number;
   rtp: number;
-  volatility: 'low' | 'medium' | 'high';
+  volatility: "low" | "medium" | "high";
   paylines: number;
   reels: number;
   isPopular: boolean;
@@ -47,8 +47,8 @@ export interface SlotGame {
 export interface GameLaunchParams {
   gameId: string;
   playerId: string;
-  currency: 'GC' | 'SC';
-  mode: 'real' | 'demo';
+  currency: "GC" | "SC";
+  mode: "real" | "demo";
   language?: string;
   returnUrl?: string;
   sessionId?: string;
@@ -67,8 +67,8 @@ export interface ProviderGameListParams {
   limit?: number;
   offset?: number;
   search?: string;
-  sortBy?: 'name' | 'popularity' | 'rtp' | 'releaseDate';
-  sortOrder?: 'asc' | 'desc';
+  sortBy?: "name" | "popularity" | "rtp" | "releaseDate";
+  sortOrder?: "asc" | "desc";
 }
 
 export interface ProviderGameListResponse {
@@ -91,7 +91,7 @@ export interface ProviderBetResult {
   transactionId: string;
   betAmount: number;
   winAmount: number;
-  currency: 'GC' | 'SC';
+  currency: "GC" | "SC";
   gameRound: string;
   timestamp: string;
   error?: string;
@@ -108,7 +108,9 @@ export abstract class BaseSlotProvider {
     this.operatorId = operatorId;
   }
 
-  abstract getGames(params?: ProviderGameListParams): Promise<ProviderGameListResponse>;
+  abstract getGames(
+    params?: ProviderGameListParams,
+  ): Promise<ProviderGameListResponse>;
   abstract getGameById(gameId: string): Promise<SlotGame | null>;
   abstract launchGame(params: GameLaunchParams): Promise<GameLaunchResponse>;
   abstract getPlayerBalance(playerId: string): Promise<ProviderBalance | null>;
@@ -122,7 +124,7 @@ export abstract class BaseSlotProvider {
     return this.provider.isActive;
   }
 
-  supportsCurrency(currency: 'GC' | 'SC'): boolean {
+  supportsCurrency(currency: "GC" | "SC"): boolean {
     return this.provider.supportedCurrencies.includes(currency);
   }
 }

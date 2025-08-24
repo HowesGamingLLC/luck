@@ -1,12 +1,24 @@
-import { useState, useEffect, useRef, useCallback } from 'react';
-import { Button } from '@/components/ui/button';
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import { Badge } from '@/components/ui/badge';
-import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/ui/dialog';
-import { Alert, AlertDescription } from '@/components/ui/alert';
-import { Loader2, ExternalLink, RotateCcw, AlertTriangle, Maximize2, Minimize2 } from 'lucide-react';
-import { useCurrency, CurrencyType } from '@/contexts/CurrencyContext';
-import { cn } from '@/lib/utils';
+import { useState, useEffect, useRef, useCallback } from "react";
+import { Button } from "@/components/ui/button";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Badge } from "@/components/ui/badge";
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+} from "@/components/ui/dialog";
+import { Alert, AlertDescription } from "@/components/ui/alert";
+import {
+  Loader2,
+  ExternalLink,
+  RotateCcw,
+  AlertTriangle,
+  Maximize2,
+  Minimize2,
+} from "lucide-react";
+import { useCurrency, CurrencyType } from "@/contexts/CurrencyContext";
+import { cn } from "@/lib/utils";
 
 export interface SlotGameData {
   id: string;
@@ -16,7 +28,7 @@ export interface SlotGameData {
   minBet: number;
   maxBet: number;
   rtp: number;
-  volatility: 'low' | 'medium' | 'high';
+  volatility: "low" | "medium" | "high";
   features: string[];
   description: string;
 }
@@ -24,7 +36,7 @@ export interface SlotGameData {
 interface IframeSlotGameProps {
   game: SlotGameData;
   currency: CurrencyType;
-  mode?: 'real' | 'demo';
+  mode?: "real" | "demo";
   className?: string;
   onGameLaunch?: (gameId: string, success: boolean) => void;
   onGameEnd?: (gameId: string, sessionData?: any) => void;
@@ -41,7 +53,7 @@ interface GameSession {
 export function IframeSlotGame({
   game,
   currency,
-  mode = 'real',
+  mode = "real",
   className,
   onGameLaunch,
   onGameEnd,
@@ -64,11 +76,14 @@ export function IframeSlotGame({
   // Sweepstakes compliance check
   const isSweepstakesCompliant = useCallback(() => {
     // Free games always compliant
-    if (game.providerId === 'freeslotsgames' || game.providerId === 'idevgames') {
+    if (
+      game.providerId === "freeslotsgames" ||
+      game.providerId === "idevgames"
+    ) {
       return true;
     }
 
-    if (mode === 'demo') return true;
+    if (mode === "demo") return true;
     if (currency === CurrencyType.GC) return true;
 
     // For sweep coins, additional compliance checks
@@ -87,7 +102,7 @@ export function IframeSlotGame({
     }
 
     if (!user?.id) {
-      setError('Please log in to play');
+      setError("Please log in to play");
       return;
     }
 
@@ -106,16 +121,16 @@ export function IframeSlotGame({
         playerId: user.id,
         currency: currency,
         mode: mode,
-        language: 'en',
+        language: "en",
         returnUrl: window.location.href,
         sessionId: generateSessionId(),
       };
 
-      const response = await fetch('/api/slots/launch', {
-        method: 'POST',
+      const response = await fetch("/api/slots/launch", {
+        method: "POST",
         headers: {
-          'Content-Type': 'application/json',
-          'Authorization': `Bearer ${user.sessionToken}`,
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${user.sessionToken}`,
         },
         body: JSON.stringify(launchParams),
       });
@@ -141,17 +156,28 @@ export function IframeSlotGame({
         // Start session monitoring
         startSessionMonitoring(session.sessionToken);
       } else {
-        throw new Error(data.error || 'Launch failed');
+        throw new Error(data.error || "Launch failed");
       }
     } catch (err) {
-      const errorMessage = err instanceof Error ? err.message : 'Failed to launch game';
+      const errorMessage =
+        err instanceof Error ? err.message : "Failed to launch game";
       setError(errorMessage);
       onError?.(errorMessage);
       onGameLaunch?.(game.id, false);
     } finally {
       setIsLoading(false);
     }
-  }, [game, currency, mode, user, hasAgreedToTerms, isSweepstakesCompliant, canAffordWager, onGameLaunch, onError]);
+  }, [
+    game,
+    currency,
+    mode,
+    user,
+    hasAgreedToTerms,
+    isSweepstakesCompliant,
+    canAffordWager,
+    onGameLaunch,
+    onError,
+  ]);
 
   // End game session
   const endGame = useCallback(async () => {
@@ -166,18 +192,18 @@ export function IframeSlotGame({
         gameId: game.id,
       };
 
-      await fetch('/api/slots/end-session', {
-        method: 'POST',
+      await fetch("/api/slots/end-session", {
+        method: "POST",
         headers: {
-          'Content-Type': 'application/json',
-          'Authorization': `Bearer ${user?.sessionToken}`,
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${user?.sessionToken}`,
         },
         body: JSON.stringify(sessionData),
       });
 
       onGameEnd?.(game.id, sessionData);
     } catch (err) {
-      console.error('Failed to end session:', err);
+      console.error("Failed to end session:", err);
     } finally {
       setGameSession(null);
       setIsGameActive(false);
@@ -195,26 +221,26 @@ export function IframeSlotGame({
   const startSessionMonitoring = (sessionToken: string) => {
     sessionCheckInterval.current = setInterval(async () => {
       try {
-        const response = await fetch('/api/slots/validate-session', {
-          method: 'POST',
+        const response = await fetch("/api/slots/validate-session", {
+          method: "POST",
           headers: {
-            'Content-Type': 'application/json',
-            'Authorization': `Bearer ${user?.sessionToken}`,
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${user?.sessionToken}`,
           },
           body: JSON.stringify({ sessionToken }),
         });
 
         if (!response.ok) {
-          throw new Error('Session validation failed');
+          throw new Error("Session validation failed");
         }
 
         const data = await response.json();
         if (!data.valid) {
-          setError('Game session expired');
+          setError("Game session expired");
           endGame();
         }
       } catch (err) {
-        console.error('Session check failed:', err);
+        console.error("Session check failed:", err);
       }
     }, 30000); // Check every 30 seconds
   };
@@ -233,47 +259,50 @@ export function IframeSlotGame({
 
       // Verify origin for security
       const allowedOrigins = [
-        'https://bgaming.com',
-        'https://api.pragmaticplay.net',
-        'https://cdn.pragmaticplay.net',
+        "https://bgaming.com",
+        "https://api.pragmaticplay.net",
+        "https://cdn.pragmaticplay.net",
       ];
 
-      if (!allowedOrigins.some(origin => event.origin.includes(origin))) {
-        console.warn('Received message from unauthorized origin:', event.origin);
+      if (!allowedOrigins.some((origin) => event.origin.includes(origin))) {
+        console.warn(
+          "Received message from unauthorized origin:",
+          event.origin,
+        );
         return;
       }
 
       const { data } = event;
 
       switch (data.type) {
-        case 'gameLoaded':
+        case "gameLoaded":
           setIsLoading(false);
           break;
-        case 'gameEnded':
+        case "gameEnded":
           endGame();
           break;
-        case 'gameError':
-          setError(data.error || 'Game error occurred');
+        case "gameError":
+          setError(data.error || "Game error occurred");
           break;
-        case 'balanceUpdate':
+        case "balanceUpdate":
           // Refresh user balance
-          window.dispatchEvent(new CustomEvent('refreshBalance'));
+          window.dispatchEvent(new CustomEvent("refreshBalance"));
           break;
-        case 'fullscreenRequest':
+        case "fullscreenRequest":
           setIsFullscreen(true);
           break;
-        case 'exitFullscreen':
+        case "exitFullscreen":
           setIsFullscreen(false);
           break;
         default:
-          console.log('Unknown message type:', data.type);
+          console.log("Unknown message type:", data.type);
       }
     };
 
-    window.addEventListener('message', handleMessage);
+    window.addEventListener("message", handleMessage);
 
     return () => {
-      window.removeEventListener('message', handleMessage);
+      window.removeEventListener("message", handleMessage);
       stopSessionMonitoring();
     };
   }, [gameSession, endGame]);
@@ -291,7 +320,7 @@ export function IframeSlotGame({
         setIsFullscreen(false);
       }
     } catch (err) {
-      console.error('Fullscreen toggle failed:', err);
+      console.error("Fullscreen toggle failed:", err);
     }
   }, [isFullscreen]);
 
@@ -314,7 +343,7 @@ export function IframeSlotGame({
             <li>Agree to sweepstakes terms and conditions</li>
             <li>Confirm you are in an eligible jurisdiction</li>
           </ul>
-          
+
           {!user?.isVerified && (
             <Alert>
               <AlertDescription>
@@ -364,35 +393,45 @@ export function IframeSlotGame({
 
   const getVolatilityColor = (volatility: string) => {
     switch (volatility) {
-      case 'low': return 'text-green-500 bg-green-500/20';
-      case 'medium': return 'text-yellow-500 bg-yellow-500/20';
-      case 'high': return 'text-red-500 bg-red-500/20';
-      default: return 'text-gray-500 bg-gray-500/20';
+      case "low":
+        return "text-green-500 bg-green-500/20";
+      case "medium":
+        return "text-yellow-500 bg-yellow-500/20";
+      case "high":
+        return "text-red-500 bg-red-500/20";
+      default:
+        return "text-gray-500 bg-gray-500/20";
     }
   };
 
   if (isGameActive && gameSession) {
     return (
-      <div 
+      <div
         ref={containerRef}
         className={cn(
           "relative bg-card rounded-lg overflow-hidden",
           isFullscreen && "fixed inset-0 z-50 bg-black",
-          className
+          className,
         )}
       >
         {/* Game Controls */}
-        <div className={cn(
-          "absolute top-2 right-2 z-10 flex gap-2",
-          isFullscreen && "top-4 right-4"
-        )}>
+        <div
+          className={cn(
+            "absolute top-2 right-2 z-10 flex gap-2",
+            isFullscreen && "top-4 right-4",
+          )}
+        >
           <Button
             size="sm"
             variant="secondary"
             onClick={toggleFullscreen}
             className="bg-background/80 backdrop-blur-sm"
           >
-            {isFullscreen ? <Minimize2 className="h-4 w-4" /> : <Maximize2 className="h-4 w-4" />}
+            {isFullscreen ? (
+              <Minimize2 className="h-4 w-4" />
+            ) : (
+              <Maximize2 className="h-4 w-4" />
+            )}
           </Button>
           <Button
             size="sm"
@@ -401,7 +440,11 @@ export function IframeSlotGame({
             disabled={isLoading}
             className="bg-destructive/80 backdrop-blur-sm"
           >
-            {isLoading ? <Loader2 className="h-4 w-4 animate-spin" /> : 'End Game'}
+            {isLoading ? (
+              <Loader2 className="h-4 w-4 animate-spin" />
+            ) : (
+              "End Game"
+            )}
           </Button>
         </div>
 
@@ -411,7 +454,7 @@ export function IframeSlotGame({
           src={gameSession.iframeUrl}
           className={cn(
             "w-full border-0",
-            isFullscreen ? "h-screen" : "h-[600px]"
+            isFullscreen ? "h-screen" : "h-[600px]",
           )}
           title={`${game.name} - ${game.providerId}`}
           allow="fullscreen; payment; microphone"
@@ -435,19 +478,22 @@ export function IframeSlotGame({
   }
 
   return (
-    <Card className={cn("slot-machine-card transition-all duration-200", className)}>
+    <Card
+      className={cn("slot-machine-card transition-all duration-200", className)}
+    >
       <CardHeader className="text-center pb-4">
         <div className="relative">
           <img
-            src={game.thumbnailUrl || '/placeholder.svg'}
+            src={game.thumbnailUrl || "/placeholder.svg"}
             alt={game.name}
             className="w-full h-48 object-cover rounded-lg mb-4"
             onError={(e) => {
-              e.currentTarget.src = '/placeholder.svg';
+              e.currentTarget.src = "/placeholder.svg";
             }}
           />
           {/* Free game badge */}
-          {(game.providerId === 'freeslotsgames' || game.providerId === 'idevgames') ? (
+          {game.providerId === "freeslotsgames" ||
+          game.providerId === "idevgames" ? (
             <Badge className="absolute top-2 left-2 bg-success text-white">
               FREE
             </Badge>
@@ -456,7 +502,9 @@ export function IframeSlotGame({
               {game.providerId.toUpperCase()}
             </Badge>
           )}
-          <Badge className={`absolute top-2 right-2 ${getVolatilityColor(game.volatility)}`}>
+          <Badge
+            className={`absolute top-2 right-2 ${getVolatilityColor(game.volatility)}`}
+          >
             {game.volatility.toUpperCase()}
           </Badge>
         </div>
@@ -469,7 +517,9 @@ export function IframeSlotGame({
         <div className="grid grid-cols-2 gap-4 text-sm">
           <div>
             <span className="text-muted-foreground">Min Bet:</span>
-            <span className="font-semibold ml-2">{game.minBet} {currency}</span>
+            <span className="font-semibold ml-2">
+              {game.minBet} {currency}
+            </span>
           </div>
           <div>
             <span className="text-muted-foreground">RTP:</span>
@@ -516,13 +566,13 @@ export function IframeSlotGame({
             ) : (
               <ExternalLink className="h-4 w-4 mr-2" />
             )}
-            {(game.providerId === 'freeslotsgames' || game.providerId === 'idevgames')
-              ? 'Play Free'
-              : `Play ${mode === 'demo' ? 'Demo' : currency}`
-            }
+            {game.providerId === "freeslotsgames" ||
+            game.providerId === "idevgames"
+              ? "Play Free"
+              : `Play ${mode === "demo" ? "Demo" : currency}`}
           </Button>
-          
-          {mode === 'real' && (
+
+          {mode === "real" && (
             <Button
               onClick={() => {
                 const demoParams = { ...arguments[0] };
