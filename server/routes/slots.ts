@@ -1,7 +1,7 @@
 import { RequestHandler } from "express";
 import { BGamingProvider } from "./slotProviders/bgaming";
 import { PragmaticPlayProvider } from "./slotProviders/pragmaticPlay";
-import { BaseSlotProvider, GameLaunchParams, ProviderGameListParams } from "@shared/slotProviders";
+import { BaseSlotProvider, GameLaunchParams, ProviderGameListParams } from "../../shared/slotProviders";
 import { testSlotProviders, validateSweepstakesCompliance } from "../utils/testSlotProviders";
 
 // Initialize providers
