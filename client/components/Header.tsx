@@ -180,19 +180,28 @@ export function Header() {
                     className="relative h-8 w-8 rounded-full"
                   >
                     <Avatar className="h-8 w-8">
-                      <AvatarImage src={user.avatar} alt={user.name} />
                       <AvatarFallback className="bg-purple text-white">
-                        {user.name.charAt(0)}
+                        {authUser?.name.charAt(0) || "?"}
                       </AvatarFallback>
                     </Avatar>
+                    {isAdmin && (
+                      <Crown className="absolute -top-1 -right-1 h-3 w-3 text-gold" />
+                    )}
                   </Button>
                 </DropdownMenuTrigger>
                 <DropdownMenuContent className="w-64" align="end" forceMount>
                   <div className="flex items-center justify-start gap-2 p-2">
                     <div className="flex flex-col space-y-1 leading-none">
-                      <p className="font-medium">{user.name}</p>
+                      <div className="flex items-center gap-2">
+                        <p className="font-medium">{authUser?.name}</p>
+                        {isAdmin && (
+                          <Badge variant="secondary" className="text-xs">
+                            Admin
+                          </Badge>
+                        )}
+                      </div>
                       <p className="w-[200px] truncate text-sm text-muted-foreground">
-                        {user.email}
+                        {authUser?.email}
                       </p>
                     </div>
                   </div>
@@ -208,7 +217,7 @@ export function Header() {
                       </span>
                       <span className="font-semibold text-gold">
                         {formatCurrency(
-                          user.balance.goldCoins,
+                          currencyUser.balance.goldCoins,
                           CurrencyType.GC,
                         )}
                       </span>
@@ -220,7 +229,7 @@ export function Header() {
                       </span>
                       <span className="font-semibold text-teal">
                         {formatCurrency(
-                          user.balance.sweepCoins,
+                          currencyUser.balance.sweepCoins,
                           CurrencyType.SC,
                         )}
                       </span>
@@ -239,7 +248,7 @@ export function Header() {
                     <Link to="/wallet" className="flex items-center">
                       <Wallet className="mr-2 h-4 w-4" />
                       <span>Wallet</span>
-                      {user.balance.sweepCoins >= 100 && (
+                      {currencyUser.balance.sweepCoins >= 100 && (
                         <Badge className="ml-auto bg-success text-white text-xs">
                           Withdraw Ready
                         </Badge>
@@ -252,9 +261,35 @@ export function Header() {
                       <span>Settings</span>
                     </Link>
                   </DropdownMenuItem>
+
+                  {/* Admin Only Section */}
+                  {isAdmin && (
+                    <>
+                      <DropdownMenuSeparator />
+                      <DropdownMenuItem asChild>
+                        <Link to="/admin" className="flex items-center">
+                          <Shield className="mr-2 h-4 w-4" />
+                          <span>Admin Panel</span>
+                        </Link>
+                      </DropdownMenuItem>
+                      <DropdownMenuItem asChild>
+                        <Link to="/admin/players" className="flex items-center">
+                          <BarChart3 className="mr-2 h-4 w-4" />
+                          <span>Player Analytics</span>
+                        </Link>
+                      </DropdownMenuItem>
+                      <DropdownMenuItem asChild>
+                        <Link to="/admin/packages" className="flex items-center">
+                          <DollarSign className="mr-2 h-4 w-4" />
+                          <span>Manage Packages</span>
+                        </Link>
+                      </DropdownMenuItem>
+                    </>
+                  )}
+
                   <DropdownMenuSeparator />
                   <DropdownMenuItem
-                    onClick={() => setIsLoggedIn(false)}
+                    onClick={handleLogout}
                     className="text-destructive focus:text-destructive"
                   >
                     <LogOut className="mr-2 h-4 w-4" />
