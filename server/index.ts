@@ -68,6 +68,7 @@ export function createServer() {
   app.get("/api/slots/providers/:providerId/balance/:playerId", getPlayerBalance);
   app.get("/api/slots/admin/sessions", getActiveSessions);
   app.get("/api/slots/admin/health", checkProviderHealth);
+  app.get("/api/slots/admin/test", testProviders);
 
   // Thumbnail routes
   app.get("/api/thumbnails", getThumbnail);
