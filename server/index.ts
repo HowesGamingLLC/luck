@@ -85,5 +85,13 @@ export function createServer() {
   app.delete("/api/thumbnails/cache", clearCache);
   app.get("/thumbnails/:filename", serveThumbnail);
 
+  // Public API routes (for external access to free games)
+  app.get("/api/public/docs", getPublicApiDocs);
+  app.get("/api/public/providers", getPublicProviders);
+  app.get("/api/public/games", getPublicGames);
+  app.get("/api/public/games/:providerId/:gameId", getPublicGameDetails);
+  app.get("/api/public/embed/:providerId/:gameId", getPublicGameEmbed);
+  app.get("/api/public/rate-limit", getRateLimitStatus);
+
   return app;
 }
