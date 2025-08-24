@@ -37,6 +37,7 @@ import {
   DollarSign,
   Crown,
   Home,
+  ShoppingCart,
 } from "lucide-react";
 
 export function Header() {
@@ -55,11 +56,13 @@ export function Header() {
     ? [
         { label: "Dashboard", href: "/dashboard", icon: Home },
         { label: "Games", href: "/games", icon: Coins },
+        { label: "Store", href: "/store", icon: ShoppingCart },
         { label: "Leaderboard", href: "/leaderboard", icon: Trophy },
         { label: "Referrals", href: "/referrals", icon: Users },
         { label: "Help", href: "/help", icon: HelpCircle },
       ]
     : [
+        { label: "Store", href: "/store", icon: ShoppingCart },
         { label: "Leaderboard", href: "/leaderboard", icon: Trophy },
         { label: "Help", href: "/help", icon: HelpCircle },
       ];
