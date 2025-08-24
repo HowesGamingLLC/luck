@@ -34,6 +34,7 @@ import AccountSettings from "./pages/AccountSettings";
 import KYC from "./pages/KYC";
 import Withdraw from "./pages/Withdraw";
 import Store from "./pages/Store";
+import WalletEnhanced from "./pages/WalletEnhanced";
 import NotFound from "./pages/NotFound";
 
 const queryClient = new QueryClient();
