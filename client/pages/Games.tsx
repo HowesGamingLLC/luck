@@ -313,27 +313,82 @@ export default function Games() {
                 <Card className="glass">
                   <CardHeader>
                     <CardTitle>Choose Your Slot Game</CardTitle>
+                    <CardDescription>Select a game and currency to start playing</CardDescription>
                   </CardHeader>
                   <CardContent>
-                    <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
+                    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
                       {slotGames.map((game) => {
                         const Icon = game.icon;
+                        const isSelected = selectedSlot === game.id;
                         return (
-                          <button
+                          <Card
                             key={game.id}
-                            onClick={() => setSelectedSlot(game.id)}
-                            className={`p-3 rounded-lg border transition-all duration-200 hover:scale-105 ${
-                              selectedSlot === game.id
+                            className={`transition-all duration-200 hover:scale-105 cursor-pointer ${
+                              isSelected
                                 ? "border-purple bg-purple/10 shadow-glow"
                                 : "border-border hover:border-purple/50"
                             }`}
+                            onClick={() => setSelectedSlot(game.id)}
                           >
-                            <Icon className="h-6 w-6 mx-auto mb-2 text-purple" />
-                            <div className="text-xs font-medium">{game.name}</div>
-                            <div className="text-xs text-muted-foreground">
-                              Max: ${game.maxPayout}
-                            </div>
-                          </button>
+                            <CardContent className="p-4 space-y-3">
+                              <div className="text-center">
+                                <Icon className="h-8 w-8 mx-auto mb-2 text-purple" />
+                                <div className="text-sm font-medium">{game.name}</div>
+                                <div className="text-xs text-muted-foreground">
+                                  Max Win: {game.difficulty === "Hard" ? "10 SC" : `${Math.min(game.maxPayout, 10)} SC`}
+                                </div>
+                              </div>
+
+                              {/* Currency Selection Buttons */}
+                              <div className="space-y-2">
+                                <Button
+                                  size="sm"
+                                  variant={selectedSlotCurrency === CurrencyType.GC && isSelected ? "default" : "outline"}
+                                  className="w-full bg-red-500 hover:bg-red-600 text-white border-red-500"
+                                  onClick={(e) => {
+                                    e.stopPropagation();
+                                    setSelectedSlot(game.id);
+                                    setSelectedSlotCurrency(CurrencyType.GC);
+                                  }}
+                                  disabled={!user || !canAffordWager(CurrencyType.GC, 1)}
+                                >
+                                  <Coins className="h-3 w-3 mr-1" />
+                                  Play with GC (Fun)
+                                </Button>
+
+                                <Button
+                                  size="sm"
+                                  variant={selectedSlotCurrency === CurrencyType.SC && isSelected ? "default" : "outline"}
+                                  className="w-full bg-green-500 hover:bg-green-600 text-white border-green-500"
+                                  onClick={(e) => {
+                                    e.stopPropagation();
+                                    setSelectedSlot(game.id);
+                                    setSelectedSlotCurrency(CurrencyType.SC);
+                                  }}
+                                  disabled={!user || !canAffordWager(CurrencyType.SC, 0.01)}
+                                >
+                                  <Gem className="h-3 w-3 mr-1" />
+                                  Play with SC (Real)
+                                </Button>
+                              </div>
+
+                              {/* Balances */}
+                              <div className="text-xs text-center space-y-1">
+                                <div className="flex justify-between">
+                                  <span className="text-muted-foreground">GC Balance:</span>
+                                  <span className="text-gold font-medium">
+                                    {user?.balance.goldCoins.toLocaleString() || 0}
+                                  </span>
+                                </div>
+                                <div className="flex justify-between">
+                                  <span className="text-muted-foreground">SC Balance:</span>
+                                  <span className="text-teal font-medium">
+                                    {user?.balance.sweepCoins.toFixed(2) || 0}
+                                  </span>
+                                </div>
+                              </div>
+                            </CardContent>
+                          </Card>
                         );
                       })}
                     </div>
