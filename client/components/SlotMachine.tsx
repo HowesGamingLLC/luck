@@ -35,7 +35,8 @@ interface SlotMachineProps {
   theme: SlotTheme;
   reels?: number;
   rows?: number;
-  onWin?: (amount: number, combination: string[]) => void;
+  currency: CurrencyType;
+  onWin?: (amount: number, combination: string[], currency: CurrencyType) => void;
   onSpin?: () => void;
   disabled?: boolean;
   autoPlay?: boolean;
