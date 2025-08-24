@@ -30,7 +30,8 @@ function App() {
     <QueryClientProvider client={queryClient}>
       <AuthProvider>
         <CurrencyProvider>
-          <TooltipProvider>
+          <JackpotProvider>
+            <TooltipProvider>
             <Toaster />
             <Sonner />
             <BrowserRouter>
@@ -87,7 +88,8 @@ function App() {
                 </Routes>
               </Layout>
             </BrowserRouter>
-          </TooltipProvider>
+            </TooltipProvider>
+          </JackpotProvider>
         </CurrencyProvider>
       </AuthProvider>
     </QueryClientProvider>
