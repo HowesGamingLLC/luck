@@ -429,13 +429,13 @@ export default function TournamentsPage() {
                         {tournament.buyIn.gc > 0 && (
                           <div className="flex items-center gap-1 text-sm">
                             <Coins className="h-3 w-3 text-gold" />
-                            {formatCurrency(tournament.buyIn.gc, "GC")}
+                            {formatCurrency(tournament.buyIn.gc, CurrencyType.GC)}
                           </div>
                         )}
                         {tournament.buyIn.sc > 0 && (
                           <div className="flex items-center gap-1 text-sm">
                             <Gem className="h-3 w-3 text-teal" />
-                            {formatCurrency(tournament.buyIn.sc, "SC")}
+                            {formatCurrency(tournament.buyIn.sc, CurrencyType.SC)}
                           </div>
                         )}
                       </div>
