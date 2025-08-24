@@ -8,6 +8,7 @@ import { BrowserRouter, Routes, Route } from "react-router-dom";
 import { Layout } from "@/components/Layout";
 import { AuthProvider } from "@/contexts/AuthContext";
 import { CurrencyProvider } from "@/contexts/CurrencyContext";
+import { JackpotProvider } from "@/contexts/JackpotContext";
 import { AuthGuard } from "@/components/AuthGuard";
 import Index from "./pages/Index";
 import Login from "./pages/Login";
