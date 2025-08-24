@@ -186,7 +186,7 @@ export function CoinKrazyHand({
         rank: "A",
         value: 14,
         isHidden: true,
-        id: `hidden-${i}`
+        id: `hidden-${i}`,
       })),
     ...cards.map((card, i) => ({ ...card, isHidden: false, id: `card-${i}` })),
   ];

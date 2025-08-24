@@ -788,7 +788,9 @@ export function HoldemGame({
               </div>
               <CoinKrazyCommunityCards
                 cards={gameState.communityCards}
-                stage={gameState.stage === "waiting" ? "preflop" : gameState.stage}
+                stage={
+                  gameState.stage === "waiting" ? "preflop" : gameState.stage
+                }
                 size="lg"
                 className="justify-center"
               />
