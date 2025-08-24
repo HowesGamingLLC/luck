@@ -538,9 +538,10 @@ export default function AdminPanel() {
         </div>
 
         <Tabs defaultValue="players" className="space-y-6">
-          <TabsList className="grid w-full grid-cols-7">
+          <TabsList className="grid w-full grid-cols-8">
             <TabsTrigger value="players">Player Analytics</TabsTrigger>
             <TabsTrigger value="profiles">User Profiles</TabsTrigger>
+            <TabsTrigger value="ai-employees">AI Employees</TabsTrigger>
             <TabsTrigger value="messaging">Messaging Center</TabsTrigger>
             <TabsTrigger value="jackpots">Jackpot Management</TabsTrigger>
             <TabsTrigger value="packages">Manage Packages</TabsTrigger>
