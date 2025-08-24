@@ -86,10 +86,10 @@ export function Header() {
         {/* Logo */}
         <Link to="/" className="mr-6 flex items-center space-x-2">
           <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-gradient-to-br from-purple to-gold">
-            <span className="text-lg font-bold text-white">M</span>
+            <span className="text-lg font-bold text-white">C</span>
           </div>
           <span className="text-xl font-display font-bold gradient-text">
-            McLuck
+            CoinKrazy.com
           </span>
         </Link>
 
