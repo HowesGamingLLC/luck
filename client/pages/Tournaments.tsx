@@ -47,6 +47,7 @@ import {
   Gamepad2,
   Award,
   Sparkles,
+  Spade,
 } from "lucide-react";
 
 interface Tournament {
