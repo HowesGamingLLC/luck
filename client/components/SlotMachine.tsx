@@ -268,6 +268,16 @@ export function SlotMachine({
     // Deduct bet amount
     updateBalance(currency, -betAmount, `Slot bet - ${theme.name}`, "wager");
 
+    // Contribute to jackpot if opted in and playing with SC
+    if (currency === CurrencyType.SC && isOptedIn) {
+      contributeToJackpot(currency);
+    }
+
+    // Track loss for admin panel (only for SC - real money)
+    if (currency === CurrencyType.SC) {
+      addLoss(betAmount);
+    }
+
     onSpin?.();
     setSpinCount((prev) => prev + 1);
 
