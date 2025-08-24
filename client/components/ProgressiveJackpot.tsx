@@ -58,15 +58,65 @@ export function ProgressiveJackpot({
             <Crown className="h-5 w-5 text-gold" />
             <span>Progressive Jackpots</span>
           </div>
-          <Badge variant="outline" className="text-xs">
-            Live
-            <div className="w-2 h-2 bg-green-500 rounded-full ml-2 animate-pulse" />
-          </Badge>
+          <div className="flex items-center gap-2">
+            <Badge variant="outline" className="text-xs">
+              Live SC
+              <div className="w-2 h-2 bg-green-500 rounded-full ml-2 animate-pulse" />
+            </Badge>
+            {isAuthenticated && (
+              <Badge variant={isOptedIn ? "default" : "secondary"} className="text-xs">
+                {isOptedIn ? "Opted In" : "Opt In"}
+              </Badge>
+            )}
+          </div>
         </CardTitle>
       </CardHeader>
 
       <CardContent className="space-y-4">
-        {jackpots.map((jackpot, index) => (
+        {/* Jackpot Opt-in Section */}
+        {isAuthenticated && showOptInToggle && (
+          <div className={cn(
+            "p-4 rounded-lg border transition-all duration-300",
+            isOptedIn ? "border-green-500/50 bg-green-500/5" : "border-orange-500/50 bg-orange-500/5"
+          )}>
+            <div className="flex items-center justify-between mb-3">
+              <div className="flex items-center gap-2">
+                <Settings className="h-4 w-4 text-purple" />
+                <span className="font-medium text-sm">Jackpot Participation</span>
+              </div>
+              <Switch
+                checked={isOptedIn}
+                onCheckedChange={toggleOptIn}
+                className="data-[state=checked]:bg-green-500"
+              />
+            </div>
+
+            <div className="text-xs text-muted-foreground space-y-1">
+              {isOptedIn ? (
+                <>
+                  <p className="flex items-center gap-1">
+                    <Zap className="h-3 w-3 text-green-500" />
+                    You're eligible to win real money jackpots!
+                  </p>
+                  <p>• 0.01 SC per spin contributes to jackpot pool</p>
+                  <p>• Your total contributed: {formatAmount(totalContributed)} SC</p>
+                </>
+              ) : (
+                <>
+                  <p className="flex items-center gap-1">
+                    <Info className="h-3 w-3 text-orange-500" />
+                    Opt in to participate in real money jackpots
+                  </p>
+                  <p>• Small contribution (0.01 SC) per spin when playing SC games</p>
+                  <p>• Chance to win up to 500 SC jackpots</p>
+                </>
+              )}
+            </div>
+          </div>
+        )}
+
+        {/* Jackpot Display */}
+        {jackpots.map((jackpot) => (
           <div
             key={jackpot.id}
             className={cn(
@@ -74,6 +124,7 @@ export function ProgressiveJackpot({
               jackpot.isHot
                 ? "border-red-500/50 bg-red-500/5 animate-pulse-glow"
                 : "border-border bg-card/30",
+              !isOptedIn && isAuthenticated && "opacity-60"
             )}
           >
             {jackpot.isHot && (
@@ -86,44 +137,69 @@ export function ProgressiveJackpot({
               <h3 className="font-semibold text-sm">{jackpot.name}</h3>
               <div className="flex items-center gap-1 text-xs text-muted-foreground">
                 <TrendingUp className="h-3 w-3" />
-                <span>Growing</span>
+                <span>Max: {formatAmount(jackpot.maxAmount)} SC</span>
               </div>
             </div>
 
             <div className="mb-3">
               <div className={cn("text-xl font-bold", jackpot.color)}>
-                ${formatAmount(jackpot.amount)}
+                {formatAmount(jackpot.amount)} SC
               </div>
-              <div className="w-full bg-card rounded-full h-2 mt-1">
-                <div
-                  className={cn(
-                    "h-2 rounded-full transition-all duration-500",
-                    jackpot.isHot
-                      ? "bg-gradient-to-r from-red-500 to-orange-500"
-                      : "bg-gradient-to-r from-purple to-gold",
-                  )}
-                  style={{
-                    width: `${Math.min(getJackpotProgress(jackpot), 100)}%`,
-                  }}
-                />
+              <Progress
+                value={getJackpotProgress(jackpot)}
+                className="h-2 mt-2"
+              />
+              <div className="flex justify-between text-xs text-muted-foreground mt-1">
+                <span>0 SC</span>
+                <span>{Math.round(getJackpotProgress(jackpot))}%</span>
+                <span>{formatAmount(jackpot.maxAmount)} SC</span>
               </div>
             </div>
 
             <div className="flex items-center justify-between text-xs text-muted-foreground">
               <div className="flex items-center gap-1">
                 <Clock className="h-3 w-3" />
-                <span>Last won: {jackpot.lastWon}</span>
+                <span>Last won: {getTimeAgo(jackpot.lastWon)}</span>
               </div>
-              <span>Avg: {jackpot.averageTime}</span>
+              <span>Avg: {jackpot.winFrequency}</span>
             </div>
           </div>
         ))}
 
+        {/* Recent Wins */}
+        {recentWins.length > 0 && (
+          <div className="pt-2 border-t border-border">
+            <h4 className="text-sm font-medium mb-2 flex items-center gap-2">
+              <Trophy className="h-4 w-4 text-gold" />
+              Recent Jackpot Wins
+            </h4>
+            <div className="space-y-2">
+              {recentWins.slice(0, 3).map((win) => (
+                <div key={win.id} className="flex items-center justify-between text-xs">
+                  <span className="text-muted-foreground">
+                    Player**** won {win.type}
+                  </span>
+                  <span className="font-semibold text-success">
+                    {formatAmount(win.amount)} SC
+                  </span>
+                </div>
+              ))}
+            </div>
+          </div>
+        )}
+
+        {/* Summary */}
         <div className="text-center pt-2 border-t border-border">
           <div className="text-xs text-muted-foreground">
-            Total Jackpot Pool:
+            Total Active Pool:
+            <span className="font-semibold text-teal ml-1">
+              {formatAmount(jackpots.reduce((sum, j) => sum + j.amount, 0))} SC
+            </span>
+          </div>
+          <div className="text-xs text-muted-foreground mt-1">
+            Max Possible Pool:
             <span className="font-semibold text-gold ml-1">
-              ${formatAmount(jackpots.reduce((sum, j) => sum + j.amount, 0))}
+              {formatAmount(jackpots.reduce((sum, j) => sum + j.maxAmount, 0))} SC
             </span>
           </div>
           <div className="text-xs text-muted-foreground mt-1">
