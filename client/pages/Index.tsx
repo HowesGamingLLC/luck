@@ -84,7 +84,7 @@ export default function Index() {
       name: "Sarah M.",
       amount: "$2,500",
       quote:
-        "I couldn't believe it when I hit the jackpot! McLuck changed my life.",
+        "I couldn't believe it when I hit the jackpot! CoinKrazy.com changed my life.",
       rating: 5,
     },
     {
@@ -121,7 +121,7 @@ export default function Index() {
                   🎉 Welcome Bonus: Double Your First Spin!
                 </Badge>
                 <h1 className="text-4xl md:text-6xl font-display font-bold leading-tight">
-                  Win Big with <span className="gradient-text">McLuck</span>
+                  Win Big with <span className="gradient-text">CoinKrazy.com</span>
                 </h1>
                 <p className="text-xl text-muted-foreground max-w-lg">
                   Join thousands of winners in the most exciting sweepstakes
@@ -215,7 +215,7 @@ export default function Index() {
         <div className="container">
           <div className="text-center mb-16">
             <h2 className="text-3xl md:text-4xl font-display font-bold mb-4">
-              Why Choose <span className="gradient-text">McLuck</span>?
+              Why Choose <span className="gradient-text">CoinKrazy.com</span>?
             </h2>
             <p className="text-xl text-muted-foreground max-w-2xl mx-auto">
               Experience the most rewarding sweepstakes platform with unmatched
@@ -261,7 +261,7 @@ export default function Index() {
             </h2>
             <p className="text-xl text-muted-foreground">
               Join thousands of satisfied players who've changed their lives
-              with McLuck.
+              with CoinKrazy.com.
             </p>
           </div>
 
@@ -311,7 +311,7 @@ export default function Index() {
               Ready to Win Big?
             </h2>
             <p className="text-xl text-purple-foreground/80">
-              Join McLuck today and get double your first spin! Start your
+              Join CoinKrazy.com today and get double your first spin! Start your
               winning journey now.
             </p>
             <div className="flex flex-col sm:flex-row gap-4 justify-center">

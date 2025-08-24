@@ -57,12 +57,12 @@ const faqCategories = [
       {
         question: "What games can I play?",
         answer:
-          "McLuck offers various sweepstakes games including the Daily Spin Wheel, scratch cards, slots, and special promotional games. All games are free to play with chances to win real prizes.",
+          "CoinKrazy.com offers various sweepstakes games including the Daily Spin Wheel, scratch cards, slots, and special promotional games. All games are free to play with chances to win real prizes.",
       },
       {
-        question: "Is McLuck free to play?",
+        question: "Is CoinKrazy.com free to play?",
         answer:
-          "Yes! McLuck is completely free to play. You get free spins daily and can earn more through various activities like referrals, daily login bonuses, and special promotions.",
+          "Yes! CoinKrazy.com is completely free to play. You get free spins daily and can earn more through various activities like referrals, daily login bonuses, and special promotions.",
       },
     ],
   },
@@ -187,12 +187,12 @@ const faqCategories = [
       {
         question: "Can I play on mobile devices?",
         answer:
-          "Yes! McLuck is fully optimized for mobile devices. You can play on any smartphone or tablet through your web browser. A mobile app is coming soon.",
+          "Yes! CoinKrazy.com is fully optimized for mobile devices. You can play on any smartphone or tablet through your web browser. A mobile app is coming soon.",
       },
       {
         question: "What browsers are supported?",
         answer:
-          "McLuck works best on Chrome, Firefox, Safari, and Edge. For the best experience, please use the latest version of your preferred browser.",
+          "CoinKrazy.com works best on Chrome, Firefox, Safari, and Edge. For the best experience, please use the latest version of your preferred browser.",
       },
       {
         question: "I'm experiencing connection issues",
@@ -205,7 +205,7 @@ const faqCategories = [
 
 const tutorials = [
   {
-    title: "Getting Started with McLuck",
+    title: "Getting Started with CoinKrazy.com",
     description:
       "Complete guide to setting up your account and playing your first game",
     duration: "5 min",

@@ -37,7 +37,7 @@ import {
 // Mock referral data
 const mockReferralData = {
   code: "JOHN2024",
-  link: "https://mcluck.com/ref/JOHN2024",
+  link: "https://coinkrazy.com/ref/JOHN2024",
   totalReferrals: 12,
   activeReferrals: 8,
   totalEarnings: 847.5,
@@ -171,7 +171,7 @@ export default function Referrals() {
 
   const shareOnSocial = (platform: string) => {
     const text =
-      "Join me on McLuck and start winning big! Use my referral code for bonus spins.";
+      "Join me on CoinKrazy.com and start winning big! Use my referral code for bonus spins.";
     const url = mockReferralData.link;
 
     let shareUrl = "";
