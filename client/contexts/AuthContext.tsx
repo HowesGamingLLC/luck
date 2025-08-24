@@ -45,7 +45,7 @@ interface AuthContextType {
   register: (data: RegisterData) => Promise<boolean>;
   logout: () => void;
   updateProfile: (updates: Partial<User>) => void;
-  updateKYCStatus: (status: User['kycStatus']) => void;
+  updateKYCStatus: (status: User["kycStatus"]) => void;
   updateJackpotOptIn: (optIn: boolean) => void;
   addLoss: (amount: number) => void;
 }
@@ -77,7 +77,7 @@ const mockUsers: (User & { password: string })[] = [
     kycStatus: "not_submitted",
     createdAt: new Date("2024-01-15"),
     lastLoginAt: new Date(),
-    totalLosses: 125.50,
+    totalLosses: 125.5,
     jackpotOptIn: false,
   },
   {
@@ -128,12 +128,13 @@ export function AuthProvider({ children }: { children: ReactNode }) {
 
   const login = async (credentials: LoginCredentials): Promise<boolean> => {
     setIsLoading(true);
-    
+
     // Simulate API call delay
-    await new Promise(resolve => setTimeout(resolve, 1000));
-    
+    await new Promise((resolve) => setTimeout(resolve, 1000));
+
     const foundUser = mockUsers.find(
-      u => u.email === credentials.email && u.password === credentials.password
+      (u) =>
+        u.email === credentials.email && u.password === credentials.password,
     );
 
     if (foundUser) {
@@ -153,12 +154,12 @@ export function AuthProvider({ children }: { children: ReactNode }) {
 
   const register = async (data: RegisterData): Promise<boolean> => {
     setIsLoading(true);
-    
+
     // Simulate API call delay
-    await new Promise(resolve => setTimeout(resolve, 1000));
-    
+    await new Promise((resolve) => setTimeout(resolve, 1000));
+
     // Check if user already exists
-    const existingUser = mockUsers.find(u => u.email === data.email);
+    const existingUser = mockUsers.find((u) => u.email === data.email);
     if (existingUser) {
       setIsLoading(false);
       return false;
@@ -204,18 +205,18 @@ export function AuthProvider({ children }: { children: ReactNode }) {
 
   const updateProfile = (updates: Partial<User>) => {
     if (!user) return;
-    
+
     const updatedUser = { ...user, ...updates };
     setUser(updatedUser);
-    
+
     // Update in mock database
-    const userIndex = mockUsers.findIndex(u => u.id === user.id);
+    const userIndex = mockUsers.findIndex((u) => u.id === user.id);
     if (userIndex !== -1) {
       mockUsers[userIndex] = { ...mockUsers[userIndex], ...updates };
     }
   };
 
-  const updateKYCStatus = (status: User['kycStatus']) => {
+  const updateKYCStatus = (status: User["kycStatus"]) => {
     updateProfile({ kycStatus: status });
   };
 
@@ -243,9 +244,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   };
 
   return (
-    <AuthContext.Provider value={contextValue}>
-      {children}
-    </AuthContext.Provider>
+    <AuthContext.Provider value={contextValue}>{children}</AuthContext.Provider>
   );
 }
 

@@ -1,11 +1,24 @@
 import { useState, useEffect } from "react";
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
+import {
+  Table,
+  TableBody,
+  TableCell,
+  TableHead,
+  TableHeader,
+  TableRow,
+} from "@/components/ui/table";
 import { Alert, AlertDescription } from "@/components/ui/alert";
 import { getAllUsers, User } from "@/contexts/AuthContext";
 import { useJackpot } from "@/contexts/JackpotContext";
@@ -48,7 +61,9 @@ export default function AdminPanel() {
   const [players, setPlayers] = useState<PlayerAnalytics[]>([]);
   const [filteredPlayers, setFilteredPlayers] = useState<PlayerAnalytics[]>([]);
   const [searchTerm, setSearchTerm] = useState("");
-  const [filterStatus, setFilterStatus] = useState<"all" | "high-risk" | "unverified">("all");
+  const [filterStatus, setFilterStatus] = useState<
+    "all" | "high-risk" | "unverified"
+  >("all");
   const [loading, setLoading] = useState(true);
   const { jackpots, recentWins } = useJackpot();
 
@@ -63,15 +78,15 @@ export default function AdminPanel() {
   const loadPlayerData = async () => {
     setLoading(true);
     // Simulate API call
-    await new Promise(resolve => setTimeout(resolve, 1000));
-    
+    await new Promise((resolve) => setTimeout(resolve, 1000));
+
     const users = getAllUsers();
-    const analytics: PlayerAnalytics[] = users.map(user => {
+    const analytics: PlayerAnalytics[] = users.map((user) => {
       // Mock additional data for analytics
       const totalWagered = Math.random() * 1000 + user.totalLosses;
       const totalWon = totalWagered * (0.85 + Math.random() * 0.1); // 85-95% RTP
       const netLoss = totalWagered - totalWon;
-      
+
       return {
         userId: user.id,
         name: user.name,
@@ -98,19 +113,19 @@ export default function AdminPanel() {
     // Text search
     if (searchTerm) {
       filtered = filtered.filter(
-        player =>
+        (player) =>
           player.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
-          player.email.toLowerCase().includes(searchTerm.toLowerCase())
+          player.email.toLowerCase().includes(searchTerm.toLowerCase()),
       );
     }
 
     // Status filter
     switch (filterStatus) {
       case "high-risk":
-        filtered = filtered.filter(player => player.riskLevel === "high");
+        filtered = filtered.filter((player) => player.riskLevel === "high");
         break;
       case "unverified":
-        filtered = filtered.filter(player => !player.verified);
+        filtered = filtered.filter((player) => !player.verified);
         break;
     }
 
@@ -145,11 +160,17 @@ export default function AdminPanel() {
     totalPlayers: players.length,
     totalLosses: players.reduce((sum, p) => sum + p.totalLosses, 0),
     totalWagered: players.reduce((sum, p) => sum + p.totalWagered, 0),
-    averageRTP: players.length > 0 
-      ? (players.reduce((sum, p) => sum + (p.totalWon / Math.max(p.totalWagered, 1)), 0) / players.length) * 100
-      : 0,
-    highRiskPlayers: players.filter(p => p.riskLevel === "high").length,
-    unverifiedPlayers: players.filter(p => !p.verified).length,
+    averageRTP:
+      players.length > 0
+        ? (players.reduce(
+            (sum, p) => sum + p.totalWon / Math.max(p.totalWagered, 1),
+            0,
+          ) /
+            players.length) *
+          100
+        : 0,
+    highRiskPlayers: players.filter((p) => p.riskLevel === "high").length,
+    unverifiedPlayers: players.filter((p) => !p.verified).length,
   };
 
   const activeJackpotPool = jackpots.reduce((sum, j) => sum + j.amount, 0);
@@ -170,7 +191,9 @@ export default function AdminPanel() {
           </div>
           <div className="flex items-center gap-4">
             <Button onClick={loadPlayerData} disabled={loading}>
-              <RefreshCw className={`h-4 w-4 mr-2 ${loading ? 'animate-spin' : ''}`} />
+              <RefreshCw
+                className={`h-4 w-4 mr-2 ${loading ? "animate-spin" : ""}`}
+              />
               Refresh Data
             </Button>
             <Button variant="outline">
@@ -190,10 +213,10 @@ export default function AdminPanel() {
               </CardTitle>
             </CardHeader>
             <CardContent>
-              <div className="text-2xl font-bold">{totalSystemStats.totalPlayers}</div>
-              <p className="text-xs text-muted-foreground">
-                Registered users
-              </p>
+              <div className="text-2xl font-bold">
+                {totalSystemStats.totalPlayers}
+              </div>
+              <p className="text-xs text-muted-foreground">Registered users</p>
             </CardContent>
           </Card>
 
@@ -208,9 +231,7 @@ export default function AdminPanel() {
               <div className="text-2xl font-bold text-red-500">
                 ${totalSystemStats.totalLosses.toFixed(2)} SC
               </div>
-              <p className="text-xs text-muted-foreground">
-                Real money losses
-              </p>
+              <p className="text-xs text-muted-foreground">Real money losses</p>
             </CardContent>
           </Card>
 
@@ -225,9 +246,7 @@ export default function AdminPanel() {
               <div className="text-2xl font-bold text-green-500">
                 {totalSystemStats.averageRTP.toFixed(1)}%
               </div>
-              <p className="text-xs text-muted-foreground">
-                Return to player
-              </p>
+              <p className="text-xs text-muted-foreground">Return to player</p>
             </CardContent>
           </Card>
 
@@ -242,9 +261,7 @@ export default function AdminPanel() {
               <div className="text-2xl font-bold text-gold">
                 ${activeJackpotPool.toFixed(2)} SC
               </div>
-              <p className="text-xs text-muted-foreground">
-                Active jackpots
-              </p>
+              <p className="text-xs text-muted-foreground">Active jackpots</p>
             </CardContent>
           </Card>
         </div>
@@ -255,8 +272,9 @@ export default function AdminPanel() {
             <Alert className="border-red-500 bg-red-500/5">
               <AlertTriangle className="h-4 w-4 text-red-500" />
               <AlertDescription>
-                <strong>{totalSystemStats.highRiskPlayers}</strong> players are in the high-risk category. 
-                Consider implementing responsible gambling measures.
+                <strong>{totalSystemStats.highRiskPlayers}</strong> players are
+                in the high-risk category. Consider implementing responsible
+                gambling measures.
               </AlertDescription>
             </Alert>
           )}
@@ -265,8 +283,8 @@ export default function AdminPanel() {
             <Alert className="border-orange-500 bg-orange-500/5">
               <AlertTriangle className="h-4 w-4 text-orange-500" />
               <AlertDescription>
-                <strong>{totalSystemStats.unverifiedPlayers}</strong> players are unverified. 
-                Review KYC status for compliance.
+                <strong>{totalSystemStats.unverifiedPlayers}</strong> players
+                are unverified. Review KYC status for compliance.
               </AlertDescription>
             </Alert>
           )}
@@ -286,7 +304,8 @@ export default function AdminPanel() {
               <CardHeader>
                 <CardTitle>Player Loss Tracking</CardTitle>
                 <CardDescription>
-                  Monitor player gambling behavior and losses for responsible gaming compliance
+                  Monitor player gambling behavior and losses for responsible
+                  gaming compliance
                 </CardDescription>
               </CardHeader>
               <CardContent>
@@ -354,13 +373,17 @@ export default function AdminPanel() {
                             <TableCell>
                               <div>
                                 <div className="font-medium">{player.name}</div>
-                                <div className="text-sm text-muted-foreground">{player.email}</div>
+                                <div className="text-sm text-muted-foreground">
+                                  {player.email}
+                                </div>
                               </div>
                             </TableCell>
                             <TableCell>
                               <div className="flex items-center gap-2">
                                 {getKYCStatusIcon(player.kycStatus)}
-                                <span className="capitalize">{player.kycStatus}</span>
+                                <span className="capitalize">
+                                  {player.kycStatus}
+                                </span>
                               </div>
                             </TableCell>
                             <TableCell className="text-red-500 font-medium">
@@ -373,7 +396,9 @@ export default function AdminPanel() {
                               ${player.netLoss.toFixed(2)}
                             </TableCell>
                             <TableCell>
-                              <Badge className={getRiskLevelColor(player.riskLevel)}>
+                              <Badge
+                                className={getRiskLevelColor(player.riskLevel)}
+                              >
                                 {player.riskLevel}
                               </Badge>
                             </TableCell>
@@ -414,7 +439,9 @@ export default function AdminPanel() {
                   {jackpots.map((jackpot) => (
                     <Card key={jackpot.id} className="border">
                       <CardHeader className="pb-2">
-                        <CardTitle className="text-sm">{jackpot.name}</CardTitle>
+                        <CardTitle className="text-sm">
+                          {jackpot.name}
+                        </CardTitle>
                       </CardHeader>
                       <CardContent>
                         <div className="space-y-2">
@@ -425,9 +452,17 @@ export default function AdminPanel() {
                             Max: ${jackpot.maxAmount} SC
                           </div>
                           <div className="text-xs">
-                            Progress: {Math.round((jackpot.amount / jackpot.maxAmount) * 100)}%
+                            Progress:{" "}
+                            {Math.round(
+                              (jackpot.amount / jackpot.maxAmount) * 100,
+                            )}
+                            %
                           </div>
-                          <Button size="sm" variant="outline" className="w-full">
+                          <Button
+                            size="sm"
+                            variant="outline"
+                            className="w-full"
+                          >
                             Reset Jackpot
                           </Button>
                         </div>
@@ -438,10 +473,15 @@ export default function AdminPanel() {
 
                 {/* Recent Jackpot Wins */}
                 <div>
-                  <h3 className="text-lg font-semibold mb-4">Recent Jackpot Wins</h3>
+                  <h3 className="text-lg font-semibold mb-4">
+                    Recent Jackpot Wins
+                  </h3>
                   <div className="space-y-2">
                     {recentWins.slice(0, 5).map((win) => (
-                      <div key={win.id} className="flex items-center justify-between p-3 border rounded-lg">
+                      <div
+                        key={win.id}
+                        className="flex items-center justify-between p-3 border rounded-lg"
+                      >
                         <div>
                           <div className="font-medium">{win.type}</div>
                           <div className="text-sm text-muted-foreground">
@@ -476,36 +516,67 @@ export default function AdminPanel() {
               <CardContent>
                 <div className="space-y-6">
                   <div>
-                    <h3 className="text-lg font-semibold mb-4">Game Settings</h3>
+                    <h3 className="text-lg font-semibold mb-4">
+                      Game Settings
+                    </h3>
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                       <div>
                         <Label htmlFor="rtp">Base RTP (%)</Label>
-                        <Input id="rtp" type="number" defaultValue="94.5" min="80" max="99" />
+                        <Input
+                          id="rtp"
+                          type="number"
+                          defaultValue="94.5"
+                          min="80"
+                          max="99"
+                        />
                       </div>
                       <div>
                         <Label htmlFor="max-bet">Max Bet (SC)</Label>
-                        <Input id="max-bet" type="number" defaultValue="1.00" min="0.01" max="10" step="0.01" />
+                        <Input
+                          id="max-bet"
+                          type="number"
+                          defaultValue="1.00"
+                          min="0.01"
+                          max="10"
+                          step="0.01"
+                        />
                       </div>
                     </div>
                   </div>
 
                   <div>
-                    <h3 className="text-lg font-semibold mb-4">Responsible Gaming</h3>
+                    <h3 className="text-lg font-semibold mb-4">
+                      Responsible Gaming
+                    </h3>
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                       <div>
-                        <Label htmlFor="loss-limit">Daily Loss Limit (SC)</Label>
-                        <Input id="loss-limit" type="number" defaultValue="50" min="1" max="500" />
+                        <Label htmlFor="loss-limit">
+                          Daily Loss Limit (SC)
+                        </Label>
+                        <Input
+                          id="loss-limit"
+                          type="number"
+                          defaultValue="50"
+                          min="1"
+                          max="500"
+                        />
                       </div>
                       <div>
-                        <Label htmlFor="session-limit">Session Time Limit (hours)</Label>
-                        <Input id="session-limit" type="number" defaultValue="4" min="1" max="24" />
+                        <Label htmlFor="session-limit">
+                          Session Time Limit (hours)
+                        </Label>
+                        <Input
+                          id="session-limit"
+                          type="number"
+                          defaultValue="4"
+                          min="1"
+                          max="24"
+                        />
                       </div>
                     </div>
                   </div>
 
-                  <Button className="btn-primary">
-                    Save Settings
-                  </Button>
+                  <Button className="btn-primary">Save Settings</Button>
                 </div>
               </CardContent>
             </Card>
@@ -525,19 +596,31 @@ export default function AdminPanel() {
                   <div className="space-y-4">
                     <h3 className="text-lg font-semibold">Quick Reports</h3>
                     <div className="space-y-2">
-                      <Button variant="outline" className="w-full justify-start">
+                      <Button
+                        variant="outline"
+                        className="w-full justify-start"
+                      >
                         <Download className="h-4 w-4 mr-2" />
                         Daily Revenue Report
                       </Button>
-                      <Button variant="outline" className="w-full justify-start">
+                      <Button
+                        variant="outline"
+                        className="w-full justify-start"
+                      >
                         <Download className="h-4 w-4 mr-2" />
                         Player Loss Summary
                       </Button>
-                      <Button variant="outline" className="w-full justify-start">
+                      <Button
+                        variant="outline"
+                        className="w-full justify-start"
+                      >
                         <Download className="h-4 w-4 mr-2" />
                         KYC Compliance Report
                       </Button>
-                      <Button variant="outline" className="w-full justify-start">
+                      <Button
+                        variant="outline"
+                        className="w-full justify-start"
+                      >
                         <Download className="h-4 w-4 mr-2" />
                         Jackpot Activity Report
                       </Button>
@@ -557,14 +640,18 @@ export default function AdminPanel() {
                       </div>
                       <div>
                         <Label htmlFor="report-type">Report Type</Label>
-                        <select 
+                        <select
                           id="report-type"
                           className="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50"
                         >
                           <option value="revenue">Revenue Analysis</option>
-                          <option value="player-behavior">Player Behavior</option>
+                          <option value="player-behavior">
+                            Player Behavior
+                          </option>
                           <option value="compliance">Compliance Report</option>
-                          <option value="risk-assessment">Risk Assessment</option>
+                          <option value="risk-assessment">
+                            Risk Assessment
+                          </option>
                         </select>
                       </div>
                       <Button className="w-full btn-primary">

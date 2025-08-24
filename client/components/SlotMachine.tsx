@@ -343,7 +343,11 @@ export function SlotMachine({
             type: jackpotWinData.type,
           });
 
-          onWin?.(winResult.amount + jackpotWinData.amount, newResults.flat(), currency);
+          onWin?.(
+            winResult.amount + jackpotWinData.amount,
+            newResults.flat(),
+            currency,
+          );
         } else {
           onWin?.(winResult.amount, newResults.flat(), currency);
         }
@@ -398,7 +402,7 @@ export function SlotMachine({
                 "animate-pulse",
                 currency === CurrencyType.SC
                   ? "bg-teal text-white"
-                  : "bg-gold text-black"
+                  : "bg-gold text-black",
               )}
             >
               WIN! +{formatCurrency(lastWin.amount, currency)}

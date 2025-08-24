@@ -1,14 +1,25 @@
 import { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
 import { Button } from "@/components/ui/button";
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Progress } from "@/components/ui/progress";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { DailySpinWheel } from "@/components/DailySpinWheel";
 import { ProgressiveJackpot } from "@/components/ProgressiveJackpot";
 import { useAuth } from "@/contexts/AuthContext";
-import { useCurrency, CurrencyType, formatCurrency, getCurrencyColor } from "@/contexts/CurrencyContext";
+import {
+  useCurrency,
+  CurrencyType,
+  formatCurrency,
+  getCurrencyColor,
+} from "@/contexts/CurrencyContext";
 import {
   Coins,
   Gem,
@@ -39,10 +50,17 @@ interface WheelSegment {
 
 export default function Dashboard() {
   const { user } = useAuth();
-  const { user: currencyUser, canClaimDailySpin, claimDailySpin, getTransactionHistory } = useCurrency();
+  const {
+    user: currencyUser,
+    canClaimDailySpin,
+    claimDailySpin,
+    getTransactionHistory,
+  } = useCurrency();
   const [dailySpinClaimed, setDailySpinClaimed] = useState(false);
   const [welcomeBonusClaimed, setWelcomeBonusClaimed] = useState(false);
-  const [selectedPeriod, setSelectedPeriod] = useState<"today" | "week" | "month" | "all">("today");
+  const [selectedPeriod, setSelectedPeriod] = useState<
+    "today" | "week" | "month" | "all"
+  >("today");
 
   useEffect(() => {
     setDailySpinClaimed(!canClaimDailySpin());
@@ -61,17 +79,26 @@ export default function Dashboard() {
   };
 
   const getKYCStatusInfo = () => {
-    if (!user) return { icon: XCircle, text: "Unknown", color: "text-gray-500" };
+    if (!user)
+      return { icon: XCircle, text: "Unknown", color: "text-gray-500" };
 
     switch (user.kycStatus) {
       case "approved":
         return { icon: CheckCircle, text: "Verified", color: "text-green-500" };
       case "pending":
-        return { icon: Clock, text: "Pending Review", color: "text-yellow-500" };
+        return {
+          icon: Clock,
+          text: "Pending Review",
+          color: "text-yellow-500",
+        };
       case "rejected":
         return { icon: XCircle, text: "Rejected", color: "text-red-500" };
       default:
-        return { icon: AlertCircle, text: "Not Submitted", color: "text-orange-500" };
+        return {
+          icon: AlertCircle,
+          text: "Not Submitted",
+          color: "text-orange-500",
+        };
     }
   };
 
@@ -133,7 +160,9 @@ export default function Dashboard() {
                 <div className="flex items-center space-x-4">
                   <Gift className="h-8 w-8 text-gold" />
                   <div>
-                    <h3 className="text-lg font-semibold">Welcome Bonus Available!</h3>
+                    <h3 className="text-lg font-semibold">
+                      Welcome Bonus Available!
+                    </h3>
                     <p className="text-muted-foreground">
                       Claim your free 10,000 GC + 10 SC to get started
                     </p>
@@ -155,12 +184,13 @@ export default function Dashboard() {
                 <div className="flex items-center space-x-4">
                   <KYCIcon className={`h-8 w-8 ${kycStatus.color}`} />
                   <div>
-                    <h3 className="text-lg font-semibold">Identity Verification</h3>
+                    <h3 className="text-lg font-semibold">
+                      Identity Verification
+                    </h3>
                     <p className="text-muted-foreground">
-                      {user?.kycStatus === "not_submitted" 
+                      {user?.kycStatus === "not_submitted"
                         ? "Complete KYC verification to enable withdrawals"
-                        : "Your verification is being reviewed"
-                      }
+                        : "Your verification is being reviewed"}
                     </p>
                   </div>
                 </div>
@@ -187,7 +217,11 @@ export default function Dashboard() {
               <CardContent className="space-y-4">
                 <div className="flex items-center justify-between">
                   <span className="text-sm">Verification:</span>
-                  <Badge variant={user?.kycStatus === "approved" ? "default" : "secondary"}>
+                  <Badge
+                    variant={
+                      user?.kycStatus === "approved" ? "default" : "secondary"
+                    }
+                  >
                     {kycStatus.text}
                   </Badge>
                 </div>
@@ -200,7 +234,9 @@ export default function Dashboard() {
                 <div className="flex items-center justify-between">
                   <span className="text-sm">Member Since:</span>
                   <span className="text-sm font-medium">
-                    {user?.createdAt ? new Date(user.createdAt).toLocaleDateString() : "Unknown"}
+                    {user?.createdAt
+                      ? new Date(user.createdAt).toLocaleDateString()
+                      : "Unknown"}
                   </span>
                 </div>
               </CardContent>
@@ -245,19 +281,31 @@ export default function Dashboard() {
                 </CardTitle>
               </CardHeader>
               <CardContent className="space-y-2">
-                <Button asChild variant="outline" className="w-full justify-start">
+                <Button
+                  asChild
+                  variant="outline"
+                  className="w-full justify-start"
+                >
                   <Link to="/store">
                     <ShoppingCart className="h-4 w-4 mr-2" />
                     Buy Gold Coins
                   </Link>
                 </Button>
-                <Button asChild variant="outline" className="w-full justify-start">
+                <Button
+                  asChild
+                  variant="outline"
+                  className="w-full justify-start"
+                >
                   <Link to="/games">
                     <Target className="h-4 w-4 mr-2" />
                     Play Games
                   </Link>
                 </Button>
-                <Button asChild variant="outline" className="w-full justify-start">
+                <Button
+                  asChild
+                  variant="outline"
+                  className="w-full justify-start"
+                >
                   <Link to="/withdraw">
                     <FileText className="h-4 w-4 mr-2" />
                     Request Withdrawal
@@ -277,10 +325,9 @@ export default function Dashboard() {
                   <span>Daily Spin Wheel</span>
                 </CardTitle>
                 <CardDescription>
-                  {dailySpinClaimed 
+                  {dailySpinClaimed
                     ? "Come back tomorrow for your next spin!"
-                    : "Spin once every 24 hours for free rewards!"
-                  }
+                    : "Spin once every 24 hours for free rewards!"}
                 </CardDescription>
               </CardHeader>
               <CardContent className="flex justify-center">
@@ -307,29 +354,50 @@ export default function Dashboard() {
                 {recentTransactions.length > 0 ? (
                   <div className="space-y-3">
                     {recentTransactions.map((transaction) => (
-                      <div key={transaction.id} className="flex items-center justify-between py-2 border-b border-border/50 last:border-0">
+                      <div
+                        key={transaction.id}
+                        className="flex items-center justify-between py-2 border-b border-border/50 last:border-0"
+                      >
                         <div className="flex items-center space-x-3">
-                          <Badge variant={transaction.type === "win" ? "default" : "secondary"}>
+                          <Badge
+                            variant={
+                              transaction.type === "win"
+                                ? "default"
+                                : "secondary"
+                            }
+                          >
                             {transaction.type}
                           </Badge>
                           <div>
-                            <p className="text-sm font-medium">{transaction.description}</p>
+                            <p className="text-sm font-medium">
+                              {transaction.description}
+                            </p>
                             <p className="text-xs text-muted-foreground">
-                              {transaction.timestamp.toLocaleDateString()} at {transaction.timestamp.toLocaleTimeString()}
+                              {transaction.timestamp.toLocaleDateString()} at{" "}
+                              {transaction.timestamp.toLocaleTimeString()}
                             </p>
                           </div>
                         </div>
-                        <span className={`font-semibold ${
-                          transaction.amount > 0 ? "text-green-500" : "text-red-500"
-                        }`}>
-                          {transaction.amount > 0 ? "+" : ""}{formatCurrency(Math.abs(transaction.amount), transaction.currency)}
+                        <span
+                          className={`font-semibold ${
+                            transaction.amount > 0
+                              ? "text-green-500"
+                              : "text-red-500"
+                          }`}
+                        >
+                          {transaction.amount > 0 ? "+" : ""}
+                          {formatCurrency(
+                            Math.abs(transaction.amount),
+                            transaction.currency,
+                          )}
                         </span>
                       </div>
                     ))}
                   </div>
                 ) : (
                   <p className="text-center text-muted-foreground py-8">
-                    No recent activity. Start playing to see your transaction history!
+                    No recent activity. Start playing to see your transaction
+                    history!
                   </p>
                 )}
               </CardContent>
@@ -352,7 +420,9 @@ export default function Dashboard() {
                     Level {currencyUser?.level || 1}
                   </div>
                   <p className="text-sm text-muted-foreground">
-                    {((currencyUser?.totalWagered.goldCoins || 0) + (currencyUser?.totalWagered.sweepCoins || 0) * 100)} XP
+                    {(currencyUser?.totalWagered.goldCoins || 0) +
+                      (currencyUser?.totalWagered.sweepCoins || 0) * 100}{" "}
+                    XP
                   </p>
                 </div>
                 <Progress value={65} className="h-2" />
@@ -378,7 +448,9 @@ export default function Dashboard() {
                   </div>
                   <div>
                     <p className="text-sm font-medium">First Win</p>
-                    <p className="text-xs text-muted-foreground">Win your first game</p>
+                    <p className="text-xs text-muted-foreground">
+                      Win your first game
+                    </p>
                   </div>
                 </div>
                 <div className="flex items-center space-x-3">
@@ -386,8 +458,12 @@ export default function Dashboard() {
                     <Users className="h-4 w-4 text-muted-foreground" />
                   </div>
                   <div>
-                    <p className="text-sm font-medium text-muted-foreground">High Roller</p>
-                    <p className="text-xs text-muted-foreground">Wager $100 total</p>
+                    <p className="text-sm font-medium text-muted-foreground">
+                      High Roller
+                    </p>
+                    <p className="text-xs text-muted-foreground">
+                      Wager $100 total
+                    </p>
                   </div>
                 </div>
               </CardContent>
@@ -402,13 +478,21 @@ export default function Dashboard() {
                 </CardTitle>
               </CardHeader>
               <CardContent className="space-y-2">
-                <Button asChild variant="outline" className="w-full justify-start">
+                <Button
+                  asChild
+                  variant="outline"
+                  className="w-full justify-start"
+                >
                   <Link to="/help">
                     <FileText className="h-4 w-4 mr-2" />
                     Help Center
                   </Link>
                 </Button>
-                <Button asChild variant="outline" className="w-full justify-start">
+                <Button
+                  asChild
+                  variant="outline"
+                  className="w-full justify-start"
+                >
                   <Link to="/profile">
                     <User className="h-4 w-4 mr-2" />
                     Account Settings

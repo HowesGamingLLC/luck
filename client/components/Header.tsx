@@ -45,7 +45,11 @@ export function Header() {
   const navigate = useNavigate();
 
   const { user: authUser, isAuthenticated, isAdmin, logout } = useAuth();
-  const { user: currencyUser, selectedCurrency, setSelectedCurrency } = useCurrency();
+  const {
+    user: currencyUser,
+    selectedCurrency,
+    setSelectedCurrency,
+  } = useCurrency();
 
   const navItems = isAuthenticated
     ? [
@@ -279,7 +283,10 @@ export function Header() {
                         </Link>
                       </DropdownMenuItem>
                       <DropdownMenuItem asChild>
-                        <Link to="/admin/packages" className="flex items-center">
+                        <Link
+                          to="/admin/packages"
+                          className="flex items-center"
+                        >
                           <DollarSign className="mr-2 h-4 w-4" />
                           <span>Manage Packages</span>
                         </Link>
@@ -358,7 +365,10 @@ export function Header() {
                       Gold Coins
                     </span>
                     <span className="text-sm font-semibold text-gold">
-                      {formatCurrency(currencyUser.balance.goldCoins, CurrencyType.GC)}
+                      {formatCurrency(
+                        currencyUser.balance.goldCoins,
+                        CurrencyType.GC,
+                      )}
                     </span>
                   </div>
                   <div className="flex items-center justify-between px-3 py-2">
@@ -367,7 +377,10 @@ export function Header() {
                       Sweep Coins
                     </span>
                     <span className="text-sm font-semibold text-teal">
-                      {formatCurrency(currencyUser.balance.sweepCoins, CurrencyType.SC)}
+                      {formatCurrency(
+                        currencyUser.balance.sweepCoins,
+                        CurrencyType.SC,
+                      )}
                     </span>
                   </div>
 

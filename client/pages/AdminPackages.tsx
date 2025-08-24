@@ -3,9 +3,29 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
-import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
-import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card";
+import {
+  Table,
+  TableBody,
+  TableCell,
+  TableHead,
+  TableHeader,
+  TableRow,
+} from "@/components/ui/table";
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogHeader,
+  DialogTitle,
+  DialogTrigger,
+} from "@/components/ui/dialog";
 import { Badge } from "@/components/ui/badge";
 import { Switch } from "@/components/ui/switch";
 import { Alert, AlertDescription } from "@/components/ui/alert";
@@ -40,7 +60,12 @@ const initialPackages: GoldCoinPackage[] = [
     icon: Coins,
     color: "from-blue-500 to-blue-600",
     description: "Perfect for new players to get started",
-    features: ["10,000 Gold Coins", "5 FREE Sweep Coins", "Instant delivery", "24/7 support"],
+    features: [
+      "10,000 Gold Coins",
+      "5 FREE Sweep Coins",
+      "Instant delivery",
+      "24/7 support",
+    ],
   },
   {
     id: "popular",
@@ -54,7 +79,12 @@ const initialPackages: GoldCoinPackage[] = [
     icon: Star,
     color: "from-purple-500 to-purple-600",
     description: "Most popular package with great value",
-    features: ["50,000 Gold Coins", "30 FREE Sweep Coins", "20% bonus coins", "Priority support"],
+    features: [
+      "50,000 Gold Coins",
+      "30 FREE Sweep Coins",
+      "20% bonus coins",
+      "Priority support",
+    ],
     savings: 20,
   },
   {
@@ -69,14 +99,22 @@ const initialPackages: GoldCoinPackage[] = [
     icon: Crown,
     color: "from-gold to-yellow-600",
     description: "Best value for serious players",
-    features: ["100,000 Gold Coins", "75 FREE Sweep Coins", "50% bonus coins", "VIP support", "Exclusive rewards"],
+    features: [
+      "100,000 Gold Coins",
+      "75 FREE Sweep Coins",
+      "50% bonus coins",
+      "VIP support",
+      "Exclusive rewards",
+    ],
     savings: 30,
   },
 ];
 
 export default function AdminPackages() {
   const [packages, setPackages] = useState<GoldCoinPackage[]>(initialPackages);
-  const [editingPackage, setEditingPackage] = useState<GoldCoinPackage | null>(null);
+  const [editingPackage, setEditingPackage] = useState<GoldCoinPackage | null>(
+    null,
+  );
   const [isCreateDialogOpen, setIsCreateDialogOpen] = useState(false);
   const [formData, setFormData] = useState<Partial<GoldCoinPackage>>({
     name: "",
@@ -149,19 +187,27 @@ export default function AdminPackages() {
       originalPrice: formData.originalPrice,
       popular: formData.popular!,
       bestValue: formData.bestValue!,
-      icon: iconOptions.find(icon => icon.value === formData.icon)?.icon || Coins,
+      icon:
+        iconOptions.find((icon) => icon.value === formData.icon)?.icon || Coins,
       color: formData.color!,
       description: formData.description!,
       features: formData.features!,
-      savings: formData.originalPrice && formData.originalPrice > formData.price! 
-        ? Math.round(((formData.originalPrice - formData.price!) / formData.originalPrice) * 100)
-        : undefined,
+      savings:
+        formData.originalPrice && formData.originalPrice > formData.price!
+          ? Math.round(
+              ((formData.originalPrice - formData.price!) /
+                formData.originalPrice) *
+                100,
+            )
+          : undefined,
     };
 
     if (editingPackage) {
-      setPackages(prev => prev.map(pkg => pkg.id === editingPackage.id ? packageData : pkg));
+      setPackages((prev) =>
+        prev.map((pkg) => (pkg.id === editingPackage.id ? packageData : pkg)),
+      );
     } else {
-      setPackages(prev => [...prev, packageData]);
+      setPackages((prev) => [...prev, packageData]);
     }
 
     setIsCreateDialogOpen(false);
@@ -170,30 +216,30 @@ export default function AdminPackages() {
 
   const handleDelete = (id: string) => {
     if (confirm("Are you sure you want to delete this package?")) {
-      setPackages(prev => prev.filter(pkg => pkg.id !== id));
+      setPackages((prev) => prev.filter((pkg) => pkg.id !== id));
     }
   };
 
   const handleFeatureChange = (index: number, value: string) => {
     const newFeatures = [...(formData.features || [])];
     newFeatures[index] = value;
-    setFormData(prev => ({ ...prev, features: newFeatures }));
+    setFormData((prev) => ({ ...prev, features: newFeatures }));
   };
 
   const addFeature = () => {
-    setFormData(prev => ({ 
-      ...prev, 
-      features: [...(prev.features || []), ""] 
+    setFormData((prev) => ({
+      ...prev,
+      features: [...(prev.features || []), ""],
     }));
   };
 
   const removeFeature = (index: number) => {
     const newFeatures = [...(formData.features || [])];
     newFeatures.splice(index, 1);
-    setFormData(prev => ({ ...prev, features: newFeatures }));
+    setFormData((prev) => ({ ...prev, features: newFeatures }));
   };
 
-  const totalRevenue = packages.reduce((sum, pkg) => sum + (pkg.price * 100), 0); // Assume 100 sales each for demo
+  const totalRevenue = packages.reduce((sum, pkg) => sum + pkg.price * 100, 0); // Assume 100 sales each for demo
   const totalPackagesSold = packages.length * 100; // Mock data
 
   return (
@@ -227,7 +273,9 @@ export default function AdminPackages() {
             </CardHeader>
             <CardContent>
               <div className="text-2xl font-bold">{packages.length}</div>
-              <p className="text-xs text-muted-foreground">Available for purchase</p>
+              <p className="text-xs text-muted-foreground">
+                Available for purchase
+              </p>
             </CardContent>
           </Card>
 
@@ -242,7 +290,9 @@ export default function AdminPackages() {
               <div className="text-2xl font-bold text-green-500">
                 ${totalRevenue.toLocaleString()}
               </div>
-              <p className="text-xs text-muted-foreground">From package sales</p>
+              <p className="text-xs text-muted-foreground">
+                From package sales
+              </p>
             </CardContent>
           </Card>
 
@@ -268,7 +318,11 @@ export default function AdminPackages() {
             </CardHeader>
             <CardContent>
               <div className="text-2xl font-bold">
-                ${(packages.reduce((sum, pkg) => sum + pkg.price, 0) / packages.length).toFixed(2)}
+                $
+                {(
+                  packages.reduce((sum, pkg) => sum + pkg.price, 0) /
+                  packages.length
+                ).toFixed(2)}
               </div>
               <p className="text-xs text-muted-foreground">Per package</p>
             </CardContent>
@@ -301,12 +355,16 @@ export default function AdminPackages() {
                     <TableRow key={pkg.id}>
                       <TableCell>
                         <div className="flex items-center gap-3">
-                          <div className={`w-8 h-8 rounded-full bg-gradient-to-br ${pkg.color} flex items-center justify-center`}>
+                          <div
+                            className={`w-8 h-8 rounded-full bg-gradient-to-br ${pkg.color} flex items-center justify-center`}
+                          >
                             <pkg.icon className="h-4 w-4 text-white" />
                           </div>
                           <div>
                             <div className="font-medium">{pkg.name}</div>
-                            <div className="text-sm text-muted-foreground">{pkg.description}</div>
+                            <div className="text-sm text-muted-foreground">
+                              {pkg.description}
+                            </div>
                           </div>
                         </div>
                       </TableCell>
@@ -333,24 +391,34 @@ export default function AdminPackages() {
                       <TableCell>
                         <div className="flex flex-wrap gap-1">
                           {pkg.popular && (
-                            <Badge className="bg-purple text-white text-xs">Popular</Badge>
+                            <Badge className="bg-purple text-white text-xs">
+                              Popular
+                            </Badge>
                           )}
                           {pkg.bestValue && (
-                            <Badge className="bg-gold text-black text-xs">Best Value</Badge>
+                            <Badge className="bg-gold text-black text-xs">
+                              Best Value
+                            </Badge>
                           )}
                           {pkg.savings && (
-                            <Badge variant="outline" className="text-xs">{pkg.savings}% OFF</Badge>
+                            <Badge variant="outline" className="text-xs">
+                              {pkg.savings}% OFF
+                            </Badge>
                           )}
                         </div>
                       </TableCell>
                       <TableCell>
                         <div className="flex items-center gap-2">
-                          <Button size="sm" variant="outline" onClick={() => handleEdit(pkg)}>
+                          <Button
+                            size="sm"
+                            variant="outline"
+                            onClick={() => handleEdit(pkg)}
+                          >
                             <Edit className="h-3 w-3" />
                           </Button>
-                          <Button 
-                            size="sm" 
-                            variant="outline" 
+                          <Button
+                            size="sm"
+                            variant="outline"
                             onClick={() => handleDelete(pkg.id)}
                             className="text-red-500 hover:text-red-600"
                           >
@@ -386,7 +454,9 @@ export default function AdminPackages() {
                   <Input
                     id="name"
                     value={formData.name || ""}
-                    onChange={(e) => setFormData(prev => ({ ...prev, name: e.target.value }))}
+                    onChange={(e) =>
+                      setFormData((prev) => ({ ...prev, name: e.target.value }))
+                    }
                     placeholder="e.g., Starter Pack"
                   />
                 </div>
@@ -395,7 +465,12 @@ export default function AdminPackages() {
                   <Input
                     id="description"
                     value={formData.description || ""}
-                    onChange={(e) => setFormData(prev => ({ ...prev, description: e.target.value }))}
+                    onChange={(e) =>
+                      setFormData((prev) => ({
+                        ...prev,
+                        description: e.target.value,
+                      }))
+                    }
                     placeholder="Brief description"
                   />
                 </div>
@@ -409,7 +484,12 @@ export default function AdminPackages() {
                     id="goldCoins"
                     type="number"
                     value={formData.goldCoins || ""}
-                    onChange={(e) => setFormData(prev => ({ ...prev, goldCoins: parseInt(e.target.value) || 0 }))}
+                    onChange={(e) =>
+                      setFormData((prev) => ({
+                        ...prev,
+                        goldCoins: parseInt(e.target.value) || 0,
+                      }))
+                    }
                     placeholder="10000"
                   />
                 </div>
@@ -419,7 +499,12 @@ export default function AdminPackages() {
                     id="bonusSweepCoins"
                     type="number"
                     value={formData.bonusSweepCoins || ""}
-                    onChange={(e) => setFormData(prev => ({ ...prev, bonusSweepCoins: parseInt(e.target.value) || 0 }))}
+                    onChange={(e) =>
+                      setFormData((prev) => ({
+                        ...prev,
+                        bonusSweepCoins: parseInt(e.target.value) || 0,
+                      }))
+                    }
                     placeholder="5"
                   />
                 </div>
@@ -433,7 +518,12 @@ export default function AdminPackages() {
                     type="number"
                     step="0.01"
                     value={formData.price || ""}
-                    onChange={(e) => setFormData(prev => ({ ...prev, price: parseFloat(e.target.value) || 0 }))}
+                    onChange={(e) =>
+                      setFormData((prev) => ({
+                        ...prev,
+                        price: parseFloat(e.target.value) || 0,
+                      }))
+                    }
                     placeholder="9.99"
                   />
                 </div>
@@ -444,10 +534,17 @@ export default function AdminPackages() {
                     type="number"
                     step="0.01"
                     value={formData.originalPrice || ""}
-                    onChange={(e) => setFormData(prev => ({ ...prev, originalPrice: parseFloat(e.target.value) || undefined }))}
+                    onChange={(e) =>
+                      setFormData((prev) => ({
+                        ...prev,
+                        originalPrice: parseFloat(e.target.value) || undefined,
+                      }))
+                    }
                     placeholder="12.99"
                   />
-                  <p className="text-xs text-muted-foreground mt-1">Leave empty if no discount</p>
+                  <p className="text-xs text-muted-foreground mt-1">
+                    Leave empty if no discount
+                  </p>
                 </div>
               </div>
 
@@ -458,10 +555,15 @@ export default function AdminPackages() {
                   <select
                     id="icon"
                     value={formData.icon || "Coins"}
-                    onChange={(e) => setFormData(prev => ({ ...prev, icon: e.target.value as any }))}
+                    onChange={(e) =>
+                      setFormData((prev) => ({
+                        ...prev,
+                        icon: e.target.value as any,
+                      }))
+                    }
                     className="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50"
                   >
-                    {iconOptions.map(option => (
+                    {iconOptions.map((option) => (
                       <option key={option.value} value={option.value}>
                         {option.name}
                       </option>
@@ -473,10 +575,15 @@ export default function AdminPackages() {
                   <select
                     id="color"
                     value={formData.color || ""}
-                    onChange={(e) => setFormData(prev => ({ ...prev, color: e.target.value }))}
+                    onChange={(e) =>
+                      setFormData((prev) => ({
+                        ...prev,
+                        color: e.target.value,
+                      }))
+                    }
                     className="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50"
                   >
-                    {colorOptions.map(option => (
+                    {colorOptions.map((option) => (
                       <option key={option.value} value={option.value}>
                         {option.name}
                       </option>
@@ -491,7 +598,9 @@ export default function AdminPackages() {
                   <Switch
                     id="popular"
                     checked={formData.popular || false}
-                    onCheckedChange={(checked) => setFormData(prev => ({ ...prev, popular: checked }))}
+                    onCheckedChange={(checked) =>
+                      setFormData((prev) => ({ ...prev, popular: checked }))
+                    }
                   />
                   <Label htmlFor="popular">Mark as Popular</Label>
                 </div>
@@ -499,7 +608,9 @@ export default function AdminPackages() {
                   <Switch
                     id="bestValue"
                     checked={formData.bestValue || false}
-                    onCheckedChange={(checked) => setFormData(prev => ({ ...prev, bestValue: checked }))}
+                    onCheckedChange={(checked) =>
+                      setFormData((prev) => ({ ...prev, bestValue: checked }))
+                    }
                   />
                   <Label htmlFor="bestValue">Mark as Best Value</Label>
                 </div>
@@ -513,7 +624,9 @@ export default function AdminPackages() {
                     <div key={index} className="flex gap-2">
                       <Input
                         value={feature}
-                        onChange={(e) => handleFeatureChange(index, e.target.value)}
+                        onChange={(e) =>
+                          handleFeatureChange(index, e.target.value)
+                        }
                         placeholder="Feature description"
                         className="flex-1"
                       />
@@ -548,10 +661,7 @@ export default function AdminPackages() {
                 >
                   Cancel
                 </Button>
-                <Button
-                  onClick={handleSave}
-                  className="flex-1 btn-primary"
-                >
+                <Button onClick={handleSave} className="flex-1 btn-primary">
                   <Save className="h-4 w-4 mr-2" />
                   {editingPackage ? "Update Package" : "Create Package"}
                 </Button>

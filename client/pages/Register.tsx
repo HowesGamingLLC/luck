@@ -3,11 +3,25 @@ import { Link, useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card";
 import { Alert, AlertDescription } from "@/components/ui/alert";
 import { Checkbox } from "@/components/ui/checkbox";
 import { useAuth } from "@/contexts/AuthContext";
-import { Eye, EyeOff, UserPlus, Mail, Lock, User, AlertCircle } from "lucide-react";
+import {
+  Eye,
+  EyeOff,
+  UserPlus,
+  Mail,
+  Lock,
+  User,
+  AlertCircle,
+} from "lucide-react";
 
 export default function Register() {
   const [formData, setFormData] = useState({
@@ -25,7 +39,7 @@ export default function Register() {
   const navigate = useNavigate();
 
   const handleChange = (field: string, value: string | boolean) => {
-    setFormData(prev => ({ ...prev, [field]: value }));
+    setFormData((prev) => ({ ...prev, [field]: value }));
   };
 
   const validateForm = () => {
@@ -181,7 +195,9 @@ export default function Register() {
                     type={showConfirmPassword ? "text" : "password"}
                     placeholder="Confirm your password"
                     value={formData.confirmPassword}
-                    onChange={(e) => handleChange("confirmPassword", e.target.value)}
+                    onChange={(e) =>
+                      handleChange("confirmPassword", e.target.value)
+                    }
                     className="pl-10 pr-10"
                     disabled={isLoading}
                   />
@@ -207,13 +223,13 @@ export default function Register() {
                   <Checkbox
                     id="ageConfirmation"
                     checked={formData.ageConfirmation}
-                    onCheckedChange={(checked) => 
+                    onCheckedChange={(checked) =>
                       handleChange("ageConfirmation", checked === true)
                     }
                     disabled={isLoading}
                   />
-                  <Label 
-                    htmlFor="ageConfirmation" 
+                  <Label
+                    htmlFor="ageConfirmation"
                     className="text-sm font-normal leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70"
                   >
                     I confirm that I am 18 years of age or older
@@ -224,13 +240,13 @@ export default function Register() {
                   <Checkbox
                     id="agreeToTerms"
                     checked={formData.agreeToTerms}
-                    onCheckedChange={(checked) => 
+                    onCheckedChange={(checked) =>
                       handleChange("agreeToTerms", checked === true)
                     }
                     disabled={isLoading}
                   />
-                  <Label 
-                    htmlFor="agreeToTerms" 
+                  <Label
+                    htmlFor="agreeToTerms"
                     className="text-sm font-normal leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70"
                   >
                     I agree to the{" "}
@@ -245,9 +261,9 @@ export default function Register() {
                 </div>
               </div>
 
-              <Button 
-                type="submit" 
-                className="w-full btn-primary" 
+              <Button
+                type="submit"
+                className="w-full btn-primary"
                 disabled={isLoading}
               >
                 {isLoading ? (
@@ -266,8 +282,8 @@ export default function Register() {
               <div className="text-center">
                 <p className="text-sm text-muted-foreground">
                   Already have an account?{" "}
-                  <Link 
-                    to="/login" 
+                  <Link
+                    to="/login"
                     className="text-purple font-medium hover:underline"
                   >
                     Sign in here

@@ -35,7 +35,10 @@ interface JackpotContextType {
   recentWins: JackpotWin[];
   toggleOptIn: () => void;
   contributeToJackpot: (currencyType: CurrencyType) => void;
-  checkJackpotEligibility: (combination: string[], theme: string) => string | null;
+  checkJackpotEligibility: (
+    combination: string[],
+    theme: string,
+  ) => string | null;
   triggerJackpotWin: (jackpotId: string) => JackpotWin | null;
   getJackpotProgress: (jackpot: JackpotData) => number;
 }
@@ -57,8 +60,8 @@ const initialJackpots: JackpotData[] = [
   },
   {
     id: "major",
-    name: "Major Jackpot", 
-    amount: 234.80,
+    name: "Major Jackpot",
+    amount: 234.8,
     maxAmount: 250,
     lastWon: new Date("2024-01-18"),
     contributionPerSpin: 0.01,
@@ -80,7 +83,7 @@ const initialJackpots: JackpotData[] = [
   {
     id: "mini",
     name: "Mini Jackpot",
-    amount: 23.90,
+    amount: 23.9,
     maxAmount: 50,
     lastWon: new Date("2024-01-21"),
     contributionPerSpin: 0.01,
@@ -99,22 +102,22 @@ export function JackpotProvider({ children }: { children: ReactNode }) {
     {
       id: "win_1",
       userId: "user_999",
-      amount: 45.80,
+      amount: 45.8,
       type: "Mini Jackpot",
       timestamp: new Date("2024-01-21T14:30:00"),
     },
     {
-      id: "win_2", 
+      id: "win_2",
       userId: "user_888",
-      amount: 98.50,
+      amount: 98.5,
       type: "Minor Jackpot",
       timestamp: new Date("2024-01-20T09:15:00"),
     },
     {
       id: "win_3",
       userId: "user_777",
-      amount: 247.30,
-      type: "Major Jackpot", 
+      amount: 247.3,
+      type: "Major Jackpot",
       timestamp: new Date("2024-01-18T16:45:00"),
     },
   ]);
@@ -130,7 +133,7 @@ export function JackpotProvider({ children }: { children: ReactNode }) {
           const randomContribution = Math.random() * 0.05; // 0-0.05 SC from other players
           const newAmount = Math.min(
             jackpot.amount + randomContribution,
-            jackpot.maxAmount
+            jackpot.maxAmount,
           );
 
           return {
@@ -138,7 +141,7 @@ export function JackpotProvider({ children }: { children: ReactNode }) {
             amount: newAmount,
             isHot: newAmount > jackpot.maxAmount * 0.8, // Mark as hot when 80%+ of max
           };
-        })
+        }),
       );
     }, 5000); // Update every 5 seconds
 
@@ -148,7 +151,9 @@ export function JackpotProvider({ children }: { children: ReactNode }) {
   // Load user contribution total from localStorage
   useEffect(() => {
     if (user) {
-      const savedContributions = localStorage.getItem(`jackpot_contributions_${user.id}`);
+      const savedContributions = localStorage.getItem(
+        `jackpot_contributions_${user.id}`,
+      );
       if (savedContributions) {
         setTotalContributed(parseFloat(savedContributions));
       }
@@ -158,7 +163,10 @@ export function JackpotProvider({ children }: { children: ReactNode }) {
   // Save contribution total to localStorage
   useEffect(() => {
     if (user && totalContributed > 0) {
-      localStorage.setItem(`jackpot_contributions_${user.id}`, totalContributed.toString());
+      localStorage.setItem(
+        `jackpot_contributions_${user.id}`,
+        totalContributed.toString(),
+      );
     }
   }, [user, totalContributed]);
 
@@ -181,12 +189,12 @@ export function JackpotProvider({ children }: { children: ReactNode }) {
         const fillPercentage = jackpot.amount / jackpot.maxAmount;
         const weight = 1 - fillPercentage; // Lower fill = higher weight
         const contribution = contributionAmount * (weight / 4); // Divide among 4 jackpots
-        
+
         return {
           ...jackpot,
           amount: Math.min(jackpot.amount + contribution, jackpot.maxAmount),
         };
-      })
+      }),
     );
 
     setTotalContributed((prev) => prev + contributionAmount);
@@ -194,16 +202,16 @@ export function JackpotProvider({ children }: { children: ReactNode }) {
 
   const checkJackpotEligibility = (
     combination: string[],
-    theme: string
+    theme: string,
   ): string | null => {
     if (!isOptedIn) return null; // Must be opted in to win jackpots
 
     // Define jackpot symbols
     const jackpotSymbols = ["🎰", "👸", "💰", "⭐", "✨", "🔱", "💎", "7️⃣"];
-    
+
     // Check for matching jackpot symbols
-    const hasJackpotSymbol = combination.some(symbol => 
-      jackpotSymbols.includes(symbol)
+    const hasJackpotSymbol = combination.some((symbol) =>
+      jackpotSymbols.includes(symbol),
     );
 
     if (!hasJackpotSymbol) return null;
@@ -211,9 +219,12 @@ export function JackpotProvider({ children }: { children: ReactNode }) {
     // Count consecutive matching symbols
     let maxConsecutive = 1;
     let currentConsecutive = 1;
-    
+
     for (let i = 1; i < combination.length; i++) {
-      if (combination[i] === combination[i - 1] && jackpotSymbols.includes(combination[i])) {
+      if (
+        combination[i] === combination[i - 1] &&
+        jackpotSymbols.includes(combination[i])
+      ) {
         currentConsecutive++;
         maxConsecutive = Math.max(maxConsecutive, currentConsecutive);
       } else {
@@ -223,9 +234,9 @@ export function JackpotProvider({ children }: { children: ReactNode }) {
 
     // Determine jackpot type based on consecutive matches and probability
     const random = Math.random();
-    
+
     if (maxConsecutive >= 5 && random < 0.001) return "mega"; // 0.1% chance
-    if (maxConsecutive >= 4 && random < 0.005) return "major"; // 0.5% chance  
+    if (maxConsecutive >= 4 && random < 0.005) return "major"; // 0.5% chance
     if (maxConsecutive >= 3 && random < 0.02) return "minor"; // 2% chance
     if (maxConsecutive >= 2 && random < 0.05) return "mini"; // 5% chance
 
@@ -235,7 +246,7 @@ export function JackpotProvider({ children }: { children: ReactNode }) {
   const triggerJackpotWin = (jackpotId: string): JackpotWin | null => {
     if (!user || !isOptedIn) return null;
 
-    const jackpot = jackpots.find(j => j.id === jackpotId);
+    const jackpot = jackpots.find((j) => j.id === jackpotId);
     if (!jackpot) return null;
 
     const winAmount = jackpot.amount;
@@ -245,8 +256,8 @@ export function JackpotProvider({ children }: { children: ReactNode }) {
       prevJackpots.map((j) =>
         j.id === jackpotId
           ? { ...j, amount: 0, lastWon: new Date(), isHot: false }
-          : j
-      )
+          : j,
+      ),
     );
 
     // Add winnings to user balance

@@ -36,95 +36,95 @@ function App() {
         <CurrencyProvider>
           <JackpotProvider>
             <TooltipProvider>
-            <Toaster />
-            <Sonner />
-            <BrowserRouter>
-              <Layout>
-                <Routes>
-                  <Route path="/" element={<Index />} />
-                  <Route path="/login" element={<Login />} />
-                  <Route path="/register" element={<Register />} />
-                  <Route
-                    path="/dashboard"
-                    element={
-                      <AuthGuard>
-                        <Dashboard />
-                      </AuthGuard>
-                    }
-                  />
-                  <Route
-                    path="/games"
-                    element={
-                      <AuthGuard>
-                        <Games />
-                      </AuthGuard>
-                    }
-                  />
-                  <Route path="/leaderboard" element={<Leaderboard />} />
-                  <Route path="/referrals" element={<Referrals />} />
-                  <Route path="/help" element={<Help />} />
-                  <Route
-                    path="/profile"
-                    element={
-                      <AuthGuard>
-                        <Profile />
-                      </AuthGuard>
-                    }
-                  />
-                  <Route
-                    path="/wallet"
-                    element={
-                      <AuthGuard>
-                        <WalletPage />
-                      </AuthGuard>
-                    }
-                  />
-                  <Route
-                    path="/settings"
-                    element={
-                      <AuthGuard>
-                        <SettingsPage />
-                      </AuthGuard>
-                    }
-                  />
-                  <Route
-                    path="/admin"
-                    element={
-                      <AuthGuard requireAdmin={true}>
-                        <AdminPanel />
-                      </AuthGuard>
-                    }
-                  />
-                  <Route
-                    path="/admin/*"
-                    element={
-                      <AuthGuard requireAdmin={true}>
-                        <AdminPanel />
-                      </AuthGuard>
-                    }
-                  />
-                  <Route
-                    path="/kyc"
-                    element={
-                      <AuthGuard>
-                        <KYC />
-                      </AuthGuard>
-                    }
-                  />
-                  <Route
-                    path="/withdraw"
-                    element={
-                      <AuthGuard>
-                        <Withdraw />
-                      </AuthGuard>
-                    }
-                  />
-                  <Route path="/store" element={<Store />} />
-                  {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
-                  <Route path="*" element={<NotFound />} />
-                </Routes>
-              </Layout>
-            </BrowserRouter>
+              <Toaster />
+              <Sonner />
+              <BrowserRouter>
+                <Layout>
+                  <Routes>
+                    <Route path="/" element={<Index />} />
+                    <Route path="/login" element={<Login />} />
+                    <Route path="/register" element={<Register />} />
+                    <Route
+                      path="/dashboard"
+                      element={
+                        <AuthGuard>
+                          <Dashboard />
+                        </AuthGuard>
+                      }
+                    />
+                    <Route
+                      path="/games"
+                      element={
+                        <AuthGuard>
+                          <Games />
+                        </AuthGuard>
+                      }
+                    />
+                    <Route path="/leaderboard" element={<Leaderboard />} />
+                    <Route path="/referrals" element={<Referrals />} />
+                    <Route path="/help" element={<Help />} />
+                    <Route
+                      path="/profile"
+                      element={
+                        <AuthGuard>
+                          <Profile />
+                        </AuthGuard>
+                      }
+                    />
+                    <Route
+                      path="/wallet"
+                      element={
+                        <AuthGuard>
+                          <WalletPage />
+                        </AuthGuard>
+                      }
+                    />
+                    <Route
+                      path="/settings"
+                      element={
+                        <AuthGuard>
+                          <SettingsPage />
+                        </AuthGuard>
+                      }
+                    />
+                    <Route
+                      path="/admin"
+                      element={
+                        <AuthGuard requireAdmin={true}>
+                          <AdminPanel />
+                        </AuthGuard>
+                      }
+                    />
+                    <Route
+                      path="/admin/*"
+                      element={
+                        <AuthGuard requireAdmin={true}>
+                          <AdminPanel />
+                        </AuthGuard>
+                      }
+                    />
+                    <Route
+                      path="/kyc"
+                      element={
+                        <AuthGuard>
+                          <KYC />
+                        </AuthGuard>
+                      }
+                    />
+                    <Route
+                      path="/withdraw"
+                      element={
+                        <AuthGuard>
+                          <Withdraw />
+                        </AuthGuard>
+                      }
+                    />
+                    <Route path="/store" element={<Store />} />
+                    {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
+                    <Route path="*" element={<NotFound />} />
+                  </Routes>
+                </Layout>
+              </BrowserRouter>
             </TooltipProvider>
           </JackpotProvider>
         </CurrencyProvider>

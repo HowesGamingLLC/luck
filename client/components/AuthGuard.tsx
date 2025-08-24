@@ -9,7 +9,11 @@ interface AuthGuardProps {
   requireKYC?: boolean;
 }
 
-export function AuthGuard({ children, requireAdmin = false, requireKYC = false }: AuthGuardProps) {
+export function AuthGuard({
+  children,
+  requireAdmin = false,
+  requireKYC = false,
+}: AuthGuardProps) {
   const { user, isLoading, isAuthenticated, isAdmin } = useAuth();
   const location = useLocation();
 
@@ -45,11 +49,14 @@ export function AuthGuard({ children, requireAdmin = false, requireKYC = false }
 // Higher-order component for protecting routes
 export function withAuthGuard<P extends object>(
   Component: React.ComponentType<P>,
-  options?: { requireAdmin?: boolean; requireKYC?: boolean }
+  options?: { requireAdmin?: boolean; requireKYC?: boolean },
 ) {
   return function AuthGuardedComponent(props: P) {
     return (
-      <AuthGuard requireAdmin={options?.requireAdmin} requireKYC={options?.requireKYC}>
+      <AuthGuard
+        requireAdmin={options?.requireAdmin}
+        requireKYC={options?.requireKYC}
+      >
         <Component {...props} />
       </AuthGuard>
     );
@@ -63,7 +70,9 @@ export function AuthLoading() {
       <div className="text-center space-y-4">
         <div className="w-16 h-16 mx-auto border-4 border-purple border-t-transparent rounded-full animate-spin"></div>
         <p className="text-lg font-medium">Authenticating...</p>
-        <p className="text-muted-foreground">Please wait while we verify your session</p>
+        <p className="text-muted-foreground">
+          Please wait while we verify your session
+        </p>
       </div>
     </div>
   );

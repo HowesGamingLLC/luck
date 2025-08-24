@@ -1,9 +1,22 @@
 import { useState } from "react";
 import { Button } from "@/components/ui/button";
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Alert, AlertDescription } from "@/components/ui/alert";
-import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogHeader,
+  DialogTitle,
+  DialogTrigger,
+} from "@/components/ui/dialog";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { useAuth } from "@/contexts/AuthContext";
@@ -44,9 +57,12 @@ export interface GoldCoinPackage {
 export default function Store() {
   const { isAuthenticated } = useAuth();
   const { updateBalance } = useCurrency();
-  const [selectedPackage, setSelectedPackage] = useState<GoldCoinPackage | null>(null);
+  const [selectedPackage, setSelectedPackage] =
+    useState<GoldCoinPackage | null>(null);
   const [isProcessing, setIsProcessing] = useState(false);
-  const [paymentMethod, setPaymentMethod] = useState<"card" | "paypal" | "crypto">("card");
+  const [paymentMethod, setPaymentMethod] = useState<
+    "card" | "paypal" | "crypto"
+  >("card");
 
   // Gold coin packages - these could be managed by admin
   const packages: GoldCoinPackage[] = [
@@ -61,7 +77,12 @@ export default function Store() {
       icon: Coins,
       color: "from-blue-500 to-blue-600",
       description: "Perfect for new players to get started",
-      features: ["10,000 Gold Coins", "5 FREE Sweep Coins", "Instant delivery", "24/7 support"],
+      features: [
+        "10,000 Gold Coins",
+        "5 FREE Sweep Coins",
+        "Instant delivery",
+        "24/7 support",
+      ],
     },
     {
       id: "popular",
@@ -75,7 +96,12 @@ export default function Store() {
       icon: Star,
       color: "from-purple-500 to-purple-600",
       description: "Most popular package with great value",
-      features: ["50,000 Gold Coins", "30 FREE Sweep Coins", "20% bonus coins", "Priority support"],
+      features: [
+        "50,000 Gold Coins",
+        "30 FREE Sweep Coins",
+        "20% bonus coins",
+        "Priority support",
+      ],
       savings: 20,
     },
     {
@@ -90,7 +116,13 @@ export default function Store() {
       icon: Crown,
       color: "from-gold to-yellow-600",
       description: "Best value for serious players",
-      features: ["100,000 Gold Coins", "75 FREE Sweep Coins", "50% bonus coins", "VIP support", "Exclusive rewards"],
+      features: [
+        "100,000 Gold Coins",
+        "75 FREE Sweep Coins",
+        "50% bonus coins",
+        "VIP support",
+        "Exclusive rewards",
+      ],
       savings: 30,
     },
     {
@@ -105,7 +137,13 @@ export default function Store() {
       icon: Gem,
       color: "from-red-500 to-pink-600",
       description: "Ultimate package for high rollers",
-      features: ["250,000 Gold Coins", "200 FREE Sweep Coins", "100% bonus coins", "VIP treatment", "Personal account manager"],
+      features: [
+        "250,000 Gold Coins",
+        "200 FREE Sweep Coins",
+        "100% bonus coins",
+        "VIP treatment",
+        "Personal account manager",
+      ],
       savings: 25,
     },
     {
@@ -120,7 +158,12 @@ export default function Store() {
       icon: Zap,
       color: "from-green-500 to-green-600",
       description: "Limited time offer - today only!",
-      features: ["25,000 Gold Coins", "15 FREE Sweep Coins", "Daily deal pricing", "Fast delivery"],
+      features: [
+        "25,000 Gold Coins",
+        "15 FREE Sweep Coins",
+        "Daily deal pricing",
+        "Fast delivery",
+      ],
       savings: 20,
     },
   ];
@@ -141,17 +184,29 @@ export default function Store() {
 
     try {
       // Simulate payment processing
-      await new Promise(resolve => setTimeout(resolve, 3000));
+      await new Promise((resolve) => setTimeout(resolve, 3000));
 
       // In a real app, this would integrate with a payment processor like Stripe
       // For demo purposes, we'll simulate a successful payment
 
       // Update user balance with purchased coins
-      updateBalance(CurrencyType.GC, selectedPackage.goldCoins, `Purchase - ${selectedPackage.name}`, "bonus");
-      updateBalance(CurrencyType.SC, selectedPackage.bonusSweepCoins, `Bonus SC - ${selectedPackage.name}`, "bonus");
+      updateBalance(
+        CurrencyType.GC,
+        selectedPackage.goldCoins,
+        `Purchase - ${selectedPackage.name}`,
+        "bonus",
+      );
+      updateBalance(
+        CurrencyType.SC,
+        selectedPackage.bonusSweepCoins,
+        `Bonus SC - ${selectedPackage.name}`,
+        "bonus",
+      );
 
-      alert(`Purchase successful! You received ${selectedPackage.goldCoins.toLocaleString()} Gold Coins and ${selectedPackage.bonusSweepCoins} Sweep Coins!`);
-      
+      alert(
+        `Purchase successful! You received ${selectedPackage.goldCoins.toLocaleString()} Gold Coins and ${selectedPackage.bonusSweepCoins} Sweep Coins!`,
+      );
+
       setSelectedPackage(null);
     } catch (error) {
       alert("Payment failed. Please try again.");
@@ -161,7 +216,7 @@ export default function Store() {
   };
 
   const getValuePerDollar = (pkg: GoldCoinPackage) => {
-    const totalValue = pkg.goldCoins + (pkg.bonusSweepCoins * 100); // Rough SC to GC conversion
+    const totalValue = pkg.goldCoins + pkg.bonusSweepCoins * 100; // Rough SC to GC conversion
     return Math.round(totalValue / pkg.price);
   };
 
@@ -175,7 +230,8 @@ export default function Store() {
             Gold Coin Store
           </h1>
           <p className="text-xl text-muted-foreground max-w-2xl mx-auto">
-            Purchase Gold Coins to play your favorite games and get FREE Sweep Coins with every package!
+            Purchase Gold Coins to play your favorite games and get FREE Sweep
+            Coins with every package!
           </p>
         </div>
 
@@ -190,7 +246,7 @@ export default function Store() {
               </p>
             </CardContent>
           </Card>
-          
+
           <Card className="glass text-center">
             <CardContent className="p-6">
               <Gift className="h-8 w-8 mx-auto mb-3 text-teal" />
@@ -200,7 +256,7 @@ export default function Store() {
               </p>
             </CardContent>
           </Card>
-          
+
           <Card className="glass text-center">
             <CardContent className="p-6">
               <Lock className="h-8 w-8 mx-auto mb-3 text-purple" />
@@ -217,7 +273,8 @@ export default function Store() {
           <Alert className="mb-8 border-orange-500 bg-orange-500/5">
             <AlertTriangle className="h-4 w-4 text-orange-500" />
             <AlertDescription>
-              Please <strong>log in</strong> or <strong>create an account</strong> to purchase Gold Coin packages.
+              Please <strong>log in</strong> or{" "}
+              <strong>create an account</strong> to purchase Gold Coin packages.
             </AlertDescription>
           </Alert>
         )}
@@ -250,14 +307,19 @@ export default function Store() {
                     </Badge>
                   )}
                   {pkg.savings && (
-                    <Badge variant="outline" className="bg-green-500/10 text-green-600 border-green-500">
+                    <Badge
+                      variant="outline"
+                      className="bg-green-500/10 text-green-600 border-green-500"
+                    >
                       {pkg.savings}% OFF
                     </Badge>
                   )}
                 </div>
 
                 <CardHeader className="text-center pb-4">
-                  <div className={`w-16 h-16 mx-auto mb-4 rounded-full bg-gradient-to-br ${pkg.color} flex items-center justify-center`}>
+                  <div
+                    className={`w-16 h-16 mx-auto mb-4 rounded-full bg-gradient-to-br ${pkg.color} flex items-center justify-center`}
+                  >
                     <Icon className="h-8 w-8 text-white" />
                   </div>
                   <CardTitle className="text-xl">{pkg.name}</CardTitle>
@@ -294,7 +356,9 @@ export default function Store() {
                       <div className="flex items-center gap-2">
                         <Gem className="h-4 w-4 text-teal" />
                         <span className="font-medium">Bonus Sweep Coins</span>
-                        <Badge variant="secondary" className="text-xs">FREE</Badge>
+                        <Badge variant="secondary" className="text-xs">
+                          FREE
+                        </Badge>
                       </div>
                       <span className="font-bold text-teal">
                         {pkg.bonusSweepCoins}
@@ -305,7 +369,10 @@ export default function Store() {
                   {/* Features */}
                   <div className="space-y-2">
                     {pkg.features.map((feature, index) => (
-                      <div key={index} className="flex items-center gap-2 text-sm">
+                      <div
+                        key={index}
+                        className="flex items-center gap-2 text-sm"
+                      >
                         <Check className="h-3 w-3 text-green-500 flex-shrink-0" />
                         <span>{feature}</span>
                       </div>
@@ -345,24 +412,33 @@ export default function Store() {
               <div>
                 <Zap className="h-6 w-6 mx-auto mb-2 text-yellow-500" />
                 <h4 className="font-medium text-sm">Instant Delivery</h4>
-                <p className="text-xs text-muted-foreground">Coins added immediately</p>
+                <p className="text-xs text-muted-foreground">
+                  Coins added immediately
+                </p>
               </div>
               <div>
                 <Info className="h-6 w-6 mx-auto mb-2 text-green-500" />
                 <h4 className="font-medium text-sm">24/7 Support</h4>
-                <p className="text-xs text-muted-foreground">Help when you need it</p>
+                <p className="text-xs text-muted-foreground">
+                  Help when you need it
+                </p>
               </div>
               <div>
                 <TrendingUp className="h-6 w-6 mx-auto mb-2 text-purple-500" />
                 <h4 className="font-medium text-sm">Best Value</h4>
-                <p className="text-xs text-muted-foreground">Competitive pricing</p>
+                <p className="text-xs text-muted-foreground">
+                  Competitive pricing
+                </p>
               </div>
             </div>
           </CardContent>
         </Card>
 
         {/* Purchase Confirmation Dialog */}
-        <Dialog open={!!selectedPackage} onOpenChange={() => setSelectedPackage(null)}>
+        <Dialog
+          open={!!selectedPackage}
+          onOpenChange={() => setSelectedPackage(null)}
+        >
           <DialogContent className="max-w-md">
             <DialogHeader>
               <DialogTitle>Confirm Purchase</DialogTitle>
@@ -379,10 +455,12 @@ export default function Store() {
                     <selectedPackage.icon className="h-6 w-6 text-purple" />
                     <div>
                       <h3 className="font-semibold">{selectedPackage.name}</h3>
-                      <p className="text-sm text-muted-foreground">{selectedPackage.description}</p>
+                      <p className="text-sm text-muted-foreground">
+                        {selectedPackage.description}
+                      </p>
                     </div>
                   </div>
-                  
+
                   <div className="space-y-2">
                     <div className="flex justify-between">
                       <span>Gold Coins:</span>
@@ -407,20 +485,38 @@ export default function Store() {
                 <div className="space-y-3">
                   <Label>Payment Method</Label>
                   <div className="space-y-2">
-                    <div className={`border rounded-lg p-3 cursor-pointer ${
-                      paymentMethod === "card" ? "border-blue-500 bg-blue-500/5" : ""
-                    }`} onClick={() => setPaymentMethod("card")}>
+                    <div
+                      className={`border rounded-lg p-3 cursor-pointer ${
+                        paymentMethod === "card"
+                          ? "border-blue-500 bg-blue-500/5"
+                          : ""
+                      }`}
+                      onClick={() => setPaymentMethod("card")}
+                    >
                       <div className="flex items-center gap-3">
-                        <input type="radio" checked={paymentMethod === "card"} readOnly />
+                        <input
+                          type="radio"
+                          checked={paymentMethod === "card"}
+                          readOnly
+                        />
                         <CreditCard className="h-4 w-4" />
                         <span>Credit/Debit Card</span>
                       </div>
                     </div>
-                    <div className={`border rounded-lg p-3 cursor-pointer ${
-                      paymentMethod === "paypal" ? "border-blue-500 bg-blue-500/5" : ""
-                    }`} onClick={() => setPaymentMethod("paypal")}>
+                    <div
+                      className={`border rounded-lg p-3 cursor-pointer ${
+                        paymentMethod === "paypal"
+                          ? "border-blue-500 bg-blue-500/5"
+                          : ""
+                      }`}
+                      onClick={() => setPaymentMethod("paypal")}
+                    >
                       <div className="flex items-center gap-3">
-                        <input type="radio" checked={paymentMethod === "paypal"} readOnly />
+                        <input
+                          type="radio"
+                          checked={paymentMethod === "paypal"}
+                          readOnly
+                        />
                         <CreditCard className="h-4 w-4" />
                         <span>PayPal</span>
                       </div>
@@ -431,7 +527,7 @@ export default function Store() {
                 <Alert>
                   <Info className="h-4 w-4" />
                   <AlertDescription className="text-xs">
-                    This is a demo purchase. No real money will be charged. 
+                    This is a demo purchase. No real money will be charged.
                     Coins will be added to your account for testing purposes.
                   </AlertDescription>
                 </Alert>

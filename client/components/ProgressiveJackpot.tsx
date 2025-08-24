@@ -18,7 +18,14 @@ export function ProgressiveJackpot({
   className,
   showOptInToggle = true,
 }: ProgressiveJackpotProps) {
-  const { jackpots, isOptedIn, totalContributed, recentWins, toggleOptIn, getJackpotProgress } = useJackpot();
+  const {
+    jackpots,
+    isOptedIn,
+    totalContributed,
+    recentWins,
+    toggleOptIn,
+    getJackpotProgress,
+  } = useJackpot();
   const { isAuthenticated } = useAuth();
   const [lastUpdate, setLastUpdate] = useState(Date.now());
 
@@ -41,13 +48,16 @@ export function ProgressiveJackpot({
     if (!date) return "Never";
 
     const now = new Date();
-    const diffInHours = Math.floor((now.getTime() - date.getTime()) / (1000 * 60 * 60));
+    const diffInHours = Math.floor(
+      (now.getTime() - date.getTime()) / (1000 * 60 * 60),
+    );
 
     if (diffInHours < 1) return "Less than 1 hour ago";
-    if (diffInHours < 24) return `${diffInHours} hour${diffInHours > 1 ? 's' : ''} ago`;
+    if (diffInHours < 24)
+      return `${diffInHours} hour${diffInHours > 1 ? "s" : ""} ago`;
 
     const diffInDays = Math.floor(diffInHours / 24);
-    return `${diffInDays} day${diffInDays > 1 ? 's' : ''} ago`;
+    return `${diffInDays} day${diffInDays > 1 ? "s" : ""} ago`;
   };
 
   return (
@@ -64,7 +74,10 @@ export function ProgressiveJackpot({
               <div className="w-2 h-2 bg-green-500 rounded-full ml-2 animate-pulse" />
             </Badge>
             {isAuthenticated && (
-              <Badge variant={isOptedIn ? "default" : "secondary"} className="text-xs">
+              <Badge
+                variant={isOptedIn ? "default" : "secondary"}
+                className="text-xs"
+              >
                 {isOptedIn ? "Opted In" : "Opt In"}
               </Badge>
             )}
@@ -75,14 +88,20 @@ export function ProgressiveJackpot({
       <CardContent className="space-y-4">
         {/* Jackpot Opt-in Section */}
         {isAuthenticated && showOptInToggle && (
-          <div className={cn(
-            "p-4 rounded-lg border transition-all duration-300",
-            isOptedIn ? "border-green-500/50 bg-green-500/5" : "border-orange-500/50 bg-orange-500/5"
-          )}>
+          <div
+            className={cn(
+              "p-4 rounded-lg border transition-all duration-300",
+              isOptedIn
+                ? "border-green-500/50 bg-green-500/5"
+                : "border-orange-500/50 bg-orange-500/5",
+            )}
+          >
             <div className="flex items-center justify-between mb-3">
               <div className="flex items-center gap-2">
                 <Settings className="h-4 w-4 text-purple" />
-                <span className="font-medium text-sm">Jackpot Participation</span>
+                <span className="font-medium text-sm">
+                  Jackpot Participation
+                </span>
               </div>
               <Switch
                 checked={isOptedIn}
@@ -99,7 +118,10 @@ export function ProgressiveJackpot({
                     You're eligible to win real money jackpots!
                   </p>
                   <p>• 0.01 SC per spin contributes to jackpot pool</p>
-                  <p>• Your total contributed: {formatAmount(totalContributed)} SC</p>
+                  <p>
+                    • Your total contributed: {formatAmount(totalContributed)}{" "}
+                    SC
+                  </p>
                 </>
               ) : (
                 <>
@@ -107,7 +129,10 @@ export function ProgressiveJackpot({
                     <Info className="h-3 w-3 text-orange-500" />
                     Opt in to participate in real money jackpots
                   </p>
-                  <p>• Small contribution (0.01 SC) per spin when playing SC games</p>
+                  <p>
+                    • Small contribution (0.01 SC) per spin when playing SC
+                    games
+                  </p>
                   <p>• Chance to win up to 500 SC jackpots</p>
                 </>
               )}
@@ -124,7 +149,7 @@ export function ProgressiveJackpot({
               jackpot.isHot
                 ? "border-red-500/50 bg-red-500/5 animate-pulse-glow"
                 : "border-border bg-card/30",
-              !isOptedIn && isAuthenticated && "opacity-60"
+              !isOptedIn && isAuthenticated && "opacity-60",
             )}
           >
             {jackpot.isHot && (
@@ -175,7 +200,10 @@ export function ProgressiveJackpot({
             </h4>
             <div className="space-y-2">
               {recentWins.slice(0, 3).map((win) => (
-                <div key={win.id} className="flex items-center justify-between text-xs">
+                <div
+                  key={win.id}
+                  className="flex items-center justify-between text-xs"
+                >
                   <span className="text-muted-foreground">
                     Player**** won {win.type}
                   </span>
@@ -199,7 +227,8 @@ export function ProgressiveJackpot({
           <div className="text-xs text-muted-foreground mt-1">
             Max Possible Pool:
             <span className="font-semibold text-gold ml-1">
-              {formatAmount(jackpots.reduce((sum, j) => sum + j.maxAmount, 0))} SC
+              {formatAmount(jackpots.reduce((sum, j) => sum + j.maxAmount, 0))}{" "}
+              SC
             </span>
           </div>
           <div className="text-xs text-muted-foreground mt-1">

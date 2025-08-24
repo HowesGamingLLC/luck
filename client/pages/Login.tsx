@@ -3,7 +3,13 @@ import { Link, useNavigate, useLocation } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card";
 import { Alert, AlertDescription } from "@/components/ui/alert";
 import { useAuth } from "@/contexts/AuthContext";
 import { Eye, EyeOff, LogIn, Mail, Lock, AlertCircle } from "lucide-react";
@@ -104,9 +110,9 @@ export default function Login() {
                 </div>
               </div>
 
-              <Button 
-                type="submit" 
-                className="w-full btn-primary" 
+              <Button
+                type="submit"
+                className="w-full btn-primary"
                 disabled={isLoading}
               >
                 {isLoading ? (
@@ -125,14 +131,13 @@ export default function Login() {
               <div className="text-center space-y-2">
                 <p className="text-sm text-muted-foreground">
                   Don't have an account?{" "}
-                  <Link 
-                    to="/register" 
+                  <Link
+                    to="/register"
                     className="text-purple font-medium hover:underline"
                   >
                     Sign up here
                   </Link>
                 </p>
-                
               </div>
             </form>
           </CardContent>
