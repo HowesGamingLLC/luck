@@ -118,8 +118,8 @@ export default function Withdraw() {
   ]);
 
   const availableBalance = currencyUser?.balance.sweepCoins || 0;
-  const minWithdrawal = 10.0;
-  const maxWithdrawal = 500.0;
+  const minWithdrawal = 100.0; // Updated minimum to 100 SC
+  const maxWithdrawal = 1000.0;
 
   const fees = {
     bank: 2.5,
