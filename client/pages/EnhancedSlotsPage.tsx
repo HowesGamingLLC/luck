@@ -383,19 +383,23 @@ export default function EnhancedSlotsPage() {
           </Alert>
         )}
 
-        {/* Demo Mode Info */}
-        {games.length === 0 && !error && !isLoading && (
+        {/* Free Games Info */}
+        {games.length > 0 && games.filter(g => g.providerId !== 'freeslotsgames' && g.providerId !== 'idevgames').length === 0 && !isLoading && (
           <Alert className="mb-6">
             <Sparkles className="h-4 w-4" />
             <AlertDescription>
               <div className="space-y-2">
-                <p className="font-medium">Demo Mode Active</p>
-                <p>You're currently running with demo API credentials. To see live slot games from BGaming and Pragmatic Play:</p>
-                <ol className="list-decimal list-inside mt-2 space-y-1 text-sm">
-                  <li>Obtain API credentials from BGaming and Pragmatic Play</li>
-                  <li>Set environment variables: BGAMING_API_KEY, PRAGMATIC_API_KEY, etc.</li>
-                  <li>Restart the server to load live games</li>
-                </ol>
+                <p className="font-medium">🎰 Free Slot Games Available!</p>
+                <p>You're currently playing free slot games from our partner providers. These games are:</p>
+                <ul className="list-disc list-inside mt-2 space-y-1 text-sm">
+                  <li>✅ Completely free to play</li>
+                  <li>✅ No real money required</li>
+                  <li>✅ Full-featured slot experiences</li>
+                  <li>✅ Mobile and desktop compatible</li>
+                </ul>
+                <p className="text-sm text-muted-foreground mt-2">
+                  Want more games? Configure BGaming and Pragmatic Play API credentials for premium slot access.
+                </p>
               </div>
             </AlertDescription>
           </Alert>
