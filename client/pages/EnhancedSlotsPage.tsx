@@ -391,7 +391,7 @@ export default function EnhancedSlotsPage() {
           <Alert className="mb-6">
             <Sparkles className="h-4 w-4" />
             <AlertDescription>
-              <div className="space-y-2">
+              <div className="space-y-3">
                 <p className="font-medium">🎰 Free Slot Games Available!</p>
                 <p>You're currently playing free slot games from our partner providers. These games are:</p>
                 <ul className="list-disc list-inside mt-2 space-y-1 text-sm">
@@ -400,9 +400,16 @@ export default function EnhancedSlotsPage() {
                   <li>✅ Full-featured slot experiences</li>
                   <li>✅ Mobile and desktop compatible</li>
                 </ul>
-                <p className="text-sm text-muted-foreground mt-2">
-                  Want more games? Configure BGaming and Pragmatic Play API credentials for premium slot access.
-                </p>
+                <div className="flex gap-2 mt-3">
+                  <Link to="/games/slots/docs">
+                    <Button size="sm" variant="outline">
+                      📖 API Documentation
+                    </Button>
+                  </Link>
+                  <p className="text-sm text-muted-foreground flex items-center">
+                    Want more games? Configure BGaming and Pragmatic Play API credentials for premium slot access.
+                  </p>
+                </div>
               </div>
             </AlertDescription>
           </Alert>
