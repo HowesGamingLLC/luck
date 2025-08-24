@@ -46,7 +46,7 @@ export default function Login() {
               Welcome Back
             </CardTitle>
             <CardDescription>
-              Sign in to your McLuck Casino account
+              Sign in to your CoinKrazy.com Casino account
             </CardDescription>
           </CardHeader>
           <CardContent>
@@ -133,15 +133,6 @@ export default function Login() {
                   </Link>
                 </p>
                 
-                {/* Demo credentials for testing */}
-                <div className="mt-4 p-3 bg-muted/30 rounded-lg border text-xs">
-                  <p className="font-medium mb-2">Demo Accounts:</p>
-                  <div className="space-y-1">
-                    <p><strong>Admin:</strong> admin@mcluck.com / admin123</p>
-                    <p><strong>User:</strong> john@example.com / user123</p>
-                    <p><strong>Verified User:</strong> jane@example.com / user123</p>
-                  </div>
-                </div>
               </div>
             </form>
           </CardContent>
