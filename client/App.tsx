@@ -22,26 +22,28 @@ const queryClient = new QueryClient();
 function App() {
   return (
     <QueryClientProvider client={queryClient}>
-      <TooltipProvider>
-        <Toaster />
-        <Sonner />
-        <BrowserRouter>
-          <Layout>
-            <Routes>
-              <Route path="/" element={<Index />} />
-              <Route path="/games" element={<Games />} />
-              <Route path="/leaderboard" element={<Leaderboard />} />
-              <Route path="/referrals" element={<Referrals />} />
-              <Route path="/help" element={<Help />} />
-              <Route path="/profile" element={<Profile />} />
-              <Route path="/wallet" element={<WalletPage />} />
-              <Route path="/settings" element={<SettingsPage />} />
-              {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
-              <Route path="*" element={<NotFound />} />
-            </Routes>
-          </Layout>
-        </BrowserRouter>
-      </TooltipProvider>
+      <CurrencyProvider>
+        <TooltipProvider>
+          <Toaster />
+          <Sonner />
+          <BrowserRouter>
+            <Layout>
+              <Routes>
+                <Route path="/" element={<Index />} />
+                <Route path="/games" element={<Games />} />
+                <Route path="/leaderboard" element={<Leaderboard />} />
+                <Route path="/referrals" element={<Referrals />} />
+                <Route path="/help" element={<Help />} />
+                <Route path="/profile" element={<Profile />} />
+                <Route path="/wallet" element={<WalletPage />} />
+                <Route path="/settings" element={<SettingsPage />} />
+                {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
+                <Route path="*" element={<NotFound />} />
+              </Routes>
+            </Layout>
+          </BrowserRouter>
+        </TooltipProvider>
+      </CurrencyProvider>
     </QueryClientProvider>
   );
 }
