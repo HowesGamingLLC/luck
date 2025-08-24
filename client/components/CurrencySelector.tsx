@@ -7,7 +7,11 @@ import {
   CardTitle,
 } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
-import { useCurrency, CurrencyType, formatCurrency } from "@/contexts/CurrencyContext";
+import {
+  useCurrency,
+  CurrencyType,
+  formatCurrency,
+} from "@/contexts/CurrencyContext";
 import { Coins, Gem, Info, Wallet } from "lucide-react";
 
 interface CurrencySelectorProps {
@@ -34,7 +38,12 @@ export function CurrencySelector({
   const { user, canAffordWager } = useCurrency();
 
   const canAffordGC = user && canAffordWager(CurrencyType.GC, minBetAmount);
-  const canAffordSC = user && canAffordWager(CurrencyType.SC, minBetAmount > 0 ? minBetAmount * 0.01 : 0.01);
+  const canAffordSC =
+    user &&
+    canAffordWager(
+      CurrencyType.SC,
+      minBetAmount > 0 ? minBetAmount * 0.01 : 0.01,
+    );
 
   if (variant === "inline") {
     return (
@@ -73,7 +82,9 @@ export function CurrencySelector({
         <CardContent className="space-y-3">
           <div className="flex gap-2">
             <Button
-              variant={selectedCurrency === CurrencyType.GC ? "default" : "outline"}
+              variant={
+                selectedCurrency === CurrencyType.GC ? "default" : "outline"
+              }
               size="sm"
               className="flex-1"
               onClick={() => onCurrencyChange(CurrencyType.GC)}
@@ -83,7 +94,9 @@ export function CurrencySelector({
               GC
             </Button>
             <Button
-              variant={selectedCurrency === CurrencyType.SC ? "default" : "outline"}
+              variant={
+                selectedCurrency === CurrencyType.SC ? "default" : "outline"
+              }
               size="sm"
               className="flex-1"
               onClick={() => onCurrencyChange(CurrencyType.SC)}
@@ -93,7 +106,7 @@ export function CurrencySelector({
               SC
             </Button>
           </div>
-          
+
           {showBalance && user && (
             <div className="text-xs space-y-1">
               <div className="flex justify-between">
@@ -146,7 +159,8 @@ export function CurrencySelector({
               </div>
               {showBalance && user && (
                 <div className="text-sm font-medium text-gold mt-1">
-                  Balance: {formatCurrency(user.balance.goldCoins, CurrencyType.GC)}
+                  Balance:{" "}
+                  {formatCurrency(user.balance.goldCoins, CurrencyType.GC)}
                 </div>
               )}
             </div>
@@ -177,7 +191,8 @@ export function CurrencySelector({
               </div>
               {showBalance && user && (
                 <div className="text-sm font-medium text-teal mt-1">
-                  Balance: {formatCurrency(user.balance.sweepCoins, CurrencyType.SC)}
+                  Balance:{" "}
+                  {formatCurrency(user.balance.sweepCoins, CurrencyType.SC)}
                 </div>
               )}
             </div>
@@ -201,7 +216,9 @@ export function CurrencySelector({
                 <li>• Gold Coins are for entertainment only</li>
                 <li>• Sweep Coins have real cash value</li>
                 <li>• You can switch currencies anytime</li>
-                <li>• Different games may have different currency requirements</li>
+                <li>
+                  • Different games may have different currency requirements
+                </li>
               </ul>
             </div>
           </div>

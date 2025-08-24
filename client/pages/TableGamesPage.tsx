@@ -393,7 +393,11 @@ export default function TableGamesPage() {
                   onCurrencyChange={setSelectedCurrency}
                   variant="inline"
                   showBalance={false}
-                  minBetAmount={selectedCurrency === CurrencyType.GC ? currentGame.minBet.gc : currentGame.minBet.sc}
+                  minBetAmount={
+                    selectedCurrency === CurrencyType.GC
+                      ? currentGame.minBet.gc
+                      : currentGame.minBet.sc
+                  }
                 />
 
                 <div>
