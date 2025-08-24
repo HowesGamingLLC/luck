@@ -389,6 +389,31 @@ export function SlotMachine({
           )}
         </div>
 
+        {/* Betting Info */}
+        <div className="bg-card/30 p-3 rounded-lg space-y-2">
+          <div className="flex items-center justify-between text-sm">
+            <span>Bet Amount:</span>
+            <span className={`font-semibold ${getCurrencyColor(currency)}`}>
+              {formatCurrency(betAmount, currency)}
+            </span>
+          </div>
+          <div className="flex items-center justify-between text-sm">
+            <span>Your Balance:</span>
+            <span className={`font-semibold ${getCurrencyColor(currency)}`}>
+              {currency === CurrencyType.SC
+                ? formatCurrency(user?.balance.sweepCoins || 0, currency)
+                : formatCurrency(user?.balance.goldCoins || 0, currency)
+              }
+            </span>
+          </div>
+          <div className="flex items-center justify-between text-sm">
+            <span>Max Win:</span>
+            <span className="font-semibold text-success">
+              {currency === CurrencyType.SC ? "10.00 SC" : "1,000 GC"}
+            </span>
+          </div>
+        </div>
+
         {/* Controls */}
         <div className="flex items-center justify-between">
           <div className="flex items-center gap-2">
@@ -399,7 +424,7 @@ export function SlotMachine({
             >
               {soundEnabled ? <Volume2 className="h-4 w-4" /> : <VolumeX className="h-4 w-4" />}
             </Button>
-            
+
             <div className="text-sm text-muted-foreground">
               Spins: {spinCount}
             </div>
@@ -407,13 +432,19 @@ export function SlotMachine({
 
           <Button
             onClick={spin}
-            disabled={isSpinning || disabled}
+            disabled={isSpinning || disabled || !canAffordWager(currency, betAmount)}
             className={cn(
-              "btn-gold min-w-[120px] relative overflow-hidden group",
+              currency === CurrencyType.SC ? "bg-gradient-to-r from-teal to-teal-dark text-white" : "btn-gold",
+              "min-w-[120px] relative overflow-hidden group",
               isSpinning && "animate-pulse"
             )}
           >
-            {isSpinning ? (
+            {!canAffordWager(currency, betAmount) ? (
+              <>
+                <AlertCircle className="h-4 w-4 mr-2" />
+                Low Balance
+              </>
+            ) : isSpinning ? (
               <>
                 <Zap className="h-4 w-4 mr-2 animate-spin" />
                 Spinning...
@@ -421,7 +452,7 @@ export function SlotMachine({
             ) : (
               <>
                 <Play className="h-4 w-4 mr-2 group-hover:scale-110 transition-transform" />
-                SPIN
+                SPIN {formatCurrency(betAmount, currency)}
               </>
             )}
           </Button>
