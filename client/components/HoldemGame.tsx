@@ -770,16 +770,21 @@ export function HoldemGame({
 
             <div className="flex justify-center gap-6">
               <div className="text-center">
-                <p className="text-green-200 text-sm">Total Pot</p>
-                <p className="text-3xl font-bold text-yellow-400">
-                  {gameState.pot} {currency}
-                </p>
+                <p className="text-green-200 text-sm mb-2">Total Pot</p>
+                <CoinKrazyChipTotal
+                  total={gameState.pot}
+                  currency={currency as "GC" | "SC"}
+                  size="xl"
+                  animated={true}
+                />
               </div>
               <div className="text-center">
-                <p className="text-green-200 text-sm">Current Bet</p>
-                <p className="text-xl font-bold text-white">
-                  {gameState.currentBet} {currency}
-                </p>
+                <p className="text-green-200 text-sm mb-2">Current Bet</p>
+                <CoinKrazyChipTotal
+                  total={gameState.currentBet}
+                  currency={currency as "GC" | "SC"}
+                  size="lg"
+                />
               </div>
             </div>
           </div>
