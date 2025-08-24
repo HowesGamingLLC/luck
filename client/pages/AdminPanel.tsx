@@ -742,7 +742,7 @@ export default function AdminPanel() {
                         window.open("/admin/ai-employees", "_blank")
                       }
                     >
-                      <User className="h-4 w-4 mr-2" />
+                      <UserIcon className="h-4 w-4 mr-2" />
                       Open AI Employee Manager
                     </Button>
                   </div>
