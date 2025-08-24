@@ -236,53 +236,65 @@ export default function WalletPage() {
         </div>
 
         {/* Balance Overview */}
-        <div className="grid md:grid-cols-3 gap-6 mb-8">
+        <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
           <Card className="glass border-gold/50">
             <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-              <CardTitle className="text-sm font-medium">
-                Available Balance
-              </CardTitle>
-              <Wallet className="h-4 w-4 text-gold" />
+              <CardTitle className="text-sm font-medium">Gold Coins</CardTitle>
+              <Coins className="h-4 w-4 text-gold" />
             </CardHeader>
             <CardContent>
               <div className="text-3xl font-bold text-gold">
-                ${mockWalletData.balance.toLocaleString()}
+                {user?.balance.goldCoins.toLocaleString() || 0}
+              </div>
+              <p className="text-xs text-muted-foreground">Fun Play Balance</p>
+            </CardContent>
+          </Card>
+
+          <Card className="glass border-teal/50">
+            <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+              <CardTitle className="text-sm font-medium">Sweep Coins</CardTitle>
+              <Gem className="h-4 w-4 text-teal" />
+            </CardHeader>
+            <CardContent>
+              <div className="text-3xl font-bold text-teal">
+                {user?.balance.sweepCoins.toFixed(2) || 0}
               </div>
               <p className="text-xs text-muted-foreground">
-                Ready for withdrawal
+                {(user?.balance.sweepCoins || 0) >= MIN_WITHDRAWAL_SC
+                  ? "Ready for withdrawal"
+                  : `Need ${(MIN_WITHDRAWAL_SC - (user?.balance.sweepCoins || 0)).toFixed(2)} SC to withdraw`
+                }
               </p>
             </CardContent>
           </Card>
 
           <Card className="glass">
             <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-              <CardTitle className="text-sm font-medium">
-                Pending Balance
-              </CardTitle>
-              <Clock className="h-4 w-4 text-warning" />
+              <CardTitle className="text-sm font-medium">Total Won</CardTitle>
+              <Trophy className="h-4 w-4 text-success" />
             </CardHeader>
             <CardContent>
-              <div className="text-3xl font-bold text-warning">
-                ${mockWalletData.pending.toLocaleString()}
+              <div className="text-2xl font-bold text-success">
+                {((user?.totalWon.goldCoins || 0) + (user?.totalWon.sweepCoins || 0)).toFixed(2)}
               </div>
               <p className="text-xs text-muted-foreground">
-                Processing withdrawals
+                GC: {user?.totalWon.goldCoins || 0} • SC: {(user?.totalWon.sweepCoins || 0).toFixed(2)}
               </p>
             </CardContent>
           </Card>
 
           <Card className="glass">
             <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-              <CardTitle className="text-sm font-medium">
-                Total Withdrawn
-              </CardTitle>
-              <TrendingUp className="h-4 w-4 text-success" />
+              <CardTitle className="text-sm font-medium">Withdrawal Status</CardTitle>
+              <TrendingUp className="h-4 w-4 text-purple" />
             </CardHeader>
             <CardContent>
-              <div className="text-3xl font-bold text-success">
-                ${mockWalletData.totalWithdrawn.toLocaleString()}
+              <div className="text-2xl font-bold text-purple">
+                {(user?.balance.sweepCoins || 0) >= MIN_WITHDRAWAL_SC ? "Ready" : "Pending"}
               </div>
-              <p className="text-xs text-muted-foreground">Lifetime earnings</p>
+              <p className="text-xs text-muted-foreground">
+                Min: {MIN_WITHDRAWAL_SC} SC
+              </p>
             </CardContent>
           </Card>
         </div>
