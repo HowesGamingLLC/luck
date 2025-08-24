@@ -348,6 +348,9 @@ export default function EnhancedSlotsPage() {
               <div className="font-bold text-purple">
                 {filteredGames.length}
               </div>
+              <div className="text-xs text-muted-foreground mt-1">
+                {filteredGames.filter(g => g.providerId === 'freeslotsgames' || g.providerId === 'idevgames').length} Free
+              </div>
             </CardContent>
           </Card>
           <Card className="glass">
