@@ -101,7 +101,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
 
   useEffect(() => {
     // Check for saved user session
-    const savedUser = localStorage.getItem("mcluck_auth_user");
+    const savedUser = localStorage.getItem("coinkrazy_auth_user");
     if (savedUser) {
       try {
         const parsedUser = JSON.parse(savedUser);
@@ -111,7 +111,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
         setUser(parsedUser);
       } catch (error) {
         console.error("Error parsing saved user session:", error);
-        localStorage.removeItem("mcluck_auth_user");
+        localStorage.removeItem("coinkrazy_auth_user");
       }
     }
     setIsLoading(false);
@@ -120,9 +120,9 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   // Save user session whenever user changes
   useEffect(() => {
     if (user) {
-      localStorage.setItem("mcluck_auth_user", JSON.stringify(user));
+      localStorage.setItem("coinkrazy_auth_user", JSON.stringify(user));
     } else {
-      localStorage.removeItem("mcluck_auth_user");
+      localStorage.removeItem("coinkrazy_auth_user");
     }
   }, [user]);
 
@@ -198,9 +198,9 @@ export function AuthProvider({ children }: { children: ReactNode }) {
 
   const logout = () => {
     setUser(null);
-    localStorage.removeItem("mcluck_auth_user");
-    localStorage.removeItem("mcluck_user"); // Also clear currency context data
-    localStorage.removeItem("mcluck_transactions");
+    localStorage.removeItem("coinkrazy_auth_user");
+    localStorage.removeItem("coinkrazy_user"); // Also clear currency context data
+    localStorage.removeItem("coinkrazy_transactions");
   };
 
   const updateProfile = (updates: Partial<User>) => {

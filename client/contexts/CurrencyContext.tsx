@@ -100,7 +100,7 @@ export function CurrencyProvider({ children }: { children: ReactNode }) {
 
   // Initialize user on mount
   useEffect(() => {
-    const savedUser = localStorage.getItem("mcluck_user");
+    const savedUser = localStorage.getItem("coinkrazy_user");
     if (savedUser) {
       try {
         const parsedUser = JSON.parse(savedUser);
@@ -115,16 +115,16 @@ export function CurrencyProvider({ children }: { children: ReactNode }) {
         console.error("Error parsing saved user data:", error);
         const newUser = createInitialUser();
         setUser(newUser);
-        localStorage.setItem("mcluck_user", JSON.stringify(newUser));
+        localStorage.setItem("coinkrazy_user", JSON.stringify(newUser));
       }
     } else {
       const newUser = createInitialUser();
       setUser(newUser);
-      localStorage.setItem("mcluck_user", JSON.stringify(newUser));
+      localStorage.setItem("coinkrazy_user", JSON.stringify(newUser));
     }
 
     // Load transactions
-    const savedTransactions = localStorage.getItem("mcluck_transactions");
+    const savedTransactions = localStorage.getItem("coinkrazy_transactions");
     if (savedTransactions) {
       try {
         const parsedTransactions = JSON.parse(savedTransactions).map(
@@ -143,13 +143,13 @@ export function CurrencyProvider({ children }: { children: ReactNode }) {
   // Save user data to localStorage whenever it changes
   useEffect(() => {
     if (user) {
-      localStorage.setItem("mcluck_user", JSON.stringify(user));
+      localStorage.setItem("coinkrazy_user", JSON.stringify(user));
     }
   }, [user]);
 
   // Save transactions to localStorage whenever they change
   useEffect(() => {
-    localStorage.setItem("mcluck_transactions", JSON.stringify(transactions));
+    localStorage.setItem("coinkrazy_transactions", JSON.stringify(transactions));
   }, [transactions]);
 
   const initializeUser = (userData: Partial<UserProfile>) => {
