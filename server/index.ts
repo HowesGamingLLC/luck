@@ -22,6 +22,7 @@ import {
   getPlayerBalance,
   getActiveSessions,
   checkProviderHealth,
+  testProviders,
 } from "./routes/slots";
 import {
   getThumbnail,
