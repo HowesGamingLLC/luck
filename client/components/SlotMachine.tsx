@@ -4,6 +4,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { cn } from "@/lib/utils";
 import { useJackpotWin, JackpotCelebration } from "./ProgressiveJackpot";
+import { useCurrency, CurrencyType, formatCurrency, getCurrencyColor, getCurrencyIcon } from "@/contexts/CurrencyContext";
 import {
   Play,
   Coins,
@@ -11,6 +12,8 @@ import {
   Zap,
   Volume2,
   VolumeX,
+  Gem,
+  AlertCircle,
 } from "lucide-react";
 
 export interface SlotSymbol {
@@ -47,7 +50,7 @@ const CLASSIC_THEME: SlotTheme = {
   symbols: [
     { id: "cherry", symbol: "🍒", value: 5, rarity: 25, color: "text-red-500" },
     { id: "lemon", symbol: "🍋", value: 10, rarity: 20, color: "text-yellow-500" },
-    { id: "orange", symbol: "��", value: 15, rarity: 18, color: "text-orange-500" },
+    { id: "orange", symbol: "🍊", value: 15, rarity: 18, color: "text-orange-500" },
     { id: "plum", symbol: "🍇", value: 20, rarity: 15, color: "text-purple-500" },
     { id: "bell", symbol: "🔔", value: 25, rarity: 12, color: "text-gold" },
     { id: "star", symbol: "⭐", value: 50, rarity: 8, color: "text-yellow-400" },
