@@ -300,10 +300,12 @@ export function Header() {
             </>
           ) : (
             <div className="flex items-center space-x-2">
-              <Button variant="ghost" onClick={() => setIsLoggedIn(true)}>
-                Sign In
+              <Button asChild variant="ghost">
+                <Link to="/login">Sign In</Link>
               </Button>
-              <Button className="btn-primary">Sign Up</Button>
+              <Button asChild className="btn-primary">
+                <Link to="/register">Sign Up</Link>
+              </Button>
             </div>
           )}
 
