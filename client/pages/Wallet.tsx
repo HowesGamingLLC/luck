@@ -56,6 +56,7 @@ import {
   Building,
   Bitcoin,
   Coins,
+  Gem,
 } from "lucide-react";
 
 // Mock wallet data
