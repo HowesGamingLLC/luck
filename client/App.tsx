@@ -169,6 +169,14 @@ function App() {
                       }
                     />
                     <Route
+                      path="/admin/ai-employees"
+                      element={
+                        <AuthGuard requireAdmin={true}>
+                          <AIEmployeePage />
+                        </AuthGuard>
+                      }
+                    />
+                    <Route
                       path="/admin/*"
                       element={
                         <AuthGuard requireAdmin={true}>
