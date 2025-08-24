@@ -528,7 +528,7 @@ export default function TournamentsPage() {
                                   {selectedTournament.buyIn.gc === 0 &&
                                   selectedTournament.buyIn.sc === 0
                                     ? "FREE"
-                                    : `${selectedTournament.buyIn.gc > 0 ? `${formatCurrency(selectedTournament.buyIn.gc, "GC")}` : ""} ${selectedTournament.buyIn.sc > 0 ? `${formatCurrency(selectedTournament.buyIn.sc, "SC")}` : ""}`}
+                                    : `${selectedTournament.buyIn.gc > 0 ? `${formatCurrency(selectedTournament.buyIn.gc, CurrencyType.GC)}` : ""} ${selectedTournament.buyIn.sc > 0 ? `${formatCurrency(selectedTournament.buyIn.sc, CurrencyType.SC)}` : ""}`}
                                 </div>
                               </div>
                               <div>
