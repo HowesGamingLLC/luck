@@ -55,6 +55,7 @@ import {
   Smartphone,
   Building,
   Bitcoin,
+  Coins,
 } from "lucide-react";
 
 // Mock wallet data
