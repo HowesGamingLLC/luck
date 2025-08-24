@@ -96,7 +96,8 @@ export default function MessagingCenter() {
     clickRate: 6.8,
     unsubscribeRate: 0.3,
   });
-  const [selectedTemplate, setSelectedTemplate] = useState<EmailTemplate | null>(null);
+  const [selectedTemplate, setSelectedTemplate] =
+    useState<EmailTemplate | null>(null);
   const [newTemplate, setNewTemplate] = useState({
     name: "",
     subject: "",
@@ -215,7 +216,7 @@ export default function MessagingCenter() {
 
   const extractVariables = (content: string): string[] => {
     const matches = content.match(/\{\{(\w+)\}\}/g);
-    return matches ? matches.map(match => match.slice(2, -2)) : [];
+    return matches ? matches.map((match) => match.slice(2, -2)) : [];
   };
 
   const duplicateTemplate = (template: EmailTemplate) => {
@@ -230,7 +231,7 @@ export default function MessagingCenter() {
   };
 
   const deleteTemplate = (templateId: string) => {
-    setEmailTemplates(emailTemplates.filter(t => t.id !== templateId));
+    setEmailTemplates(emailTemplates.filter((t) => t.id !== templateId));
   };
 
   const sendTestEmail = (template: EmailTemplate) => {
@@ -262,11 +263,16 @@ export default function MessagingCenter() {
           Messaging Center
         </CardTitle>
         <CardDescription>
-          Manage email templates, newsletters, push notifications, and SMS campaigns
+          Manage email templates, newsletters, push notifications, and SMS
+          campaigns
         </CardDescription>
       </CardHeader>
       <CardContent>
-        <Tabs value={messagingActiveTab} onValueChange={setMessagingActiveTab} className="space-y-6">
+        <Tabs
+          value={messagingActiveTab}
+          onValueChange={setMessagingActiveTab}
+          className="space-y-6"
+        >
           <TabsList className="grid w-full grid-cols-5">
             <TabsTrigger value="overview">Overview</TabsTrigger>
             <TabsTrigger value="templates">Email Templates</TabsTrigger>
@@ -283,8 +289,12 @@ export default function MessagingCenter() {
                 <CardContent className="p-4">
                   <div className="flex items-center justify-between">
                     <div>
-                      <p className="text-sm text-muted-foreground">Total Sent</p>
-                      <p className="text-2xl font-bold">{messageStats.totalSent.toLocaleString()}</p>
+                      <p className="text-sm text-muted-foreground">
+                        Total Sent
+                      </p>
+                      <p className="text-2xl font-bold">
+                        {messageStats.totalSent.toLocaleString()}
+                      </p>
                     </div>
                     <Send className="h-6 w-6 text-blue-500" />
                   </div>
@@ -294,8 +304,12 @@ export default function MessagingCenter() {
                 <CardContent className="p-4">
                   <div className="flex items-center justify-between">
                     <div>
-                      <p className="text-sm text-muted-foreground">Delivery Rate</p>
-                      <p className="text-2xl font-bold text-green-500">{messageStats.deliveryRate}%</p>
+                      <p className="text-sm text-muted-foreground">
+                        Delivery Rate
+                      </p>
+                      <p className="text-2xl font-bold text-green-500">
+                        {messageStats.deliveryRate}%
+                      </p>
                     </div>
                     <CheckCircle className="h-6 w-6 text-green-500" />
                   </div>
@@ -306,7 +320,9 @@ export default function MessagingCenter() {
                   <div className="flex items-center justify-between">
                     <div>
                       <p className="text-sm text-muted-foreground">Open Rate</p>
-                      <p className="text-2xl font-bold text-blue-500">{messageStats.openRate}%</p>
+                      <p className="text-2xl font-bold text-blue-500">
+                        {messageStats.openRate}%
+                      </p>
                     </div>
                     <Eye className="h-6 w-6 text-blue-500" />
                   </div>
@@ -316,8 +332,12 @@ export default function MessagingCenter() {
                 <CardContent className="p-4">
                   <div className="flex items-center justify-between">
                     <div>
-                      <p className="text-sm text-muted-foreground">Click Rate</p>
-                      <p className="text-2xl font-bold text-purple-500">{messageStats.clickRate}%</p>
+                      <p className="text-sm text-muted-foreground">
+                        Click Rate
+                      </p>
+                      <p className="text-2xl font-bold text-purple-500">
+                        {messageStats.clickRate}%
+                      </p>
                     </div>
                     <Target className="h-6 w-6 text-purple-500" />
                   </div>
@@ -327,8 +347,12 @@ export default function MessagingCenter() {
                 <CardContent className="p-4">
                   <div className="flex items-center justify-between">
                     <div>
-                      <p className="text-sm text-muted-foreground">Unsubscribe</p>
-                      <p className="text-2xl font-bold text-red-500">{messageStats.unsubscribeRate}%</p>
+                      <p className="text-sm text-muted-foreground">
+                        Unsubscribe
+                      </p>
+                      <p className="text-2xl font-bold text-red-500">
+                        {messageStats.unsubscribeRate}%
+                      </p>
                     </div>
                     <TrendingDown className="h-6 w-6 text-red-500" />
                   </div>
@@ -338,32 +362,52 @@ export default function MessagingCenter() {
 
             {/* Quick Actions */}
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
-              <Card className="border hover:border-blue-500 transition-colors cursor-pointer" onClick={() => setMessagingActiveTab("templates")}>
+              <Card
+                className="border hover:border-blue-500 transition-colors cursor-pointer"
+                onClick={() => setMessagingActiveTab("templates")}
+              >
                 <CardContent className="p-6 text-center">
                   <Mail className="h-8 w-8 mx-auto mb-3 text-blue-500" />
                   <h3 className="font-semibold mb-2">Create Email Template</h3>
-                  <p className="text-sm text-muted-foreground">Design reusable email templates</p>
+                  <p className="text-sm text-muted-foreground">
+                    Design reusable email templates
+                  </p>
                 </CardContent>
               </Card>
-              <Card className="border hover:border-green-500 transition-colors cursor-pointer" onClick={() => setMessagingActiveTab("campaigns")}>
+              <Card
+                className="border hover:border-green-500 transition-colors cursor-pointer"
+                onClick={() => setMessagingActiveTab("campaigns")}
+              >
                 <CardContent className="p-6 text-center">
                   <Globe className="h-8 w-8 mx-auto mb-3 text-green-500" />
                   <h3 className="font-semibold mb-2">Launch Campaign</h3>
-                  <p className="text-sm text-muted-foreground">Send newsletters and promotions</p>
+                  <p className="text-sm text-muted-foreground">
+                    Send newsletters and promotions
+                  </p>
                 </CardContent>
               </Card>
-              <Card className="border hover:border-purple-500 transition-colors cursor-pointer" onClick={() => setMessagingActiveTab("push")}>
+              <Card
+                className="border hover:border-purple-500 transition-colors cursor-pointer"
+                onClick={() => setMessagingActiveTab("push")}
+              >
                 <CardContent className="p-6 text-center">
                   <Bell className="h-8 w-8 mx-auto mb-3 text-purple-500" />
                   <h3 className="font-semibold mb-2">Push Notification</h3>
-                  <p className="text-sm text-muted-foreground">Instant mobile notifications</p>
+                  <p className="text-sm text-muted-foreground">
+                    Instant mobile notifications
+                  </p>
                 </CardContent>
               </Card>
-              <Card className="border hover:border-orange-500 transition-colors cursor-pointer" onClick={() => setMessagingActiveTab("sms")}>
+              <Card
+                className="border hover:border-orange-500 transition-colors cursor-pointer"
+                onClick={() => setMessagingActiveTab("sms")}
+              >
                 <CardContent className="p-6 text-center">
                   <Smartphone className="h-8 w-8 mx-auto mb-3 text-orange-500" />
                   <h3 className="font-semibold mb-2">SMS Message</h3>
-                  <p className="text-sm text-muted-foreground">Direct SMS communication</p>
+                  <p className="text-sm text-muted-foreground">
+                    Direct SMS communication
+                  </p>
                 </CardContent>
               </Card>
             </div>
@@ -376,19 +420,38 @@ export default function MessagingCenter() {
               <CardContent>
                 <div className="space-y-3">
                   {campaigns.slice(0, 5).map((campaign) => (
-                    <div key={campaign.id} className="flex items-center justify-between p-3 border rounded-lg">
+                    <div
+                      key={campaign.id}
+                      className="flex items-center justify-between p-3 border rounded-lg"
+                    >
                       <div className="flex items-center gap-3">
-                        {campaign.type === "email" && <Mail className="h-5 w-5 text-blue-500" />}
-                        {campaign.type === "push" && <Bell className="h-5 w-5 text-purple-500" />}
-                        {campaign.type === "sms" && <Smartphone className="h-5 w-5 text-orange-500" />}
-                        {campaign.type === "newsletter" && <Globe className="h-5 w-5 text-green-500" />}
+                        {campaign.type === "email" && (
+                          <Mail className="h-5 w-5 text-blue-500" />
+                        )}
+                        {campaign.type === "push" && (
+                          <Bell className="h-5 w-5 text-purple-500" />
+                        )}
+                        {campaign.type === "sms" && (
+                          <Smartphone className="h-5 w-5 text-orange-500" />
+                        )}
+                        {campaign.type === "newsletter" && (
+                          <Globe className="h-5 w-5 text-green-500" />
+                        )}
                         <div>
                           <p className="font-medium">{campaign.name}</p>
-                          <p className="text-sm text-muted-foreground">{campaign.template}</p>
+                          <p className="text-sm text-muted-foreground">
+                            {campaign.template}
+                          </p>
                         </div>
                       </div>
                       <div className="text-right">
-                        <Badge variant={campaign.status === "completed" ? "default" : "secondary"}>
+                        <Badge
+                          variant={
+                            campaign.status === "completed"
+                              ? "default"
+                              : "secondary"
+                          }
+                        >
                           {campaign.status}
                         </Badge>
                         <p className="text-sm text-muted-foreground mt-1">
@@ -407,9 +470,14 @@ export default function MessagingCenter() {
             <div className="flex items-center justify-between">
               <div>
                 <h3 className="text-lg font-semibold">Email Templates</h3>
-                <p className="text-sm text-muted-foreground">Create and manage reusable email templates</p>
+                <p className="text-sm text-muted-foreground">
+                  Create and manage reusable email templates
+                </p>
               </div>
-              <Button onClick={() => setIsCreatingTemplate(true)} className="btn-primary">
+              <Button
+                onClick={() => setIsCreatingTemplate(true)}
+                className="btn-primary"
+              >
                 <Plus className="h-4 w-4 mr-2" />
                 New Template
               </Button>
@@ -427,20 +495,34 @@ export default function MessagingCenter() {
                       <Input
                         id="template-name"
                         value={newTemplate.name}
-                        onChange={(e) => setNewTemplate({ ...newTemplate, name: e.target.value })}
+                        onChange={(e) =>
+                          setNewTemplate({
+                            ...newTemplate,
+                            name: e.target.value,
+                          })
+                        }
                         placeholder="e.g., Welcome Email"
                       />
                     </div>
                     <div>
                       <Label htmlFor="template-type">Type</Label>
-                      <Select value={newTemplate.type} onValueChange={(value: EmailTemplate["type"]) => setNewTemplate({ ...newTemplate, type: value })}>
+                      <Select
+                        value={newTemplate.type}
+                        onValueChange={(value: EmailTemplate["type"]) =>
+                          setNewTemplate({ ...newTemplate, type: value })
+                        }
+                      >
                         <SelectTrigger>
                           <SelectValue />
                         </SelectTrigger>
                         <SelectContent>
                           <SelectItem value="welcome">Welcome</SelectItem>
-                          <SelectItem value="promotional">Promotional</SelectItem>
-                          <SelectItem value="notification">Notification</SelectItem>
+                          <SelectItem value="promotional">
+                            Promotional
+                          </SelectItem>
+                          <SelectItem value="notification">
+                            Notification
+                          </SelectItem>
                           <SelectItem value="newsletter">Newsletter</SelectItem>
                         </SelectContent>
                       </Select>
@@ -451,28 +533,44 @@ export default function MessagingCenter() {
                     <Input
                       id="template-subject"
                       value={newTemplate.subject}
-                      onChange={(e) => setNewTemplate({ ...newTemplate, subject: e.target.value })}
+                      onChange={(e) =>
+                        setNewTemplate({
+                          ...newTemplate,
+                          subject: e.target.value,
+                        })
+                      }
                       placeholder="Welcome to CoinKrazy.com!"
                     />
                   </div>
                   <div>
-                    <Label htmlFor="template-content">Email Content (HTML)</Label>
+                    <Label htmlFor="template-content">
+                      Email Content (HTML)
+                    </Label>
                     <Textarea
                       id="template-content"
                       value={newTemplate.content}
-                      onChange={(e) => setNewTemplate({ ...newTemplate, content: e.target.value })}
+                      onChange={(e) =>
+                        setNewTemplate({
+                          ...newTemplate,
+                          content: e.target.value,
+                        })
+                      }
                       placeholder="<h1>Welcome!</h1><p>Thank you for joining us...</p>"
                       rows={8}
                     />
                     <p className="text-sm text-muted-foreground mt-2">
-                      Use variables like {"{firstName}"}, {"{bonusAmount}"}, etc. for personalization
+                      Use variables like {"{firstName}"}, {"{bonusAmount}"},
+                      etc. for personalization
                     </p>
                   </div>
                   <div className="flex gap-3">
                     <Button onClick={createTemplate} className="btn-primary">
                       Create Template
                     </Button>
-                    <Button variant="outline" onClick={() => setIsCreatingTemplate(false)}>
+                    <Button
+                      variant="outline"
+                      onClick={() => setIsCreatingTemplate(false)}
+                    >
                       Cancel
                     </Button>
                   </div>
@@ -485,7 +583,13 @@ export default function MessagingCenter() {
                 <Card key={template.id} className="border">
                   <CardHeader>
                     <div className="flex items-center justify-between">
-                      <Badge variant={template.type === "promotional" ? "default" : "secondary"}>
+                      <Badge
+                        variant={
+                          template.type === "promotional"
+                            ? "default"
+                            : "secondary"
+                        }
+                      >
                         {template.type}
                       </Badge>
                       <div className="flex items-center gap-2">
@@ -493,15 +597,23 @@ export default function MessagingCenter() {
                       </div>
                     </div>
                     <CardTitle className="text-lg">{template.name}</CardTitle>
-                    <CardDescription className="line-clamp-2">{template.subject}</CardDescription>
+                    <CardDescription className="line-clamp-2">
+                      {template.subject}
+                    </CardDescription>
                   </CardHeader>
                   <CardContent>
                     <div className="space-y-3">
                       <div className="text-sm">
-                        <p className="text-muted-foreground">Variables: {template.variables.length}</p>
+                        <p className="text-muted-foreground">
+                          Variables: {template.variables.length}
+                        </p>
                         <div className="flex flex-wrap gap-1 mt-1">
                           {template.variables.slice(0, 3).map((variable) => (
-                            <Badge key={variable} variant="outline" className="text-xs">
+                            <Badge
+                              key={variable}
+                              variant="outline"
+                              className="text-xs"
+                            >
                               {variable}
                             </Badge>
                           ))}
@@ -515,23 +627,41 @@ export default function MessagingCenter() {
                       <div className="text-sm text-muted-foreground">
                         Created: {template.created.toLocaleDateString()}
                         {template.lastUsed && (
-                          <div>Last used: {template.lastUsed.toLocaleDateString()}</div>
+                          <div>
+                            Last used: {template.lastUsed.toLocaleDateString()}
+                          </div>
                         )}
                       </div>
                       <div className="flex gap-2">
-                        <Button size="sm" variant="outline" onClick={() => setSelectedTemplate(template)}>
+                        <Button
+                          size="sm"
+                          variant="outline"
+                          onClick={() => setSelectedTemplate(template)}
+                        >
                           <Edit className="h-3 w-3 mr-1" />
                           Edit
                         </Button>
-                        <Button size="sm" variant="outline" onClick={() => duplicateTemplate(template)}>
+                        <Button
+                          size="sm"
+                          variant="outline"
+                          onClick={() => duplicateTemplate(template)}
+                        >
                           <Copy className="h-3 w-3 mr-1" />
                           Duplicate
                         </Button>
-                        <Button size="sm" variant="outline" onClick={() => sendTestEmail(template)}>
+                        <Button
+                          size="sm"
+                          variant="outline"
+                          onClick={() => sendTestEmail(template)}
+                        >
                           <Send className="h-3 w-3 mr-1" />
                           Test
                         </Button>
-                        <Button size="sm" variant="outline" onClick={() => deleteTemplate(template.id)}>
+                        <Button
+                          size="sm"
+                          variant="outline"
+                          onClick={() => deleteTemplate(template.id)}
+                        >
                           <Trash2 className="h-3 w-3 text-red-500" />
                         </Button>
                       </div>
@@ -547,14 +677,22 @@ export default function MessagingCenter() {
             <div className="flex items-center justify-between">
               <div>
                 <h3 className="text-lg font-semibold">Marketing Campaigns</h3>
-                <p className="text-sm text-muted-foreground">Create and manage email, newsletter, and promotional campaigns</p>
+                <p className="text-sm text-muted-foreground">
+                  Create and manage email, newsletter, and promotional campaigns
+                </p>
               </div>
               <div className="flex gap-2">
-                <Button onClick={() => createCampaign("email", "Welcome Email")} variant="outline">
+                <Button
+                  onClick={() => createCampaign("email", "Welcome Email")}
+                  variant="outline"
+                >
                   <Mail className="h-4 w-4 mr-2" />
                   Email Campaign
                 </Button>
-                <Button onClick={() => createCampaign("newsletter", "Newsletter")} className="btn-primary">
+                <Button
+                  onClick={() => createCampaign("newsletter", "Newsletter")}
+                  className="btn-primary"
+                >
                   <Globe className="h-4 w-4 mr-2" />
                   Newsletter
                 </Button>
@@ -581,24 +719,40 @@ export default function MessagingCenter() {
                       <TableCell>
                         <div>
                           <div className="font-medium">{campaign.name}</div>
-                          <div className="text-sm text-muted-foreground">{campaign.template}</div>
+                          <div className="text-sm text-muted-foreground">
+                            {campaign.template}
+                          </div>
                         </div>
                       </TableCell>
                       <TableCell>
                         <div className="flex items-center gap-2">
-                          {campaign.type === "email" && <Mail className="h-4 w-4 text-blue-500" />}
-                          {campaign.type === "newsletter" && <Globe className="h-4 w-4 text-green-500" />}
-                          {campaign.type === "push" && <Bell className="h-4 w-4 text-purple-500" />}
-                          {campaign.type === "sms" && <Smartphone className="h-4 w-4 text-orange-500" />}
+                          {campaign.type === "email" && (
+                            <Mail className="h-4 w-4 text-blue-500" />
+                          )}
+                          {campaign.type === "newsletter" && (
+                            <Globe className="h-4 w-4 text-green-500" />
+                          )}
+                          {campaign.type === "push" && (
+                            <Bell className="h-4 w-4 text-purple-500" />
+                          )}
+                          {campaign.type === "sms" && (
+                            <Smartphone className="h-4 w-4 text-orange-500" />
+                          )}
                           <span className="capitalize">{campaign.type}</span>
                         </div>
                       </TableCell>
-                      <TableCell>{campaign.recipients.toLocaleString()}</TableCell>
+                      <TableCell>
+                        {campaign.recipients.toLocaleString()}
+                      </TableCell>
                       <TableCell>
                         <div>
                           <div>{campaign.delivered.toLocaleString()}</div>
                           <div className="text-xs text-muted-foreground">
-                            {((campaign.delivered / campaign.recipients) * 100).toFixed(1)}%
+                            {(
+                              (campaign.delivered / campaign.recipients) *
+                              100
+                            ).toFixed(1)}
+                            %
                           </div>
                         </div>
                       </TableCell>
@@ -606,7 +760,11 @@ export default function MessagingCenter() {
                         <div>
                           <div>{campaign.opened.toLocaleString()}</div>
                           <div className="text-xs text-muted-foreground">
-                            {((campaign.opened / campaign.delivered) * 100).toFixed(1)}%
+                            {(
+                              (campaign.opened / campaign.delivered) *
+                              100
+                            ).toFixed(1)}
+                            %
                           </div>
                         </div>
                       </TableCell>
@@ -614,12 +772,22 @@ export default function MessagingCenter() {
                         <div>
                           <div>{campaign.clicked.toLocaleString()}</div>
                           <div className="text-xs text-muted-foreground">
-                            {((campaign.clicked / campaign.opened) * 100).toFixed(1)}%
+                            {(
+                              (campaign.clicked / campaign.opened) *
+                              100
+                            ).toFixed(1)}
+                            %
                           </div>
                         </div>
                       </TableCell>
                       <TableCell>
-                        <Badge variant={campaign.status === "completed" ? "default" : "secondary"}>
+                        <Badge
+                          variant={
+                            campaign.status === "completed"
+                              ? "default"
+                              : "secondary"
+                          }
+                        >
                           {campaign.status}
                         </Badge>
                       </TableCell>
@@ -644,7 +812,9 @@ export default function MessagingCenter() {
           <TabsContent value="push" className="space-y-6">
             <div>
               <h3 className="text-lg font-semibold mb-2">Push Notifications</h3>
-              <p className="text-sm text-muted-foreground">Send instant notifications to users' mobile devices</p>
+              <p className="text-sm text-muted-foreground">
+                Send instant notifications to users' mobile devices
+              </p>
             </div>
 
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
@@ -658,11 +828,18 @@ export default function MessagingCenter() {
                 <CardContent className="space-y-4">
                   <div>
                     <Label htmlFor="push-title">Notification Title</Label>
-                    <Input id="push-title" placeholder="Daily Bonus Available!" />
+                    <Input
+                      id="push-title"
+                      placeholder="Daily Bonus Available!"
+                    />
                   </div>
                   <div>
                     <Label htmlFor="push-message">Message</Label>
-                    <Textarea id="push-message" placeholder="Your daily bonus is ready to claim!" rows={3} />
+                    <Textarea
+                      id="push-message"
+                      placeholder="Your daily bonus is ready to claim!"
+                      rows={3}
+                    />
                   </div>
                   <div>
                     <Label htmlFor="push-audience">Target Audience</Label>
@@ -672,10 +849,16 @@ export default function MessagingCenter() {
                       </SelectTrigger>
                       <SelectContent>
                         <SelectItem value="all">All Users</SelectItem>
-                        <SelectItem value="active">Active Users (7 days)</SelectItem>
-                        <SelectItem value="inactive">Inactive Users (30+ days)</SelectItem>
+                        <SelectItem value="active">
+                          Active Users (7 days)
+                        </SelectItem>
+                        <SelectItem value="inactive">
+                          Inactive Users (30+ days)
+                        </SelectItem>
                         <SelectItem value="vip">VIP Players</SelectItem>
-                        <SelectItem value="new">New Users (under 7 days)</SelectItem>
+                        <SelectItem value="new">
+                          New Users (under 7 days)
+                        </SelectItem>
                       </SelectContent>
                     </Select>
                   </div>
@@ -726,17 +909,23 @@ export default function MessagingCenter() {
                   <div className="flex items-center justify-between p-3 border rounded-lg">
                     <div>
                       <p className="font-medium">Daily Bonus Reminder</p>
-                      <p className="text-sm text-muted-foreground">Don't miss your daily bonus!</p>
+                      <p className="text-sm text-muted-foreground">
+                        Don't miss your daily bonus!
+                      </p>
                     </div>
                     <div className="text-right">
                       <p className="text-sm font-medium">2,340 sent</p>
-                      <p className="text-xs text-muted-foreground">2 hours ago</p>
+                      <p className="text-xs text-muted-foreground">
+                        2 hours ago
+                      </p>
                     </div>
                   </div>
                   <div className="flex items-center justify-between p-3 border rounded-lg">
                     <div>
                       <p className="font-medium">New Game Alert</p>
-                      <p className="text-sm text-muted-foreground">Check out our new slot machine!</p>
+                      <p className="text-sm text-muted-foreground">
+                        Check out our new slot machine!
+                      </p>
                     </div>
                     <div className="text-right">
                       <p className="text-sm font-medium">1,892 sent</p>
@@ -752,7 +941,9 @@ export default function MessagingCenter() {
           <TabsContent value="sms" className="space-y-6">
             <div>
               <h3 className="text-lg font-semibold mb-2">SMS Messaging</h3>
-              <p className="text-sm text-muted-foreground">Send direct SMS messages to users with verified phone numbers</p>
+              <p className="text-sm text-muted-foreground">
+                Send direct SMS messages to users with verified phone numbers
+              </p>
             </div>
 
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
@@ -765,9 +956,18 @@ export default function MessagingCenter() {
                 </CardHeader>
                 <CardContent className="space-y-4">
                   <div>
-                    <Label htmlFor="sms-message">Message (160 characters)</Label>
-                    <Textarea id="sms-message" placeholder="Your bonus is ready! Log in to claim 100 Gold Coins. Reply STOP to opt out." rows={3} maxLength={160} />
-                    <p className="text-xs text-muted-foreground mt-1">Character count: 0/160</p>
+                    <Label htmlFor="sms-message">
+                      Message (160 characters)
+                    </Label>
+                    <Textarea
+                      id="sms-message"
+                      placeholder="Your bonus is ready! Log in to claim 100 Gold Coins. Reply STOP to opt out."
+                      rows={3}
+                      maxLength={160}
+                    />
+                    <p className="text-xs text-muted-foreground mt-1">
+                      Character count: 0/160
+                    </p>
                   </div>
                   <div>
                     <Label htmlFor="sms-audience">Target Audience</Label>
@@ -776,8 +976,12 @@ export default function MessagingCenter() {
                         <SelectValue placeholder="Select audience" />
                       </SelectTrigger>
                       <SelectContent>
-                        <SelectItem value="verified">Verified Phone Numbers</SelectItem>
-                        <SelectItem value="high-value">High Value Players</SelectItem>
+                        <SelectItem value="verified">
+                          Verified Phone Numbers
+                        </SelectItem>
+                        <SelectItem value="high-value">
+                          High Value Players
+                        </SelectItem>
                         <SelectItem value="inactive">Inactive Users</SelectItem>
                         <SelectItem value="vip">VIP Players</SelectItem>
                       </SelectContent>
@@ -786,7 +990,8 @@ export default function MessagingCenter() {
                   <Alert>
                     <Info className="h-4 w-4" />
                     <AlertDescription className="text-xs">
-                      SMS messages are charged per message. Ensure compliance with SMS regulations and user consent.
+                      SMS messages are charged per message. Ensure compliance
+                      with SMS regulations and user consent.
                     </AlertDescription>
                   </Alert>
                   <Button className="w-full btn-primary">
@@ -836,21 +1041,27 @@ export default function MessagingCenter() {
                   <div className="flex items-center justify-between">
                     <div>
                       <p className="font-medium">Auto Opt-out Handling</p>
-                      <p className="text-sm text-muted-foreground">Automatically process STOP replies</p>
+                      <p className="text-sm text-muted-foreground">
+                        Automatically process STOP replies
+                      </p>
                     </div>
                     <Switch checked />
                   </div>
                   <div className="flex items-center justify-between">
                     <div>
                       <p className="font-medium">Delivery Reports</p>
-                      <p className="text-sm text-muted-foreground">Track message delivery status</p>
+                      <p className="text-sm text-muted-foreground">
+                        Track message delivery status
+                      </p>
                     </div>
                     <Switch checked />
                   </div>
                   <div className="flex items-center justify-between">
                     <div>
                       <p className="font-medium">Rate Limiting</p>
-                      <p className="text-sm text-muted-foreground">Limit messages per user per day</p>
+                      <p className="text-sm text-muted-foreground">
+                        Limit messages per user per day
+                      </p>
                     </div>
                     <div className="flex items-center gap-2">
                       <Input type="number" defaultValue="3" className="w-16" />
