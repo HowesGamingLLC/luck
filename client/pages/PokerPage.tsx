@@ -262,11 +262,11 @@ export default function PokerPage() {
     spades: { symbol: "♠", color: "text-black", icon: Spade },
   };
 
-  const currentTable = selectedTable
+  const selectedTableData = selectedTable
     ? pokerTables.find((t) => t.id === selectedTable)
     : null;
-  const currentPot = currentTable?.pot || 0;
-  const minimumBet = currentTable?.blinds.big || 2;
+  const currentPot = selectedTableData?.pot || 0;
+  const minimumBet = selectedTableData?.blinds.big || 2;
   const callAmount =
     Math.max(...players.map((p) => p.currentBet)) -
     (players[0]?.currentBet || 0);
