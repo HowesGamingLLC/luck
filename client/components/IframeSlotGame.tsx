@@ -511,7 +511,10 @@ export function IframeSlotGame({
             ) : (
               <ExternalLink className="h-4 w-4 mr-2" />
             )}
-            Play {mode === 'demo' ? 'Demo' : currency}
+            {(game.providerId === 'freeslotsgames' || game.providerId === 'idevgames')
+              ? 'Play Free'
+              : `Play ${mode === 'demo' ? 'Demo' : currency}`
+            }
           </Button>
           
           {mode === 'real' && (
