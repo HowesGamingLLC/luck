@@ -1,6 +1,8 @@
 import { RequestHandler } from "express";
 import { BGamingProvider } from "./slotProviders/bgaming";
 import { PragmaticPlayProvider } from "./slotProviders/pragmaticPlay";
+import { FreeSlotsGamesProvider } from "./slotProviders/freeSlotsGames";
+import { IdevGamesProvider } from "./slotProviders/idevGames";
 import { BaseSlotProvider, GameLaunchParams, ProviderGameListParams } from "../../shared/slotProviders";
 import { testSlotProviders, validateSweepstakesCompliance } from "../utils/testSlotProviders";
 
