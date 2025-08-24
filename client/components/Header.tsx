@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { Link, useLocation } from "react-router-dom";
+import { Link, useLocation, useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import {
   DropdownMenu,
@@ -11,6 +11,7 @@ import {
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Badge } from "@/components/ui/badge";
 import { Switch } from "@/components/ui/switch";
+import { useAuth } from "@/contexts/AuthContext";
 import {
   useCurrency,
   CurrencyType,
@@ -31,6 +32,11 @@ import {
   Coins,
   Gem,
   RotateCcw,
+  Shield,
+  BarChart3,
+  DollarSign,
+  Crown,
+  Home,
 } from "lucide-react";
 
 export function Header() {
