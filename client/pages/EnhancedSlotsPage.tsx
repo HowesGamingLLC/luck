@@ -310,15 +310,23 @@ export default function EnhancedSlotsPage() {
               Real slot games from BGaming and Pragmatic Play
             </p>
           </div>
-          <Button
-            variant="outline"
-            size="sm"
-            onClick={loadGames}
-            disabled={isLoading}
-          >
-            <RefreshCw className={cn("h-4 w-4 mr-2", isLoading && "animate-spin")} />
-            Refresh
-          </Button>
+          <div className="flex gap-2">
+            <Link to="/games/slots/docs">
+              <Button variant="outline" size="sm">
+                <Globe className="h-4 w-4 mr-2" />
+                API Docs
+              </Button>
+            </Link>
+            <Button
+              variant="outline"
+              size="sm"
+              onClick={loadGames}
+              disabled={isLoading}
+            >
+              <RefreshCw className={cn("h-4 w-4 mr-2", isLoading && "animate-spin")} />
+              Refresh
+            </Button>
+          </div>
         </div>
 
         {/* Player Stats */}
