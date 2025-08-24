@@ -258,16 +258,34 @@ export function SlotMachine({
     if (winResult.amount > 0) {
       setLastWin(winResult);
 
-      // Check for jackpot eligibility
-      const jackpotType = checkJackpotEligibility(newResults.flat(), theme.name);
+      // Add winnings to user balance
+      updateBalance(
+        currency,
+        winResult.amount,
+        `Slot win - ${theme.name}`,
+        'win'
+      );
+
+      // Check for jackpot eligibility (only for SC for real jackpots)
+      const jackpotType = currency === CurrencyType.SC ? checkJackpotEligibility(newResults.flat(), theme.name) : null;
       if (jackpotType) {
-        const jackpotAmounts = { mini: 500, minor: 2000, major: 10000, mega: 50000 };
+        // Scale jackpot amounts for SC (much smaller but still exciting)
+        const jackpotAmounts = { mini: 5, minor: 10, major: 25, mega: 50 };
         const jackpotAmount = jackpotAmounts[jackpotType as keyof typeof jackpotAmounts];
         const jackpotWinData = triggerJackpotWin(jackpotAmount, jackpotType);
         setJackpotWin(jackpotWinData);
-        onWin?.(jackpotAmount, newResults.flat());
+
+        // Add additional jackpot winnings
+        updateBalance(
+          currency,
+          jackpotAmount,
+          `${jackpotType} Jackpot - ${theme.name}`,
+          'win'
+        );
+
+        onWin?.(winResult.amount + jackpotAmount, newResults.flat(), currency);
       } else {
-        onWin?.(winResult.amount, newResults.flat());
+        onWin?.(winResult.amount, newResults.flat(), currency);
       }
 
       if (soundEnabled) {
