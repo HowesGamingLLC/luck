@@ -201,8 +201,23 @@ export function SlotMachine({
   const spin = async () => {
     if (isSpinning || disabled) return;
 
+    // Check if user can afford the bet
+    if (!canAffordWager(currency, betAmount)) {
+      console.log(`Insufficient ${currency} balance for bet`);
+      return;
+    }
+
     setIsSpinning(true);
     setLastWin(null);
+
+    // Deduct bet amount
+    updateBalance(
+      currency,
+      -betAmount,
+      `Slot bet - ${theme.name}`,
+      'wager'
+    );
+
     onSpin?.();
     setSpinCount(prev => prev + 1);
 
