@@ -477,9 +477,17 @@ export function SlotMachine({
 
         {/* Last Win Display */}
         {lastWin && (
-          <div className="text-center p-3 bg-gradient-to-r from-gold/20 to-gold/10 border border-gold/30 rounded-lg">
-            <div className="text-lg font-bold text-gold">
-              🎉 YOU WON ${lastWin.amount}! 🎉
+          <div className={cn(
+            "text-center p-3 bg-gradient-to-r border rounded-lg",
+            currency === CurrencyType.SC
+              ? "from-teal/20 to-teal/10 border-teal/30"
+              : "from-gold/20 to-gold/10 border-gold/30"
+          )}>
+            <div className={cn(
+              "text-lg font-bold",
+              currency === CurrencyType.SC ? "text-teal" : "text-gold"
+            )}>
+              🎉 YOU WON {formatCurrency(lastWin.amount, currency)}! 🎉
             </div>
             <div className="text-sm text-muted-foreground">
               {lastWin.lines.length} winning line{lastWin.lines.length !== 1 ? 's' : ''}
