@@ -11,6 +11,7 @@ import { Badge } from "@/components/ui/badge";
 import { Progress } from "@/components/ui/progress";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { useCurrency, CurrencyType } from "@/contexts/CurrencyContext";
+import { CurrencySelector } from "@/components/CurrencySelector";
 import {
   Spade,
   Users,
@@ -949,29 +950,14 @@ export default function PokerPage() {
                   <p className="text-muted-foreground mb-4">
                     Choose from Texas Hold'em cash games or tournaments
                   </p>
-                  <div className="flex items-center gap-2 justify-center">
-                    <Button
-                      variant={
-                        selectedCurrency === CurrencyType.GC
-                          ? "default"
-                          : "outline"
-                      }
-                      onClick={() => setSelectedCurrency(CurrencyType.GC)}
-                    >
-                      <Coins className="h-4 w-4 mr-2 text-gold" />
-                      Play with GC
-                    </Button>
-                    <Button
-                      variant={
-                        selectedCurrency === CurrencyType.SC
-                          ? "default"
-                          : "outline"
-                      }
-                      onClick={() => setSelectedCurrency(CurrencyType.SC)}
-                    >
-                      <Gem className="h-4 w-4 mr-2 text-teal" />
-                      Play with SC
-                    </Button>
+                  <div className="flex justify-center">
+                    <CurrencySelector
+                      selectedCurrency={selectedCurrency}
+                      onCurrencyChange={setSelectedCurrency}
+                      variant="inline"
+                      showBalance={false}
+                      className="max-w-md"
+                    />
                   </div>
                 </CardContent>
               </Card>
