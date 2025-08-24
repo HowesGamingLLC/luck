@@ -109,7 +109,7 @@ export default function Register() {
         <Card className="glass">
           <CardHeader className="text-center">
             <CardTitle className="text-2xl font-display gradient-text">
-              Join McLuck Casino
+              Join CoinKrazy.com Casino
             </CardTitle>
             <CardDescription>
               Create your account and start playing

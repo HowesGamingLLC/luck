@@ -52,7 +52,7 @@ export function WelcomeBonus() {
             <Gift className="h-8 w-8 text-white" />
           </div>
           <CardTitle className="text-2xl font-bold gradient-text">
-            Welcome to McLuck! 🎉
+            Welcome to CoinKrazy.com! 🎉
           </CardTitle>
           <CardDescription className="text-lg">
             Claim your exclusive new player bonus!

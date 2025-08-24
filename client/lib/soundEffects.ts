@@ -1,4 +1,4 @@
-// Sound Effects Utility for McLuck Casino Games
+// Sound Effects Utility for CoinKrazy.com Casino Games
 // In a production app, these would trigger actual audio files
 
 export enum SoundType {
@@ -211,5 +211,5 @@ export const playJackpotSound = () => soundManager.play(SoundType.JACKPOT);
 // Initialize background music (if enabled)
 export const initializeAudio = () => {
   // In a real app, this would set up the audio context and preload sounds
-  console.log("🎵 Audio system initialized for McLuck Casino");
+  console.log("🎵 Audio system initialized for CoinKrazy.com Casino");
 };
