@@ -66,7 +66,7 @@ import {
   FileText,
   Target,
   TrendingUp,
-  User,
+  User as UserIcon,
   Database,
   Globe,
   Zap,
