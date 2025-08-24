@@ -40,6 +40,7 @@ import {
   Calendar,
   Info,
   ExternalLink,
+  ShoppingCart,
 } from "lucide-react";
 
 interface WithdrawalRequest {
