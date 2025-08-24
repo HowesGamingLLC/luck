@@ -384,12 +384,12 @@ export function SlotMachine({
           </div>
           {lastWin && (
             <Badge
-              className={
+              className={cn(
+                "animate-pulse",
                 currency === CurrencyType.SC
                   ? "bg-teal text-white"
                   : "bg-gold text-black"
-              }
-              animate-pulse
+              )}
             >
               WIN! +{formatCurrency(lastWin.amount, currency)}
             </Badge>
