@@ -168,6 +168,9 @@ export default function WalletPage() {
   const [searchQuery, setSearchQuery] = useState("");
   const [filterType, setFilterType] = useState("all");
 
+  const { user, getTransactionHistory } = useCurrency();
+  const MIN_WITHDRAWAL_SC = 100;
+
   const getTransactionIcon = (type: string) => {
     switch (type) {
       case "withdrawal":
