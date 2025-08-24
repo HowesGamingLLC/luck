@@ -135,15 +135,35 @@ export default function Withdraw() {
   };
 
   const canWithdraw = () => {
-    if (!user) return { canWithdraw: false, reason: "Not logged in" };
-    if (user.kycStatus !== "approved")
-      return { canWithdraw: false, reason: "KYC verification required" };
-    if (availableBalance < minWithdrawal)
+    if (!user) return {
+      canWithdraw: false,
+      reason: "Not logged in",
+      details: "Please log in to your account to request withdrawals."
+    };
+
+    if (user.kycStatus !== "approved") {
+      const kycMessage = user.kycStatus === "pending"
+        ? "Your KYC verification is being reviewed. Please wait for approval."
+        : user.kycStatus === "rejected"
+        ? "Your KYC verification was rejected. Please contact support."
+        : "Complete identity verification to enable withdrawals.";
+
       return {
         canWithdraw: false,
-        reason: `Minimum withdrawal is $${minWithdrawal}`,
+        reason: "KYC verification required",
+        details: kycMessage
       };
-    return { canWithdraw: true, reason: "" };
+    }
+
+    if (availableBalance < minWithdrawal) {
+      return {
+        canWithdraw: false,
+        reason: `Minimum withdrawal is ${minWithdrawal} SC`,
+        details: `You need at least ${minWithdrawal} Sweep Coins to request a withdrawal. You currently have ${availableBalance.toFixed(2)} SC.`
+      };
+    }
+
+    return { canWithdraw: true, reason: "", details: "" };
   };
 
   const validateWithdrawal = (): string | null => {
