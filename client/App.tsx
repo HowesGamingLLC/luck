@@ -84,6 +84,22 @@ function App() {
                       </AuthGuard>
                     }
                   />
+                  <Route
+                    path="/admin"
+                    element={
+                      <AuthGuard requireAdmin={true}>
+                        <AdminPanel />
+                      </AuthGuard>
+                    }
+                  />
+                  <Route
+                    path="/admin/*"
+                    element={
+                      <AuthGuard requireAdmin={true}>
+                        <AdminPanel />
+                      </AuthGuard>
+                    }
+                  />
                   {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
                   <Route path="*" element={<NotFound />} />
                 </Routes>
