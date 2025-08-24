@@ -23,6 +23,13 @@ import {
   getActiveSessions,
   checkProviderHealth,
 } from "./routes/slots";
+import {
+  getThumbnail,
+  preloadThumbnails,
+  getCacheStats,
+  clearCache,
+  serveThumbnail,
+} from "./routes/thumbnails";
 
 export function createServer() {
   const app = express();
