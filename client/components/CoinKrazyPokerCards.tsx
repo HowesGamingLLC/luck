@@ -15,12 +15,12 @@ interface CoinKrazyCardProps {
   onClick?: () => void;
 }
 
-export function CoinKrazyCard({ 
-  card, 
-  isHidden = false, 
-  size = "md", 
-  className, 
-  onClick 
+export function CoinKrazyCard({
+  card,
+  isHidden = false,
+  size = "md",
+  className,
+  onClick,
 }: CoinKrazyCardProps) {
   const sizeClasses = {
     sm: "w-12 h-16",
@@ -33,20 +33,33 @@ export function CoinKrazyCard({
     const iconProps = { className: "w-4 h-4" };
     switch (suit) {
       case "hearts":
-        return <Heart {...iconProps} className="w-4 h-4 text-red-500 fill-red-500" />;
+        return (
+          <Heart {...iconProps} className="w-4 h-4 text-red-500 fill-red-500" />
+        );
       case "diamonds":
-        return <Diamond {...iconProps} className="w-4 h-4 text-red-500 fill-red-500" />;
+        return (
+          <Diamond
+            {...iconProps}
+            className="w-4 h-4 text-red-500 fill-red-500"
+          />
+        );
       case "clubs":
-        return <Club {...iconProps} className="w-4 h-4 text-black fill-black" />;
+        return (
+          <Club {...iconProps} className="w-4 h-4 text-black fill-black" />
+        );
       case "spades":
-        return <Spade {...iconProps} className="w-4 h-4 text-black fill-black" />;
+        return (
+          <Spade {...iconProps} className="w-4 h-4 text-black fill-black" />
+        );
       default:
         return null;
     }
   };
 
   const getSuitColor = (suit: string) => {
-    return suit === "hearts" || suit === "diamonds" ? "text-red-500" : "text-black";
+    return suit === "hearts" || suit === "diamonds"
+      ? "text-red-500"
+      : "text-black";
   };
 
   if (isHidden) {
@@ -56,7 +69,7 @@ export function CoinKrazyCard({
           sizeClasses[size],
           "relative bg-gradient-to-br from-purple-600 via-purple-700 to-purple-800 rounded-lg border-2 border-purple-500 shadow-lg cursor-pointer transition-all duration-200 hover:scale-105",
           "flex items-center justify-center overflow-hidden",
-          className
+          className,
         )}
         onClick={onClick}
       >
@@ -75,7 +88,7 @@ export function CoinKrazyCard({
             KRAZY
           </div>
         </div>
-        
+
         {/* Decorative pattern */}
         <div className="absolute inset-0 opacity-20">
           <div className="absolute top-1 left-1 w-2 h-2 bg-gold/30 rounded-full" />
@@ -93,22 +106,25 @@ export function CoinKrazyCard({
         sizeClasses[size],
         "relative bg-white rounded-lg border-2 border-gray-300 shadow-lg cursor-pointer transition-all duration-200 hover:scale-105",
         "flex flex-col items-center justify-between p-1 overflow-hidden",
-        className
+        className,
       )}
       onClick={onClick}
     >
       {/* CoinKrazy.com subtle branding */}
       <div className="absolute top-0 left-0 right-0 h-1 bg-gradient-to-r from-purple to-gold opacity-60" />
       <div className="absolute bottom-0 left-0 right-0 h-1 bg-gradient-to-r from-gold to-purple opacity-60" />
-      
+
       {/* Top left rank and suit */}
       <div className="absolute top-1 left-1 text-center">
-        <div className={cn("text-xs font-bold leading-none", getSuitColor(card.suit))}>
+        <div
+          className={cn(
+            "text-xs font-bold leading-none",
+            getSuitColor(card.suit),
+          )}
+        >
           {card.rank}
         </div>
-        <div className="flex justify-center">
-          {getSuitIcon(card.suit)}
-        </div>
+        <div className="flex justify-center">{getSuitIcon(card.suit)}</div>
       </div>
 
       {/* Center suit (large) */}
@@ -120,12 +136,15 @@ export function CoinKrazyCard({
 
       {/* Bottom right rank and suit (rotated) */}
       <div className="absolute bottom-1 right-1 text-center transform rotate-180">
-        <div className={cn("text-xs font-bold leading-none", getSuitColor(card.suit))}>
+        <div
+          className={cn(
+            "text-xs font-bold leading-none",
+            getSuitColor(card.suit),
+          )}
+        >
           {card.rank}
         </div>
-        <div className="flex justify-center">
-          {getSuitIcon(card.suit)}
-        </div>
+        <div className="flex justify-center">{getSuitIcon(card.suit)}</div>
       </div>
 
       {/* CoinKrazy.com watermark */}
@@ -146,12 +165,12 @@ interface CoinKrazyHandProps {
   spacing?: "tight" | "normal" | "wide";
 }
 
-export function CoinKrazyHand({ 
-  cards, 
-  hiddenCards = 0, 
-  size = "md", 
+export function CoinKrazyHand({
+  cards,
+  hiddenCards = 0,
+  size = "md",
   className,
-  spacing = "normal"
+  spacing = "normal",
 }: CoinKrazyHandProps) {
   const spacingClasses = {
     tight: "-space-x-4",
@@ -160,16 +179,26 @@ export function CoinKrazyHand({
   };
 
   const allCards = [
-    ...Array(hiddenCards).fill(null).map((_, i) => ({ isHidden: true, id: `hidden-${i}` })),
-    ...cards.map((card, i) => ({ ...card, isHidden: false, id: `card-${i}` }))
+    ...Array(hiddenCards)
+      .fill(null)
+      .map((_, i) => ({ isHidden: true, id: `hidden-${i}` })),
+    ...cards.map((card, i) => ({ ...card, isHidden: false, id: `card-${i}` })),
   ];
 
   return (
     <div className={cn("flex", spacingClasses[spacing], className)}>
       {allCards.map((card, index) => (
-        <div key={card.id} className="relative" style={{ zIndex: allCards.length - index }}>
+        <div
+          key={card.id}
+          className="relative"
+          style={{ zIndex: allCards.length - index }}
+        >
           {card.isHidden ? (
-            <CoinKrazyCard card={{ suit: "spades", rank: "A", value: 14 }} isHidden size={size} />
+            <CoinKrazyCard
+              card={{ suit: "spades", rank: "A", value: 14 }}
+              isHidden
+              size={size}
+            />
           ) : (
             <CoinKrazyCard card={card} size={size} />
           )}
@@ -186,11 +215,11 @@ interface CoinKrazyCommunityCardsProps {
   className?: string;
 }
 
-export function CoinKrazyCommunityCards({ 
-  cards, 
-  stage, 
-  size = "md", 
-  className 
+export function CoinKrazyCommunityCards({
+  cards,
+  stage,
+  size = "md",
+  className,
 }: CoinKrazyCommunityCardsProps) {
   const getVisibleCards = () => {
     switch (stage) {
@@ -215,28 +244,41 @@ export function CoinKrazyCommunityCards({
     <div className={cn("flex space-x-2 justify-center", className)}>
       {/* Visible cards */}
       {cards.slice(0, visibleCount).map((card, index) => (
-        <div key={`visible-${index}`} className="transform hover:scale-105 transition-transform">
+        <div
+          key={`visible-${index}`}
+          className="transform hover:scale-105 transition-transform"
+        >
           <CoinKrazyCard card={card} size={size} />
         </div>
       ))}
-      
+
       {/* Hidden/placeholder cards */}
-      {Array(hiddenCount).fill(null).map((_, index) => (
-        <div key={`hidden-${index}`} className="transform hover:scale-105 transition-transform">
-          <CoinKrazyCard 
-            card={{ suit: "spades", rank: "A", value: 14 }} 
-            isHidden 
-            size={size}
-          />
-        </div>
-      ))}
+      {Array(hiddenCount)
+        .fill(null)
+        .map((_, index) => (
+          <div
+            key={`hidden-${index}`}
+            className="transform hover:scale-105 transition-transform"
+          >
+            <CoinKrazyCard
+              card={{ suit: "spades", rank: "A", value: 14 }}
+              isHidden
+              size={size}
+            />
+          </div>
+        ))}
     </div>
   );
 }
 
 // Utility function to create a deck of CoinKrazy branded cards
 export function createCoinKrazyDeck(): PlayingCard[] {
-  const suits: PlayingCard["suit"][] = ["hearts", "diamonds", "clubs", "spades"];
+  const suits: PlayingCard["suit"][] = [
+    "hearts",
+    "diamonds",
+    "clubs",
+    "spades",
+  ];
   const ranks = [
     { rank: "A", value: 14 },
     { rank: "2", value: 2 },
@@ -254,7 +296,7 @@ export function createCoinKrazyDeck(): PlayingCard[] {
   ];
 
   const deck: PlayingCard[] = [];
-  suits.forEach(suit => {
+  suits.forEach((suit) => {
     ranks.forEach(({ rank, value }) => {
       deck.push({ suit, rank, value });
     });

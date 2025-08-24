@@ -57,13 +57,13 @@ import {
 import {
   CoinKrazyCard,
   CoinKrazyCommunityCards,
-  CoinKrazyHand
+  CoinKrazyHand,
 } from "./CoinKrazyPokerCards";
 import {
   CoinKrazyChip,
   CoinKrazyChipTotal,
   CoinKrazyBettingChips,
-  optimizeChipBreakdown
+  optimizeChipBreakdown,
 } from "./CoinKrazyPokerChips";
 
 export interface PlayingCard {
@@ -715,14 +715,27 @@ export function HoldemGame({
         {/* CoinKrazy.com Background Pattern */}
         <div className="absolute inset-0 opacity-10">
           <div className="absolute top-10 left-10 w-20 h-20 bg-gold rounded-full animate-pulse" />
-          <div className="absolute top-32 right-20 w-16 h-16 bg-purple rounded-full animate-pulse" style={{ animationDelay: '1s' }} />
-          <div className="absolute bottom-20 left-32 w-12 h-12 bg-teal rounded-full animate-pulse" style={{ animationDelay: '2s' }} />
-          <div className="absolute bottom-32 right-10 w-14 h-14 bg-gold rounded-full animate-pulse" style={{ animationDelay: '0.5s' }} />
+          <div
+            className="absolute top-32 right-20 w-16 h-16 bg-purple rounded-full animate-pulse"
+            style={{ animationDelay: "1s" }}
+          />
+          <div
+            className="absolute bottom-20 left-32 w-12 h-12 bg-teal rounded-full animate-pulse"
+            style={{ animationDelay: "2s" }}
+          />
+          <div
+            className="absolute bottom-32 right-10 w-14 h-14 bg-gold rounded-full animate-pulse"
+            style={{ animationDelay: "0.5s" }}
+          />
         </div>
         {/* Header */}
         <div className="flex items-center justify-between mb-6 bg-black/20 backdrop-blur-sm rounded-lg p-4 border border-gold/30">
           <div className="flex items-center gap-4">
-            <Button variant="outline" onClick={onLeave} className="bg-white/10 border-gold/30">
+            <Button
+              variant="outline"
+              onClick={onLeave}
+              className="bg-white/10 border-gold/30"
+            >
               Leave Table
             </Button>
             <div>
@@ -861,7 +874,9 @@ export function HoldemGame({
                       <div className="flex justify-between items-center">
                         <span className="text-gray-600">Bet:</span>
                         <div className="flex items-center gap-1">
-                          {player.currentBet > 0 && <CoinKrazyChip value={25} size="sm" />}
+                          {player.currentBet > 0 && (
+                            <CoinKrazyChip value={25} size="sm" />
+                          )}
                           <span className="font-bold text-blue-600">
                             {player.currentBet}
                           </span>

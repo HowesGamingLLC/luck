@@ -21,7 +21,11 @@ import {
 } from "@/components/ui/dialog";
 import { Alert, AlertDescription } from "@/components/ui/alert";
 import { useAuth } from "@/contexts/AuthContext";
-import { useCurrency, formatCurrency, CurrencyType } from "@/contexts/CurrencyContext";
+import {
+  useCurrency,
+  formatCurrency,
+  CurrencyType,
+} from "@/contexts/CurrencyContext";
 import {
   Trophy,
   Clock,
@@ -171,51 +175,67 @@ const mockTournaments: Tournament[] = [
 export default function TournamentsPage() {
   const { user } = useAuth();
   const { canAffordWager } = useCurrency();
-  const [selectedTournament, setSelectedTournament] = useState<Tournament | null>(null);
+  const [selectedTournament, setSelectedTournament] =
+    useState<Tournament | null>(null);
   const [tournaments, setTournaments] = useState<Tournament[]>(mockTournaments);
   const [selectedType, setSelectedType] = useState<string>("all");
   const [selectedGame, setSelectedGame] = useState<string>("all");
 
   const getGameIcon = (gameType: string) => {
     switch (gameType) {
-      case "poker": return <Spade className="h-4 w-4" />;
-      case "bingo": return <Target className="h-4 w-4" />;
-      case "slots": return <Zap className="h-4 w-4" />;
-      case "mixed": return <Sparkles className="h-4 w-4" />;
-      default: return <Gamepad2 className="h-4 w-4" />;
+      case "poker":
+        return <Spade className="h-4 w-4" />;
+      case "bingo":
+        return <Target className="h-4 w-4" />;
+      case "slots":
+        return <Zap className="h-4 w-4" />;
+      case "mixed":
+        return <Sparkles className="h-4 w-4" />;
+      default:
+        return <Gamepad2 className="h-4 w-4" />;
     }
   };
 
   const getStatusColor = (status: string) => {
     switch (status) {
-      case "registering": return "bg-green-500";
-      case "starting": return "bg-yellow-500";
-      case "playing": return "bg-blue-500";
-      case "finished": return "bg-gray-500";
-      default: return "bg-gray-500";
+      case "registering":
+        return "bg-green-500";
+      case "starting":
+        return "bg-yellow-500";
+      case "playing":
+        return "bg-blue-500";
+      case "finished":
+        return "bg-gray-500";
+      default:
+        return "bg-gray-500";
     }
   };
 
   const getTypeIcon = (type: string) => {
     switch (type) {
-      case "freeroll": return <Star className="h-4 w-4 text-yellow-500" />;
-      case "sit-n-go": return <Play className="h-4 w-4 text-blue-500" />;
-      case "scheduled": return <Calendar className="h-4 w-4 text-purple-500" />;
-      case "satellite": return <Crown className="h-4 w-4 text-gold" />;
-      default: return <Trophy className="h-4 w-4" />;
+      case "freeroll":
+        return <Star className="h-4 w-4 text-yellow-500" />;
+      case "sit-n-go":
+        return <Play className="h-4 w-4 text-blue-500" />;
+      case "scheduled":
+        return <Calendar className="h-4 w-4 text-purple-500" />;
+      case "satellite":
+        return <Crown className="h-4 w-4 text-gold" />;
+      default:
+        return <Trophy className="h-4 w-4" />;
     }
   };
 
   const formatTimeToStart = (startTime: Date) => {
     const now = new Date();
     const diff = startTime.getTime() - now.getTime();
-    
+
     if (diff <= 0) return "Starting now";
-    
+
     const minutes = Math.floor(diff / 60000);
     const hours = Math.floor(minutes / 60);
     const days = Math.floor(hours / 24);
-    
+
     if (days > 0) return `${days}d ${hours % 24}h`;
     if (hours > 0) return `${hours}h ${minutes % 60}m`;
     return `${minutes}m`;
@@ -225,20 +245,22 @@ export default function TournamentsPage() {
     if (!user) return false;
     if (tournament.status !== "registering") return false;
     if (tournament.participants.length >= tournament.maxPlayers) return false;
-    
+
     if (tournament.buyIn.gc > 0) {
       return canAffordWager(CurrencyType.GC, tournament.buyIn.gc);
     }
     if (tournament.buyIn.sc > 0) {
       return canAffordWager(CurrencyType.SC, tournament.buyIn.sc);
     }
-    
+
     return true;
   };
 
-  const filteredTournaments = tournaments.filter(tournament => {
-    if (selectedType !== "all" && tournament.type !== selectedType) return false;
-    if (selectedGame !== "all" && tournament.gameType !== selectedGame) return false;
+  const filteredTournaments = tournaments.filter((tournament) => {
+    if (selectedType !== "all" && tournament.type !== selectedType)
+      return false;
+    if (selectedGame !== "all" && tournament.gameType !== selectedGame)
+      return false;
     return true;
   });
 
@@ -258,7 +280,7 @@ export default function TournamentsPage() {
             CoinKrazy Tournaments
           </h1>
           <p className="text-xl text-muted-foreground max-w-2xl mx-auto">
-            Compete against players worldwide in our premium tournament series. 
+            Compete against players worldwide in our premium tournament series.
             Win big prizes and climb the leaderboards!
           </p>
         </div>
@@ -269,10 +291,12 @@ export default function TournamentsPage() {
             <CardContent className="p-6 text-center">
               <Crown className="h-8 w-8 text-gold mx-auto mb-2" />
               <div className="text-2xl font-bold text-gold">1,247</div>
-              <div className="text-sm text-muted-foreground">Active Players</div>
+              <div className="text-sm text-muted-foreground">
+                Active Players
+              </div>
             </CardContent>
           </Card>
-          
+
           <Card className="glass border-purple/30">
             <CardContent className="p-6 text-center">
               <Trophy className="h-8 w-8 text-purple mx-auto mb-2" />
@@ -280,7 +304,7 @@ export default function TournamentsPage() {
               <div className="text-sm text-muted-foreground">Running Now</div>
             </CardContent>
           </Card>
-          
+
           <Card className="glass border-teal/30">
             <CardContent className="p-6 text-center">
               <Coins className="h-8 w-8 text-gold mx-auto mb-2" />
@@ -288,7 +312,7 @@ export default function TournamentsPage() {
               <div className="text-sm text-muted-foreground">Total Prizes</div>
             </CardContent>
           </Card>
-          
+
           <Card className="glass border-green/30">
             <CardContent className="p-6 text-center">
               <TrendingUp className="h-8 w-8 text-green-500 mx-auto mb-2" />
@@ -304,7 +328,9 @@ export default function TournamentsPage() {
             <CardContent className="p-6">
               <div className="flex flex-wrap gap-4 items-center">
                 <div>
-                  <label className="text-sm font-medium mb-2 block">Tournament Type</label>
+                  <label className="text-sm font-medium mb-2 block">
+                    Tournament Type
+                  </label>
                   <Tabs value={selectedType} onValueChange={setSelectedType}>
                     <TabsList>
                       <TabsTrigger value="all">All</TabsTrigger>
@@ -314,9 +340,11 @@ export default function TournamentsPage() {
                     </TabsList>
                   </Tabs>
                 </div>
-                
+
                 <div>
-                  <label className="text-sm font-medium mb-2 block">Game Type</label>
+                  <label className="text-sm font-medium mb-2 block">
+                    Game Type
+                  </label>
                   <Tabs value={selectedGame} onValueChange={setSelectedGame}>
                     <TabsList>
                       <TabsTrigger value="all">All Games</TabsTrigger>
@@ -335,13 +363,18 @@ export default function TournamentsPage() {
         {/* Tournaments Grid */}
         <div className="grid grid-cols-1 lg:grid-cols-2 xl:grid-cols-3 gap-6">
           {filteredTournaments.map((tournament) => (
-            <Card key={tournament.id} className="glass hover:shadow-glow transition-all duration-300 border-border/50 hover:border-purple/50">
+            <Card
+              key={tournament.id}
+              className="glass hover:shadow-glow transition-all duration-300 border-border/50 hover:border-purple/50"
+            >
               <CardHeader className="pb-4">
                 <div className="flex items-start justify-between">
                   <div className="flex items-center gap-2">
                     {getGameIcon(tournament.gameType)}
                     <div>
-                      <CardTitle className="text-lg">{tournament.name}</CardTitle>
+                      <CardTitle className="text-lg">
+                        {tournament.name}
+                      </CardTitle>
                       <div className="flex items-center gap-2 mt-1">
                         {getTypeIcon(tournament.type)}
                         <span className="text-sm text-muted-foreground capitalize">
@@ -350,8 +383,10 @@ export default function TournamentsPage() {
                       </div>
                     </div>
                   </div>
-                  
-                  <Badge className={`${getStatusColor(tournament.status)} text-white`}>
+
+                  <Badge
+                    className={`${getStatusColor(tournament.status)} text-white`}
+                  >
                     {tournament.status}
                   </Badge>
                 </div>
@@ -382,7 +417,10 @@ export default function TournamentsPage() {
                   <span className="text-sm text-muted-foreground">Buy-in</span>
                   <div className="text-right">
                     {tournament.buyIn.gc === 0 && tournament.buyIn.sc === 0 ? (
-                      <Badge variant="secondary" className="bg-green-500/20 text-green-500 border-green-500/30">
+                      <Badge
+                        variant="secondary"
+                        className="bg-green-500/20 text-green-500 border-green-500/30"
+                      >
                         FREE
                       </Badge>
                     ) : (
@@ -417,8 +455,11 @@ export default function TournamentsPage() {
 
                 {/* Progress */}
                 <div>
-                  <Progress 
-                    value={(tournament.participants.length / tournament.maxPlayers) * 100} 
+                  <Progress
+                    value={
+                      (tournament.participants.length / tournament.maxPlayers) *
+                      100
+                    }
                     className="h-2"
                   />
                 </div>
@@ -427,14 +468,15 @@ export default function TournamentsPage() {
                 {tournament.startTime && (
                   <div className="flex items-center justify-between">
                     <span className="text-sm text-muted-foreground">
-                      {tournament.status === "registering" ? "Starts in" : "Started"}
+                      {tournament.status === "registering"
+                        ? "Starts in"
+                        : "Started"}
                     </span>
                     <div className="flex items-center gap-1 text-sm">
                       <Clock className="h-4 w-4 text-purple" />
-                      {tournament.status === "registering" 
+                      {tournament.status === "registering"
                         ? formatTimeToStart(tournament.startTime)
-                        : tournament.startTime.toLocaleTimeString()
-                      }
+                        : tournament.startTime.toLocaleTimeString()}
                     </div>
                   </div>
                 )}
@@ -444,12 +486,14 @@ export default function TournamentsPage() {
                   {tournament.status === "registering" ? (
                     <Dialog>
                       <DialogTrigger asChild>
-                        <Button 
+                        <Button
                           className="w-full btn-primary"
                           disabled={!canRegister(tournament)}
                           onClick={() => setSelectedTournament(tournament)}
                         >
-                          {canRegister(tournament) ? "Register Now" : "Cannot Register"}
+                          {canRegister(tournament)
+                            ? "Register Now"
+                            : "Cannot Register"}
                           <ArrowRight className="ml-2 h-4 w-4" />
                         </Button>
                       </DialogTrigger>
@@ -463,56 +507,70 @@ export default function TournamentsPage() {
                             Register for {selectedTournament?.name}
                           </DialogDescription>
                         </DialogHeader>
-                        
+
                         {selectedTournament && (
                           <div className="space-y-4">
                             <Alert>
                               <Info className="h-4 w-4" />
                               <AlertDescription>
-                                You are about to register for this tournament. 
+                                You are about to register for this tournament.
                                 The buy-in will be deducted from your balance.
                               </AlertDescription>
                             </Alert>
-                            
+
                             <div className="grid grid-cols-2 gap-4 text-sm">
                               <div>
-                                <span className="text-muted-foreground">Buy-in:</span>
+                                <span className="text-muted-foreground">
+                                  Buy-in:
+                                </span>
                                 <div className="font-medium">
-                                  {selectedTournament.buyIn.gc === 0 && selectedTournament.buyIn.sc === 0 
-                                    ? "FREE" 
-                                    : `${selectedTournament.buyIn.gc > 0 ? `${formatCurrency(selectedTournament.buyIn.gc, "GC")}` : ""} ${selectedTournament.buyIn.sc > 0 ? `${formatCurrency(selectedTournament.buyIn.sc, "SC")}` : ""}`
-                                  }
+                                  {selectedTournament.buyIn.gc === 0 &&
+                                  selectedTournament.buyIn.sc === 0
+                                    ? "FREE"
+                                    : `${selectedTournament.buyIn.gc > 0 ? `${formatCurrency(selectedTournament.buyIn.gc, "GC")}` : ""} ${selectedTournament.buyIn.sc > 0 ? `${formatCurrency(selectedTournament.buyIn.sc, "SC")}` : ""}`}
                                 </div>
                               </div>
                               <div>
-                                <span className="text-muted-foreground">Starting Chips:</span>
+                                <span className="text-muted-foreground">
+                                  Starting Chips:
+                                </span>
                                 <div className="font-medium">
-                                  {selectedTournament.structure.startingChips?.toLocaleString() || "N/A"}
+                                  {selectedTournament.structure.startingChips?.toLocaleString() ||
+                                    "N/A"}
                                 </div>
                               </div>
                               <div>
-                                <span className="text-muted-foreground">Level Duration:</span>
+                                <span className="text-muted-foreground">
+                                  Level Duration:
+                                </span>
                                 <div className="font-medium">
-                                  {selectedTournament.structure.levelDuration} minutes
+                                  {selectedTournament.structure.levelDuration}{" "}
+                                  minutes
                                 </div>
                               </div>
                               <div>
-                                <span className="text-muted-foreground">Late Registration:</span>
+                                <span className="text-muted-foreground">
+                                  Late Registration:
+                                </span>
                                 <div className="font-medium">
-                                  {selectedTournament.structure.lateRegistrationLevels} levels
+                                  {
+                                    selectedTournament.structure
+                                      .lateRegistrationLevels
+                                  }{" "}
+                                  levels
                                 </div>
                               </div>
                             </div>
-                            
+
                             <div className="flex gap-3">
-                              <Button 
-                                variant="outline" 
+                              <Button
+                                variant="outline"
                                 className="flex-1"
                                 onClick={() => setSelectedTournament(null)}
                               >
                                 Cancel
                               </Button>
-                              <Button 
+                              <Button
                                 className="flex-1 btn-primary"
                                 onClick={() => {
                                   handleRegister(selectedTournament);
@@ -555,7 +613,8 @@ export default function TournamentsPage() {
             <Trophy className="h-16 w-16 text-muted-foreground mx-auto mb-4" />
             <h3 className="text-xl font-semibold mb-2">No tournaments found</h3>
             <p className="text-muted-foreground">
-              Try adjusting your filters or check back later for new tournaments.
+              Try adjusting your filters or check back later for new
+              tournaments.
             </p>
           </div>
         )}

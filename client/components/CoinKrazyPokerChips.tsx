@@ -14,62 +14,65 @@ export const COINKRIZY_CHIP_VALUES: ChipValue[] = [
     value: 1,
     color: "bg-white border-gray-400 text-gray-800",
     label: "1",
-    icon: <Coins className="w-3 h-3" />
+    icon: <Coins className="w-3 h-3" />,
   },
   {
     value: 5,
     color: "bg-red-500 border-red-600 text-white",
     label: "5",
-    icon: <Star className="w-3 h-3" />
+    icon: <Star className="w-3 h-3" />,
   },
   {
     value: 10,
     color: "bg-blue-500 border-blue-600 text-white",
     label: "10",
-    icon: <Gem className="w-3 h-3" />
+    icon: <Gem className="w-3 h-3" />,
   },
   {
     value: 25,
     color: "bg-green-500 border-green-600 text-white",
     label: "25",
-    icon: <Zap className="w-3 h-3" />
+    icon: <Zap className="w-3 h-3" />,
   },
   {
     value: 50,
     color: "bg-orange-500 border-orange-600 text-white",
     label: "50",
-    icon: <Crown className="w-3 h-3" />
+    icon: <Crown className="w-3 h-3" />,
   },
   {
     value: 100,
     color: "bg-black border-gray-700 text-white",
     label: "100",
-    icon: <Trophy className="w-3 h-3" />
+    icon: <Trophy className="w-3 h-3" />,
   },
   {
     value: 500,
     color: "bg-purple-600 border-purple-700 text-white",
     label: "500",
-    icon: <Crown className="w-3 h-3" />
+    icon: <Crown className="w-3 h-3" />,
   },
   {
     value: 1000,
-    color: "bg-gradient-to-r from-yellow-400 to-yellow-600 border-yellow-500 text-black",
+    color:
+      "bg-gradient-to-r from-yellow-400 to-yellow-600 border-yellow-500 text-black",
     label: "1K",
-    icon: <Trophy className="w-3 h-3" />
+    icon: <Trophy className="w-3 h-3" />,
   },
   {
     value: 5000,
-    color: "bg-gradient-to-r from-pink-500 to-pink-700 border-pink-600 text-white",
+    color:
+      "bg-gradient-to-r from-pink-500 to-pink-700 border-pink-600 text-white",
     label: "5K",
-    icon: <Crown className="w-3 h-3" />
+    icon: <Crown className="w-3 h-3" />,
   },
   {
     value: 10000,
-    color: "bg-gradient-to-r from-purple-600 via-purple-700 to-indigo-800 border-purple-500 text-white",
+    color:
+      "bg-gradient-to-r from-purple-600 via-purple-700 to-indigo-800 border-purple-500 text-white",
     label: "10K",
-    icon: <Trophy className="w-3 h-3" />
-  }
+    icon: <Trophy className="w-3 h-3" />,
+  },
 ];
 
 interface CoinKrazyChipProps {
@@ -81,16 +84,18 @@ interface CoinKrazyChipProps {
   animated?: boolean;
 }
 
-export function CoinKrazyChip({ 
-  value, 
-  size = "md", 
-  count, 
-  className, 
+export function CoinKrazyChip({
+  value,
+  size = "md",
+  count,
+  className,
   onClick,
-  animated = false
+  animated = false,
 }: CoinKrazyChipProps) {
-  const chipData = COINKRIZY_CHIP_VALUES.find(chip => chip.value === value) || COINKRIZY_CHIP_VALUES[0];
-  
+  const chipData =
+    COINKRIZY_CHIP_VALUES.find((chip) => chip.value === value) ||
+    COINKRIZY_CHIP_VALUES[0];
+
   const sizeClasses = {
     sm: "w-8 h-8 text-xs",
     md: "w-12 h-12 text-sm",
@@ -116,35 +121,31 @@ export function CoinKrazyChip({
         ringSize[size],
         "ring-white/30",
         animated && "animate-pulse",
-        className
+        className,
       )}
       onClick={onClick}
     >
       {/* CoinKrazy.com branding ring */}
       <div className="absolute inset-0 rounded-full border-2 border-gold/40 animate-pulse" />
-      
+
       {/* Chip icon */}
-      <div className="mb-1">
-        {chipData.icon}
-      </div>
-      
+      <div className="mb-1">{chipData.icon}</div>
+
       {/* Chip value */}
-      <div className="font-black text-xs leading-none">
-        {chipData.label}
-      </div>
-      
+      <div className="font-black text-xs leading-none">{chipData.label}</div>
+
       {/* CoinKrazy.com micro branding */}
       <div className="absolute bottom-0 text-[6px] font-bold opacity-60">
         CK
       </div>
-      
+
       {/* Count badge */}
       {count && count > 1 && (
         <div className="absolute -top-2 -right-2 bg-red-500 text-white text-xs rounded-full w-5 h-5 flex items-center justify-center font-bold border-2 border-white">
           {count > 99 ? "99+" : count}
         </div>
       )}
-      
+
       {/* Highlight effect for high value chips */}
       {value >= 1000 && (
         <div className="absolute inset-0 rounded-full bg-gradient-to-br from-white/20 to-transparent pointer-events-none" />
@@ -162,16 +163,16 @@ interface CoinKrazyChipStackProps {
   stacked?: boolean;
 }
 
-export function CoinKrazyChipStack({ 
-  chips, 
-  size = "md", 
+export function CoinKrazyChipStack({
+  chips,
+  size = "md",
   maxVisible = 5,
   className,
   onClick,
-  stacked = true
+  stacked = true,
 }: CoinKrazyChipStackProps) {
   const sortedChips = chips
-    .filter(chip => chip.count > 0)
+    .filter((chip) => chip.count > 0)
     .sort((a, b) => b.value - a.value);
 
   if (!stacked) {
@@ -199,26 +200,28 @@ export function CoinKrazyChipStack({
             {/* Stack effect */}
             {stackHeight > 1 && (
               <div className="absolute inset-0">
-                {Array.from({ length: Math.min(stackHeight, 5) }).map((_, i) => (
-                  <div
-                    key={i}
-                    className="absolute"
-                    style={{
-                      bottom: `${i * 2}px`,
-                      left: `${i * 1}px`,
-                      zIndex: stackHeight - i,
-                    }}
-                  >
-                    <CoinKrazyChip
-                      value={chip.value}
-                      size={size}
-                      className={i > 0 ? "opacity-60" : ""}
-                    />
-                  </div>
-                ))}
+                {Array.from({ length: Math.min(stackHeight, 5) }).map(
+                  (_, i) => (
+                    <div
+                      key={i}
+                      className="absolute"
+                      style={{
+                        bottom: `${i * 2}px`,
+                        left: `${i * 1}px`,
+                        zIndex: stackHeight - i,
+                      }}
+                    >
+                      <CoinKrazyChip
+                        value={chip.value}
+                        size={size}
+                        className={i > 0 ? "opacity-60" : ""}
+                      />
+                    </div>
+                  ),
+                )}
               </div>
             )}
-            
+
             {/* Top chip */}
             <div
               style={{
@@ -238,7 +241,7 @@ export function CoinKrazyChipStack({
           </div>
         );
       })}
-      
+
       {sortedChips.length > maxVisible && (
         <div className={cn("text-muted-foreground text-sm font-medium ml-2")}>
           +{sortedChips.length - maxVisible} more
@@ -256,12 +259,12 @@ interface CoinKrazyChipTotalProps {
   animated?: boolean;
 }
 
-export function CoinKrazyChipTotal({ 
-  total, 
+export function CoinKrazyChipTotal({
+  total,
   currency = "GC",
-  size = "md", 
+  size = "md",
   className,
-  animated = false
+  animated = false,
 }: CoinKrazyChipTotalProps) {
   const sizeClasses = {
     sm: "text-sm px-2 py-1",
@@ -271,7 +274,10 @@ export function CoinKrazyChipTotal({
   };
 
   const currencyColor = currency === "GC" ? "text-gold" : "text-teal";
-  const currencyBg = currency === "GC" ? "bg-gold/10 border-gold/30" : "bg-teal/10 border-teal/30";
+  const currencyBg =
+    currency === "GC"
+      ? "bg-gold/10 border-gold/30"
+      : "bg-teal/10 border-teal/30";
 
   return (
     <div
@@ -281,7 +287,7 @@ export function CoinKrazyChipTotal({
         currencyBg,
         currencyColor,
         animated && "animate-pulse",
-        className
+        className,
       )}
     >
       {currency === "GC" ? (
@@ -291,11 +297,9 @@ export function CoinKrazyChipTotal({
       )}
       <span>{total.toLocaleString()}</span>
       <span className="text-xs opacity-75">{currency}</span>
-      
+
       {/* CoinKrazy.com branding */}
-      <div className="text-[8px] opacity-50 ml-1">
-        CoinKrazy.com
-      </div>
+      <div className="text-[8px] opacity-50 ml-1">CoinKrazy.com</div>
     </div>
   );
 }
@@ -313,28 +317,28 @@ export function CoinKrazyBettingChips({
   onChipClick,
   currentBet = 0,
   maxBet,
-  className
+  className,
 }: CoinKrazyBettingChipsProps) {
   const canBet = (chipValue: number) => {
     if (maxBet && currentBet + chipValue > maxBet) return false;
-    const chip = availableChips.find(c => c.value === chipValue);
+    const chip = availableChips.find((c) => c.value === chipValue);
     return chip && chip.count > 0;
   };
 
   return (
     <div className={cn("flex flex-wrap gap-2 justify-center", className)}>
-      {COINKRIZY_CHIP_VALUES.filter(chip => 
-        availableChips.some(ac => ac.value === chip.value && ac.count > 0)
+      {COINKRIZY_CHIP_VALUES.filter((chip) =>
+        availableChips.some((ac) => ac.value === chip.value && ac.count > 0),
       ).map((chip) => {
-        const available = availableChips.find(ac => ac.value === chip.value);
+        const available = availableChips.find((ac) => ac.value === chip.value);
         const disabled = !canBet(chip.value);
-        
+
         return (
           <div
             key={chip.value}
             className={cn(
               "relative transition-all duration-200",
-              disabled ? "opacity-50 cursor-not-allowed" : "hover:scale-110"
+              disabled ? "opacity-50 cursor-not-allowed" : "hover:scale-110",
             )}
           >
             <CoinKrazyChip
@@ -344,7 +348,7 @@ export function CoinKrazyBettingChips({
               onClick={() => !disabled && onChipClick(chip.value)}
               className={disabled ? "grayscale" : ""}
             />
-            
+
             {/* Betting action indicator */}
             {!disabled && (
               <div className="absolute -bottom-1 left-1/2 transform -translate-x-1/2">
@@ -359,13 +363,15 @@ export function CoinKrazyBettingChips({
 }
 
 // Helper function to convert chip count to optimal chip breakdown
-export function optimizeChipBreakdown(amount: number): { value: number; count: number }[] {
+export function optimizeChipBreakdown(
+  amount: number,
+): { value: number; count: number }[] {
   const breakdown: { value: number; count: number }[] = [];
   let remaining = amount;
 
-  const sortedValues = COINKRIZY_CHIP_VALUES
-    .map(chip => chip.value)
-    .sort((a, b) => b - a);
+  const sortedValues = COINKRIZY_CHIP_VALUES.map((chip) => chip.value).sort(
+    (a, b) => b - a,
+  );
 
   for (const value of sortedValues) {
     if (remaining >= value) {
@@ -375,10 +381,12 @@ export function optimizeChipBreakdown(amount: number): { value: number; count: n
     }
   }
 
-  return breakdown.filter(chip => chip.count > 0);
+  return breakdown.filter((chip) => chip.count > 0);
 }
 
 // Calculate total value from chip breakdown
-export function calculateChipTotal(chips: { value: number; count: number }[]): number {
-  return chips.reduce((total, chip) => total + (chip.value * chip.count), 0);
+export function calculateChipTotal(
+  chips: { value: number; count: number }[],
+): number {
+  return chips.reduce((total, chip) => total + chip.value * chip.count, 0);
 }

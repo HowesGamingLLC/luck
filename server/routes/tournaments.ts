@@ -20,11 +20,11 @@ export const getTournament: RequestHandler = (req, res) => {
   try {
     const { id } = req.params;
     const tournament = tournamentEngine.getTournament(id);
-    
+
     if (!tournament) {
       return res.status(404).json({ error: "Tournament not found" });
     }
-    
+
     res.json({ tournament });
   } catch (error) {
     console.error("Error getting tournament:", error);
@@ -37,24 +37,27 @@ export const registerForTournament: RequestHandler = (req, res) => {
   try {
     const { id } = req.params;
     const { playerId, playerName } = req.body;
-    
+
     if (!playerId || !playerName) {
       return res.status(400).json({ error: "Player ID and name are required" });
     }
-    
+
     const result = tournamentEngine.registerPlayer(id, {
       id: playerId,
       name: playerName,
       balance: { goldCoins: 0, sweepCoins: 0 },
       level: 1,
-      isBot: false
+      isBot: false,
     });
-    
+
     if (!result.success) {
       return res.status(400).json({ error: result.error });
     }
-    
-    res.json({ success: true, message: "Successfully registered for tournament" });
+
+    res.json({
+      success: true,
+      message: "Successfully registered for tournament",
+    });
   } catch (error) {
     console.error("Error registering for tournament:", error);
     res.status(500).json({ error: "Failed to register for tournament" });
@@ -66,18 +69,21 @@ export const unregisterFromTournament: RequestHandler = (req, res) => {
   try {
     const { id } = req.params;
     const { playerId } = req.body;
-    
+
     if (!playerId) {
       return res.status(400).json({ error: "Player ID is required" });
     }
-    
+
     const result = tournamentEngine.unregisterPlayer(id, playerId);
-    
+
     if (!result.success) {
       return res.status(400).json({ error: result.error });
     }
-    
-    res.json({ success: true, message: "Successfully unregistered from tournament" });
+
+    res.json({
+      success: true,
+      message: "Successfully unregistered from tournament",
+    });
   } catch (error) {
     console.error("Error unregistering from tournament:", error);
     res.status(500).json({ error: "Failed to unregister from tournament" });
@@ -89,11 +95,11 @@ export const getTournamentLeaderboard: RequestHandler = (req, res) => {
   try {
     const { id } = req.params;
     const leaderboard = tournamentEngine.getLeaderboard(id);
-    
+
     if (!leaderboard) {
       return res.status(404).json({ error: "Tournament not found" });
     }
-    
+
     res.json({ leaderboard });
   } catch (error) {
     console.error("Error getting leaderboard:", error);
@@ -105,12 +111,18 @@ export const getTournamentLeaderboard: RequestHandler = (req, res) => {
 export const createTournament: RequestHandler = (req, res) => {
   try {
     const tournamentData = req.body;
-    
+
     // Validate required fields
-    if (!tournamentData.name || !tournamentData.gameType || !tournamentData.type) {
-      return res.status(400).json({ error: "Name, game type, and tournament type are required" });
+    if (
+      !tournamentData.name ||
+      !tournamentData.gameType ||
+      !tournamentData.type
+    ) {
+      return res
+        .status(400)
+        .json({ error: "Name, game type, and tournament type are required" });
     }
-    
+
     const tournament = tournamentEngine.scheduleTournament(tournamentData);
     res.json({ tournament });
   } catch (error) {
@@ -124,11 +136,11 @@ export const startTournament: RequestHandler = (req, res) => {
   try {
     const { id } = req.params;
     const result = tournamentEngine.startTournament(id);
-    
+
     if (!result.success) {
       return res.status(400).json({ error: result.error });
     }
-    
+
     res.json({ success: true, message: "Tournament started successfully" });
   } catch (error) {
     console.error("Error starting tournament:", error);
@@ -141,11 +153,11 @@ export const cancelTournament: RequestHandler = (req, res) => {
   try {
     const { id } = req.params;
     const result = tournamentEngine.cancelTournament(id);
-    
+
     if (!result.success) {
       return res.status(400).json({ error: result.error });
     }
-    
+
     res.json({ success: true, message: "Tournament cancelled successfully" });
   } catch (error) {
     console.error("Error cancelling tournament:", error);
