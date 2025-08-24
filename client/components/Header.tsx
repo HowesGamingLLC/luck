@@ -47,20 +47,31 @@ export function Header() {
   const { user: authUser, isAuthenticated, isAdmin, logout } = useAuth();
   const { user: currencyUser, selectedCurrency, setSelectedCurrency } = useCurrency();
 
-  const navItems = [
-    { label: "Games", href: "/games", icon: Coins },
-    { label: "Leaderboard", href: "/leaderboard", icon: Trophy },
-    { label: "Referrals", href: "/referrals", icon: Users },
-    { label: "Help", href: "/help", icon: HelpCircle },
-  ];
+  const navItems = isAuthenticated
+    ? [
+        { label: "Dashboard", href: "/dashboard", icon: Home },
+        { label: "Games", href: "/games", icon: Coins },
+        { label: "Leaderboard", href: "/leaderboard", icon: Trophy },
+        { label: "Referrals", href: "/referrals", icon: Users },
+        { label: "Help", href: "/help", icon: HelpCircle },
+      ]
+    : [
+        { label: "Leaderboard", href: "/leaderboard", icon: Trophy },
+        { label: "Help", href: "/help", icon: HelpCircle },
+      ];
 
   const isActive = (path: string) => location.pathname === path;
 
   const getCurrentBalance = () => {
-    if (!user) return 0;
+    if (!currencyUser) return 0;
     return selectedCurrency === CurrencyType.GC
-      ? user.balance.goldCoins
-      : user.balance.sweepCoins;
+      ? currencyUser.balance.goldCoins
+      : currencyUser.balance.sweepCoins;
+  };
+
+  const handleLogout = () => {
+    logout();
+    navigate("/");
   };
 
   const toggleCurrency = () => {
