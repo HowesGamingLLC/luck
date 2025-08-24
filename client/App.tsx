@@ -6,8 +6,13 @@ import { TooltipProvider } from "@/components/ui/tooltip";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import { Layout } from "@/components/Layout";
+import { AuthProvider } from "@/contexts/AuthContext";
 import { CurrencyProvider } from "@/contexts/CurrencyContext";
+import { AuthGuard } from "@/components/AuthGuard";
 import Index from "./pages/Index";
+import Login from "./pages/Login";
+import Register from "./pages/Register";
+import Dashboard from "./pages/Dashboard";
 import Games from "./pages/Games";
 import Leaderboard from "./pages/Leaderboard";
 import Referrals from "./pages/Referrals";
@@ -22,28 +27,68 @@ const queryClient = new QueryClient();
 function App() {
   return (
     <QueryClientProvider client={queryClient}>
-      <CurrencyProvider>
-        <TooltipProvider>
-          <Toaster />
-          <Sonner />
-          <BrowserRouter>
-            <Layout>
-              <Routes>
-                <Route path="/" element={<Index />} />
-                <Route path="/games" element={<Games />} />
-                <Route path="/leaderboard" element={<Leaderboard />} />
-                <Route path="/referrals" element={<Referrals />} />
-                <Route path="/help" element={<Help />} />
-                <Route path="/profile" element={<Profile />} />
-                <Route path="/wallet" element={<WalletPage />} />
-                <Route path="/settings" element={<SettingsPage />} />
-                {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
-                <Route path="*" element={<NotFound />} />
-              </Routes>
-            </Layout>
-          </BrowserRouter>
-        </TooltipProvider>
-      </CurrencyProvider>
+      <AuthProvider>
+        <CurrencyProvider>
+          <TooltipProvider>
+            <Toaster />
+            <Sonner />
+            <BrowserRouter>
+              <Layout>
+                <Routes>
+                  <Route path="/" element={<Index />} />
+                  <Route path="/login" element={<Login />} />
+                  <Route path="/register" element={<Register />} />
+                  <Route
+                    path="/dashboard"
+                    element={
+                      <AuthGuard>
+                        <Dashboard />
+                      </AuthGuard>
+                    }
+                  />
+                  <Route
+                    path="/games"
+                    element={
+                      <AuthGuard>
+                        <Games />
+                      </AuthGuard>
+                    }
+                  />
+                  <Route path="/leaderboard" element={<Leaderboard />} />
+                  <Route path="/referrals" element={<Referrals />} />
+                  <Route path="/help" element={<Help />} />
+                  <Route
+                    path="/profile"
+                    element={
+                      <AuthGuard>
+                        <Profile />
+                      </AuthGuard>
+                    }
+                  />
+                  <Route
+                    path="/wallet"
+                    element={
+                      <AuthGuard>
+                        <WalletPage />
+                      </AuthGuard>
+                    }
+                  />
+                  <Route
+                    path="/settings"
+                    element={
+                      <AuthGuard>
+                        <SettingsPage />
+                      </AuthGuard>
+                    }
+                  />
+                  {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
+                  <Route path="*" element={<NotFound />} />
+                </Routes>
+              </Layout>
+            </BrowserRouter>
+          </TooltipProvider>
+        </CurrencyProvider>
+      </AuthProvider>
     </QueryClientProvider>
   );
 }
