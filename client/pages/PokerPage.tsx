@@ -12,6 +12,7 @@ import { Progress } from "@/components/ui/progress";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { useCurrency, CurrencyType } from "@/contexts/CurrencyContext";
 import { CurrencySelector } from "@/components/CurrencySelector";
+import { HoldemGame } from "@/components/HoldemGame";
 import {
   Spade,
   Users,
