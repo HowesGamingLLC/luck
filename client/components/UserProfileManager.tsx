@@ -86,6 +86,7 @@ import {
   RefreshCw,
   Upload,
   Camera,
+  Target,
 } from "lucide-react";
 
 interface UserProfile extends User {
