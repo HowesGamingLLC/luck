@@ -11,6 +11,15 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { Textarea } from "@/components/ui/textarea";
+import { Switch } from "@/components/ui/switch";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
 import {
   Table,
   TableBody,
@@ -41,6 +50,23 @@ import {
   XCircle,
   Clock,
   Package,
+  Mail,
+  MessageSquare,
+  Send,
+  Bell,
+  Smartphone,
+  Edit,
+  Plus,
+  Trash2,
+  Copy,
+  Calendar,
+  FileText,
+  Target,
+  TrendingUp,
+  User,
+  Database,
+  Globe,
+  Zap,
 } from "lucide-react";
 
 interface PlayerAnalytics {
@@ -58,6 +84,41 @@ interface PlayerAnalytics {
   riskLevel: "low" | "medium" | "high";
 }
 
+interface EmailTemplate {
+  id: string;
+  name: string;
+  subject: string;
+  content: string;
+  type: "welcome" | "promotional" | "notification" | "newsletter";
+  variables: string[];
+  created: Date;
+  lastUsed?: Date;
+  active: boolean;
+}
+
+interface Campaign {
+  id: string;
+  name: string;
+  type: "email" | "push" | "sms" | "newsletter";
+  template: string;
+  recipients: number;
+  sent: number;
+  delivered: number;
+  opened: number;
+  clicked: number;
+  status: "draft" | "scheduled" | "sending" | "completed" | "paused";
+  scheduledDate?: Date;
+  createdDate: Date;
+}
+
+interface MessageStats {
+  totalSent: number;
+  deliveryRate: number;
+  openRate: number;
+  clickRate: number;
+  unsubscribeRate: number;
+}
+
 export default function AdminPanel() {
   const [players, setPlayers] = useState<PlayerAnalytics[]>([]);
   const [filteredPlayers, setFilteredPlayers] = useState<PlayerAnalytics[]>([]);
@@ -68,8 +129,29 @@ export default function AdminPanel() {
   const [loading, setLoading] = useState(true);
   const { jackpots, recentWins } = useJackpot();
 
+  // Messaging states
+  const [emailTemplates, setEmailTemplates] = useState<EmailTemplate[]>([]);
+  const [campaigns, setCampaigns] = useState<Campaign[]>([]);
+  const [messageStats, setMessageStats] = useState<MessageStats>({
+    totalSent: 0,
+    deliveryRate: 0,
+    openRate: 0,
+    clickRate: 0,
+    unsubscribeRate: 0,
+  });
+  const [selectedTemplate, setSelectedTemplate] = useState<EmailTemplate | null>(null);
+  const [newTemplate, setNewTemplate] = useState({
+    name: "",
+    subject: "",
+    content: "",
+    type: "promotional" as EmailTemplate["type"],
+  });
+  const [isCreatingTemplate, setIsCreatingTemplate] = useState(false);
+  const [messagingActiveTab, setMessagingActiveTab] = useState("overview");
+
   useEffect(() => {
     loadPlayerData();
+    loadMessagingData();
   }, []);
 
   useEffect(() => {
@@ -175,6 +257,167 @@ export default function AdminPanel() {
   };
 
   const activeJackpotPool = jackpots.reduce((sum, j) => sum + j.amount, 0);
+
+  // Messaging functions
+  const loadMessagingData = async () => {
+    // Mock data for demonstration
+    const mockTemplates: EmailTemplate[] = [
+      {
+        id: "1",
+        name: "Welcome Email",
+        subject: "Welcome to CoinKrazy.com! 🎰",
+        content: `<h1>Welcome {{firstName}}!</h1>
+<p>Thank you for joining CoinKrazy.com. We've added <strong>{{welcomeBonus}} Gold Coins</strong> to your account to get you started!</p>
+<p>Explore our exciting games and claim your daily bonuses.</p>
+<p>Have fun and good luck!</p>`,
+        type: "welcome",
+        variables: ["firstName", "welcomeBonus"],
+        created: new Date("2024-01-15"),
+        lastUsed: new Date("2024-01-20"),
+        active: true,
+      },
+      {
+        id: "2",
+        name: "Daily Bonus Reminder",
+        subject: "Don't miss your daily bonus! 💰",
+        content: `<h2>Your daily bonus is waiting!</h2>
+<p>Hi {{firstName}},</p>
+<p>You haven't claimed your daily bonus today. Don't let those <strong>{{bonusAmount}} Gold Coins</strong> go to waste!</p>
+<p><a href="{{loginLink}}">Claim Now</a></p>`,
+        type: "notification",
+        variables: ["firstName", "bonusAmount", "loginLink"],
+        created: new Date("2024-01-10"),
+        lastUsed: new Date("2024-01-22"),
+        active: true,
+      },
+      {
+        id: "3",
+        name: "VIP Promotion",
+        subject: "Exclusive VIP Offer - 50% Bonus! 👑",
+        content: `<h1>Exclusive VIP Offer</h1>
+<p>Dear {{firstName}},</p>
+<p>As one of our valued VIP players, you're eligible for an exclusive <strong>50% bonus</strong> on your next Gold Coin purchase!</p>
+<p>Use code: <strong>{{promoCode}}</strong></p>
+<p>Valid until {{expiryDate}}</p>`,
+        type: "promotional",
+        variables: ["firstName", "promoCode", "expiryDate"],
+        created: new Date("2024-01-05"),
+        active: true,
+      },
+    ];
+
+    const mockCampaigns: Campaign[] = [
+      {
+        id: "1",
+        name: "January Welcome Campaign",
+        type: "email",
+        template: "Welcome Email",
+        recipients: 1250,
+        sent: 1250,
+        delivered: 1198,
+        opened: 456,
+        clicked: 89,
+        status: "completed",
+        createdDate: new Date("2024-01-15"),
+      },
+      {
+        id: "2",
+        name: "Daily Bonus Push",
+        type: "push",
+        template: "Daily Bonus Reminder",
+        recipients: 2340,
+        sent: 2340,
+        delivered: 2205,
+        opened: 892,
+        clicked: 234,
+        status: "completed",
+        createdDate: new Date("2024-01-20"),
+      },
+      {
+        id: "3",
+        name: "VIP Weekend Promo",
+        type: "email",
+        template: "VIP Promotion",
+        recipients: 156,
+        sent: 156,
+        delivered: 152,
+        opened: 98,
+        clicked: 34,
+        status: "completed",
+        createdDate: new Date("2024-01-22"),
+      },
+    ];
+
+    const mockStats: MessageStats = {
+      totalSent: 15650,
+      deliveryRate: 94.2,
+      openRate: 28.5,
+      clickRate: 6.8,
+      unsubscribeRate: 0.3,
+    };
+
+    setEmailTemplates(mockTemplates);
+    setCampaigns(mockCampaigns);
+    setMessageStats(mockStats);
+  };
+
+  const createTemplate = () => {
+    const template: EmailTemplate = {
+      id: Date.now().toString(),
+      name: newTemplate.name,
+      subject: newTemplate.subject,
+      content: newTemplate.content,
+      type: newTemplate.type,
+      variables: extractVariables(newTemplate.content),
+      created: new Date(),
+      active: true,
+    };
+
+    setEmailTemplates([...emailTemplates, template]);
+    setNewTemplate({ name: "", subject: "", content: "", type: "promotional" });
+    setIsCreatingTemplate(false);
+  };
+
+  const extractVariables = (content: string): string[] => {
+    const matches = content.match(/\{\{(\w+)\}\}/g);
+    return matches ? matches.map(match => match.slice(2, -2)) : [];
+  };
+
+  const duplicateTemplate = (template: EmailTemplate) => {
+    const duplicate: EmailTemplate = {
+      ...template,
+      id: Date.now().toString(),
+      name: `${template.name} (Copy)`,
+      created: new Date(),
+      lastUsed: undefined,
+    };
+    setEmailTemplates([...emailTemplates, duplicate]);
+  };
+
+  const deleteTemplate = (templateId: string) => {
+    setEmailTemplates(emailTemplates.filter(t => t.id !== templateId));
+  };
+
+  const sendTestEmail = (template: EmailTemplate) => {
+    alert(`Test email sent with template: ${template.name}`);
+  };
+
+  const createCampaign = (type: Campaign["type"], templateName: string) => {
+    const campaign: Campaign = {
+      id: Date.now().toString(),
+      name: `New ${type} Campaign`,
+      type,
+      template: templateName,
+      recipients: 0,
+      sent: 0,
+      delivered: 0,
+      opened: 0,
+      clicked: 0,
+      status: "draft",
+      createdDate: new Date(),
+    };
+    setCampaigns([...campaigns, campaign]);
+  };
 
   return (
     <div className="min-h-[calc(100vh-4rem)] py-8">
@@ -292,8 +535,9 @@ export default function AdminPanel() {
         </div>
 
         <Tabs defaultValue="players" className="space-y-6">
-          <TabsList className="grid w-full grid-cols-5">
+          <TabsList className="grid w-full grid-cols-6">
             <TabsTrigger value="players">Player Analytics</TabsTrigger>
+            <TabsTrigger value="messaging">Messaging Center</TabsTrigger>
             <TabsTrigger value="jackpots">Jackpot Management</TabsTrigger>
             <TabsTrigger value="packages">Manage Packages</TabsTrigger>
             <TabsTrigger value="system">System Settings</TabsTrigger>
