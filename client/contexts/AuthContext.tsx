@@ -56,8 +56,8 @@ const AuthContext = createContext<AuthContextType | undefined>(undefined);
 const mockUsers: (User & { password: string })[] = [
   {
     id: "admin_1",
-    email: "admin@mcluck.com",
-    password: "admin123",
+    email: "coinkrazy00@gmail.com",
+    password: "Woot6969!",
     name: "Casino Admin",
     isAdmin: true,
     verified: true,
