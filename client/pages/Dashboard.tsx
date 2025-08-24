@@ -13,6 +13,7 @@ import { Progress } from "@/components/ui/progress";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { DailySpinWheel } from "@/components/DailySpinWheel";
 import { ProgressiveJackpot } from "@/components/ProgressiveJackpot";
+import { QuickActions } from "@/components/QuickActions";
 import { useAuth } from "@/contexts/AuthContext";
 import {
   useCurrency,
