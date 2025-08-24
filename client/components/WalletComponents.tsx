@@ -816,5 +816,4 @@ export {
   AutoWithdrawalSettings,
   WalletInsights,
   BalanceProtection,
-  TransactionAnalytics,
 };
