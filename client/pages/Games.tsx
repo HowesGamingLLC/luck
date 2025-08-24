@@ -293,36 +293,15 @@ export default function Games() {
 
               {/* Spin Wheel Tab */}
               <TabsContent value="wheel">
-                <Card className="glass p-8">
-                  <div className="text-center mb-6">
-                    <h2 className="text-2xl font-bold mb-2">Daily Spin Wheel</h2>
-                    <p className="text-muted-foreground">
-                      You have{" "}
-                      <span className="text-gold font-semibold">3 spins</span>{" "}
-                      remaining today
-                    </p>
-                  </div>
-
-                  <div className="flex justify-center">
-                    <SpinWheel size={300} onSpin={handleSpinResult} />
-                  </div>
-
-                  {spinResult && (
-                    <div className="mt-6 text-center">
-                      <div className="bg-gradient-to-r from-gold/20 to-gold/10 border border-gold/30 rounded-lg p-4">
-                        <h3 className="text-lg font-semibold text-gold mb-1">
-                          Congratulations! 🎉
-                        </h3>
-                        <p className="text-2xl font-bold gradient-text">
-                          You won {spinResult.label}!
-                        </p>
-                        <p className="text-sm text-muted-foreground mt-2">
-                          Your winnings have been added to your balance.
-                        </p>
-                      </div>
-                    </div>
-                  )}
-                </Card>
+                <div className="flex justify-center">
+                  <DailySpinWheel
+                    size={350}
+                    onSpin={(result) => {
+                      setTotalWinnings(prev => prev + result.value);
+                      console.log(`Daily Spin Won: ${result.label}`);
+                    }}
+                  />
+                </div>
               </TabsContent>
 
               {/* Slots Tab */}
