@@ -11,7 +11,13 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { useCurrency, CurrencyType, formatCurrency, getCurrencyColor, getCurrencyIcon } from "@/contexts/CurrencyContext";
+import {
+  useCurrency,
+  CurrencyType,
+  formatCurrency,
+  getCurrencyColor,
+  getCurrencyIcon,
+} from "@/contexts/CurrencyContext";
 import {
   Dialog,
   DialogContent,
@@ -262,8 +268,7 @@ export default function WalletPage() {
               <p className="text-xs text-muted-foreground">
                 {(user?.balance.sweepCoins || 0) >= MIN_WITHDRAWAL_SC
                   ? "Ready for withdrawal"
-                  : `Need ${(MIN_WITHDRAWAL_SC - (user?.balance.sweepCoins || 0)).toFixed(2)} SC to withdraw`
-                }
+                  : `Need ${(MIN_WITHDRAWAL_SC - (user?.balance.sweepCoins || 0)).toFixed(2)} SC to withdraw`}
               </p>
             </CardContent>
           </Card>
@@ -275,22 +280,30 @@ export default function WalletPage() {
             </CardHeader>
             <CardContent>
               <div className="text-2xl font-bold text-success">
-                {((user?.totalWon.goldCoins || 0) + (user?.totalWon.sweepCoins || 0)).toFixed(2)}
+                {(
+                  (user?.totalWon.goldCoins || 0) +
+                  (user?.totalWon.sweepCoins || 0)
+                ).toFixed(2)}
               </div>
               <p className="text-xs text-muted-foreground">
-                GC: {user?.totalWon.goldCoins || 0} • SC: {(user?.totalWon.sweepCoins || 0).toFixed(2)}
+                GC: {user?.totalWon.goldCoins || 0} • SC:{" "}
+                {(user?.totalWon.sweepCoins || 0).toFixed(2)}
               </p>
             </CardContent>
           </Card>
 
           <Card className="glass">
             <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-              <CardTitle className="text-sm font-medium">Withdrawal Status</CardTitle>
+              <CardTitle className="text-sm font-medium">
+                Withdrawal Status
+              </CardTitle>
               <TrendingUp className="h-4 w-4 text-purple" />
             </CardHeader>
             <CardContent>
               <div className="text-2xl font-bold text-purple">
-                {(user?.balance.sweepCoins || 0) >= MIN_WITHDRAWAL_SC ? "Ready" : "Pending"}
+                {(user?.balance.sweepCoins || 0) >= MIN_WITHDRAWAL_SC
+                  ? "Ready"
+                  : "Pending"}
               </div>
               <p className="text-xs text-muted-foreground">
                 Min: {MIN_WITHDRAWAL_SC} SC
@@ -325,7 +338,8 @@ export default function WalletPage() {
                     <DialogHeader>
                       <DialogTitle>Withdraw Sweep Coins</DialogTitle>
                       <DialogDescription>
-                        Only Sweep Coins can be withdrawn. Minimum withdrawal: {MIN_WITHDRAWAL_SC} SC
+                        Only Sweep Coins can be withdrawn. Minimum withdrawal:{" "}
+                        {MIN_WITHDRAWAL_SC} SC
                       </DialogDescription>
                     </DialogHeader>
                     <div className="space-y-4">
@@ -351,13 +365,16 @@ export default function WalletPage() {
                               type="number"
                               placeholder="Enter amount"
                               value={withdrawAmount}
-                              onChange={(e) => setWithdrawAmount(e.target.value)}
+                              onChange={(e) =>
+                                setWithdrawAmount(e.target.value)
+                              }
                               min={MIN_WITHDRAWAL_SC}
                               max={user?.balance.sweepCoins || 0}
                               step="0.01"
                             />
                             <p className="text-xs text-muted-foreground mt-1">
-                              Minimum: {MIN_WITHDRAWAL_SC} SC • Available: {user?.balance.sweepCoins.toFixed(2) || "0.00"} SC
+                              Minimum: {MIN_WITHDRAWAL_SC} SC • Available:{" "}
+                              {user?.balance.sweepCoins.toFixed(2) || "0.00"} SC
                             </p>
                           </div>
                         </>
@@ -365,11 +382,14 @@ export default function WalletPage() {
                         <div className="bg-warning/10 border border-warning/30 p-3 rounded-lg">
                           <div className="flex items-center gap-2 text-warning">
                             <AlertCircle className="h-4 w-4" />
-                            <span className="font-medium">Insufficient Balance</span>
+                            <span className="font-medium">
+                              Insufficient Balance
+                            </span>
                           </div>
                           <p className="text-sm text-muted-foreground mt-1">
-                            You need at least {MIN_WITHDRAWAL_SC} SC to make a withdrawal.
-                            Current balance: {user?.balance.sweepCoins.toFixed(2) || "0.00"} SC
+                            You need at least {MIN_WITHDRAWAL_SC} SC to make a
+                            withdrawal. Current balance:{" "}
+                            {user?.balance.sweepCoins.toFixed(2) || "0.00"} SC
                           </p>
                           <p className="text-sm text-muted-foreground mt-2">
                             Play games to earn more Sweep Coins!
@@ -411,7 +431,9 @@ export default function WalletPage() {
                         <div className="bg-card/50 p-3 rounded-lg">
                           <div className="flex justify-between text-sm">
                             <span>Withdrawal Amount:</span>
-                            <span className="text-teal font-semibold">{withdrawAmount || "0.00"} SC</span>
+                            <span className="text-teal font-semibold">
+                              {withdrawAmount || "0.00"} SC
+                            </span>
                           </div>
                           <div className="flex justify-between text-sm">
                             <span>Processing Fee:</span>
@@ -419,11 +441,15 @@ export default function WalletPage() {
                           </div>
                           <div className="flex justify-between text-sm">
                             <span>USD Equivalent:</span>
-                            <span className="text-muted-foreground">~${withdrawAmount || "0.00"}</span>
+                            <span className="text-muted-foreground">
+                              ~${withdrawAmount || "0.00"}
+                            </span>
                           </div>
                           <div className="flex justify-between text-sm font-semibold border-t pt-2 mt-2">
                             <span>You'll Receive:</span>
-                            <span className="text-teal">{withdrawAmount || "0.00"} SC</span>
+                            <span className="text-teal">
+                              {withdrawAmount || "0.00"} SC
+                            </span>
                           </div>
                         </div>
                       )}
@@ -441,15 +467,15 @@ export default function WalletPage() {
                           !withdrawAmount ||
                           !selectedMethod ||
                           parseFloat(withdrawAmount) < MIN_WITHDRAWAL_SC ||
-                          parseFloat(withdrawAmount) > (user?.balance.sweepCoins || 0) ||
+                          parseFloat(withdrawAmount) >
+                            (user?.balance.sweepCoins || 0) ||
                           (user?.balance.sweepCoins || 0) < MIN_WITHDRAWAL_SC
                         }
                         className="bg-teal hover:bg-teal-dark text-white"
                       >
                         {(user?.balance.sweepCoins || 0) < MIN_WITHDRAWAL_SC
                           ? `Need ${MIN_WITHDRAWAL_SC} SC to Withdraw`
-                          : "Confirm Withdrawal"
-                        }
+                          : "Confirm Withdrawal"}
                       </Button>
                     </DialogFooter>
                   </DialogContent>

@@ -2,7 +2,11 @@ import { useState, useRef, useEffect } from "react";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { useCurrency, CurrencyType, formatCurrency } from "@/contexts/CurrencyContext";
+import {
+  useCurrency,
+  CurrencyType,
+  formatCurrency,
+} from "@/contexts/CurrencyContext";
 import { RotateCcw, Clock, Gem } from "lucide-react";
 
 interface WheelSegment {
@@ -20,12 +24,48 @@ interface DailySpinWheelProps {
 
 // Updated segments for SC rewards with better RTP
 const dailySpinSegments: WheelSegment[] = [
-  { label: "0.05 SC", value: 0.05, currency: CurrencyType.SC, color: "#8B5CF6", probability: 0.4 },
-  { label: "0.10 SC", value: 0.10, currency: CurrencyType.SC, color: "#06B6D4", probability: 0.25 },
-  { label: "0.25 SC", value: 0.25, currency: CurrencyType.SC, color: "#10B981", probability: 0.2 },
-  { label: "0.50 SC", value: 0.50, currency: CurrencyType.SC, color: "#F59E0B", probability: 0.1 },
-  { label: "0.75 SC", value: 0.75, currency: CurrencyType.SC, color: "#EF4444", probability: 0.04 },
-  { label: "1.00 SC", value: 1.00, currency: CurrencyType.SC, color: "#EC4899", probability: 0.01 },
+  {
+    label: "0.05 SC",
+    value: 0.05,
+    currency: CurrencyType.SC,
+    color: "#8B5CF6",
+    probability: 0.4,
+  },
+  {
+    label: "0.10 SC",
+    value: 0.1,
+    currency: CurrencyType.SC,
+    color: "#06B6D4",
+    probability: 0.25,
+  },
+  {
+    label: "0.25 SC",
+    value: 0.25,
+    currency: CurrencyType.SC,
+    color: "#10B981",
+    probability: 0.2,
+  },
+  {
+    label: "0.50 SC",
+    value: 0.5,
+    currency: CurrencyType.SC,
+    color: "#F59E0B",
+    probability: 0.1,
+  },
+  {
+    label: "0.75 SC",
+    value: 0.75,
+    currency: CurrencyType.SC,
+    color: "#EF4444",
+    probability: 0.04,
+  },
+  {
+    label: "1.00 SC",
+    value: 1.0,
+    currency: CurrencyType.SC,
+    color: "#EC4899",
+    probability: 0.01,
+  },
 ];
 
 export function DailySpinWheel({ size = 300, onSpin }: DailySpinWheelProps) {
@@ -34,13 +74,9 @@ export function DailySpinWheel({ size = 300, onSpin }: DailySpinWheelProps) {
   const [lastResult, setLastResult] = useState<WheelSegment | null>(null);
   const [showResult, setShowResult] = useState(false);
   const wheelRef = useRef<HTMLDivElement>(null);
-  
-  const { 
-    canClaimDailySpin, 
-    claimDailySpin, 
-    updateBalance, 
-    user 
-  } = useCurrency();
+
+  const { canClaimDailySpin, claimDailySpin, updateBalance, user } =
+    useCurrency();
 
   const [canSpin, setCanSpin] = useState(false);
   const [timeUntilNextSpin, setTimeUntilNextSpin] = useState("");
@@ -54,12 +90,16 @@ export function DailySpinWheel({ size = 300, onSpin }: DailySpinWheelProps) {
       if (!canClaim && user?.lastDailySpinClaim) {
         const now = new Date();
         const lastClaim = new Date(user.lastDailySpinClaim);
-        const nextClaimTime = new Date(lastClaim.getTime() + 24 * 60 * 60 * 1000);
+        const nextClaimTime = new Date(
+          lastClaim.getTime() + 24 * 60 * 60 * 1000,
+        );
         const timeDiff = nextClaimTime.getTime() - now.getTime();
 
         if (timeDiff > 0) {
           const hours = Math.floor(timeDiff / (1000 * 60 * 60));
-          const minutes = Math.floor((timeDiff % (1000 * 60 * 60)) / (1000 * 60));
+          const minutes = Math.floor(
+            (timeDiff % (1000 * 60 * 60)) / (1000 * 60),
+          );
           setTimeUntilNextSpin(`${hours}h ${minutes}m`);
         }
       }
@@ -75,7 +115,7 @@ export function DailySpinWheel({ size = 300, onSpin }: DailySpinWheelProps) {
 
     setIsSpinning(true);
     setShowResult(false);
-    
+
     // Claim the daily spin (updates lastDailySpinClaim)
     claimDailySpin();
 
@@ -108,17 +148,17 @@ export function DailySpinWheel({ size = 300, onSpin }: DailySpinWheelProps) {
       setIsSpinning(false);
       setLastResult(selectedSegment);
       setShowResult(true);
-      
+
       // Update user balance
       updateBalance(
         selectedSegment.currency,
         selectedSegment.value,
         `Daily Spin Wheel - Won ${formatCurrency(selectedSegment.value, selectedSegment.currency)}`,
-        'win'
+        "win",
       );
-      
+
       onSpin?.(selectedSegment);
-      
+
       // Hide result after 3 seconds
       setTimeout(() => setShowResult(false), 3000);
     }, 4000);
@@ -141,40 +181,39 @@ export function DailySpinWheel({ size = 300, onSpin }: DailySpinWheelProps) {
           )}
         </CardTitle>
       </CardHeader>
-      
+
       <CardContent className="space-y-6">
         {/* Wheel */}
         <div className="flex flex-col items-center space-y-4">
-          <div 
-            className="relative"
-            style={{ width: size, height: size }}
-          >
+          <div className="relative" style={{ width: size, height: size }}>
             {/* Wheel */}
             <div
               ref={wheelRef}
               className="absolute inset-0 rounded-full border-4 border-teal shadow-2xl spin-wheel overflow-hidden"
               style={{
                 transform: `rotate(${rotation}deg)`,
-                transition: isSpinning ? 'transform 4s cubic-bezier(0.23, 1, 0.32, 1)' : 'none',
+                transition: isSpinning
+                  ? "transform 4s cubic-bezier(0.23, 1, 0.32, 1)"
+                  : "none",
               }}
             >
               {dailySpinSegments.map((segment, index) => {
                 const startAngle = index * segmentAngle;
                 const endAngle = startAngle + segmentAngle;
-                
+
                 // Calculate path for segment
                 const startAngleRad = (startAngle * Math.PI) / 180;
                 const endAngleRad = (endAngle * Math.PI) / 180;
-                
+
                 const x1 = radius + radius * Math.cos(startAngleRad);
                 const y1 = radius + radius * Math.sin(startAngleRad);
                 const x2 = radius + radius * Math.cos(endAngleRad);
                 const y2 = radius + radius * Math.sin(endAngleRad);
-                
+
                 const largeArcFlag = segmentAngle > 180 ? 1 : 0;
-                
+
                 const pathData = `M ${radius} ${radius} L ${x1} ${y1} A ${radius} ${radius} 0 ${largeArcFlag} 1 ${x2} ${y2} Z`;
-                
+
                 // Text position
                 const textAngle = startAngle + segmentAngle / 2;
                 const textAngleRad = (textAngle * Math.PI) / 180;
@@ -270,12 +309,16 @@ export function DailySpinWheel({ size = 300, onSpin }: DailySpinWheelProps) {
 
         {/* Prize Breakdown */}
         <div className="bg-card/30 p-3 rounded-lg">
-          <h4 className="text-sm font-semibold mb-2 text-center">Prize Chances</h4>
+          <h4 className="text-sm font-semibold mb-2 text-center">
+            Prize Chances
+          </h4>
           <div className="grid grid-cols-3 gap-2 text-xs">
             {dailySpinSegments.map((segment, index) => (
               <div key={index} className="flex justify-between items-center">
                 <span className="text-teal font-medium">{segment.label}</span>
-                <span className="text-muted-foreground">{(segment.probability * 100).toFixed(0)}%</span>
+                <span className="text-muted-foreground">
+                  {(segment.probability * 100).toFixed(0)}%
+                </span>
               </div>
             ))}
           </div>

@@ -2,18 +2,18 @@
 // In a production app, these would trigger actual audio files
 
 export enum SoundType {
-  SPIN_START = 'spin_start',
-  SPIN_STOP = 'spin_stop',
-  REEL_STOP = 'reel_stop',
-  SMALL_WIN = 'small_win',
-  BIG_WIN = 'big_win',
-  JACKPOT = 'jackpot',
-  BONUS = 'bonus',
-  BUTTON_CLICK = 'button_click',
-  COIN_DROP = 'coin_drop',
-  WHEEL_SPIN = 'wheel_spin',
-  CELEBRATION = 'celebration',
-  BACKGROUND_MUSIC = 'background_music',
+  SPIN_START = "spin_start",
+  SPIN_STOP = "spin_stop",
+  REEL_STOP = "reel_stop",
+  SMALL_WIN = "small_win",
+  BIG_WIN = "big_win",
+  JACKPOT = "jackpot",
+  BONUS = "bonus",
+  BUTTON_CLICK = "button_click",
+  COIN_DROP = "coin_drop",
+  WHEEL_SPIN = "wheel_spin",
+  CELEBRATION = "celebration",
+  BACKGROUND_MUSIC = "background_music",
 }
 
 export interface SoundConfig {
@@ -50,9 +50,13 @@ class SoundManager {
   }
 
   // Play multiple sounds in sequence
-  playSequence(sounds: Array<{ type: SoundType; delay?: number; volume?: number }>) {
+  playSequence(
+    sounds: Array<{ type: SoundType; delay?: number; volume?: number }>,
+  ) {
     sounds.forEach((sound, index) => {
-      const totalDelay = sounds.slice(0, index).reduce((sum, s) => sum + (s.delay || 0), 0);
+      const totalDelay = sounds
+        .slice(0, index)
+        .reduce((sum, s) => sum + (s.delay || 0), 0);
       this.play(sound.type, { volume: sound.volume, delay: totalDelay });
     });
   }
@@ -60,10 +64,10 @@ class SoundManager {
   // Slot machine specific sound sequences
   playSlotSpin(reelCount: number = 3) {
     this.play(SoundType.SPIN_START);
-    
+
     // Play reel stop sounds with increasing delays
     for (let i = 0; i < reelCount; i++) {
-      this.play(SoundType.REEL_STOP, { delay: 2000 + (i * 200) });
+      this.play(SoundType.REEL_STOP, { delay: 2000 + i * 200 });
     }
   }
 
@@ -102,21 +106,23 @@ class SoundManager {
     // 4. Handle any audio context requirements
 
     const soundDescriptions = {
-      [SoundType.SPIN_START]: '🎵 Slot reels starting to spin...',
-      [SoundType.SPIN_STOP]: '🎵 Reels coming to a stop',
-      [SoundType.REEL_STOP]: '🎵 *click* Reel stopped',
-      [SoundType.SMALL_WIN]: '🎵 Ding! Small win sound',
-      [SoundType.BIG_WIN]: '🎵 🎊 Big win fanfare!',
-      [SoundType.JACKPOT]: '🎵 🎰 JACKPOT ALARM! 🚨',
-      [SoundType.BONUS]: '🎵 ✨ Bonus round activated',
-      [SoundType.BUTTON_CLICK]: '🎵 *click*',
-      [SoundType.COIN_DROP]: '🎵 💰 *clink clink*',
-      [SoundType.WHEEL_SPIN]: '🎵 Wheel spinning sound',
-      [SoundType.CELEBRATION]: '🎵 🎉 Victory celebration!',
-      [SoundType.BACKGROUND_MUSIC]: '🎵 🎼 Casino background music',
+      [SoundType.SPIN_START]: "🎵 Slot reels starting to spin...",
+      [SoundType.SPIN_STOP]: "🎵 Reels coming to a stop",
+      [SoundType.REEL_STOP]: "🎵 *click* Reel stopped",
+      [SoundType.SMALL_WIN]: "🎵 Ding! Small win sound",
+      [SoundType.BIG_WIN]: "🎵 🎊 Big win fanfare!",
+      [SoundType.JACKPOT]: "🎵 🎰 JACKPOT ALARM! 🚨",
+      [SoundType.BONUS]: "🎵 ✨ Bonus round activated",
+      [SoundType.BUTTON_CLICK]: "🎵 *click*",
+      [SoundType.COIN_DROP]: "🎵 💰 *clink clink*",
+      [SoundType.WHEEL_SPIN]: "🎵 Wheel spinning sound",
+      [SoundType.CELEBRATION]: "🎵 🎉 Victory celebration!",
+      [SoundType.BACKGROUND_MUSIC]: "🎵 🎼 Casino background music",
     };
 
-    console.log(`${soundDescriptions[soundType]} (Volume: ${Math.round(volume * 100)}%)`);
+    console.log(
+      `${soundDescriptions[soundType]} (Volume: ${Math.round(volume * 100)}%)`,
+    );
 
     // Add visual feedback for sound effects
     this.addSoundVisualFeedback(soundType);
@@ -124,13 +130,14 @@ class SoundManager {
 
   // Add visual feedback when sounds play (useful for debugging and accessibility)
   private addSoundVisualFeedback(soundType: SoundType) {
-    const soundElement = document.createElement('div');
-    soundElement.className = 'fixed top-4 right-4 bg-purple text-white px-3 py-1 rounded text-xs z-50 pointer-events-none';
-    soundElement.textContent = `🔊 ${soundType.replace('_', ' ')}`;
-    soundElement.style.animation = 'coin-drop 2s ease-out forwards';
-    
+    const soundElement = document.createElement("div");
+    soundElement.className =
+      "fixed top-4 right-4 bg-purple text-white px-3 py-1 rounded text-xs z-50 pointer-events-none";
+    soundElement.textContent = `🔊 ${soundType.replace("_", " ")}`;
+    soundElement.style.animation = "coin-drop 2s ease-out forwards";
+
     document.body.appendChild(soundElement);
-    
+
     setTimeout(() => {
       document.body.removeChild(soundElement);
     }, 2000);
@@ -158,7 +165,10 @@ export const soundManager = new SoundManager();
 
 // Hook for React components
 export const useSoundEffects = () => {
-  const playSound = (soundType: SoundType, options?: { volume?: number; delay?: number }) => {
+  const playSound = (
+    soundType: SoundType,
+    options?: { volume?: number; delay?: number },
+  ) => {
     soundManager.play(soundType, options);
   };
 
@@ -201,5 +211,5 @@ export const playJackpotSound = () => soundManager.play(SoundType.JACKPOT);
 // Initialize background music (if enabled)
 export const initializeAudio = () => {
   // In a real app, this would set up the audio context and preload sounds
-  console.log('🎵 Audio system initialized for McLuck Casino');
+  console.log("🎵 Audio system initialized for McLuck Casino");
 };

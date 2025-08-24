@@ -11,7 +11,13 @@ import {
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Badge } from "@/components/ui/badge";
 import { Switch } from "@/components/ui/switch";
-import { useCurrency, CurrencyType, formatCurrency, getCurrencyColor, getCurrencyIcon } from "@/contexts/CurrencyContext";
+import {
+  useCurrency,
+  CurrencyType,
+  formatCurrency,
+  getCurrencyColor,
+  getCurrencyIcon,
+} from "@/contexts/CurrencyContext";
 import {
   Menu,
   X,
@@ -31,12 +37,8 @@ export function Header() {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [isLoggedIn, setIsLoggedIn] = useState(true); // Mock auth state
   const location = useLocation();
-  
-  const { 
-    user, 
-    selectedCurrency, 
-    setSelectedCurrency 
-  } = useCurrency();
+
+  const { user, selectedCurrency, setSelectedCurrency } = useCurrency();
 
   const navItems = [
     { label: "Games", href: "/games", icon: Coins },
@@ -49,16 +51,14 @@ export function Header() {
 
   const getCurrentBalance = () => {
     if (!user) return 0;
-    return selectedCurrency === CurrencyType.GC 
-      ? user.balance.goldCoins 
+    return selectedCurrency === CurrencyType.GC
+      ? user.balance.goldCoins
       : user.balance.sweepCoins;
   };
 
   const toggleCurrency = () => {
     setSelectedCurrency(
-      selectedCurrency === CurrencyType.GC 
-        ? CurrencyType.SC 
-        : CurrencyType.GC
+      selectedCurrency === CurrencyType.GC ? CurrencyType.SC : CurrencyType.GC,
     );
   };
 
@@ -84,9 +84,7 @@ export function Header() {
                 key={item.href}
                 to={item.href}
                 className={`flex items-center space-x-1 transition-colors hover:text-purple ${
-                  isActive(item.href)
-                    ? "text-purple"
-                    : "text-muted-foreground"
+                  isActive(item.href) ? "text-purple" : "text-muted-foreground"
                 }`}
               >
                 <Icon className="h-4 w-4" />
@@ -103,15 +101,21 @@ export function Header() {
               {/* Currency Toggle */}
               <div className="hidden lg:flex items-center space-x-3 bg-card px-4 py-2 rounded-lg border">
                 <div className="flex items-center space-x-2">
-                  <span className="text-xs text-muted-foreground">Currency:</span>
+                  <span className="text-xs text-muted-foreground">
+                    Currency:
+                  </span>
                   <div className="flex items-center space-x-2">
-                    <Coins className={`h-4 w-4 ${selectedCurrency === CurrencyType.GC ? 'text-gold' : 'text-muted-foreground'}`} />
+                    <Coins
+                      className={`h-4 w-4 ${selectedCurrency === CurrencyType.GC ? "text-gold" : "text-muted-foreground"}`}
+                    />
                     <Switch
                       checked={selectedCurrency === CurrencyType.SC}
                       onCheckedChange={toggleCurrency}
                       className="data-[state=checked]:bg-teal"
                     />
-                    <Gem className={`h-4 w-4 ${selectedCurrency === CurrencyType.SC ? 'text-teal' : 'text-muted-foreground'}`} />
+                    <Gem
+                      className={`h-4 w-4 ${selectedCurrency === CurrencyType.SC ? "text-teal" : "text-muted-foreground"}`}
+                    />
                   </div>
                 </div>
               </div>
@@ -122,11 +126,15 @@ export function Header() {
                   {getCurrencyIcon(selectedCurrency)}
                 </span>
                 <div className="text-right">
-                  <div className={`text-sm font-semibold ${getCurrencyColor(selectedCurrency)}`}>
+                  <div
+                    className={`text-sm font-semibold ${getCurrencyColor(selectedCurrency)}`}
+                  >
                     {formatCurrency(getCurrentBalance(), selectedCurrency)}
                   </div>
                   <div className="text-xs text-muted-foreground">
-                    {selectedCurrency === CurrencyType.GC ? 'Fun Play' : 'Real Money'}
+                    {selectedCurrency === CurrencyType.GC
+                      ? "Fun Play"
+                      : "Real Money"}
                   </div>
                 </div>
               </div>
@@ -149,7 +157,10 @@ export function Header() {
               {/* User Menu */}
               <DropdownMenu>
                 <DropdownMenuTrigger asChild>
-                  <Button variant="ghost" className="relative h-8 w-8 rounded-full">
+                  <Button
+                    variant="ghost"
+                    className="relative h-8 w-8 rounded-full"
+                  >
                     <Avatar className="h-8 w-8">
                       <AvatarImage src={user.avatar} alt={user.name} />
                       <AvatarFallback className="bg-purple text-white">
@@ -167,9 +178,9 @@ export function Header() {
                       </p>
                     </div>
                   </div>
-                  
+
                   <DropdownMenuSeparator />
-                  
+
                   {/* Balance Display in Menu */}
                   <div className="p-2 space-y-2">
                     <div className="flex items-center justify-between text-xs">
@@ -178,7 +189,10 @@ export function Header() {
                         Gold Coins
                       </span>
                       <span className="font-semibold text-gold">
-                        {formatCurrency(user.balance.goldCoins, CurrencyType.GC)}
+                        {formatCurrency(
+                          user.balance.goldCoins,
+                          CurrencyType.GC,
+                        )}
                       </span>
                     </div>
                     <div className="flex items-center justify-between text-xs">
@@ -187,13 +201,16 @@ export function Header() {
                         Sweep Coins
                       </span>
                       <span className="font-semibold text-teal">
-                        {formatCurrency(user.balance.sweepCoins, CurrencyType.SC)}
+                        {formatCurrency(
+                          user.balance.sweepCoins,
+                          CurrencyType.SC,
+                        )}
                       </span>
                     </div>
                   </div>
-                  
+
                   <DropdownMenuSeparator />
-                  
+
                   <DropdownMenuItem asChild>
                     <Link to="/profile" className="flex items-center">
                       <User className="mr-2 h-4 w-4" />
@@ -244,7 +261,11 @@ export function Header() {
             size="sm"
             onClick={() => setIsMenuOpen(!isMenuOpen)}
           >
-            {isMenuOpen ? <X className="h-5 w-5" /> : <Menu className="h-5 w-5" />}
+            {isMenuOpen ? (
+              <X className="h-5 w-5" />
+            ) : (
+              <Menu className="h-5 w-5" />
+            )}
           </Button>
         </div>
       </div>
@@ -272,7 +293,7 @@ export function Header() {
                   </Link>
                 );
               })}
-              
+
               {/* Mobile Balance Display */}
               {isLoggedIn && user && (
                 <div className="pt-2 border-t border-border space-y-2">
@@ -294,7 +315,7 @@ export function Header() {
                       {formatCurrency(user.balance.sweepCoins, CurrencyType.SC)}
                     </span>
                   </div>
-                  
+
                   {/* Mobile Currency Toggle */}
                   <div className="flex items-center justify-between px-3 py-2">
                     <span className="text-sm">Active Currency:</span>

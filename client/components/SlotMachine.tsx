@@ -4,7 +4,13 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { cn } from "@/lib/utils";
 import { useJackpotWin, JackpotCelebration } from "./ProgressiveJackpot";
-import { useCurrency, CurrencyType, formatCurrency, getCurrencyColor, getCurrencyIcon } from "@/contexts/CurrencyContext";
+import {
+  useCurrency,
+  CurrencyType,
+  formatCurrency,
+  getCurrencyColor,
+  getCurrencyIcon,
+} from "@/contexts/CurrencyContext";
 import {
   Play,
   Coins,
@@ -36,7 +42,11 @@ interface SlotMachineProps {
   reels?: number;
   rows?: number;
   currency: CurrencyType;
-  onWin?: (amount: number, combination: string[], currency: CurrencyType) => void;
+  onWin?: (
+    amount: number,
+    combination: string[],
+    currency: CurrencyType,
+  ) => void;
   onSpin?: () => void;
   disabled?: boolean;
   autoPlay?: boolean;
@@ -50,12 +60,42 @@ const CLASSIC_THEME: SlotTheme = {
   jackpotMultiplier: 1000,
   symbols: [
     { id: "cherry", symbol: "🍒", value: 5, rarity: 25, color: "text-red-500" },
-    { id: "lemon", symbol: "🍋", value: 10, rarity: 20, color: "text-yellow-500" },
-    { id: "orange", symbol: "🍊", value: 15, rarity: 18, color: "text-orange-500" },
-    { id: "plum", symbol: "🍇", value: 20, rarity: 15, color: "text-purple-500" },
+    {
+      id: "lemon",
+      symbol: "🍋",
+      value: 10,
+      rarity: 20,
+      color: "text-yellow-500",
+    },
+    {
+      id: "orange",
+      symbol: "🍊",
+      value: 15,
+      rarity: 18,
+      color: "text-orange-500",
+    },
+    {
+      id: "plum",
+      symbol: "🍇",
+      value: 20,
+      rarity: 15,
+      color: "text-purple-500",
+    },
     { id: "bell", symbol: "🔔", value: 25, rarity: 12, color: "text-gold" },
-    { id: "star", symbol: "⭐", value: 50, rarity: 8, color: "text-yellow-400" },
-    { id: "diamond", symbol: "💎", value: 100, rarity: 5, color: "text-blue-400" },
+    {
+      id: "star",
+      symbol: "⭐",
+      value: 50,
+      rarity: 8,
+      color: "text-yellow-400",
+    },
+    {
+      id: "diamond",
+      symbol: "💎",
+      value: 100,
+      rarity: 5,
+      color: "text-blue-400",
+    },
     { id: "seven", symbol: "7️⃣", value: 200, rarity: 3, color: "text-red-600" },
     { id: "jackpot", symbol: "🎰", value: 500, rarity: 1, color: "text-gold" },
   ],
@@ -74,10 +114,16 @@ export function SlotMachine({
 }: SlotMachineProps) {
   const [isSpinning, setIsSpinning] = useState(false);
   const [reelResults, setReelResults] = useState<string[][]>([]);
-  const [lastWin, setLastWin] = useState<{ amount: number; lines: number[] } | null>(null);
+  const [lastWin, setLastWin] = useState<{
+    amount: number;
+    lines: number[];
+  } | null>(null);
   const [soundEnabled, setSoundEnabled] = useState(true);
   const [spinCount, setSpinCount] = useState(0);
-  const [jackpotWin, setJackpotWin] = useState<{amount: number; type: string} | null>(null);
+  const [jackpotWin, setJackpotWin] = useState<{
+    amount: number;
+    type: string;
+  } | null>(null);
   const [betAmount] = useState(currency === CurrencyType.SC ? 0.01 : 1); // SC: 1 cent, GC: 1 coin
   const reelRefs = useRef<(HTMLDivElement | null)[]>([]);
   const { triggerJackpotWin, checkJackpotEligibility } = useJackpotWin();
@@ -86,7 +132,7 @@ export function SlotMachine({
   // Initialize reels
   useEffect(() => {
     const initialReels = Array.from({ length: reels }, () =>
-      Array.from({ length: rows }, () => getRandomSymbol().symbol)
+      Array.from({ length: rows }, () => getRandomSymbol().symbol),
     );
     setReelResults(initialReels);
   }, [reels, rows]);
@@ -94,30 +140,35 @@ export function SlotMachine({
   const getRandomSymbol = (): SlotSymbol => {
     const random = Math.random() * 100;
     let cumulative = 0;
-    
+
     for (const symbol of theme.symbols) {
       cumulative += symbol.rarity;
       if (random <= cumulative) {
         return symbol;
       }
     }
-    
+
     return theme.symbols[0]; // Fallback
   };
 
   const generateReelSymbols = (reelIndex: number): string[] => {
     // Generate more symbols for spinning effect
-    const symbols = Array.from({ length: rows + 20 }, () => getRandomSymbol().symbol);
+    const symbols = Array.from(
+      { length: rows + 20 },
+      () => getRandomSymbol().symbol,
+    );
     return symbols;
   };
 
-  const checkWinningLines = (results: string[][]): { amount: number; lines: number[] } => {
+  const checkWinningLines = (
+    results: string[][],
+  ): { amount: number; lines: number[] } => {
     let totalWin = 0;
     const winningLines: number[] = [];
 
     // Check horizontal lines
     for (let row = 0; row < rows; row++) {
-      const line = results.map(reel => reel[row]);
+      const line = results.map((reel) => reel[row]);
       const winAmount = calculateLineWin(line);
       if (winAmount > 0) {
         totalWin += winAmount;
@@ -163,7 +214,7 @@ export function SlotMachine({
     // Need at least 2 matching symbols (3 for higher payouts)
     if (consecutiveMatches < 2) return 0;
 
-    const symbol = theme.symbols.find(s => s.symbol === firstSymbol);
+    const symbol = theme.symbols.find((s) => s.symbol === firstSymbol);
     if (!symbol) return 0;
 
     // Calculate payout based on matches
@@ -211,15 +262,10 @@ export function SlotMachine({
     setLastWin(null);
 
     // Deduct bet amount
-    updateBalance(
-      currency,
-      -betAmount,
-      `Slot bet - ${theme.name}`,
-      'wager'
-    );
+    updateBalance(currency, -betAmount, `Slot bet - ${theme.name}`, "wager");
 
     onSpin?.();
-    setSpinCount(prev => prev + 1);
+    setSpinCount((prev) => prev + 1);
 
     // Play spin sound effect
     if (soundEnabled) {
@@ -240,14 +286,17 @@ export function SlotMachine({
 
     // Stop reels one by one
     for (let i = 0; i < reels; i++) {
-      await new Promise(resolve => setTimeout(resolve, spinDurations[i]));
-      
-      const reelSymbols = Array.from({ length: rows }, () => getRandomSymbol().symbol);
+      await new Promise((resolve) => setTimeout(resolve, spinDurations[i]));
+
+      const reelSymbols = Array.from(
+        { length: rows },
+        () => getRandomSymbol().symbol,
+      );
       newResults.push(reelSymbols);
-      
+
       // Reset animation
       if (reelRefs.current[i]) {
-        reelRefs.current[i]!.style.animation = '';
+        reelRefs.current[i]!.style.animation = "";
       }
     }
 
@@ -263,15 +312,19 @@ export function SlotMachine({
         currency,
         winResult.amount,
         `Slot win - ${theme.name}`,
-        'win'
+        "win",
       );
 
       // Check for jackpot eligibility (only for SC for real jackpots)
-      const jackpotType = currency === CurrencyType.SC ? checkJackpotEligibility(newResults.flat(), theme.name) : null;
+      const jackpotType =
+        currency === CurrencyType.SC
+          ? checkJackpotEligibility(newResults.flat(), theme.name)
+          : null;
       if (jackpotType) {
         // Scale jackpot amounts for SC (much smaller but still exciting)
         const jackpotAmounts = { mini: 5, minor: 10, major: 25, mega: 50 };
-        const jackpotAmount = jackpotAmounts[jackpotType as keyof typeof jackpotAmounts];
+        const jackpotAmount =
+          jackpotAmounts[jackpotType as keyof typeof jackpotAmounts];
         const jackpotWinData = triggerJackpotWin(jackpotAmount, jackpotType);
         setJackpotWin(jackpotWinData);
 
@@ -280,7 +333,7 @@ export function SlotMachine({
           currency,
           jackpotAmount,
           `${jackpotType} Jackpot - ${theme.name}`,
-          'win'
+          "win",
         );
 
         onWin?.(winResult.amount + jackpotAmount, newResults.flat(), currency);
@@ -289,7 +342,9 @@ export function SlotMachine({
       }
 
       if (soundEnabled) {
-        console.log(jackpotType ? "🎵 JACKPOT sound effect!" : "🎵 Win sound effect");
+        console.log(
+          jackpotType ? "🎵 JACKPOT sound effect!" : "🎵 Win sound effect",
+        );
       }
     }
 
@@ -310,7 +365,9 @@ export function SlotMachine({
     <Card className={cn("glass overflow-hidden", className)}>
       <CardHeader className="text-center pb-4">
         <CardTitle className="flex items-center justify-center gap-2">
-          <div className={`p-2 rounded-full bg-gradient-to-r ${theme.background}`}>
+          <div
+            className={`p-2 rounded-full bg-gradient-to-r ${theme.background}`}
+          >
             {currency === CurrencyType.SC ? (
               <Gem className="h-5 w-5 text-white" />
             ) : (
@@ -320,11 +377,20 @@ export function SlotMachine({
           <div className="flex flex-col items-center">
             <span>{theme.name}</span>
             <span className={`text-xs ${getCurrencyColor(currency)}`}>
-              {currency === CurrencyType.SC ? 'Real Money Mode' : 'Fun Play Mode'}
+              {currency === CurrencyType.SC
+                ? "Real Money Mode"
+                : "Fun Play Mode"}
             </span>
           </div>
           {lastWin && (
-            <Badge className={currency === CurrencyType.SC ? "bg-teal text-white" : "bg-gold text-black"} animate-pulse>
+            <Badge
+              className={
+                currency === CurrencyType.SC
+                  ? "bg-teal text-white"
+                  : "bg-gold text-black"
+              }
+              animate-pulse
+            >
               WIN! +{formatCurrency(lastWin.amount, currency)}
             </Badge>
           )}
@@ -334,7 +400,7 @@ export function SlotMachine({
       <CardContent className="space-y-6">
         {/* Reels */}
         <div className="relative">
-          <div 
+          <div
             className={`grid gap-2 p-4 rounded-lg bg-gradient-to-br ${theme.background} shadow-inner`}
             style={{ gridTemplateColumns: `repeat(${reels}, 1fr)` }}
           >
@@ -345,7 +411,7 @@ export function SlotMachine({
                 style={{ height: `${rows * 60}px` }}
               >
                 <div
-                  ref={el => reelRefs.current[reelIndex] = el}
+                  ref={(el) => (reelRefs.current[reelIndex] = el)}
                   className="absolute inset-0 flex flex-col"
                 >
                   {reel.map((symbol, symbolIndex) => (
@@ -353,14 +419,15 @@ export function SlotMachine({
                       key={`${reelIndex}-${symbolIndex}`}
                       className={cn(
                         "flex items-center justify-center text-3xl font-bold h-[60px] border-b border-gray-200 last:border-b-0",
-                        lastWin?.lines.includes(symbolIndex) && "bg-gold/20 animate-pulse"
+                        lastWin?.lines.includes(symbolIndex) &&
+                          "bg-gold/20 animate-pulse",
                       )}
                     >
                       {symbol}
                     </div>
                   ))}
                 </div>
-                
+
                 {/* Spinning overlay */}
                 {isSpinning && (
                   <div className="absolute inset-0 bg-gradient-to-b from-transparent via-white/50 to-transparent animate-spin-reel-overlay" />
@@ -402,8 +469,7 @@ export function SlotMachine({
             <span className={`font-semibold ${getCurrencyColor(currency)}`}>
               {currency === CurrencyType.SC
                 ? formatCurrency(user?.balance.sweepCoins || 0, currency)
-                : formatCurrency(user?.balance.goldCoins || 0, currency)
-              }
+                : formatCurrency(user?.balance.goldCoins || 0, currency)}
             </span>
           </div>
           <div className="flex items-center justify-between text-sm">
@@ -422,7 +488,11 @@ export function SlotMachine({
               size="sm"
               onClick={() => setSoundEnabled(!soundEnabled)}
             >
-              {soundEnabled ? <Volume2 className="h-4 w-4" /> : <VolumeX className="h-4 w-4" />}
+              {soundEnabled ? (
+                <Volume2 className="h-4 w-4" />
+              ) : (
+                <VolumeX className="h-4 w-4" />
+              )}
             </Button>
 
             <div className="text-sm text-muted-foreground">
@@ -432,11 +502,15 @@ export function SlotMachine({
 
           <Button
             onClick={spin}
-            disabled={isSpinning || disabled || !canAffordWager(currency, betAmount)}
+            disabled={
+              isSpinning || disabled || !canAffordWager(currency, betAmount)
+            }
             className={cn(
-              currency === CurrencyType.SC ? "bg-gradient-to-r from-teal to-teal-dark text-white" : "btn-gold",
+              currency === CurrencyType.SC
+                ? "bg-gradient-to-r from-teal to-teal-dark text-white"
+                : "btn-gold",
               "min-w-[120px] relative overflow-hidden group",
-              isSpinning && "animate-pulse"
+              isSpinning && "animate-pulse",
             )}
           >
             {!canAffordWager(currency, betAmount) ? (
@@ -461,13 +535,19 @@ export function SlotMachine({
         {/* Paytable Preview */}
         <div className="grid grid-cols-3 gap-2 text-xs">
           {theme.symbols.slice(0, 6).map((symbol) => {
-            const displayValue = currency === CurrencyType.SC
-              ? Math.min(symbol.value * 0.01, 10)
-              : symbol.value;
+            const displayValue =
+              currency === CurrencyType.SC
+                ? Math.min(symbol.value * 0.01, 10)
+                : symbol.value;
             return (
-              <div key={symbol.id} className="flex items-center gap-1 text-center">
+              <div
+                key={symbol.id}
+                className="flex items-center gap-1 text-center"
+              >
                 <span className="text-lg">{symbol.symbol}</span>
-                <span className={cn("font-semibold", getCurrencyColor(currency))}>
+                <span
+                  className={cn("font-semibold", getCurrencyColor(currency))}
+                >
                   {formatCurrency(displayValue, currency)}
                 </span>
               </div>
@@ -477,27 +557,34 @@ export function SlotMachine({
 
         {/* Last Win Display */}
         {lastWin && (
-          <div className={cn(
-            "text-center p-3 bg-gradient-to-r border rounded-lg",
-            currency === CurrencyType.SC
-              ? "from-teal/20 to-teal/10 border-teal/30"
-              : "from-gold/20 to-gold/10 border-gold/30"
-          )}>
-            <div className={cn(
-              "text-lg font-bold",
-              currency === CurrencyType.SC ? "text-teal" : "text-gold"
-            )}>
+          <div
+            className={cn(
+              "text-center p-3 bg-gradient-to-r border rounded-lg",
+              currency === CurrencyType.SC
+                ? "from-teal/20 to-teal/10 border-teal/30"
+                : "from-gold/20 to-gold/10 border-gold/30",
+            )}
+          >
+            <div
+              className={cn(
+                "text-lg font-bold",
+                currency === CurrencyType.SC ? "text-teal" : "text-gold",
+              )}
+            >
               🎉 YOU WON {formatCurrency(lastWin.amount, currency)}! 🎉
             </div>
             <div className="text-sm text-muted-foreground">
-              {lastWin.lines.length} winning line{lastWin.lines.length !== 1 ? 's' : ''}
+              {lastWin.lines.length} winning line
+              {lastWin.lines.length !== 1 ? "s" : ""}
             </div>
           </div>
         )}
 
         {/* Sound Effects Info */}
         <div className="text-center text-xs text-muted-foreground">
-          {soundEnabled ? "🔊 Sound effects enabled" : "🔇 Sound effects disabled"}
+          {soundEnabled
+            ? "🔊 Sound effects enabled"
+            : "🔇 Sound effects disabled"}
           {spinCount > 0 && (
             <span className="ml-2">• Lucky spin #{spinCount}</span>
           )}

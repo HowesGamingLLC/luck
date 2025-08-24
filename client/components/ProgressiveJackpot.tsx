@@ -20,12 +20,15 @@ interface ProgressiveJackpotProps {
   onJackpotUpdate?: (jackpots: JackpotData[]) => void;
 }
 
-export function ProgressiveJackpot({ className, onJackpotUpdate }: ProgressiveJackpotProps) {
+export function ProgressiveJackpot({
+  className,
+  onJackpotUpdate,
+}: ProgressiveJackpotProps) {
   const [jackpots, setJackpots] = useState<JackpotData[]>([
     {
       id: "mega",
       name: "Mega Jackpot",
-      amount: 25750.00,
+      amount: 25750.0,
       baseAmount: 10000,
       lastWon: "3 days ago",
       averageTime: "7 days",
@@ -35,7 +38,7 @@ export function ProgressiveJackpot({ className, onJackpotUpdate }: ProgressiveJa
     {
       id: "major",
       name: "Major Jackpot",
-      amount: 8940.50,
+      amount: 8940.5,
       baseAmount: 5000,
       lastWon: "1 day ago",
       averageTime: "3 days",
@@ -69,23 +72,23 @@ export function ProgressiveJackpot({ className, onJackpotUpdate }: ProgressiveJa
   // Simulate progressive jackpot growth
   useEffect(() => {
     const interval = setInterval(() => {
-      setJackpots(prevJackpots => {
-        const updatedJackpots = prevJackpots.map(jackpot => {
+      setJackpots((prevJackpots) => {
+        const updatedJackpots = prevJackpots.map((jackpot) => {
           // Increase jackpot by random amount (simulating player contributions)
           const growthRate = getGrowthRate(jackpot.id);
           const increment = Math.random() * growthRate;
-          
+
           return {
             ...jackpot,
             amount: jackpot.amount + increment,
             isHot: Math.random() > 0.7, // Randomly mark as "hot"
           };
         });
-        
+
         onJackpotUpdate?.(updatedJackpots);
         return updatedJackpots;
       });
-      
+
       setLastUpdate(Date.now());
     }, 2000); // Update every 2 seconds
 
@@ -94,17 +97,22 @@ export function ProgressiveJackpot({ className, onJackpotUpdate }: ProgressiveJa
 
   const getGrowthRate = (jackpotId: string): number => {
     switch (jackpotId) {
-      case "mega": return 5.0; // $0-5 per update
-      case "major": return 2.0; // $0-2 per update  
-      case "minor": return 0.8; // $0-0.8 per update
-      case "mini": return 0.3; // $0-0.3 per update
-      default: return 1.0;
+      case "mega":
+        return 5.0; // $0-5 per update
+      case "major":
+        return 2.0; // $0-2 per update
+      case "minor":
+        return 0.8; // $0-0.8 per update
+      case "mini":
+        return 0.3; // $0-0.3 per update
+      default:
+        return 1.0;
     }
   };
 
   const handleJackpotWin = (jackpotId: string) => {
-    setJackpots(prevJackpots =>
-      prevJackpots.map(jackpot =>
+    setJackpots((prevJackpots) =>
+      prevJackpots.map((jackpot) =>
         jackpot.id === jackpotId
           ? {
               ...jackpot,
@@ -112,8 +120,8 @@ export function ProgressiveJackpot({ className, onJackpotUpdate }: ProgressiveJa
               lastWon: "Just now",
               isHot: false,
             }
-          : jackpot
-      )
+          : jackpot,
+      ),
     );
   };
 
@@ -125,7 +133,8 @@ export function ProgressiveJackpot({ className, onJackpotUpdate }: ProgressiveJa
   };
 
   const getJackpotProgress = (jackpot: JackpotData): number => {
-    const progress = ((jackpot.amount - jackpot.baseAmount) / jackpot.baseAmount) * 100;
+    const progress =
+      ((jackpot.amount - jackpot.baseAmount) / jackpot.baseAmount) * 100;
     return Math.min(progress, 100);
   };
 
@@ -143,7 +152,7 @@ export function ProgressiveJackpot({ className, onJackpotUpdate }: ProgressiveJa
           </Badge>
         </CardTitle>
       </CardHeader>
-      
+
       <CardContent className="space-y-4">
         {jackpots.map((jackpot, index) => (
           <div
@@ -152,7 +161,7 @@ export function ProgressiveJackpot({ className, onJackpotUpdate }: ProgressiveJa
               "relative p-4 rounded-lg border transition-all duration-300",
               jackpot.isHot
                 ? "border-red-500/50 bg-red-500/5 animate-pulse-glow"
-                : "border-border bg-card/30"
+                : "border-border bg-card/30",
             )}
           >
             {jackpot.isHot && (
@@ -160,7 +169,7 @@ export function ProgressiveJackpot({ className, onJackpotUpdate }: ProgressiveJa
                 🔥 HOT
               </Badge>
             )}
-            
+
             <div className="flex items-center justify-between mb-2">
               <h3 className="font-semibold text-sm">{jackpot.name}</h3>
               <div className="flex items-center gap-1 text-xs text-muted-foreground">
@@ -168,7 +177,7 @@ export function ProgressiveJackpot({ className, onJackpotUpdate }: ProgressiveJa
                 <span>Growing</span>
               </div>
             </div>
-            
+
             <div className="mb-3">
               <div className={cn("text-xl font-bold", jackpot.color)}>
                 ${formatAmount(jackpot.amount)}
@@ -177,15 +186,17 @@ export function ProgressiveJackpot({ className, onJackpotUpdate }: ProgressiveJa
                 <div
                   className={cn(
                     "h-2 rounded-full transition-all duration-500",
-                    jackpot.isHot 
-                      ? "bg-gradient-to-r from-red-500 to-orange-500" 
-                      : "bg-gradient-to-r from-purple to-gold"
+                    jackpot.isHot
+                      ? "bg-gradient-to-r from-red-500 to-orange-500"
+                      : "bg-gradient-to-r from-purple to-gold",
                   )}
-                  style={{ width: `${Math.min(getJackpotProgress(jackpot), 100)}%` }}
+                  style={{
+                    width: `${Math.min(getJackpotProgress(jackpot), 100)}%`,
+                  }}
                 />
               </div>
             </div>
-            
+
             <div className="flex items-center justify-between text-xs text-muted-foreground">
               <div className="flex items-center gap-1">
                 <Clock className="h-3 w-3" />
@@ -195,10 +206,10 @@ export function ProgressiveJackpot({ className, onJackpotUpdate }: ProgressiveJa
             </div>
           </div>
         ))}
-        
+
         <div className="text-center pt-2 border-t border-border">
           <div className="text-xs text-muted-foreground">
-            Total Jackpot Pool: 
+            Total Jackpot Pool:
             <span className="font-semibold text-gold ml-1">
               ${formatAmount(jackpots.reduce((sum, j) => sum + j.amount, 0))}
             </span>
@@ -217,14 +228,14 @@ export const useJackpotWin = () => {
   const triggerJackpotWin = (amount: number, type: string = "mini") => {
     // This would typically communicate with a jackpot context or state management
     console.log(`🎰 JACKPOT WIN! $${amount} (${type})`);
-    
+
     // In a real app, this would:
     // 1. Update user balance
     // 2. Reset jackpot amount
     // 3. Show celebration animation
     // 4. Record win in database
     // 5. Notify other players
-    
+
     return {
       amount,
       type,
@@ -232,22 +243,31 @@ export const useJackpotWin = () => {
     };
   };
 
-  const checkJackpotEligibility = (combination: string[], theme: string): string | null => {
+  const checkJackpotEligibility = (
+    combination: string[],
+    theme: string,
+  ): string | null => {
     // Check if the combination is eligible for a jackpot
-    const isJackpotSymbol = combination.every(symbol => 
-      symbol === "🎰" || symbol === "👸" || symbol === "💰" || symbol === "⭐" || symbol === "✨" || symbol === "🔱"
+    const isJackpotSymbol = combination.every(
+      (symbol) =>
+        symbol === "🎰" ||
+        symbol === "👸" ||
+        symbol === "💰" ||
+        symbol === "⭐" ||
+        symbol === "✨" ||
+        symbol === "🔱",
     );
-    
+
     if (!isJackpotSymbol) return null;
-    
+
     const consecutiveCount = combination.length;
-    
+
     // Determine jackpot level based on consecutive matches
     if (consecutiveCount >= 5) return "mega";
     if (consecutiveCount >= 4) return "major";
     if (consecutiveCount >= 3) return "minor";
     if (consecutiveCount >= 2) return "mini";
-    
+
     return null;
   };
 
@@ -258,13 +278,13 @@ export const useJackpotWin = () => {
 };
 
 // Jackpot celebration component
-export function JackpotCelebration({ 
-  amount, 
-  type, 
-  onComplete 
-}: { 
-  amount: number; 
-  type: string; 
+export function JackpotCelebration({
+  amount,
+  type,
+  onComplete,
+}: {
+  amount: number;
+  type: string;
   onComplete: () => void;
 }) {
   useEffect(() => {
@@ -277,9 +297,7 @@ export function JackpotCelebration({
       <div className="text-center space-y-6 animate-bounce-slow">
         <div className="text-6xl">🎰</div>
         <div className="space-y-2">
-          <h1 className="text-4xl font-bold gradient-text">
-            JACKPOT!
-          </h1>
+          <h1 className="text-4xl font-bold gradient-text">JACKPOT!</h1>
           <p className="text-2xl font-semibold text-gold">
             ${amount.toLocaleString()}
           </p>

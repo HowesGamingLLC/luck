@@ -254,10 +254,12 @@
 }
 
 @keyframes win-flash {
-  0%, 100% {
+  0%,
+  100% {
     background-color: transparent;
   }
-  25%, 75% {
+  25%,
+  75% {
     background-color: rgba(251, 191, 36, 0.3);
   }
   50% {
@@ -266,7 +268,8 @@
 }
 
 @keyframes jackpot-celebration {
-  0%, 100% {
+  0%,
+  100% {
     transform: scale(1);
     color: #fbbf24;
   }
@@ -293,7 +296,8 @@
 }
 
 @keyframes reel-glow-pulse {
-  0%, 100% {
+  0%,
+  100% {
     box-shadow: 0 0 10px rgba(251, 191, 36, 0.3);
   }
   50% {

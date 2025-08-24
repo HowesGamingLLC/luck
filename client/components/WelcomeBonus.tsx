@@ -1,9 +1,19 @@
-import { useEffect, useState } from 'react';
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
-import { Button } from '@/components/ui/button';
-import { Badge } from '@/components/ui/badge';
-import { useCurrency, CurrencyType, formatCurrency } from '@/contexts/CurrencyContext';
-import { Gift, Sparkles, Coins, Gem } from 'lucide-react';
+import { useEffect, useState } from "react";
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card";
+import { Button } from "@/components/ui/button";
+import { Badge } from "@/components/ui/badge";
+import {
+  useCurrency,
+  CurrencyType,
+  formatCurrency,
+} from "@/contexts/CurrencyContext";
+import { Gift, Sparkles, Coins, Gem } from "lucide-react";
 
 export function WelcomeBonus() {
   const { user, claimWelcomeBonus } = useCurrency();
@@ -23,7 +33,7 @@ export function WelcomeBonus() {
   const handleClaimBonus = () => {
     claimWelcomeBonus();
     setClaimed(true);
-    
+
     // Hide the welcome modal after claiming
     setTimeout(() => {
       setShowWelcome(false);
@@ -48,7 +58,7 @@ export function WelcomeBonus() {
             Claim your exclusive new player bonus!
           </CardDescription>
         </CardHeader>
-        
+
         <CardContent className="space-y-6">
           <div className="space-y-4">
             <div className="flex items-center justify-between p-3 bg-gold/10 border border-gold/30 rounded-lg">
@@ -84,8 +94,8 @@ export function WelcomeBonus() {
           </div>
 
           {!claimed ? (
-            <Button 
-              onClick={handleClaimBonus} 
+            <Button
+              onClick={handleClaimBonus}
               className="btn-gold w-full text-lg py-6"
             >
               <Gift className="h-5 w-5 mr-2" />

@@ -47,7 +47,8 @@ interface SlotGameInfo {
 export default function Games() {
   const [spinResult, setSpinResult] = useState<WheelSegment | null>(null);
   const [selectedSlot, setSelectedSlot] = useState<string>("classic");
-  const [selectedSlotCurrency, setSelectedSlotCurrency] = useState<CurrencyType>(CurrencyType.GC);
+  const [selectedSlotCurrency, setSelectedSlotCurrency] =
+    useState<CurrencyType>(CurrencyType.GC);
   const [totalWinnings, setTotalWinnings] = useState(430);
   const [totalSpins, setTotalSpins] = useState(47);
   const [slotWins, setSlotWins] = useState(0);
@@ -56,14 +57,14 @@ export default function Games() {
 
   const handleSpinResult = (result: WheelSegment) => {
     setSpinResult(result);
-    setTotalWinnings(prev => prev + result.value);
+    setTotalWinnings((prev) => prev + result.value);
     console.log(`Spin Wheel Won: ${result.label}`);
   };
 
   const handleSlotWin = (amount: number, combination: string[]) => {
-    setTotalWinnings(prev => prev + amount);
-    setSlotWins(prev => prev + 1);
-    console.log(`Slot Win: $${amount} with ${combination.join(', ')}`);
+    setTotalWinnings((prev) => prev + amount);
+    setSlotWins((prev) => prev + 1);
+    console.log(`Slot Win: $${amount} with ${combination.join(", ")}`);
   };
 
   const gameStats = [
@@ -83,13 +84,13 @@ export default function Games() {
       label: "Total Won",
       value: `${(user?.totalWon.goldCoins || 0) + (user?.totalWon.sweepCoins || 0)} Total`,
       icon: Trophy,
-      color: "text-success"
+      color: "text-success",
     },
     {
       label: "Player Level",
       value: `Level ${user?.level || 1}`,
       icon: Star,
-      color: "text-purple"
+      color: "text-purple",
     },
   ];
 
@@ -103,7 +104,7 @@ export default function Games() {
       maxPayout: 500,
       jackpot: 2500,
       popularity: 95,
-      difficulty: "Easy"
+      difficulty: "Easy",
     },
     {
       id: "diamond",
@@ -114,7 +115,7 @@ export default function Games() {
       maxPayout: 1000,
       jackpot: 5000,
       popularity: 88,
-      difficulty: "Medium"
+      difficulty: "Medium",
     },
     {
       id: "treasure",
@@ -125,7 +126,7 @@ export default function Games() {
       maxPayout: 750,
       jackpot: 3750,
       popularity: 82,
-      difficulty: "Easy"
+      difficulty: "Easy",
     },
     {
       id: "sevens",
@@ -136,7 +137,7 @@ export default function Games() {
       maxPayout: 1500,
       jackpot: 7777,
       popularity: 90,
-      difficulty: "Hard"
+      difficulty: "Hard",
     },
     {
       id: "space",
@@ -147,7 +148,7 @@ export default function Games() {
       maxPayout: 888,
       jackpot: 4440,
       popularity: 76,
-      difficulty: "Medium"
+      difficulty: "Medium",
     },
     {
       id: "magic",
@@ -158,7 +159,7 @@ export default function Games() {
       maxPayout: 999,
       jackpot: 4995,
       popularity: 79,
-      difficulty: "Medium"
+      difficulty: "Medium",
     },
     {
       id: "ocean",
@@ -169,7 +170,7 @@ export default function Games() {
       maxPayout: 650,
       jackpot: 3250,
       popularity: 73,
-      difficulty: "Easy"
+      difficulty: "Easy",
     },
     {
       id: "west",
@@ -180,25 +181,44 @@ export default function Games() {
       maxPayout: 600,
       jackpot: 3000,
       popularity: 85,
-      difficulty: "Medium"
+      difficulty: "Medium",
     },
   ];
 
   const recentActivity = [
-    { type: "slot-win", game: "Diamond Deluxe", amount: "$85", time: "1 minute ago" },
+    {
+      type: "slot-win",
+      game: "Diamond Deluxe",
+      amount: "$85",
+      time: "1 minute ago",
+    },
     { type: "spin", amount: "-", time: "2 minutes ago" },
     { type: "win", amount: "$25", time: "3 minutes ago" },
-    { type: "slot-win", game: "Lucky Sevens", amount: "$150", time: "8 minutes ago" },
+    {
+      type: "slot-win",
+      game: "Lucky Sevens",
+      amount: "$150",
+      time: "8 minutes ago",
+    },
     { type: "win", amount: "$10", time: "12 minutes ago" },
-    { type: "slot-win", game: "Classic Fruits", amount: "$35", time: "18 minutes ago" },
+    {
+      type: "slot-win",
+      game: "Classic Fruits",
+      amount: "$35",
+      time: "18 minutes ago",
+    },
   ];
 
   const getDifficultyColor = (difficulty: string) => {
     switch (difficulty) {
-      case "Easy": return "text-green-500";
-      case "Medium": return "text-yellow-500";
-      case "Hard": return "text-red-500";
-      default: return "text-gray-500";
+      case "Easy":
+        return "text-green-500";
+      case "Medium":
+        return "text-yellow-500";
+      case "Hard":
+        return "text-red-500";
+      default:
+        return "text-gray-500";
     }
   };
 
@@ -211,7 +231,8 @@ export default function Games() {
             Casino Games
           </h1>
           <p className="text-xl text-muted-foreground max-w-2xl mx-auto">
-            Try your luck with our exciting games! Spin wheels, play slots, and win amazing prizes.
+            Try your luck with our exciting games! Spin wheels, play slots, and
+            win amazing prizes.
           </p>
         </div>
 
@@ -264,12 +285,19 @@ export default function Games() {
                     <div className="flex items-center space-x-2">
                       <Badge
                         variant={
-                          activity.type.includes("win") ? "default" : "secondary"
+                          activity.type.includes("win")
+                            ? "default"
+                            : "secondary"
                         }
-                        className={activity.type.includes("win") ? "bg-success" : ""}
+                        className={
+                          activity.type.includes("win") ? "bg-success" : ""
+                        }
                       >
-                        {activity.type === "win" ? "Wheel" : 
-                         activity.type === "slot-win" ? "Slot" : "Spin"}
+                        {activity.type === "win"
+                          ? "Wheel"
+                          : activity.type === "slot-win"
+                            ? "Slot"
+                            : "Spin"}
                       </Badge>
                       {activity.type.includes("win") && (
                         <span className="font-semibold text-success">
@@ -300,7 +328,7 @@ export default function Games() {
                   <DailySpinWheel
                     size={350}
                     onSpin={(result) => {
-                      setTotalWinnings(prev => prev + result.value);
+                      setTotalWinnings((prev) => prev + result.value);
                       console.log(`Daily Spin Won: ${result.label}`);
                     }}
                   />
@@ -313,7 +341,9 @@ export default function Games() {
                 <Card className="glass">
                   <CardHeader>
                     <CardTitle>Choose Your Slot Game</CardTitle>
-                    <CardDescription>Select a game and currency to start playing</CardDescription>
+                    <CardDescription>
+                      Select a game and currency to start playing
+                    </CardDescription>
                   </CardHeader>
                   <CardContent>
                     <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
@@ -333,9 +363,14 @@ export default function Games() {
                             <CardContent className="p-4 space-y-3">
                               <div className="text-center">
                                 <Icon className="h-8 w-8 mx-auto mb-2 text-purple" />
-                                <div className="text-sm font-medium">{game.name}</div>
+                                <div className="text-sm font-medium">
+                                  {game.name}
+                                </div>
                                 <div className="text-xs text-muted-foreground">
-                                  Max Win: {game.difficulty === "Hard" ? "10 SC" : `${Math.min(game.maxPayout, 10)} SC`}
+                                  Max Win:{" "}
+                                  {game.difficulty === "Hard"
+                                    ? "10 SC"
+                                    : `${Math.min(game.maxPayout, 10)} SC`}
                                 </div>
                               </div>
 
@@ -343,14 +378,21 @@ export default function Games() {
                               <div className="space-y-2">
                                 <Button
                                   size="sm"
-                                  variant={selectedSlotCurrency === CurrencyType.GC && isSelected ? "default" : "outline"}
+                                  variant={
+                                    selectedSlotCurrency === CurrencyType.GC &&
+                                    isSelected
+                                      ? "default"
+                                      : "outline"
+                                  }
                                   className="w-full bg-red-500 hover:bg-red-600 text-white border-red-500"
                                   onClick={(e) => {
                                     e.stopPropagation();
                                     setSelectedSlot(game.id);
                                     setSelectedSlotCurrency(CurrencyType.GC);
                                   }}
-                                  disabled={!user || !canAffordWager(CurrencyType.GC, 1)}
+                                  disabled={
+                                    !user || !canAffordWager(CurrencyType.GC, 1)
+                                  }
                                 >
                                   <Coins className="h-3 w-3 mr-1" />
                                   Play with GC (Fun)
@@ -358,14 +400,22 @@ export default function Games() {
 
                                 <Button
                                   size="sm"
-                                  variant={selectedSlotCurrency === CurrencyType.SC && isSelected ? "default" : "outline"}
+                                  variant={
+                                    selectedSlotCurrency === CurrencyType.SC &&
+                                    isSelected
+                                      ? "default"
+                                      : "outline"
+                                  }
                                   className="w-full bg-green-500 hover:bg-green-600 text-white border-green-500"
                                   onClick={(e) => {
                                     e.stopPropagation();
                                     setSelectedSlot(game.id);
                                     setSelectedSlotCurrency(CurrencyType.SC);
                                   }}
-                                  disabled={!user || !canAffordWager(CurrencyType.SC, 0.01)}
+                                  disabled={
+                                    !user ||
+                                    !canAffordWager(CurrencyType.SC, 0.01)
+                                  }
                                 >
                                   <Gem className="h-3 w-3 mr-1" />
                                   Play with SC (Real)
@@ -375,13 +425,18 @@ export default function Games() {
                               {/* Balances */}
                               <div className="text-xs text-center space-y-1">
                                 <div className="flex justify-between">
-                                  <span className="text-muted-foreground">GC Balance:</span>
+                                  <span className="text-muted-foreground">
+                                    GC Balance:
+                                  </span>
                                   <span className="text-gold font-medium">
-                                    {user?.balance.goldCoins.toLocaleString() || 0}
+                                    {user?.balance.goldCoins.toLocaleString() ||
+                                      0}
                                   </span>
                                 </div>
                                 <div className="flex justify-between">
-                                  <span className="text-muted-foreground">SC Balance:</span>
+                                  <span className="text-muted-foreground">
+                                    SC Balance:
+                                  </span>
                                   <span className="text-teal font-medium">
                                     {user?.balance.sweepCoins.toFixed(2) || 0}
                                   </span>
@@ -401,9 +456,11 @@ export default function Games() {
                     theme={getSlotTheme(selectedSlot as any)}
                     currency={selectedSlotCurrency}
                     onWin={(amount, combination, currency) => {
-                      console.log(`Slot Win: ${amount} ${currency} with ${combination.join(', ')}`);
+                      console.log(
+                        `Slot Win: ${amount} ${currency} with ${combination.join(", ")}`,
+                      );
                     }}
-                    onSpin={() => setTotalSpins(prev => prev + 1)}
+                    onSpin={() => setTotalSpins((prev) => prev + 1)}
                     className="max-w-lg w-full"
                   />
                 </div>
@@ -426,7 +483,7 @@ export default function Games() {
                 </CardHeader>
                 <CardContent className="space-y-3">
                   {(() => {
-                    const game = slotGames.find(g => g.id === selectedSlot);
+                    const game = slotGames.find((g) => g.id === selectedSlot);
                     if (!game) return null;
                     return (
                       <>
@@ -436,29 +493,39 @@ export default function Games() {
                             {game.description}
                           </p>
                         </div>
-                        
+
                         <div className="space-y-2">
                           <div className="flex justify-between">
                             <span className="text-sm">Min Bet:</span>
-                            <span className="font-semibold">${game.minBet}</span>
+                            <span className="font-semibold">
+                              ${game.minBet}
+                            </span>
                           </div>
                           <div className="flex justify-between">
                             <span className="text-sm">Max Payout:</span>
-                            <span className="font-semibold">${game.maxPayout}</span>
+                            <span className="font-semibold">
+                              ${game.maxPayout}
+                            </span>
                           </div>
                           <div className="flex justify-between">
                             <span className="text-sm">Jackpot:</span>
-                            <span className="font-semibold text-gold">${game.jackpot}</span>
+                            <span className="font-semibold text-gold">
+                              ${game.jackpot}
+                            </span>
                           </div>
                           <div className="flex justify-between">
                             <span className="text-sm">Difficulty:</span>
-                            <span className={`font-semibold ${getDifficultyColor(game.difficulty)}`}>
+                            <span
+                              className={`font-semibold ${getDifficultyColor(game.difficulty)}`}
+                            >
                               {game.difficulty}
                             </span>
                           </div>
                           <div className="flex justify-between">
                             <span className="text-sm">Popularity:</span>
-                            <span className="font-semibold">{game.popularity}%</span>
+                            <span className="font-semibold">
+                              {game.popularity}%
+                            </span>
                           </div>
                         </div>
                       </>
@@ -481,7 +548,9 @@ export default function Games() {
                     <span className="font-medium">Lucky_Player***</span>
                     <span className="text-success font-semibold">+$777</span>
                   </div>
-                  <p className="text-muted-foreground text-xs">Lucky Sevens • Just now</p>
+                  <p className="text-muted-foreground text-xs">
+                    Lucky Sevens • Just now
+                  </p>
                 </div>
 
                 <div className="text-sm">
@@ -489,7 +558,9 @@ export default function Games() {
                     <span className="font-medium">Diamond_Queen***</span>
                     <span className="text-success font-semibold">+$250</span>
                   </div>
-                  <p className="text-muted-foreground text-xs">Diamond Deluxe • 1 min ago</p>
+                  <p className="text-muted-foreground text-xs">
+                    Diamond Deluxe • 1 min ago
+                  </p>
                 </div>
 
                 <div className="text-sm">
@@ -497,7 +568,9 @@ export default function Games() {
                     <span className="font-medium">Slot_Master***</span>
                     <span className="text-success font-semibold">+$125</span>
                   </div>
-                  <p className="text-muted-foreground text-xs">Classic Fruits • 3 min ago</p>
+                  <p className="text-muted-foreground text-xs">
+                    Classic Fruits • 3 min ago
+                  </p>
                 </div>
 
                 <div className="text-sm">
@@ -505,7 +578,9 @@ export default function Games() {
                     <span className="font-medium">Space_Explorer***</span>
                     <span className="text-success font-semibold">+$88</span>
                   </div>
-                  <p className="text-muted-foreground text-xs">Space Adventure • 5 min ago</p>
+                  <p className="text-muted-foreground text-xs">
+                    Space Adventure • 5 min ago
+                  </p>
                 </div>
               </CardContent>
             </Card>
