@@ -75,7 +75,7 @@ function App() {
                       path="/games/slots"
                       element={
                         <AuthGuard>
-                          <SlotsPage />
+                          <EnhancedSlotsPage />
                         </AuthGuard>
                       }
                     />
