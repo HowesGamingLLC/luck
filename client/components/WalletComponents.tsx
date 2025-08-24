@@ -815,5 +815,4 @@ export {
   SpendingLimitsManager,
   AutoWithdrawalSettings,
   WalletInsights,
-  BalanceProtection,
 };
