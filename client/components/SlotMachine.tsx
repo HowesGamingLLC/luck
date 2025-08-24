@@ -173,12 +173,29 @@ export function SlotMachine({
     else if (consecutiveMatches === 4) multiplier = 10;
     else if (consecutiveMatches === 5) multiplier = 25;
 
-    // Jackpot bonus for rare symbols
-    if (symbol.id === "jackpot" && consecutiveMatches >= 3) {
-      multiplier *= theme.jackpotMultiplier;
+    // Base win amount
+    let baseWin = symbol.value * multiplier;
+
+    // Currency adjustments and limits
+    if (currency === CurrencyType.SC) {
+      // Convert to SC scale (much smaller amounts)
+      baseWin = baseWin * 0.01; // Scale down for SC
+
+      // Apply 10 SC maximum limit
+      baseWin = Math.min(baseWin, 10);
+
+      // Jackpot bonus for rare symbols (but still capped at 10 SC)
+      if (symbol.id === "jackpot" && consecutiveMatches >= 3) {
+        baseWin = 10; // Max jackpot for SC
+      }
+    } else {
+      // GC can have higher amounts but scaled appropriately
+      if (symbol.id === "jackpot" && consecutiveMatches >= 3) {
+        baseWin = Math.min(baseWin * 5, 1000); // Cap GC jackpot at 1000
+      }
     }
 
-    return symbol.value * multiplier;
+    return Math.round(baseWin * 100) / 100; // Round to 2 decimal places
   };
 
   const spin = async () => {
