@@ -12,6 +12,17 @@ import {
   startTournament,
   cancelTournament,
 } from "./routes/tournaments";
+import {
+  getProviders,
+  getGames,
+  getGameById,
+  launchGame,
+  validateSession,
+  endSession,
+  getPlayerBalance,
+  getActiveSessions,
+  checkProviderHealth,
+} from "./routes/slots";
 
 export function createServer() {
   const app = express();
