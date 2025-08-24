@@ -1,8 +1,13 @@
 import { useState, useEffect } from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
+import { Button } from "@/components/ui/button";
+import { Switch } from "@/components/ui/switch";
+import { Progress } from "@/components/ui/progress";
 import { cn } from "@/lib/utils";
-import { Crown, TrendingUp, Clock } from "lucide-react";
+import { useJackpot } from "@/contexts/JackpotContext";
+import { useAuth } from "@/contexts/AuthContext";
+import { Crown, TrendingUp, Clock, Settings, Info, Zap } from "lucide-react";
 
 interface JackpotData {
   id: string;
