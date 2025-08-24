@@ -81,6 +81,10 @@ function App() {
                       }
                     />
                     <Route
+                      path="/games/slots/docs"
+                      element={<FreeSlotsDocs />}
+                    />
+                    <Route
                       path="/games/bingo"
                       element={
                         <AuthGuard>
