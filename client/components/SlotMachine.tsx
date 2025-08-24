@@ -4,6 +4,8 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { cn } from "@/lib/utils";
 import { useJackpotWin, JackpotCelebration } from "./ProgressiveJackpot";
+import { useJackpot } from "@/contexts/JackpotContext";
+import { useAuth } from "@/contexts/AuthContext";
 import {
   useCurrency,
   CurrencyType,
