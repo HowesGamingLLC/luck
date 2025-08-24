@@ -296,7 +296,7 @@ export default function AdminPanel() {
       {
         id: "3",
         name: "VIP Promotion",
-        subject: "Exclusive VIP Offer - 50% Bonus! 👑",
+        subject: "Exclusive VIP Offer - 50% Bonus! ��",
         content: `<h1>Exclusive VIP Offer</h1>
 <p>Dear {{firstName}},</p>
 <p>As one of our valued VIP players, you're eligible for an exclusive <strong>50% bonus</strong> on your next Gold Coin purchase!</p>
@@ -538,8 +538,9 @@ export default function AdminPanel() {
         </div>
 
         <Tabs defaultValue="players" className="space-y-6">
-          <TabsList className="grid w-full grid-cols-6">
+          <TabsList className="grid w-full grid-cols-7">
             <TabsTrigger value="players">Player Analytics</TabsTrigger>
+            <TabsTrigger value="profiles">User Profiles</TabsTrigger>
             <TabsTrigger value="messaging">Messaging Center</TabsTrigger>
             <TabsTrigger value="jackpots">Jackpot Management</TabsTrigger>
             <TabsTrigger value="packages">Manage Packages</TabsTrigger>
