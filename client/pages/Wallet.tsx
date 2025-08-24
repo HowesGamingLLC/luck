@@ -407,20 +407,26 @@ export default function WalletPage() {
                           </SelectContent>
                         </Select>
                       </div>
-                      <div className="bg-card/50 p-3 rounded-lg">
-                        <div className="flex justify-between text-sm">
-                          <span>Withdrawal Amount:</span>
-                          <span>${withdrawAmount || "0.00"}</span>
+                      {(user?.balance.sweepCoins || 0) >= MIN_WITHDRAWAL_SC && (
+                        <div className="bg-card/50 p-3 rounded-lg">
+                          <div className="flex justify-between text-sm">
+                            <span>Withdrawal Amount:</span>
+                            <span className="text-teal font-semibold">{withdrawAmount || "0.00"} SC</span>
+                          </div>
+                          <div className="flex justify-between text-sm">
+                            <span>Processing Fee:</span>
+                            <span className="text-success">FREE</span>
+                          </div>
+                          <div className="flex justify-between text-sm">
+                            <span>USD Equivalent:</span>
+                            <span className="text-muted-foreground">~${withdrawAmount || "0.00"}</span>
+                          </div>
+                          <div className="flex justify-between text-sm font-semibold border-t pt-2 mt-2">
+                            <span>You'll Receive:</span>
+                            <span className="text-teal">{withdrawAmount || "0.00"} SC</span>
+                          </div>
                         </div>
-                        <div className="flex justify-between text-sm">
-                          <span>Processing Fee:</span>
-                          <span className="text-success">FREE</span>
-                        </div>
-                        <div className="flex justify-between text-sm font-semibold border-t pt-2 mt-2">
-                          <span>You'll Receive:</span>
-                          <span>${withdrawAmount || "0.00"}</span>
-                        </div>
-                      </div>
+                      )}
                     </div>
                     <DialogFooter>
                       <Button
