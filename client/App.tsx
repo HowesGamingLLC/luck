@@ -102,6 +102,22 @@ function App() {
                       </AuthGuard>
                     }
                   />
+                  <Route
+                    path="/kyc"
+                    element={
+                      <AuthGuard>
+                        <KYC />
+                      </AuthGuard>
+                    }
+                  />
+                  <Route
+                    path="/withdraw"
+                    element={
+                      <AuthGuard>
+                        <Withdraw />
+                      </AuthGuard>
+                    }
+                  />
                   {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
                   <Route path="*" element={<NotFound />} />
                 </Routes>
