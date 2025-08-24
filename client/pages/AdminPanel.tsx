@@ -32,6 +32,7 @@ import { Alert, AlertDescription } from "@/components/ui/alert";
 import { getAllUsers, User } from "@/contexts/AuthContext";
 import { useJackpot } from "@/contexts/JackpotContext";
 import MessagingCenter from "@/components/MessagingCenter";
+import { UserProfileManager } from "@/components/UserProfileManager";
 import {
   BarChart3,
   Users,
