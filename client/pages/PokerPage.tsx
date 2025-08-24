@@ -734,7 +734,19 @@ export default function PokerPage() {
 
           {/* Main Poker Table */}
           <div className="lg:col-span-2">
-            {selectedTable ? (
+            {inGame && currentTable ? (
+              <div className="fixed inset-0 z-50 bg-black">
+                <HoldemGame
+                  tableId={currentTable.id}
+                  stakes={currentTable.stakes}
+                  buyIn={currentTable.buyIn}
+                  blinds={currentTable.blinds}
+                  maxPlayers={currentTable.maxPlayers}
+                  currency={selectedCurrency}
+                  onLeave={leaveTable}
+                />
+              </div>
+            ) : selectedTable ? (
               <Card className="glass">
                 <CardHeader>
                   <CardTitle className="flex items-center justify-between">
