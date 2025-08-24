@@ -9,126 +9,26 @@ import { useJackpot } from "@/contexts/JackpotContext";
 import { useAuth } from "@/contexts/AuthContext";
 import { Crown, TrendingUp, Clock, Settings, Info, Zap } from "lucide-react";
 
-interface JackpotData {
-  id: string;
-  name: string;
-  amount: number;
-  baseAmount: number;
-  lastWon: string;
-  averageTime: string;
-  color: string;
-  isHot: boolean;
-}
-
 interface ProgressiveJackpotProps {
   className?: string;
-  onJackpotUpdate?: (jackpots: JackpotData[]) => void;
+  showOptInToggle?: boolean;
 }
 
 export function ProgressiveJackpot({
   className,
-  onJackpotUpdate,
+  showOptInToggle = true,
 }: ProgressiveJackpotProps) {
-  const [jackpots, setJackpots] = useState<JackpotData[]>([
-    {
-      id: "mega",
-      name: "Mega Jackpot",
-      amount: 25750.0,
-      baseAmount: 10000,
-      lastWon: "3 days ago",
-      averageTime: "7 days",
-      color: "text-red-500",
-      isHot: true,
-    },
-    {
-      id: "major",
-      name: "Major Jackpot",
-      amount: 8940.5,
-      baseAmount: 5000,
-      lastWon: "1 day ago",
-      averageTime: "3 days",
-      color: "text-purple-500",
-      isHot: false,
-    },
-    {
-      id: "minor",
-      name: "Minor Jackpot",
-      amount: 1875.25,
-      baseAmount: 1000,
-      lastWon: "6 hours ago",
-      averageTime: "18 hours",
-      color: "text-gold",
-      isHot: true,
-    },
-    {
-      id: "mini",
-      name: "Mini Jackpot",
-      amount: 425.75,
-      baseAmount: 250,
-      lastWon: "2 hours ago",
-      averageTime: "4 hours",
-      color: "text-teal",
-      isHot: false,
-    },
-  ]);
-
+  const { jackpots, isOptedIn, totalContributed, recentWins, toggleOptIn, getJackpotProgress } = useJackpot();
+  const { isAuthenticated } = useAuth();
   const [lastUpdate, setLastUpdate] = useState(Date.now());
 
-  // Simulate progressive jackpot growth
   useEffect(() => {
     const interval = setInterval(() => {
-      setJackpots((prevJackpots) => {
-        const updatedJackpots = prevJackpots.map((jackpot) => {
-          // Increase jackpot by random amount (simulating player contributions)
-          const growthRate = getGrowthRate(jackpot.id);
-          const increment = Math.random() * growthRate;
-
-          return {
-            ...jackpot,
-            amount: jackpot.amount + increment,
-            isHot: Math.random() > 0.7, // Randomly mark as "hot"
-          };
-        });
-
-        onJackpotUpdate?.(updatedJackpots);
-        return updatedJackpots;
-      });
-
       setLastUpdate(Date.now());
-    }, 2000); // Update every 2 seconds
+    }, 5000);
 
     return () => clearInterval(interval);
-  }, [onJackpotUpdate]);
-
-  const getGrowthRate = (jackpotId: string): number => {
-    switch (jackpotId) {
-      case "mega":
-        return 5.0; // $0-5 per update
-      case "major":
-        return 2.0; // $0-2 per update
-      case "minor":
-        return 0.8; // $0-0.8 per update
-      case "mini":
-        return 0.3; // $0-0.3 per update
-      default:
-        return 1.0;
-    }
-  };
-
-  const handleJackpotWin = (jackpotId: string) => {
-    setJackpots((prevJackpots) =>
-      prevJackpots.map((jackpot) =>
-        jackpot.id === jackpotId
-          ? {
-              ...jackpot,
-              amount: jackpot.baseAmount,
-              lastWon: "Just now",
-              isHot: false,
-            }
-          : jackpot,
-      ),
-    );
-  };
+  }, []);
 
   const formatAmount = (amount: number): string => {
     return amount.toLocaleString(undefined, {
@@ -137,10 +37,17 @@ export function ProgressiveJackpot({
     });
   };
 
-  const getJackpotProgress = (jackpot: JackpotData): number => {
-    const progress =
-      ((jackpot.amount - jackpot.baseAmount) / jackpot.baseAmount) * 100;
-    return Math.min(progress, 100);
+  const getTimeAgo = (date: Date | null): string => {
+    if (!date) return "Never";
+
+    const now = new Date();
+    const diffInHours = Math.floor((now.getTime() - date.getTime()) / (1000 * 60 * 60));
+
+    if (diffInHours < 1) return "Less than 1 hour ago";
+    if (diffInHours < 24) return `${diffInHours} hour${diffInHours > 1 ? 's' : ''} ago`;
+
+    const diffInDays = Math.floor(diffInHours / 24);
+    return `${diffInDays} day${diffInDays > 1 ? 's' : ''} ago`;
   };
 
   return (
