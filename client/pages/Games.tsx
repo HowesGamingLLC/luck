@@ -46,11 +46,13 @@ interface SlotGameInfo {
 
 export default function Games() {
   const [spinResult, setSpinResult] = useState<WheelSegment | null>(null);
-  const [userBalance] = useState(1250.5);
   const [selectedSlot, setSelectedSlot] = useState<string>("classic");
+  const [selectedSlotCurrency, setSelectedSlotCurrency] = useState<CurrencyType>(CurrencyType.GC);
   const [totalWinnings, setTotalWinnings] = useState(430);
   const [totalSpins, setTotalSpins] = useState(47);
   const [slotWins, setSlotWins] = useState(0);
+
+  const { user, canAffordWager } = useCurrency();
 
   const handleSpinResult = (result: WheelSegment) => {
     setSpinResult(result);
