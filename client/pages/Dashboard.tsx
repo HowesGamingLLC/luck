@@ -274,46 +274,12 @@ export default function Dashboard() {
             </Card>
 
             {/* Quick Actions */}
-            <Card className="glass">
-              <CardHeader>
-                <CardTitle className="flex items-center space-x-2">
-                  <Zap className="h-5 w-5 text-purple" />
-                  <span>Quick Actions</span>
-                </CardTitle>
-              </CardHeader>
-              <CardContent className="space-y-2">
-                <Button
-                  asChild
-                  variant="outline"
-                  className="w-full justify-start"
-                >
-                  <Link to="/store">
-                    <ShoppingCart className="h-4 w-4 mr-2" />
-                    Buy Gold Coins
-                  </Link>
-                </Button>
-                <Button
-                  asChild
-                  variant="outline"
-                  className="w-full justify-start"
-                >
-                  <Link to="/games">
-                    <Target className="h-4 w-4 mr-2" />
-                    Play Games
-                  </Link>
-                </Button>
-                <Button
-                  asChild
-                  variant="outline"
-                  className="w-full justify-start"
-                >
-                  <Link to="/withdraw">
-                    <FileText className="h-4 w-4 mr-2" />
-                    Request Withdrawal
-                  </Link>
-                </Button>
-              </CardContent>
-            </Card>
+            <QuickActions
+              layout="compact"
+              categories={["gaming", "financial"]}
+              maxItems={6}
+              showCategories={false}
+            />
           </div>
 
           {/* Main Content - Daily Spin & Jackpot */}
