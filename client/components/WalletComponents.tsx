@@ -809,8 +809,3 @@ export function TransactionAnalytics() {
     </Card>
   );
 }
-
-// Export all components
-export {
-  SpendingLimitsManager,
-};
