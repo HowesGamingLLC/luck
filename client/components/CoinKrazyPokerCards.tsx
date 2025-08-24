@@ -181,7 +181,13 @@ export function CoinKrazyHand({
   const allCards = [
     ...Array(hiddenCards)
       .fill(null)
-      .map((_, i) => ({ isHidden: true, id: `hidden-${i}` })),
+      .map((_, i) => ({
+        suit: "spades" as const,
+        rank: "A",
+        value: 14,
+        isHidden: true,
+        id: `hidden-${i}`
+      })),
     ...cards.map((card, i) => ({ ...card, isHidden: false, id: `card-${i}` })),
   ];
 
