@@ -95,6 +95,8 @@ export default function PokerPage() {
   );
   const [playerAction, setPlayerAction] = useState<string | null>(null);
   const [betAmount, setBetAmount] = useState<number>(0);
+  const [inGame, setInGame] = useState<boolean>(false);
+  const [currentTable, setCurrentTable] = useState<PokerTable | null>(null);
 
   // Mock poker tables
   const pokerTables: PokerTable[] = [
