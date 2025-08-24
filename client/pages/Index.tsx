@@ -121,7 +121,8 @@ export default function Index() {
                   🎉 Welcome Bonus: Double Your First Spin!
                 </Badge>
                 <h1 className="text-4xl md:text-6xl font-display font-bold leading-tight">
-                  Win Big with <span className="gradient-text">CoinKrazy.com</span>
+                  Win Big with{" "}
+                  <span className="gradient-text">CoinKrazy.com</span>
                 </h1>
                 <p className="text-xl text-muted-foreground max-w-lg">
                   Join thousands of winners in the most exciting sweepstakes
@@ -311,8 +312,8 @@ export default function Index() {
               Ready to Win Big?
             </h2>
             <p className="text-xl text-purple-foreground/80">
-              Join CoinKrazy.com today and get double your first spin! Start your
-              winning journey now.
+              Join CoinKrazy.com today and get double your first spin! Start
+              your winning journey now.
             </p>
             <div className="flex flex-col sm:flex-row gap-4 justify-center">
               <Button size="lg" className="btn-gold text-lg px-8 py-6" asChild>

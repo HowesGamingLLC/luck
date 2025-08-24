@@ -149,7 +149,10 @@ export function CurrencyProvider({ children }: { children: ReactNode }) {
 
   // Save transactions to localStorage whenever they change
   useEffect(() => {
-    localStorage.setItem("coinkrazy_transactions", JSON.stringify(transactions));
+    localStorage.setItem(
+      "coinkrazy_transactions",
+      JSON.stringify(transactions),
+    );
   }, [transactions]);
 
   const initializeUser = (userData: Partial<UserProfile>) => {
