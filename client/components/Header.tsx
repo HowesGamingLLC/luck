@@ -114,7 +114,7 @@ export function Header() {
 
         {/* Currency and Auth Section */}
         <div className="flex items-center space-x-4">
-          {isLoggedIn && user ? (
+          {isAuthenticated && currencyUser ? (
             <>
               {/* Currency Toggle */}
               <div className="hidden lg:flex items-center space-x-3 bg-card px-4 py-2 rounded-lg border">
