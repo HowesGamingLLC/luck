@@ -307,7 +307,7 @@ export default function Withdraw() {
               </div>
               <div className="text-center">
                 <div className="text-2xl font-bold">
-                  ${minWithdrawal} - ${maxWithdrawal}
+                  {minWithdrawal} SC - {maxWithdrawal} SC
                 </div>
                 <p className="text-sm text-muted-foreground">
                   Withdrawal Limits
