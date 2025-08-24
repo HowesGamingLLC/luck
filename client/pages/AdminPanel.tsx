@@ -550,11 +550,6 @@ export default function AdminPanel() {
 
           {/* Player Analytics Tab */}
           <TabsContent value="players" className="space-y-6">
-
-          {/* User Profiles Tab */}
-          <TabsContent value="profiles" className="space-y-6">
-            <UserProfileManager />
-          </TabsContent>
             <Card className="glass">
               <CardHeader>
                 <CardTitle>Player Loss Tracking</CardTitle>
