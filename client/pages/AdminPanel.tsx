@@ -291,9 +291,10 @@ export default function AdminPanel() {
         </div>
 
         <Tabs defaultValue="players" className="space-y-6">
-          <TabsList className="grid w-full grid-cols-4">
+          <TabsList className="grid w-full grid-cols-5">
             <TabsTrigger value="players">Player Analytics</TabsTrigger>
             <TabsTrigger value="jackpots">Jackpot Management</TabsTrigger>
+            <TabsTrigger value="packages">Manage Packages</TabsTrigger>
             <TabsTrigger value="system">System Settings</TabsTrigger>
             <TabsTrigger value="reports">Reports</TabsTrigger>
           </TabsList>
