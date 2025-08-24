@@ -57,6 +57,7 @@ import {
   Bitcoin,
   Coins,
   Gem,
+  Trophy,
 } from "lucide-react";
 
 // Mock wallet data
