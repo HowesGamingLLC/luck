@@ -311,12 +311,21 @@ export function SlotMachine({
       <CardHeader className="text-center pb-4">
         <CardTitle className="flex items-center justify-center gap-2">
           <div className={`p-2 rounded-full bg-gradient-to-r ${theme.background}`}>
-            <Coins className="h-5 w-5 text-white" />
+            {currency === CurrencyType.SC ? (
+              <Gem className="h-5 w-5 text-white" />
+            ) : (
+              <Coins className="h-5 w-5 text-white" />
+            )}
           </div>
-          {theme.name}
+          <div className="flex flex-col items-center">
+            <span>{theme.name}</span>
+            <span className={`text-xs ${getCurrencyColor(currency)}`}>
+              {currency === CurrencyType.SC ? 'Real Money Mode' : 'Fun Play Mode'}
+            </span>
+          </div>
           {lastWin && (
-            <Badge className="bg-gold text-black animate-pulse">
-              WIN! +${lastWin.amount}
+            <Badge className={currency === CurrencyType.SC ? "bg-teal text-white" : "bg-gold text-black"} animate-pulse>
+              WIN! +{formatCurrency(lastWin.amount, currency)}
             </Badge>
           )}
         </CardTitle>
