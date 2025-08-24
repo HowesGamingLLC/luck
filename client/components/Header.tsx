@@ -41,10 +41,11 @@ import {
 
 export function Header() {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
-  const [isLoggedIn, setIsLoggedIn] = useState(true); // Mock auth state
   const location = useLocation();
+  const navigate = useNavigate();
 
-  const { user, selectedCurrency, setSelectedCurrency } = useCurrency();
+  const { user: authUser, isAuthenticated, isAdmin, logout } = useAuth();
+  const { user: currencyUser, selectedCurrency, setSelectedCurrency } = useCurrency();
 
   const navItems = [
     { label: "Games", href: "/games", icon: Coins },
