@@ -711,7 +711,14 @@ export function HoldemGame({
 
   return (
     <TooltipProvider>
-      <div className="min-h-screen bg-gradient-to-b from-green-900 via-green-800 to-green-900 p-4">
+      <div className="min-h-screen bg-gradient-to-br from-green-900 via-purple-900 to-green-800 p-4 relative overflow-hidden">
+        {/* CoinKrazy.com Background Pattern */}
+        <div className="absolute inset-0 opacity-10">
+          <div className="absolute top-10 left-10 w-20 h-20 bg-gold rounded-full animate-pulse" />
+          <div className="absolute top-32 right-20 w-16 h-16 bg-purple rounded-full animate-pulse" style={{ animationDelay: '1s' }} />
+          <div className="absolute bottom-20 left-32 w-12 h-12 bg-teal rounded-full animate-pulse" style={{ animationDelay: '2s' }} />
+          <div className="absolute bottom-32 right-10 w-14 h-14 bg-gold rounded-full animate-pulse" style={{ animationDelay: '0.5s' }} />
+        </div>
         {/* Header */}
         <div className="flex items-center justify-between mb-6 bg-black/20 backdrop-blur-sm rounded-lg p-4 border border-gold/30">
           <div className="flex items-center gap-4">
