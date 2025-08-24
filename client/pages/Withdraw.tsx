@@ -412,13 +412,18 @@ export default function Withdraw() {
                     />
                   </div>
                   <div className="flex justify-between text-xs text-muted-foreground">
-                    <span>Min: ${minWithdrawal}</span>
+                    <span>Min: {minWithdrawal} SC</span>
                     <span>
                       Available:{" "}
                       {formatCurrency(availableBalance, CurrencyType.SC)}
                     </span>
-                    <span>Max: ${maxWithdrawal}</span>
+                    <span>Max: {maxWithdrawal} SC</span>
                   </div>
+                  {availableBalance < minWithdrawal && (
+                    <p className="text-xs text-red-500 mt-1">
+                      You need {(minWithdrawal - availableBalance).toFixed(2)} more SC to withdraw
+                    </p>
+                  )}
                 </div>
 
                 {/* Withdrawal Method Selection */}
