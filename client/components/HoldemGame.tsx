@@ -54,6 +54,17 @@ import {
   Coins,
   Gem,
 } from "lucide-react";
+import {
+  CoinKrazyCard,
+  CoinKrazyCommunityCards,
+  CoinKrazyHand
+} from "./CoinKrazyPokerCards";
+import {
+  CoinKrazyChip,
+  CoinKrazyChipTotal,
+  CoinKrazyBettingChips,
+  optimizeChipBreakdown
+} from "./CoinKrazyPokerChips";
 
 export interface PlayingCard {
   suit: "hearts" | "diamonds" | "clubs" | "spades";
