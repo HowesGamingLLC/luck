@@ -148,13 +148,25 @@ export default function EnhancedSlotsPage() {
       if (data.success) {
         setGames(data.games);
 
-        // If no games are returned, it might be due to demo credentials
+        // Check what types of games we have
+        const freeGames = data.games.filter(g =>
+          g.providerId === 'freeslotsgames' || g.providerId === 'idevgames'
+        );
+        const paidGames = data.games.filter(g =>
+          g.providerId !== 'freeslotsgames' && g.providerId !== 'idevgames'
+        );
+
         if (data.games.length === 0) {
           setError('No games available. This may be due to demo API credentials. Please configure real provider API keys to see live games.');
+        } else if (paidGames.length === 0 && freeGames.length > 0) {
+          setError('Currently showing free games only. Configure BGaming and Pragmatic Play API credentials to access premium slot games.');
         } else {
-          // Preload thumbnails for better UX
-          preloadThumbnails(data.games);
+          // Clear any previous errors when we have games
+          setError(null);
         }
+
+        // Preload thumbnails for better UX
+        preloadThumbnails(data.games);
       } else {
         throw new Error(data.error || 'Failed to load games');
       }
