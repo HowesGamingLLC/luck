@@ -441,9 +441,16 @@ export function IframeSlotGame({
               e.currentTarget.src = '/placeholder.svg';
             }}
           />
-          <Badge className="absolute top-2 left-2 bg-purple text-white">
-            {game.providerId.toUpperCase()}
-          </Badge>
+          {/* Free game badge */}
+          {(game.providerId === 'freeslotsgames' || game.providerId === 'idevgames') ? (
+            <Badge className="absolute top-2 left-2 bg-success text-white">
+              FREE
+            </Badge>
+          ) : (
+            <Badge className="absolute top-2 left-2 bg-purple text-white">
+              {game.providerId.toUpperCase()}
+            </Badge>
+          )}
           <Badge className={`absolute top-2 right-2 ${getVolatilityColor(game.volatility)}`}>
             {game.volatility.toUpperCase()}
           </Badge>
