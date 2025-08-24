@@ -63,16 +63,21 @@ export function IframeSlotGame({
 
   // Sweepstakes compliance check
   const isSweepstakesCompliant = useCallback(() => {
+    // Free games always compliant
+    if (game.providerId === 'freeslotsgames' || game.providerId === 'idevgames') {
+      return true;
+    }
+
     if (mode === 'demo') return true;
     if (currency === CurrencyType.GC) return true;
-    
+
     // For sweep coins, additional compliance checks
     if (currency === CurrencyType.SC) {
       return hasAgreedToTerms && user?.isVerified;
     }
-    
+
     return false;
-  }, [mode, currency, hasAgreedToTerms, user?.isVerified]);
+  }, [mode, currency, hasAgreedToTerms, user?.isVerified, game.providerId]);
 
   // Launch game iframe
   const launchGame = useCallback(async () => {
