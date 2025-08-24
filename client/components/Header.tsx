@@ -350,7 +350,7 @@ export function Header() {
               })}
 
               {/* Mobile Balance Display */}
-              {isLoggedIn && user && (
+              {isAuthenticated && currencyUser && (
                 <div className="pt-2 border-t border-border space-y-2">
                   <div className="flex items-center justify-between px-3 py-2">
                     <span className="flex items-center gap-2 text-sm">
@@ -358,7 +358,7 @@ export function Header() {
                       Gold Coins
                     </span>
                     <span className="text-sm font-semibold text-gold">
-                      {formatCurrency(user.balance.goldCoins, CurrencyType.GC)}
+                      {formatCurrency(currencyUser.balance.goldCoins, CurrencyType.GC)}
                     </span>
                   </div>
                   <div className="flex items-center justify-between px-3 py-2">
@@ -367,7 +367,7 @@ export function Header() {
                       Sweep Coins
                     </span>
                     <span className="text-sm font-semibold text-teal">
-                      {formatCurrency(user.balance.sweepCoins, CurrencyType.SC)}
+                      {formatCurrency(currencyUser.balance.sweepCoins, CurrencyType.SC)}
                     </span>
                   </div>
 
@@ -388,6 +388,18 @@ export function Header() {
                       </span>
                     </Button>
                   </div>
+
+                  {/* Mobile Auth Actions */}
+                  {!isAuthenticated && (
+                    <div className="flex flex-col space-y-2 px-3 py-2">
+                      <Button asChild variant="outline" className="w-full">
+                        <Link to="/login">Sign In</Link>
+                      </Button>
+                      <Button asChild className="w-full btn-primary">
+                        <Link to="/register">Sign Up</Link>
+                      </Button>
+                    </div>
+                  )}
                 </div>
               )}
             </div>
