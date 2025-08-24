@@ -65,6 +65,7 @@ export function SlotMachine({
   theme = CLASSIC_THEME,
   reels = 3,
   rows = 3,
+  currency,
   onWin,
   onSpin,
   disabled = false,
