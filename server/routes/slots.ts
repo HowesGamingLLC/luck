@@ -20,6 +20,10 @@ const PRAGMATIC_SECURE_LOGIN = process.env.PRAGMATIC_SECURE_LOGIN || 'demo-login
 providers.set('bgaming', new BGamingProvider(BGAMING_API_KEY, BGAMING_OPERATOR_ID));
 providers.set('pragmaticplay', new PragmaticPlayProvider(PRAGMATIC_API_KEY, PRAGMATIC_OPERATOR_ID, PRAGMATIC_SECURE_LOGIN));
 
+// Initialize free providers (always available)
+providers.set('freeslotsgames', new FreeSlotsGamesProvider());
+providers.set('idevgames', new IdevGamesProvider());
+
 // Active sessions storage (in production, use Redis or database)
 const activeSessions = new Map<string, any>();
 
