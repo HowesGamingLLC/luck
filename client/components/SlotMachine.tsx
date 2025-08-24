@@ -329,28 +329,24 @@ export function SlotMachine({
         "win",
       );
 
-      // Check for jackpot eligibility (only for SC for real jackpots)
+      // Check for jackpot eligibility (only for SC and if opted in)
       const jackpotType =
-        currency === CurrencyType.SC
+        currency === CurrencyType.SC && isOptedIn
           ? checkJackpotEligibility(newResults.flat(), theme.name)
           : null;
       if (jackpotType) {
-        // Scale jackpot amounts for SC (much smaller but still exciting)
-        const jackpotAmounts = { mini: 5, minor: 10, major: 25, mega: 50 };
-        const jackpotAmount =
-          jackpotAmounts[jackpotType as keyof typeof jackpotAmounts];
-        const jackpotWinData = triggerJackpotWin(jackpotAmount, jackpotType);
-        setJackpotWin(jackpotWinData);
+        // Trigger jackpot win using the context (this handles balance update)
+        const jackpotWinData = triggerJackpotWin(jackpotType);
+        if (jackpotWinData) {
+          setJackpotWin({
+            amount: jackpotWinData.amount,
+            type: jackpotWinData.type,
+          });
 
-        // Add additional jackpot winnings
-        updateBalance(
-          currency,
-          jackpotAmount,
-          `${jackpotType} Jackpot - ${theme.name}`,
-          "win",
-        );
-
-        onWin?.(winResult.amount + jackpotAmount, newResults.flat(), currency);
+          onWin?.(winResult.amount + jackpotWinData.amount, newResults.flat(), currency);
+        } else {
+          onWin?.(winResult.amount, newResults.flat(), currency);
+        }
       } else {
         onWin?.(winResult.amount, newResults.flat(), currency);
       }
