@@ -29,7 +29,8 @@ import {
   TableRow,
 } from "@/components/ui/table";
 import { Alert, AlertDescription } from "@/components/ui/alert";
-import { getAllUsers, User } from "@/contexts/AuthContext";
+import { getAllUsers } from "@/contexts/AuthContext";
+import type { User } from "@/contexts/AuthContext";
 import { useJackpot } from "@/contexts/JackpotContext";
 import MessagingCenter from "@/components/MessagingCenter";
 import { UserProfileManager } from "@/components/UserProfileManager";
