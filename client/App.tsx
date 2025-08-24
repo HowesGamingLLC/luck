@@ -35,6 +35,7 @@ import KYC from "./pages/KYC";
 import Withdraw from "./pages/Withdraw";
 import Store from "./pages/Store";
 import WalletEnhanced from "./pages/WalletEnhanced";
+import Tournaments from "./pages/Tournaments";
 import NotFound from "./pages/NotFound";
 
 const queryClient = new QueryClient();
@@ -115,6 +116,14 @@ function App() {
                       element={
                         <AuthGuard>
                           <MiniGamesPage />
+                        </AuthGuard>
+                      }
+                    />
+                    <Route
+                      path="/tournaments"
+                      element={
+                        <AuthGuard>
+                          <Tournaments />
                         </AuthGuard>
                       }
                     />
