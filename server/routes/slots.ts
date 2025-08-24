@@ -433,3 +433,34 @@ export const checkProviderHealth: RequestHandler = async (req, res) => {
     });
   }
 };
+
+// Test slot provider integration
+export const testProviders: RequestHandler = async (req, res) => {
+  try {
+    const providerTests = await testSlotProviders();
+    const complianceTests = validateSweepstakesCompliance();
+
+    const allTests = [...providerTests, ...complianceTests];
+    const passedTests = allTests.filter(t => t.success).length;
+
+    res.json({
+      success: true,
+      summary: {
+        total: allTests.length,
+        passed: passedTests,
+        failed: allTests.length - passedTests,
+        overallSuccess: passedTests === allTests.length,
+      },
+      tests: {
+        providers: providerTests,
+        compliance: complianceTests,
+      },
+    });
+  } catch (error) {
+    console.error('Provider test error:', error);
+    res.status(500).json({
+      success: false,
+      error: 'Failed to run provider tests',
+    });
+  }
+};
