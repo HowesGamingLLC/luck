@@ -8,7 +8,7 @@ import {
   ProviderGameListResponse,
   ProviderBalance,
   ProviderBetResult
-} from '@shared/slotProviders';
+} from '../../../shared/slotProviders';
 
 export class PragmaticPlayProvider extends BaseSlotProvider {
   private baseUrl: string;
