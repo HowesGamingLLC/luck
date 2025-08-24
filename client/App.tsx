@@ -22,6 +22,8 @@ import Profile from "./pages/Profile";
 import WalletPage from "./pages/Wallet";
 import SettingsPage from "./pages/Settings";
 import AdminPanel from "./pages/AdminPanel";
+import KYC from "./pages/KYC";
+import Withdraw from "./pages/Withdraw";
 import NotFound from "./pages/NotFound";
 
 const queryClient = new QueryClient();
