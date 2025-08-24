@@ -753,36 +753,19 @@ export function HoldemGame({
           {/* Community Cards & Pot */}
           <div className="text-center mb-8">
             <div className="mb-4">
-              <h3 className="text-lg font-semibold text-white mb-3">
-                Community Cards
-              </h3>
-              <div className="flex justify-center gap-2">
-                {gameState.communityCards.map((card, index) => (
-                  <div
-                    key={index}
-                    className="w-16 h-22 bg-white border-2 border-gray-300 rounded-lg flex flex-col items-center justify-center shadow-lg transform hover:scale-105 transition-transform"
-                  >
-                    <div
-                      className={`text-lg font-bold ${suits[card.suit].color}`}
-                    >
-                      {card.rank}
-                    </div>
-                    <div className={`text-2xl ${suits[card.suit].color}`}>
-                      {suits[card.suit].symbol}
-                    </div>
-                  </div>
-                ))}
-                {Array(5 - gameState.communityCards.length)
-                  .fill(null)
-                  .map((_, index) => (
-                    <div
-                      key={`empty-${index}`}
-                      className="w-16 h-22 border-2 border-dashed border-white/30 rounded-lg flex items-center justify-center"
-                    >
-                      <span className="text-white/50">?</span>
-                    </div>
-                  ))}
+              <div className="flex items-center justify-center gap-2 mb-3">
+                <Crown className="h-6 w-6 text-gold" />
+                <h3 className="text-lg font-semibold text-white">
+                  CoinKrazy.com Community Cards
+                </h3>
+                <Crown className="h-6 w-6 text-gold" />
               </div>
+              <CoinKrazyCommunityCards
+                cards={gameState.communityCards}
+                stage={gameState.stage}
+                size="lg"
+                className="justify-center"
+              />
             </div>
 
             <div className="flex justify-center gap-6">
