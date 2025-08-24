@@ -115,13 +115,16 @@ export default function EnhancedSlotsPage() {
     try {
       const response = await fetch('/api/slots/providers');
       if (!response.ok) throw new Error('Failed to load providers');
-      
+
       const data = await response.json();
       if (data.success) {
         setProviders(data.providers);
+      } else {
+        console.error('Provider API returned error:', data.error);
       }
     } catch (err) {
       console.error('Error loading providers:', err);
+      // Don't set error for providers as games error will be more informative
     }
   };
 
