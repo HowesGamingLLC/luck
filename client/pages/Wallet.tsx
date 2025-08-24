@@ -323,27 +323,59 @@ export default function WalletPage() {
                   </DialogTrigger>
                   <DialogContent>
                     <DialogHeader>
-                      <DialogTitle>Withdraw Funds</DialogTitle>
+                      <DialogTitle>Withdraw Sweep Coins</DialogTitle>
                       <DialogDescription>
-                        Withdraw your earnings to your preferred payment method.
+                        Only Sweep Coins can be withdrawn. Minimum withdrawal: {MIN_WITHDRAWAL_SC} SC
                       </DialogDescription>
                     </DialogHeader>
                     <div className="space-y-4">
-                      <div>
-                        <Label htmlFor="amount">Amount (USD)</Label>
-                        <Input
-                          id="amount"
-                          type="number"
-                          placeholder="Enter amount"
-                          value={withdrawAmount}
-                          onChange={(e) => setWithdrawAmount(e.target.value)}
-                          min="10"
-                          max={mockWalletData.balance}
-                        />
-                        <p className="text-xs text-muted-foreground mt-1">
-                          Minimum: $10 • Available: ${mockWalletData.balance}
-                        </p>
+                      {/* SC Balance Display */}
+                      <div className="bg-teal/10 border border-teal/30 p-3 rounded-lg">
+                        <div className="flex items-center justify-between">
+                          <span className="flex items-center gap-2">
+                            <Gem className="h-4 w-4 text-teal" />
+                            Available Sweep Coins
+                          </span>
+                          <span className="font-semibold text-teal">
+                            {user?.balance.sweepCoins.toFixed(2) || "0.00"} SC
+                          </span>
+                        </div>
                       </div>
+
+                      {(user?.balance.sweepCoins || 0) >= MIN_WITHDRAWAL_SC ? (
+                        <>
+                          <div>
+                            <Label htmlFor="amount">Amount (SC)</Label>
+                            <Input
+                              id="amount"
+                              type="number"
+                              placeholder="Enter amount"
+                              value={withdrawAmount}
+                              onChange={(e) => setWithdrawAmount(e.target.value)}
+                              min={MIN_WITHDRAWAL_SC}
+                              max={user?.balance.sweepCoins || 0}
+                              step="0.01"
+                            />
+                            <p className="text-xs text-muted-foreground mt-1">
+                              Minimum: {MIN_WITHDRAWAL_SC} SC • Available: {user?.balance.sweepCoins.toFixed(2) || "0.00"} SC
+                            </p>
+                          </div>
+                        </>
+                      ) : (
+                        <div className="bg-warning/10 border border-warning/30 p-3 rounded-lg">
+                          <div className="flex items-center gap-2 text-warning">
+                            <AlertCircle className="h-4 w-4" />
+                            <span className="font-medium">Insufficient Balance</span>
+                          </div>
+                          <p className="text-sm text-muted-foreground mt-1">
+                            You need at least {MIN_WITHDRAWAL_SC} SC to make a withdrawal.
+                            Current balance: {user?.balance.sweepCoins.toFixed(2) || "0.00"} SC
+                          </p>
+                          <p className="text-sm text-muted-foreground mt-2">
+                            Play games to earn more Sweep Coins!
+                          </p>
+                        </div>
+                      )}
                       <div>
                         <Label htmlFor="method">Payment Method</Label>
                         <Select
