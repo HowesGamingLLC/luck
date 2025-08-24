@@ -687,7 +687,7 @@ export default function AdminPanel() {
             <Card className="glass">
               <CardHeader>
                 <CardTitle className="flex items-center gap-2">
-                  <User className="h-5 w-5 text-purple" />
+                  <UserIcon className="h-5 w-5 text-purple" />
                   AI Employee Management
                 </CardTitle>
                 <CardDescription>
@@ -697,7 +697,7 @@ export default function AdminPanel() {
               </CardHeader>
               <CardContent>
                 <div className="text-center py-8">
-                  <User className="h-16 w-16 mx-auto mb-4 text-muted-foreground" />
+                  <UserIcon className="h-16 w-16 mx-auto mb-4 text-muted-foreground" />
                   <h3 className="text-xl font-semibold mb-2">
                     AI Employee Management Center
                   </h3>
