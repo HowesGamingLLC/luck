@@ -40,6 +40,7 @@ import {
   CheckCircle,
   XCircle,
   Clock,
+  Package,
 } from "lucide-react";
 
 interface PlayerAnalytics {
