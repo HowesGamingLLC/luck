@@ -11,6 +11,7 @@ import { Badge } from "@/components/ui/badge";
 import { SlotMachine } from "@/components/SlotMachine";
 import { ProgressiveJackpot } from "@/components/ProgressiveJackpot";
 import { SLOT_THEMES, getSlotTheme } from "@/components/SlotThemes";
+import { CurrencySelector } from "@/components/CurrencySelector";
 import { useCurrency, CurrencyType } from "@/contexts/CurrencyContext";
 import {
   Crown,
@@ -293,38 +294,12 @@ export default function SlotsPage() {
             </Card>
 
             {/* Currency Selection */}
-            <Card className="glass">
-              <CardHeader>
-                <CardTitle className="text-lg">Currency</CardTitle>
-              </CardHeader>
-              <CardContent className="space-y-3">
-                <Button
-                  variant={
-                    selectedCurrency === CurrencyType.GC ? "default" : "outline"
-                  }
-                  className="w-full justify-start"
-                  onClick={() => setSelectedCurrency(CurrencyType.GC)}
-                  disabled={
-                    !user ||
-                    !canAffordWager(CurrencyType.GC, currentGame.minBet)
-                  }
-                >
-                  <Coins className="h-4 w-4 mr-2 text-gold" />
-                  Play with Gold Coins (Fun)
-                </Button>
-                <Button
-                  variant={
-                    selectedCurrency === CurrencyType.SC ? "default" : "outline"
-                  }
-                  className="w-full justify-start"
-                  onClick={() => setSelectedCurrency(CurrencyType.SC)}
-                  disabled={!user || !canAffordWager(CurrencyType.SC, 0.01)}
-                >
-                  <Gem className="h-4 w-4 mr-2 text-teal" />
-                  Play with Sweep Coins (Real)
-                </Button>
-              </CardContent>
-            </Card>
+            <CurrencySelector
+              selectedCurrency={selectedCurrency}
+              onCurrencyChange={setSelectedCurrency}
+              variant="compact"
+              minBetAmount={currentGame.minBet}
+            />
           </div>
 
           {/* Main Game Area */}
