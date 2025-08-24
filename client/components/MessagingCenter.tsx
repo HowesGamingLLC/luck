@@ -675,7 +675,7 @@ export default function MessagingCenter() {
                         <SelectItem value="active">Active Users (7 days)</SelectItem>
                         <SelectItem value="inactive">Inactive Users (30+ days)</SelectItem>
                         <SelectItem value="vip">VIP Players</SelectItem>
-                        <SelectItem value="new">New Users (< 7 days)</SelectItem>
+                        <SelectItem value="new">New Users (under 7 days)</SelectItem>
                       </SelectContent>
                     </Select>
                   </div>
