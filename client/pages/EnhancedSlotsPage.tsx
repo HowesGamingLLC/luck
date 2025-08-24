@@ -13,6 +13,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Alert, AlertDescription } from "@/components/ui/alert";
 import { IframeSlotGame } from "@/components/IframeSlotGame";
+import { DemoSlotGame } from "@/components/DemoSlotGame";
 import { CurrencySelector } from "@/components/CurrencySelector";
 import { useCurrency, CurrencyType } from "@/contexts/CurrencyContext";
 import {
