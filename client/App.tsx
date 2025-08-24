@@ -23,6 +23,7 @@ import WalletPage from "./pages/Wallet";
 import SettingsPage from "./pages/Settings";
 import AdminPanel from "./pages/AdminPanel";
 import AdminPackages from "./pages/AdminPackages";
+import AIEmployeePage from "./pages/AIEmployeePage";
 import SlotsPage from "./pages/SlotsPage";
 import BingoPage from "./pages/BingoPage";
 import SportsbookPage from "./pages/SportsbookPage";
