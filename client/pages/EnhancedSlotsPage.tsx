@@ -128,7 +128,7 @@ export default function EnhancedSlotsPage() {
   const loadGames = async () => {
     setIsLoading(true);
     setError(null);
-    
+
     try {
       const params = new URLSearchParams({
         limit: '100',
@@ -139,18 +139,24 @@ export default function EnhancedSlotsPage() {
 
       const response = await fetch(`/api/slots/games?${params}`);
       if (!response.ok) throw new Error('Failed to load games');
-      
+
       const data = await response.json();
       if (data.success) {
         setGames(data.games);
-        // Preload thumbnails for better UX
-        preloadThumbnails(data.games);
+
+        // If no games are returned, it might be due to demo credentials
+        if (data.games.length === 0) {
+          setError('No games available. This may be due to demo API credentials. Please configure real provider API keys to see live games.');
+        } else {
+          // Preload thumbnails for better UX
+          preloadThumbnails(data.games);
+        }
       } else {
         throw new Error(data.error || 'Failed to load games');
       }
     } catch (err) {
       const errorMessage = err instanceof Error ? err.message : 'Failed to load games';
-      setError(errorMessage);
+      setError(`${errorMessage}. Please check your provider API configuration.`);
       console.error('Error loading games:', err);
     } finally {
       setIsLoading(false);
