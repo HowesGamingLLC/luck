@@ -713,15 +713,21 @@ export function HoldemGame({
     <TooltipProvider>
       <div className="min-h-screen bg-gradient-to-b from-green-900 via-green-800 to-green-900 p-4">
         {/* Header */}
-        <div className="flex items-center justify-between mb-6">
+        <div className="flex items-center justify-between mb-6 bg-black/20 backdrop-blur-sm rounded-lg p-4 border border-gold/30">
           <div className="flex items-center gap-4">
-            <Button variant="outline" onClick={onLeave} className="bg-white/10">
+            <Button variant="outline" onClick={onLeave} className="bg-white/10 border-gold/30">
               Leave Table
             </Button>
             <div>
-              <h1 className="text-2xl font-bold text-white">Texas Hold'em</h1>
+              <div className="flex items-center gap-2">
+                <Crown className="h-6 w-6 text-gold" />
+                <h1 className="text-2xl font-bold bg-gradient-to-r from-gold via-white to-gold bg-clip-text text-transparent">
+                  CoinKrazy.com Texas Hold'em
+                </h1>
+                <Crown className="h-6 w-6 text-gold" />
+              </div>
               <p className="text-green-200">
-                {stakes} • Table {tableId}
+                {stakes} • Table {tableId} • Premium Gaming Experience
               </p>
             </div>
           </div>
