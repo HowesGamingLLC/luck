@@ -31,6 +31,14 @@ import {
   clearCache,
   serveThumbnail,
 } from "./routes/thumbnails";
+import {
+  getPublicProviders,
+  getPublicGames,
+  getPublicGameDetails,
+  getPublicGameEmbed,
+  getPublicApiDocs,
+  getRateLimitStatus,
+} from "./routes/publicApi";
 
 export function createServer() {
   const app = express();
