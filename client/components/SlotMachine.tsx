@@ -78,8 +78,10 @@ export function SlotMachine({
   const [soundEnabled, setSoundEnabled] = useState(true);
   const [spinCount, setSpinCount] = useState(0);
   const [jackpotWin, setJackpotWin] = useState<{amount: number; type: string} | null>(null);
+  const [betAmount] = useState(currency === CurrencyType.SC ? 0.01 : 1); // SC: 1 cent, GC: 1 coin
   const reelRefs = useRef<(HTMLDivElement | null)[]>([]);
   const { triggerJackpotWin, checkJackpotEligibility } = useJackpotWin();
+  const { user, canAffordWager, updateBalance } = useCurrency();
 
   // Initialize reels
   useEffect(() => {
