@@ -321,28 +321,58 @@ export default function Withdraw() {
           </CardContent>
         </Card>
 
-        {/* KYC Status Check */}
+        {/* Requirements Check */}
         {!withdrawalEligibility.canWithdraw && (
           <Alert className="mb-8 border-orange-500 bg-orange-500/5">
             <AlertTriangle className="h-4 w-4 text-orange-500" />
-            <AlertDescription className="flex items-center justify-between">
-              <div>
-                <strong>Withdrawal Restricted:</strong>{" "}
-                {withdrawalEligibility.reason}
-                {user?.kycStatus !== "approved" && (
-                  <p className="mt-1">
-                    Complete identity verification to enable withdrawals.
-                  </p>
-                )}
+            <AlertDescription>
+              <div className="space-y-3">
+                <div>
+                  <strong>Withdrawal Requirements Not Met:</strong>
+                  <p className="mt-1 text-sm">{withdrawalEligibility.details}</p>
+                </div>
+
+                <div className="space-y-2">
+                  <h4 className="font-medium">To request withdrawals, you need:</h4>
+                  <ul className="text-sm space-y-1 ml-4">
+                    <li className="flex items-center gap-2">
+                      {user?.kycStatus === "approved" ? (
+                        <CheckCircle className="h-3 w-3 text-green-500" />
+                      ) : (
+                        <XCircle className="h-3 w-3 text-red-500" />
+                      )}
+                      Identity verification (KYC) approved
+                    </li>
+                    <li className="flex items-center gap-2">
+                      {availableBalance >= minWithdrawal ? (
+                        <CheckCircle className="h-3 w-3 text-green-500" />
+                      ) : (
+                        <XCircle className="h-3 w-3 text-red-500" />
+                      )}
+                      Minimum balance of {minWithdrawal} Sweep Coins
+                    </li>
+                  </ul>
+                </div>
+
+                <div className="flex gap-2">
+                  {user?.kycStatus !== "approved" && (
+                    <Button asChild size="sm" className="btn-primary">
+                      <Link to="/kyc">
+                        <Shield className="h-4 w-4 mr-2" />
+                        Complete KYC
+                      </Link>
+                    </Button>
+                  )}
+                  {availableBalance < minWithdrawal && (
+                    <Button asChild size="sm" variant="outline">
+                      <Link to="/store">
+                        <ShoppingCart className="h-4 w-4 mr-2" />
+                        Buy Coins
+                      </Link>
+                    </Button>
+                  )}
+                </div>
               </div>
-              {user?.kycStatus !== "approved" && (
-                <Button asChild size="sm" className="btn-primary">
-                  <Link to="/kyc">
-                    <Shield className="h-4 w-4 mr-2" />
-                    Verify Identity
-                  </Link>
-                </Button>
-              )}
             </AlertDescription>
           </Alert>
         )}
