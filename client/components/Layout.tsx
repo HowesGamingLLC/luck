@@ -1,5 +1,6 @@
 import { ReactNode } from "react";
 import { Header } from "./Header";
+import { WelcomeBonus } from "./WelcomeBonus";
 
 interface LayoutProps {
   children: ReactNode;
