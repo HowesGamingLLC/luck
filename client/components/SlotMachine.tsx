@@ -129,6 +129,8 @@ export function SlotMachine({
   const [betAmount] = useState(currency === CurrencyType.SC ? 0.01 : 1); // SC: 1 cent, GC: 1 coin
   const reelRefs = useRef<(HTMLDivElement | null)[]>([]);
   const { triggerJackpotWin, checkJackpotEligibility } = useJackpotWin();
+  const { contributeToJackpot, isOptedIn } = useJackpot();
+  const { addLoss } = useAuth();
   const { user, canAffordWager, updateBalance } = useCurrency();
 
   // Initialize reels
