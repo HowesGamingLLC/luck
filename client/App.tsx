@@ -24,6 +24,7 @@ import SettingsPage from "./pages/Settings";
 import AdminPanel from "./pages/AdminPanel";
 import KYC from "./pages/KYC";
 import Withdraw from "./pages/Withdraw";
+import Store from "./pages/Store";
 import NotFound from "./pages/NotFound";
 
 const queryClient = new QueryClient();
