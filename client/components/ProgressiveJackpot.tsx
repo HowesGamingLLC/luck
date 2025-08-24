@@ -211,56 +211,18 @@ export function ProgressiveJackpot({
   );
 }
 
-// Hook for components to trigger jackpot wins
+// Hook for components to trigger jackpot wins (now uses context)
 export const useJackpotWin = () => {
-  const triggerJackpotWin = (amount: number, type: string = "mini") => {
-    // This would typically communicate with a jackpot context or state management
-    console.log(`🎰 JACKPOT WIN! $${amount} (${type})`);
-
-    // In a real app, this would:
-    // 1. Update user balance
-    // 2. Reset jackpot amount
-    // 3. Show celebration animation
-    // 4. Record win in database
-    // 5. Notify other players
-
-    return {
-      amount,
-      type,
-      timestamp: Date.now(),
-    };
-  };
-
-  const checkJackpotEligibility = (
-    combination: string[],
-    theme: string,
-  ): string | null => {
-    // Check if the combination is eligible for a jackpot
-    const isJackpotSymbol = combination.every(
-      (symbol) =>
-        symbol === "🎰" ||
-        symbol === "👸" ||
-        symbol === "💰" ||
-        symbol === "⭐" ||
-        symbol === "✨" ||
-        symbol === "🔱",
-    );
-
-    if (!isJackpotSymbol) return null;
-
-    const consecutiveCount = combination.length;
-
-    // Determine jackpot level based on consecutive matches
-    if (consecutiveCount >= 5) return "mega";
-    if (consecutiveCount >= 4) return "major";
-    if (consecutiveCount >= 3) return "minor";
-    if (consecutiveCount >= 2) return "mini";
-
-    return null;
-  };
+  const { checkJackpotEligibility, triggerJackpotWin } = useJackpot();
 
   return {
-    triggerJackpotWin,
+    triggerJackpotWin: (jackpotId: string) => {
+      const win = triggerJackpotWin(jackpotId);
+      if (win) {
+        console.log(`🎰 JACKPOT WIN! ${win.amount} SC (${win.type})`);
+      }
+      return win;
+    },
     checkJackpotEligibility,
   };
 };
@@ -286,11 +248,11 @@ export function JackpotCelebration({
         <div className="text-6xl">🎰</div>
         <div className="space-y-2">
           <h1 className="text-4xl font-bold gradient-text">JACKPOT!</h1>
-          <p className="text-2xl font-semibold text-gold">
-            ${amount.toLocaleString()}
+          <p className="text-2xl font-semibold text-teal">
+            {amount.toFixed(2)} SC
           </p>
           <p className="text-lg text-muted-foreground capitalize">
-            {type} Jackpot Winner!
+            {type} Winner!
           </p>
         </div>
         <div className="text-sm text-muted-foreground">
