@@ -864,22 +864,12 @@ export function HoldemGame({
 
                     {/* Player cards (only show for human player) */}
                     {player.id === "human" && myCards.length === 2 && (
-                      <div className="flex gap-1 justify-center mt-2">
-                        {myCards.map((card, cardIndex) => (
-                          <div
-                            key={cardIndex}
-                            className="w-10 h-14 bg-white border border-gray-300 rounded flex flex-col items-center justify-center text-black text-xs shadow"
-                          >
-                            <div
-                              className={`font-bold ${suits[card.suit].color}`}
-                            >
-                              {card.rank}
-                            </div>
-                            <div className={`${suits[card.suit].color}`}>
-                              {suits[card.suit].symbol}
-                            </div>
-                          </div>
-                        ))}
+                      <div className="flex justify-center mt-2">
+                        <CoinKrazyHand
+                          cards={myCards}
+                          size="sm"
+                          spacing="tight"
+                        />
                       </div>
                     )}
 
