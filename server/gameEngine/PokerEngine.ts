@@ -1,8 +1,21 @@
-import { GameEngine, Player, GameResult } from './GameEngine';
+import { GameEngine, Player, GameResult } from "./GameEngine";
 
 export interface Card {
-  suit: 'hearts' | 'diamonds' | 'clubs' | 'spades';
-  rank: 'A' | '2' | '3' | '4' | '5' | '6' | '7' | '8' | '9' | 'T' | 'J' | 'Q' | 'K';
+  suit: "hearts" | "diamonds" | "clubs" | "spades";
+  rank:
+    | "A"
+    | "2"
+    | "3"
+    | "4"
+    | "5"
+    | "6"
+    | "7"
+    | "8"
+    | "9"
+    | "T"
+    | "J"
+    | "Q"
+    | "K";
   value: number;
 }
 
@@ -29,7 +42,7 @@ export interface HandResult {
 }
 
 export interface PokerGameState {
-  stage: 'preflop' | 'flop' | 'turn' | 'river' | 'showdown';
+  stage: "preflop" | "flop" | "turn" | "river" | "showdown";
   communityCards: Card[];
   pot: number;
   currentBet: number;
@@ -49,7 +62,7 @@ export class PokerEngine extends GameEngine {
   private smallBlind: number;
   private bigBlind: number;
   private dealerPosition: number = 0;
-  private stage: 'preflop' | 'flop' | 'turn' | 'river' | 'showdown' = 'preflop';
+  private stage: "preflop" | "flop" | "turn" | "river" | "showdown" = "preflop";
   private sidePots: { amount: number; players: string[] }[] = [];
 
   constructor(gameId: string, smallBlind: number = 1, bigBlind: number = 2) {
@@ -59,15 +72,39 @@ export class PokerEngine extends GameEngine {
   }
 
   private createDeck(): Card[] {
-    const suits: Card['suit'][] = ['hearts', 'diamonds', 'clubs', 'spades'];
-    const ranks: Card['rank'][] = ['A', '2', '3', '4', '5', '6', '7', '8', '9', 'T', 'J', 'Q', 'K'];
+    const suits: Card["suit"][] = ["hearts", "diamonds", "clubs", "spades"];
+    const ranks: Card["rank"][] = [
+      "A",
+      "2",
+      "3",
+      "4",
+      "5",
+      "6",
+      "7",
+      "8",
+      "9",
+      "T",
+      "J",
+      "Q",
+      "K",
+    ];
     const deck: Card[] = [];
 
     for (const suit of suits) {
       for (let i = 0; i < ranks.length; i++) {
         const rank = ranks[i];
-        const value = rank === 'A' ? 14 : rank === 'K' ? 13 : rank === 'Q' ? 12 : 
-                     rank === 'J' ? 11 : rank === 'T' ? 10 : parseInt(rank);
+        const value =
+          rank === "A"
+            ? 14
+            : rank === "K"
+              ? 13
+              : rank === "Q"
+                ? 12
+                : rank === "J"
+                  ? 11
+                  : rank === "T"
+                    ? 10
+                    : parseInt(rank);
         deck.push({ suit, rank, value });
       }
     }
@@ -77,18 +114,19 @@ export class PokerEngine extends GameEngine {
 
   private dealCards(): void {
     const players = this.getPlayers() as PokerPlayer[];
-    players.forEach(player => {
+    players.forEach((player) => {
       player.hand = [this.deck.pop()!, this.deck.pop()!];
     });
   }
 
   private postBlinds(): void {
     const players = this.getPlayers() as PokerPlayer[];
-    const activePlayersCount = players.filter(p => !p.isFolded).length;
-    
+    const activePlayersCount = players.filter((p) => !p.isFolded).length;
+
     if (activePlayersCount < 2) return;
 
-    const smallBlindPlayer = players[(this.dealerPosition + 1) % players.length];
+    const smallBlindPlayer =
+      players[(this.dealerPosition + 1) % players.length];
     const bigBlindPlayer = players[(this.dealerPosition + 2) % players.length];
 
     smallBlindPlayer.isSmallBlind = true;
@@ -96,7 +134,7 @@ export class PokerEngine extends GameEngine {
 
     this.forceBet(smallBlindPlayer.id, this.smallBlind);
     this.forceBet(bigBlindPlayer.id, this.bigBlind);
-    
+
     this.currentBet = this.bigBlind;
     this.actionOn = players[(this.dealerPosition + 3) % players.length].id;
   }
@@ -116,10 +154,13 @@ export class PokerEngine extends GameEngine {
     }
   }
 
-  private evaluateHand(playerCards: Card[], communityCards: Card[]): HandResult {
+  private evaluateHand(
+    playerCards: Card[],
+    communityCards: Card[],
+  ): HandResult {
     const allCards = [...playerCards, ...communityCards];
     const best5Cards = this.findBest5CardHand(allCards);
-    
+
     return this.getHandRank(best5Cards);
   }
 
@@ -127,7 +168,7 @@ export class PokerEngine extends GameEngine {
     // Generate all possible 5-card combinations
     const combinations: Card[][] = [];
     this.generateCombinations(cards, 5, [], 0, combinations);
-    
+
     let bestHand = combinations[0];
     let bestRank = this.getHandRank(bestHand);
 
@@ -143,11 +184,11 @@ export class PokerEngine extends GameEngine {
   }
 
   private generateCombinations(
-    cards: Card[], 
-    r: number, 
-    current: Card[], 
-    start: number, 
-    results: Card[][]
+    cards: Card[],
+    r: number,
+    current: Card[],
+    start: number,
+    results: Card[][],
   ): void {
     if (current.length === r) {
       results.push([...current]);
@@ -163,71 +204,103 @@ export class PokerEngine extends GameEngine {
 
   private getHandRank(cards: Card[]): HandResult {
     const sorted = cards.sort((a, b) => b.value - a.value);
-    const suits = sorted.map(c => c.suit);
-    const values = sorted.map(c => c.value);
-    
-    const isFlush = suits.every(suit => suit === suits[0]);
+    const suits = sorted.map((c) => c.suit);
+    const values = sorted.map((c) => c.value);
+
+    const isFlush = suits.every((suit) => suit === suits[0]);
     const isStraight = this.isStraight(values);
     const valueCounts = this.getValueCounts(values);
     const counts = Object.values(valueCounts).sort((a, b) => b - a);
 
     // Royal Flush
     if (isFlush && isStraight && values[0] === 14) {
-      return { rank: 9, name: 'Royal Flush', cards: sorted, kickers: [] };
+      return { rank: 9, name: "Royal Flush", cards: sorted, kickers: [] };
     }
-    
+
     // Straight Flush
     if (isFlush && isStraight) {
-      return { rank: 8, name: 'Straight Flush', cards: sorted, kickers: [values[0]] };
+      return {
+        rank: 8,
+        name: "Straight Flush",
+        cards: sorted,
+        kickers: [values[0]],
+      };
     }
-    
+
     // Four of a Kind
     if (counts[0] === 4) {
       const fourKind = this.findValueWithCount(valueCounts, 4);
       const kicker = this.findValueWithCount(valueCounts, 1);
-      return { rank: 7, name: 'Four of a Kind', cards: sorted, kickers: [fourKind, kicker] };
+      return {
+        rank: 7,
+        name: "Four of a Kind",
+        cards: sorted,
+        kickers: [fourKind, kicker],
+      };
     }
-    
+
     // Full House
     if (counts[0] === 3 && counts[1] === 2) {
       const threeKind = this.findValueWithCount(valueCounts, 3);
       const pair = this.findValueWithCount(valueCounts, 2);
-      return { rank: 6, name: 'Full House', cards: sorted, kickers: [threeKind, pair] };
+      return {
+        rank: 6,
+        name: "Full House",
+        cards: sorted,
+        kickers: [threeKind, pair],
+      };
     }
-    
+
     // Flush
     if (isFlush) {
-      return { rank: 5, name: 'Flush', cards: sorted, kickers: values };
+      return { rank: 5, name: "Flush", cards: sorted, kickers: values };
     }
-    
+
     // Straight
     if (isStraight) {
-      return { rank: 4, name: 'Straight', cards: sorted, kickers: [values[0]] };
+      return { rank: 4, name: "Straight", cards: sorted, kickers: [values[0]] };
     }
-    
+
     // Three of a Kind
     if (counts[0] === 3) {
       const threeKind = this.findValueWithCount(valueCounts, 3);
-      const kickers = values.filter(v => v !== threeKind).slice(0, 2);
-      return { rank: 3, name: 'Three of a Kind', cards: sorted, kickers: [threeKind, ...kickers] };
+      const kickers = values.filter((v) => v !== threeKind).slice(0, 2);
+      return {
+        rank: 3,
+        name: "Three of a Kind",
+        cards: sorted,
+        kickers: [threeKind, ...kickers],
+      };
     }
-    
+
     // Two Pair
     if (counts[0] === 2 && counts[1] === 2) {
-      const pairs = values.filter(v => valueCounts[v] === 2).sort((a, b) => b - a);
-      const kicker = values.find(v => valueCounts[v] === 1) || 0;
-      return { rank: 2, name: 'Two Pair', cards: sorted, kickers: [pairs[0], pairs[1], kicker] };
+      const pairs = values
+        .filter((v) => valueCounts[v] === 2)
+        .sort((a, b) => b - a);
+      const kicker = values.find((v) => valueCounts[v] === 1) || 0;
+      return {
+        rank: 2,
+        name: "Two Pair",
+        cards: sorted,
+        kickers: [pairs[0], pairs[1], kicker],
+      };
     }
-    
+
     // One Pair
     if (counts[0] === 2) {
       const pair = this.findValueWithCount(valueCounts, 2);
-      const kickers = values.filter(v => v !== pair).slice(0, 3);
-      return { rank: 1, name: 'One Pair', cards: sorted, kickers: [pair, ...kickers] };
+      const kickers = values.filter((v) => v !== pair).slice(0, 3);
+      return {
+        rank: 1,
+        name: "One Pair",
+        cards: sorted,
+        kickers: [pair, ...kickers],
+      };
     }
-    
+
     // High Card
-    return { rank: 0, name: 'High Card', cards: sorted, kickers: values };
+    return { rank: 0, name: "High Card", cards: sorted, kickers: values };
   }
 
   private isStraight(values: number[]): boolean {
@@ -240,9 +313,13 @@ export class PokerEngine extends GameEngine {
     }
 
     // Check for A-2-3-4-5 straight (wheel)
-    if (uniqueValues.includes(14) && uniqueValues.includes(5) && 
-        uniqueValues.includes(4) && uniqueValues.includes(3) && 
-        uniqueValues.includes(2)) {
+    if (
+      uniqueValues.includes(14) &&
+      uniqueValues.includes(5) &&
+      uniqueValues.includes(4) &&
+      uniqueValues.includes(3) &&
+      uniqueValues.includes(2)
+    ) {
       return true;
     }
 
@@ -251,13 +328,16 @@ export class PokerEngine extends GameEngine {
 
   private getValueCounts(values: number[]): { [key: number]: number } {
     const counts: { [key: number]: number } = {};
-    values.forEach(value => {
+    values.forEach((value) => {
       counts[value] = (counts[value] || 0) + 1;
     });
     return counts;
   }
 
-  private findValueWithCount(counts: { [key: number]: number }, count: number): number {
+  private findValueWithCount(
+    counts: { [key: number]: number },
+    count: number,
+  ): number {
     for (const [value, valueCount] of Object.entries(counts)) {
       if (valueCount === count) return parseInt(value);
     }
@@ -270,7 +350,11 @@ export class PokerEngine extends GameEngine {
     }
 
     // Compare kickers
-    for (let i = 0; i < Math.max(hand1.kickers.length, hand2.kickers.length); i++) {
+    for (
+      let i = 0;
+      i < Math.max(hand1.kickers.length, hand2.kickers.length);
+      i++
+    ) {
       const kicker1 = hand1.kickers[i] || 0;
       const kicker2 = hand2.kickers[i] || 0;
       if (kicker1 !== kicker2) {
@@ -283,16 +367,16 @@ export class PokerEngine extends GameEngine {
 
   private advanceAction(): void {
     const players = this.getPlayers() as PokerPlayer[];
-    const activePlayers = players.filter(p => !p.isFolded && !p.isAllIn);
-    
+    const activePlayers = players.filter((p) => !p.isFolded && !p.isAllIn);
+
     if (activePlayers.length <= 1) {
       this.advanceStage();
       return;
     }
 
-    let currentIndex = players.findIndex(p => p.id === this.actionOn);
+    let currentIndex = players.findIndex((p) => p.id === this.actionOn);
     let nextIndex = (currentIndex + 1) % players.length;
-    
+
     // Find next player who can act
     while (players[nextIndex].isFolded || players[nextIndex].isAllIn) {
       nextIndex = (nextIndex + 1) % players.length;
@@ -309,51 +393,55 @@ export class PokerEngine extends GameEngine {
   private advanceStage(): void {
     // Check if betting round is complete
     const players = this.getPlayers() as PokerPlayer[];
-    const activePlayers = players.filter(p => !p.isFolded);
-    
+    const activePlayers = players.filter((p) => !p.isFolded);
+
     if (activePlayers.length === 1) {
       this.endGame();
       return;
     }
 
     // Reset betting for next stage
-    players.forEach(player => {
+    players.forEach((player) => {
       player.currentBet = 0;
       player.hasActed = false;
     });
     this.currentBet = 0;
 
     switch (this.stage) {
-      case 'preflop':
-        this.stage = 'flop';
-        this.communityCards.push(this.deck.pop()!, this.deck.pop()!, this.deck.pop()!);
+      case "preflop":
+        this.stage = "flop";
+        this.communityCards.push(
+          this.deck.pop()!,
+          this.deck.pop()!,
+          this.deck.pop()!,
+        );
         break;
-      case 'flop':
-        this.stage = 'turn';
+      case "flop":
+        this.stage = "turn";
         this.communityCards.push(this.deck.pop()!);
         break;
-      case 'turn':
-        this.stage = 'river';
+      case "turn":
+        this.stage = "river";
         this.communityCards.push(this.deck.pop()!);
         break;
-      case 'river':
-        this.stage = 'showdown';
+      case "river":
+        this.stage = "showdown";
         this.determineWinners();
         return;
     }
 
     // Set action to first player after dealer
     this.actionOn = players[(this.dealerPosition + 1) % players.length].id;
-    this.emit('stageAdvanced', this.stage);
+    this.emit("stageAdvanced", this.stage);
   }
 
   private determineWinners(): void {
     const players = this.getPlayers() as PokerPlayer[];
-    const activePlayers = players.filter(p => !p.isFolded);
-    
-    const handResults = activePlayers.map(player => ({
+    const activePlayers = players.filter((p) => !p.isFolded);
+
+    const handResults = activePlayers.map((player) => ({
       playerId: player.id,
-      hand: this.evaluateHand(player.hand, this.communityCards)
+      hand: this.evaluateHand(player.hand, this.communityCards),
     }));
 
     // Sort by hand strength (best first)
@@ -365,37 +453,37 @@ export class PokerEngine extends GameEngine {
     let winningAmount = this.pot;
 
     // Find all players with the best hand
-    const bestHands = handResults.filter(result => 
-      this.compareHands(result.hand, currentRank.hand) === 0
+    const bestHands = handResults.filter(
+      (result) => this.compareHands(result.hand, currentRank.hand) === 0,
     );
 
     const winAmountPerPlayer = Math.floor(winningAmount / bestHands.length);
-    
+
     for (const winner of bestHands) {
       const player = this.getPlayer(winner.playerId) as PokerPlayer;
       player.chips += winAmountPerPlayer;
       winners.push({
         playerId: winner.playerId,
         amount: winAmountPerPlayer,
-        hand: winner.hand
+        hand: winner.hand,
       });
     }
 
-    this.emit('gameEnded', { winners, pot: this.pot });
+    this.emit("gameEnded", { winners, pot: this.pot });
   }
 
   // Public API Methods
   startGame(): void {
     if (!this.canStart()) {
-      throw new Error('Not enough players to start game');
+      throw new Error("Not enough players to start game");
     }
 
-    this.setState('starting');
+    this.setState("starting");
     this.deck = this.createDeck();
     this.communityCards = [];
     this.pot = 0;
     this.currentBet = 0;
-    this.stage = 'preflop';
+    this.stage = "preflop";
 
     // Initialize players
     const players = this.getPlayers() as PokerPlayer[];
@@ -414,60 +502,63 @@ export class PokerEngine extends GameEngine {
 
     this.dealCards();
     this.postBlinds();
-    this.setState('playing');
+    this.setState("playing");
 
-    this.emit('gameStarted', this.getGameState());
+    this.emit("gameStarted", this.getGameState());
   }
 
   endGame(): void {
-    this.setState('ended');
+    this.setState("ended");
     this.dealerPosition = (this.dealerPosition + 1) % this.getPlayers().length;
-    
+
     // Remove players with no chips
     const players = this.getPlayers() as PokerPlayer[];
-    players.forEach(player => {
+    players.forEach((player) => {
       if (player.chips <= 0) {
         this.removePlayer(player.id);
       }
     });
 
-    this.emit('gameEnded');
+    this.emit("gameEnded");
   }
 
   processAction(playerId: string, action: any): any {
     if (!this.validateAction(playerId, action)) {
-      return { success: false, error: 'Invalid action' };
+      return { success: false, error: "Invalid action" };
     }
 
     const player = this.getPlayer(playerId) as PokerPlayer;
-    
+
     switch (action.type) {
-      case 'fold':
+      case "fold":
         player.isFolded = true;
         break;
-        
-      case 'check':
+
+      case "check":
         if (this.currentBet > player.currentBet) {
-          return { success: false, error: 'Cannot check, must call or fold' };
+          return { success: false, error: "Cannot check, must call or fold" };
         }
         break;
-        
-      case 'call':
+
+      case "call":
         const callAmount = this.currentBet - player.currentBet;
         this.forceBet(playerId, callAmount);
         break;
-        
-      case 'bet':
-      case 'raise':
+
+      case "bet":
+      case "raise":
         const betAmount = action.amount;
         if (betAmount < this.currentBet * 2) {
-          return { success: false, error: 'Raise must be at least double current bet' };
+          return {
+            success: false,
+            error: "Raise must be at least double current bet",
+          };
         }
         this.forceBet(playerId, betAmount - player.currentBet);
         this.currentBet = betAmount;
         break;
-        
-      case 'allIn':
+
+      case "allIn":
         this.forceBet(playerId, player.chips);
         if (player.currentBet > this.currentBet) {
           this.currentBet = player.currentBet;
@@ -477,17 +568,17 @@ export class PokerEngine extends GameEngine {
 
     player.hasActed = true;
     this.advanceAction();
-    
+
     return { success: true, gameState: this.getGameState() };
   }
 
   validateAction(playerId: string, action: any): boolean {
     if (this.actionOn !== playerId) return false;
-    
+
     const player = this.getPlayer(playerId) as PokerPlayer;
     if (!player || player.isFolded || player.isAllIn) return false;
 
-    const validActions = ['fold', 'check', 'call', 'bet', 'raise', 'allIn'];
+    const validActions = ["fold", "check", "call", "bet", "raise", "allIn"];
     return validActions.includes(action.type);
   }
 
@@ -501,7 +592,7 @@ export class PokerEngine extends GameEngine {
       smallBlind: this.smallBlind,
       bigBlind: this.bigBlind,
       dealerPosition: this.dealerPosition,
-      winners: []
+      winners: [],
     };
   }
 
@@ -519,7 +610,7 @@ export class PokerEngine extends GameEngine {
       isFolded: false,
       isAllIn: false,
       hasActed: false,
-      seatNumber: this.players.size
+      seatNumber: this.players.size,
     };
 
     return super.addPlayer(pokerPlayer);

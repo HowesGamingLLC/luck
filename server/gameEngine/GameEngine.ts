@@ -1,12 +1,12 @@
-import { createHash, randomBytes } from 'crypto';
-import { EventEmitter } from 'events';
+import { createHash, randomBytes } from "crypto";
+import { EventEmitter } from "events";
 
 export interface GameResult {
   gameId: string;
   playerId: string;
   outcome: any;
   winAmount: number;
-  currency: 'GC' | 'SC';
+  currency: "GC" | "SC";
   timestamp: Date;
   provablyFairSeed: string;
   clientSeed: string;
@@ -30,7 +30,7 @@ export abstract class GameEngine extends EventEmitter {
   protected gameId: string;
   protected minPlayers: number;
   protected maxPlayers: number;
-  
+
   constructor(gameId: string, minPlayers = 1, maxPlayers = 10) {
     super();
     this.gameId = gameId;
@@ -43,12 +43,12 @@ export abstract class GameEngine extends EventEmitter {
     serverSeed: string,
     clientSeed: string,
     nonce: number,
-    range: number = 100
+    range: number = 100,
   ): number {
-    const hash = createHash('sha256')
+    const hash = createHash("sha256")
       .update(`${serverSeed}:${clientSeed}:${nonce}`)
-      .digest('hex');
-    
+      .digest("hex");
+
     // Convert first 8 hex chars to number and normalize to range
     const hexSubstring = hash.substring(0, 8);
     const intValue = parseInt(hexSubstring, 16);
@@ -56,11 +56,15 @@ export abstract class GameEngine extends EventEmitter {
   }
 
   protected generateServerSeed(): string {
-    return randomBytes(32).toString('hex');
+    return randomBytes(32).toString("hex");
   }
 
   protected validateClientSeed(clientSeed: string): boolean {
-    return typeof clientSeed === 'string' && clientSeed.length >= 1 && clientSeed.length <= 64;
+    return (
+      typeof clientSeed === "string" &&
+      clientSeed.length >= 1 &&
+      clientSeed.length <= 64
+    );
   }
 
   // Player Management
@@ -69,14 +73,14 @@ export abstract class GameEngine extends EventEmitter {
       return false;
     }
     this.players.set(player.id, player);
-    this.emit('playerJoined', player);
+    this.emit("playerJoined", player);
     return true;
   }
 
   removePlayer(playerId: string): boolean {
     const removed = this.players.delete(playerId);
     if (removed) {
-      this.emit('playerLeft', playerId);
+      this.emit("playerLeft", playerId);
     }
     return removed;
   }
@@ -101,36 +105,45 @@ export abstract class GameEngine extends EventEmitter {
   abstract validateAction(playerId: string, action: any): boolean;
 
   // Transaction handling
-  protected async deductBalance(playerId: string, amount: number, currency: 'GC' | 'SC'): Promise<boolean> {
+  protected async deductBalance(
+    playerId: string,
+    amount: number,
+    currency: "GC" | "SC",
+  ): Promise<boolean> {
     const player = this.players.get(playerId);
     if (!player) return false;
 
-    const currentBalance = currency === 'GC' ? player.balance.goldCoins : player.balance.sweepCoins;
+    const currentBalance =
+      currency === "GC" ? player.balance.goldCoins : player.balance.sweepCoins;
     if (currentBalance < amount) return false;
 
-    if (currency === 'GC') {
+    if (currency === "GC") {
       player.balance.goldCoins -= amount;
     } else {
       player.balance.sweepCoins -= amount;
     }
 
     // In production, this would also update the database
-    this.emit('balanceChanged', playerId, player.balance);
+    this.emit("balanceChanged", playerId, player.balance);
     return true;
   }
 
-  protected async addBalance(playerId: string, amount: number, currency: 'GC' | 'SC'): Promise<void> {
+  protected async addBalance(
+    playerId: string,
+    amount: number,
+    currency: "GC" | "SC",
+  ): Promise<void> {
     const player = this.players.get(playerId);
     if (!player) return;
 
-    if (currency === 'GC') {
+    if (currency === "GC") {
       player.balance.goldCoins += amount;
     } else {
       player.balance.sweepCoins += amount;
     }
 
     // In production, this would also update the database
-    this.emit('balanceChanged', playerId, player.balance);
+    this.emit("balanceChanged", playerId, player.balance);
   }
 
   // Utility methods
@@ -144,18 +157,21 @@ export abstract class GameEngine extends EventEmitter {
   }
 
   protected generateId(): string {
-    return randomBytes(16).toString('hex');
+    return randomBytes(16).toString("hex");
   }
 
   // Game lifecycle
-  protected gameState_: 'waiting' | 'starting' | 'playing' | 'ended' = 'waiting';
+  protected gameState_: "waiting" | "starting" | "playing" | "ended" =
+    "waiting";
 
   get gameState(): string {
     return this.gameState_;
   }
 
-  protected setState(state: 'waiting' | 'starting' | 'playing' | 'ended'): void {
+  protected setState(
+    state: "waiting" | "starting" | "playing" | "ended",
+  ): void {
     this.gameState_ = state;
-    this.emit('stateChanged', state);
+    this.emit("stateChanged", state);
   }
 }

@@ -1,4 +1,4 @@
-import { EventEmitter } from 'events';
+import { EventEmitter } from "events";
 
 export interface Game {
   id: string;
@@ -7,7 +7,7 @@ export interface Game {
   homeTeam: string;
   awayTeam: string;
   gameTime: Date;
-  status: 'upcoming' | 'live' | 'finished' | 'postponed' | 'cancelled';
+  status: "upcoming" | "live" | "finished" | "postponed" | "cancelled";
   homeScore?: number;
   awayScore?: number;
   period?: string; // Quarter, Half, Inning, etc.
@@ -19,10 +19,10 @@ export interface Game {
 export interface Market {
   id: string;
   gameId: string;
-  type: 'spread' | 'moneyline' | 'total' | 'prop';
+  type: "spread" | "moneyline" | "total" | "prop";
   name: string;
   description: string;
-  status: 'open' | 'closed' | 'suspended';
+  status: "open" | "closed" | "suspended";
   outcomes: Outcome[];
   limits: {
     min: number;
@@ -42,12 +42,12 @@ export interface Outcome {
 export interface Bet {
   id: string;
   playerId: string;
-  type: 'straight' | 'parlay' | 'teaser';
+  type: "straight" | "parlay" | "teaser";
   selections: BetSelection[];
   wager: number;
-  currency: 'GC' | 'SC';
+  currency: "GC" | "SC";
   potentialPayout: number;
-  status: 'pending' | 'won' | 'lost' | 'pushed' | 'cancelled';
+  status: "pending" | "won" | "lost" | "pushed" | "cancelled";
   placedAt: Date;
   settledAt?: Date;
   actualPayout?: number;
@@ -63,7 +63,7 @@ export interface BetSelection {
 }
 
 export interface ParlayTicket extends Bet {
-  type: 'parlay';
+  type: "parlay";
   combinedOdds: number;
   minSelectionsRequired: number;
 }
@@ -80,8 +80,15 @@ export interface LiveData {
 
 export interface GameEvent {
   id: string;
-  type: 'goal' | 'touchdown' | 'basket' | 'run' | 'timeout' | 'penalty' | 'injury';
-  team: 'home' | 'away';
+  type:
+    | "goal"
+    | "touchdown"
+    | "basket"
+    | "run"
+    | "timeout"
+    | "penalty"
+    | "injury";
+  team: "home" | "away";
   player?: string;
   description: string;
   timestamp: Date;
@@ -110,7 +117,7 @@ export class SportsBettingEngine extends EventEmitter {
   } = {
     maxExposure: 10000,
     maxParlayLegs: 12,
-    maxPayout: 50000
+    maxPayout: 50000,
   };
 
   constructor() {
@@ -122,26 +129,26 @@ export class SportsBettingEngine extends EventEmitter {
   private initializeSampleData(): void {
     // Sample NFL game
     const nflGame: Game = {
-      id: 'nfl-game-1',
-      sport: 'NFL',
-      league: 'NFL',
-      homeTeam: 'Kansas City Chiefs',
-      awayTeam: 'Buffalo Bills',
+      id: "nfl-game-1",
+      sport: "NFL",
+      league: "NFL",
+      homeTeam: "Kansas City Chiefs",
+      awayTeam: "Buffalo Bills",
       gameTime: new Date(Date.now() + 2 * 60 * 60 * 1000),
-      status: 'upcoming',
-      venue: 'Arrowhead Stadium'
+      status: "upcoming",
+      venue: "Arrowhead Stadium",
     };
 
     // Sample NBA game
     const nbaGame: Game = {
-      id: 'nba-game-1',
-      sport: 'NBA',
-      league: 'NBA',
-      homeTeam: 'Los Angeles Lakers',
-      awayTeam: 'Boston Celtics',
+      id: "nba-game-1",
+      sport: "NBA",
+      league: "NBA",
+      homeTeam: "Los Angeles Lakers",
+      awayTeam: "Boston Celtics",
       gameTime: new Date(Date.now() + 4 * 60 * 60 * 1000),
-      status: 'upcoming',
-      venue: 'Crypto.com Arena'
+      status: "upcoming",
+      venue: "Crypto.com Arena",
     };
 
     this.games.set(nflGame.id, nflGame);
@@ -157,10 +164,10 @@ export class SportsBettingEngine extends EventEmitter {
     const spreadMarket: Market = {
       id: `${game.id}-spread`,
       gameId: game.id,
-      type: 'spread',
-      name: 'Point Spread',
-      description: 'Point spread betting',
-      status: 'open',
+      type: "spread",
+      name: "Point Spread",
+      description: "Point spread betting",
+      status: "open",
       limits: { min: 0.25, max: 500 },
       outcomes: [
         {
@@ -168,68 +175,68 @@ export class SportsBettingEngine extends EventEmitter {
           name: `${game.homeTeam} -3.5`,
           odds: -110,
           line: -3.5,
-          probability: 0.524
+          probability: 0.524,
         },
         {
           id: `${game.id}-spread-away`,
           name: `${game.awayTeam} +3.5`,
           odds: -110,
           line: 3.5,
-          probability: 0.524
-        }
-      ]
+          probability: 0.524,
+        },
+      ],
     };
 
     // Moneyline market
     const moneylineMarket: Market = {
       id: `${game.id}-moneyline`,
       gameId: game.id,
-      type: 'moneyline',
-      name: 'Moneyline',
-      description: 'Win outright',
-      status: 'open',
+      type: "moneyline",
+      name: "Moneyline",
+      description: "Win outright",
+      status: "open",
       limits: { min: 0.25, max: 250 },
       outcomes: [
         {
           id: `${game.id}-ml-home`,
           name: game.homeTeam,
           odds: -180,
-          probability: 0.643
+          probability: 0.643,
         },
         {
           id: `${game.id}-ml-away`,
           name: game.awayTeam,
           odds: 150,
-          probability: 0.400
-        }
-      ]
+          probability: 0.4,
+        },
+      ],
     };
 
     // Total (Over/Under) market
     const totalMarket: Market = {
       id: `${game.id}-total`,
       gameId: game.id,
-      type: 'total',
-      name: 'Total Points',
-      description: 'Over/Under total points',
-      status: 'open',
+      type: "total",
+      name: "Total Points",
+      description: "Over/Under total points",
+      status: "open",
       limits: { min: 0.25, max: 300 },
       outcomes: [
         {
           id: `${game.id}-total-over`,
-          name: 'Over 47.5',
+          name: "Over 47.5",
           odds: -110,
           line: 47.5,
-          probability: 0.524
+          probability: 0.524,
         },
         {
           id: `${game.id}-total-under`,
-          name: 'Under 47.5',
+          name: "Under 47.5",
           odds: -110,
           line: 47.5,
-          probability: 0.524
-        }
-      ]
+          probability: 0.524,
+        },
+      ],
     };
 
     this.markets.set(spreadMarket.id, spreadMarket);
@@ -251,9 +258,9 @@ export class SportsBettingEngine extends EventEmitter {
 
   private updateLiveGames(): void {
     for (const [gameId, game] of this.games) {
-      if (game.status === 'live') {
+      if (game.status === "live") {
         this.simulateLiveGameUpdate(game);
-      } else if (game.status === 'upcoming' && game.gameTime <= new Date()) {
+      } else if (game.status === "upcoming" && game.gameTime <= new Date()) {
         this.startGame(gameId);
       }
     }
@@ -264,11 +271,12 @@ export class SportsBettingEngine extends EventEmitter {
     if (!liveData) return;
 
     // Simulate score updates
-    if (Math.random() < 0.1) { // 10% chance of score change
-      const scoringTeam = Math.random() < 0.5 ? 'home' : 'away';
+    if (Math.random() < 0.1) {
+      // 10% chance of score change
+      const scoringTeam = Math.random() < 0.5 ? "home" : "away";
       const points = this.getRandomScore(game.sport);
 
-      if (scoringTeam === 'home') {
+      if (scoringTeam === "home") {
         liveData.homeScore += points;
         game.homeScore = liveData.homeScore;
       } else {
@@ -282,34 +290,44 @@ export class SportsBettingEngine extends EventEmitter {
         team: scoringTeam,
         description: `Score: ${points} points`,
         timestamp: new Date(),
-        period: liveData.period
+        period: liveData.period,
       };
 
       liveData.events.push(event);
       liveData.updatedAt = new Date();
 
-      this.emit('liveUpdate', { gameId: game.id, liveData, event });
+      this.emit("liveUpdate", { gameId: game.id, liveData, event });
       this.adjustLiveOdds(game.id);
     }
   }
 
   private getRandomScore(sport: string): number {
     switch (sport) {
-      case 'NFL': return Math.random() < 0.7 ? 7 : 3; // TD or FG
-      case 'NBA': return Math.random() < 0.6 ? 2 : 3; // 2pt or 3pt
-      case 'MLB': return 1; // Single run
-      case 'NHL': return 1; // Single goal
-      default: return 1;
+      case "NFL":
+        return Math.random() < 0.7 ? 7 : 3; // TD or FG
+      case "NBA":
+        return Math.random() < 0.6 ? 2 : 3; // 2pt or 3pt
+      case "MLB":
+        return 1; // Single run
+      case "NHL":
+        return 1; // Single goal
+      default:
+        return 1;
     }
   }
 
-  private getScoreEventType(sport: string): GameEvent['type'] {
+  private getScoreEventType(sport: string): GameEvent["type"] {
     switch (sport) {
-      case 'NFL': return 'touchdown';
-      case 'NBA': return 'basket';
-      case 'MLB': return 'run';
-      case 'NHL': return 'goal';
-      default: return 'goal';
+      case "NFL":
+        return "touchdown";
+      case "NBA":
+        return "basket";
+      case "MLB":
+        return "run";
+      case "NHL":
+        return "goal";
+      default:
+        return "goal";
     }
   }
 
@@ -320,17 +338,22 @@ export class SportsBettingEngine extends EventEmitter {
 
     // Adjust moneyline odds based on current score
     const scoreDiff = liveData.homeScore - liveData.awayScore;
-    const moneylineMarket = Array.from(this.markets.values())
-      .find(m => m.gameId === gameId && m.type === 'moneyline');
+    const moneylineMarket = Array.from(this.markets.values()).find(
+      (m) => m.gameId === gameId && m.type === "moneyline",
+    );
 
     if (moneylineMarket) {
-      const homeOutcome = moneylineMarket.outcomes.find(o => o.name === game.homeTeam);
-      const awayOutcome = moneylineMarket.outcomes.find(o => o.name === game.awayTeam);
+      const homeOutcome = moneylineMarket.outcomes.find(
+        (o) => o.name === game.homeTeam,
+      );
+      const awayOutcome = moneylineMarket.outcomes.find(
+        (o) => o.name === game.awayTeam,
+      );
 
       if (homeOutcome && awayOutcome) {
         // Adjust odds based on score differential
         const adjustment = scoreDiff * 20; // Simple adjustment factor
-        
+
         const oldHomeOdds = homeOutcome.odds;
         const oldAwayOdds = awayOutcome.odds;
 
@@ -338,10 +361,25 @@ export class SportsBettingEngine extends EventEmitter {
         awayOutcome.odds += adjustment;
 
         // Record odds movements
-        this.recordOddsMovement(moneylineMarket.id, homeOutcome.id, oldHomeOdds, homeOutcome.odds, 'Score change');
-        this.recordOddsMovement(moneylineMarket.id, awayOutcome.id, oldAwayOdds, awayOutcome.odds, 'Score change');
+        this.recordOddsMovement(
+          moneylineMarket.id,
+          homeOutcome.id,
+          oldHomeOdds,
+          homeOutcome.odds,
+          "Score change",
+        );
+        this.recordOddsMovement(
+          moneylineMarket.id,
+          awayOutcome.id,
+          oldAwayOdds,
+          awayOutcome.odds,
+          "Score change",
+        );
 
-        this.emit('oddsChanged', { marketId: moneylineMarket.id, reason: 'Live score update' });
+        this.emit("oddsChanged", {
+          marketId: moneylineMarket.id,
+          reason: "Live score update",
+        });
       }
     }
   }
@@ -349,8 +387,9 @@ export class SportsBettingEngine extends EventEmitter {
   private simulateOddsMovements(): void {
     // Randomly adjust odds for open markets
     for (const [marketId, market] of this.markets) {
-      if (market.status === 'open' && Math.random() < 0.3) { // 30% chance
-        this.adjustMarketOdds(market, 'Market movement');
+      if (market.status === "open" && Math.random() < 0.3) {
+        // 30% chance
+        this.adjustMarketOdds(market, "Market movement");
       }
     }
   }
@@ -365,21 +404,33 @@ export class SportsBettingEngine extends EventEmitter {
       outcome.odds = Math.max(-500, Math.min(500, outcome.odds));
 
       if (Math.abs(adjustment) > 5) {
-        this.recordOddsMovement(market.id, outcome.id, oldOdds, outcome.odds, reason);
+        this.recordOddsMovement(
+          market.id,
+          outcome.id,
+          oldOdds,
+          outcome.odds,
+          reason,
+        );
       }
     }
 
-    this.emit('oddsChanged', { marketId: market.id, reason });
+    this.emit("oddsChanged", { marketId: market.id, reason });
   }
 
-  private recordOddsMovement(marketId: string, outcomeId: string, oldOdds: number, newOdds: number, reason: string): void {
+  private recordOddsMovement(
+    marketId: string,
+    outcomeId: string,
+    oldOdds: number,
+    newOdds: number,
+    reason: string,
+  ): void {
     const movement: OddsMovement = {
       marketId,
       outcomeId,
       oldOdds,
       newOdds,
       timestamp: new Date(),
-      reason
+      reason,
     };
 
     if (!this.oddsHistory.has(outcomeId)) {
@@ -392,7 +443,7 @@ export class SportsBettingEngine extends EventEmitter {
     const game = this.games.get(gameId);
     if (!game) return;
 
-    game.status = 'live';
+    game.status = "live";
     game.homeScore = 0;
     game.awayScore = 0;
 
@@ -400,14 +451,14 @@ export class SportsBettingEngine extends EventEmitter {
       gameId,
       homeScore: 0,
       awayScore: 0,
-      period: '1st',
-      timeRemaining: '15:00',
+      period: "1st",
+      timeRemaining: "15:00",
       events: [],
-      updatedAt: new Date()
+      updatedAt: new Date(),
     };
 
     this.liveData.set(gameId, liveData);
-    this.emit('gameStarted', { gameId, game, liveData });
+    this.emit("gameStarted", { gameId, game, liveData });
   }
 
   private calculateParlayOdds(selections: BetSelection[]): number {
@@ -423,9 +474,9 @@ export class SportsBettingEngine extends EventEmitter {
 
   private americanToDecimalOdds(americanOdds: number): number {
     if (americanOdds > 0) {
-      return (americanOdds / 100) + 1;
+      return americanOdds / 100 + 1;
     } else {
-      return (100 / Math.abs(americanOdds)) + 1;
+      return 100 / Math.abs(americanOdds) + 1;
     }
   }
 
@@ -439,30 +490,36 @@ export class SportsBettingEngine extends EventEmitter {
 
   private calculatePayout(wager: number, odds: number): number {
     if (odds > 0) {
-      return wager + (wager * odds / 100);
+      return wager + (wager * odds) / 100;
     } else {
-      return wager + (wager * 100 / Math.abs(odds));
+      return wager + (wager * 100) / Math.abs(odds);
     }
   }
 
-  private validateBet(bet: Omit<Bet, 'id' | 'placedAt' | 'status'>): { valid: boolean; error?: string } {
+  private validateBet(bet: Omit<Bet, "id" | "placedAt" | "status">): {
+    valid: boolean;
+    error?: string;
+  } {
     // Check minimum wager
     if (bet.wager < 0.25) {
-      return { valid: false, error: 'Minimum wager is $0.25' };
+      return { valid: false, error: "Minimum wager is $0.25" };
     }
 
     // Check selections
     if (bet.selections.length === 0) {
-      return { valid: false, error: 'No selections provided' };
+      return { valid: false, error: "No selections provided" };
     }
 
     // Validate parlay requirements
-    if (bet.type === 'parlay') {
+    if (bet.type === "parlay") {
       if (bet.selections.length < 2) {
-        return { valid: false, error: 'Parlay requires at least 2 selections' };
+        return { valid: false, error: "Parlay requires at least 2 selections" };
       }
       if (bet.selections.length > this.riskLimits.maxParlayLegs) {
-        return { valid: false, error: `Maximum ${this.riskLimits.maxParlayLegs} selections allowed` };
+        return {
+          valid: false,
+          error: `Maximum ${this.riskLimits.maxParlayLegs} selections allowed`,
+        };
       }
     }
 
@@ -470,26 +527,32 @@ export class SportsBettingEngine extends EventEmitter {
     for (const selection of bet.selections) {
       const market = this.markets.get(selection.marketId);
       if (!market) {
-        return { valid: false, error: 'Market not found' };
+        return { valid: false, error: "Market not found" };
       }
-      if (market.status !== 'open') {
-        return { valid: false, error: 'Market is not accepting bets' };
+      if (market.status !== "open") {
+        return { valid: false, error: "Market is not accepting bets" };
       }
       if (bet.wager < market.limits.min || bet.wager > market.limits.max) {
-        return { valid: false, error: `Wager must be between $${market.limits.min} and $${market.limits.max}` };
+        return {
+          valid: false,
+          error: `Wager must be between $${market.limits.min} and $${market.limits.max}`,
+        };
       }
     }
 
     // Check maximum payout
     if (bet.potentialPayout > this.riskLimits.maxPayout) {
-      return { valid: false, error: `Maximum payout is $${this.riskLimits.maxPayout}` };
+      return {
+        valid: false,
+        error: `Maximum payout is $${this.riskLimits.maxPayout}`,
+      };
     }
 
     return { valid: true };
   }
 
   private settleBet(bet: Bet): void {
-    if (bet.status !== 'pending') return;
+    if (bet.status !== "pending") return;
 
     let isWinner = true;
     let allSettled = true;
@@ -498,7 +561,7 @@ export class SportsBettingEngine extends EventEmitter {
       const market = this.markets.get(selection.marketId);
       if (!market) continue;
 
-      const outcome = market.outcomes.find(o => o.id === selection.outcomeId);
+      const outcome = market.outcomes.find((o) => o.id === selection.outcomeId);
       if (!outcome || outcome.isWinning === undefined) {
         allSettled = false;
         continue;
@@ -513,15 +576,15 @@ export class SportsBettingEngine extends EventEmitter {
     if (!allSettled) return; // Wait for all selections to be settled
 
     if (isWinner) {
-      bet.status = 'won';
+      bet.status = "won";
       bet.actualPayout = bet.potentialPayout;
     } else {
-      bet.status = 'lost';
+      bet.status = "lost";
       bet.actualPayout = 0;
     }
 
     bet.settledAt = new Date();
-    this.emit('betSettled', bet);
+    this.emit("betSettled", bet);
   }
 
   private generateId(): string {
@@ -529,14 +592,14 @@ export class SportsBettingEngine extends EventEmitter {
   }
 
   // Public API Methods
-  public getGames(sport?: string, status?: Game['status']): Game[] {
+  public getGames(sport?: string, status?: Game["status"]): Game[] {
     let games = Array.from(this.games.values());
-    
+
     if (sport) {
-      games = games.filter(g => g.sport === sport);
+      games = games.filter((g) => g.sport === sport);
     }
     if (status) {
-      games = games.filter(g => g.status === status);
+      games = games.filter((g) => g.status === status);
     }
 
     return games;
@@ -547,14 +610,18 @@ export class SportsBettingEngine extends EventEmitter {
   }
 
   public getMarketsForGame(gameId: string): Market[] {
-    return Array.from(this.markets.values()).filter(m => m.gameId === gameId);
+    return Array.from(this.markets.values()).filter((m) => m.gameId === gameId);
   }
 
   public getMarket(marketId: string): Market | undefined {
     return this.markets.get(marketId);
   }
 
-  public placeBet(betData: Omit<Bet, 'id' | 'placedAt' | 'status'>): { success: boolean; betId?: string; error?: string } {
+  public placeBet(betData: Omit<Bet, "id" | "placedAt" | "status">): {
+    success: boolean;
+    betId?: string;
+    error?: string;
+  } {
     const validation = this.validateBet(betData);
     if (!validation.valid) {
       return { success: false, error: validation.error };
@@ -562,7 +629,7 @@ export class SportsBettingEngine extends EventEmitter {
 
     // Calculate potential payout
     let potentialPayout: number;
-    if (betData.type === 'parlay') {
+    if (betData.type === "parlay") {
       const combinedOdds = this.calculateParlayOdds(betData.selections);
       potentialPayout = this.calculatePayout(betData.wager, combinedOdds);
     } else {
@@ -574,12 +641,12 @@ export class SportsBettingEngine extends EventEmitter {
       ...betData,
       id: this.generateId(),
       potentialPayout,
-      status: 'pending',
-      placedAt: new Date()
+      status: "pending",
+      placedAt: new Date(),
     };
 
     this.bets.set(bet.id, bet);
-    this.emit('betPlaced', bet);
+    this.emit("betPlaced", bet);
 
     return { success: true, betId: bet.id };
   }
@@ -589,7 +656,9 @@ export class SportsBettingEngine extends EventEmitter {
   }
 
   public getPlayerBets(playerId: string): Bet[] {
-    return Array.from(this.bets.values()).filter(b => b.playerId === playerId);
+    return Array.from(this.bets.values()).filter(
+      (b) => b.playerId === playerId,
+    );
   }
 
   public getLiveData(gameId: string): LiveData | undefined {
@@ -600,11 +669,15 @@ export class SportsBettingEngine extends EventEmitter {
     return this.oddsHistory.get(outcomeId) || [];
   }
 
-  public finishGame(gameId: string, homeScore: number, awayScore: number): void {
+  public finishGame(
+    gameId: string,
+    homeScore: number,
+    awayScore: number,
+  ): void {
     const game = this.games.get(gameId);
     if (!game) return;
 
-    game.status = 'finished';
+    game.status = "finished";
     game.homeScore = homeScore;
     game.awayScore = awayScore;
 
@@ -615,22 +688,27 @@ export class SportsBettingEngine extends EventEmitter {
     }
 
     // Settle all related bets
-    const relatedBets = Array.from(this.bets.values())
-      .filter(bet => bet.selections.some(s => s.gameId === gameId));
-    
+    const relatedBets = Array.from(this.bets.values()).filter((bet) =>
+      bet.selections.some((s) => s.gameId === gameId),
+    );
+
     for (const bet of relatedBets) {
       this.settleBet(bet);
     }
 
-    this.emit('gameFinished', { gameId, homeScore, awayScore });
+    this.emit("gameFinished", { gameId, homeScore, awayScore });
   }
 
-  private settleMarket(market: Market, homeScore: number, awayScore: number): void {
+  private settleMarket(
+    market: Market,
+    homeScore: number,
+    awayScore: number,
+  ): void {
     const scoreDiff = homeScore - awayScore;
 
     switch (market.type) {
-      case 'moneyline':
-        market.outcomes.forEach(outcome => {
+      case "moneyline":
+        market.outcomes.forEach((outcome) => {
           const game = this.games.get(market.gameId)!;
           if (outcome.name === game.homeTeam) {
             outcome.isWinning = homeScore > awayScore;
@@ -640,20 +718,22 @@ export class SportsBettingEngine extends EventEmitter {
         });
         break;
 
-      case 'spread':
-        market.outcomes.forEach(outcome => {
-          if (outcome.line! < 0) { // Home team spread
+      case "spread":
+        market.outcomes.forEach((outcome) => {
+          if (outcome.line! < 0) {
+            // Home team spread
             outcome.isWinning = scoreDiff > Math.abs(outcome.line!);
-          } else { // Away team spread
+          } else {
+            // Away team spread
             outcome.isWinning = scoreDiff < -Math.abs(outcome.line!);
           }
         });
         break;
 
-      case 'total':
+      case "total":
         const totalScore = homeScore + awayScore;
-        market.outcomes.forEach(outcome => {
-          if (outcome.name.includes('Over')) {
+        market.outcomes.forEach((outcome) => {
+          if (outcome.name.includes("Over")) {
             outcome.isWinning = totalScore > outcome.line!;
           } else {
             outcome.isWinning = totalScore < outcome.line!;
@@ -662,7 +742,7 @@ export class SportsBettingEngine extends EventEmitter {
         break;
     }
 
-    market.status = 'closed';
+    market.status = "closed";
   }
 
   public updateRiskLimits(limits: Partial<typeof this.riskLimits>): void {
@@ -672,16 +752,16 @@ export class SportsBettingEngine extends EventEmitter {
   public suspendMarket(marketId: string): void {
     const market = this.markets.get(marketId);
     if (market) {
-      market.status = 'suspended';
-      this.emit('marketSuspended', marketId);
+      market.status = "suspended";
+      this.emit("marketSuspended", marketId);
     }
   }
 
   public reopenMarket(marketId: string): void {
     const market = this.markets.get(marketId);
     if (market) {
-      market.status = 'open';
-      this.emit('marketReopened', marketId);
+      market.status = "open";
+      this.emit("marketReopened", marketId);
     }
   }
 }

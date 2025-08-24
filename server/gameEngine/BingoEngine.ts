@@ -1,4 +1,4 @@
-import { GameEngine, Player, GameResult } from './GameEngine';
+import { GameEngine, Player, GameResult } from "./GameEngine";
 
 export interface BingoCard {
   id: string;
@@ -8,7 +8,7 @@ export interface BingoCard {
 }
 
 export interface CalledNumber {
-  letter: 'B' | 'I' | 'N' | 'G' | 'O';
+  letter: "B" | "I" | "N" | "G" | "O";
   number: number;
   callTime: Date;
   callOrder: number;
@@ -17,7 +17,7 @@ export interface CalledNumber {
 export interface BingoRoom {
   id: string;
   name: string;
-  type: 'speed' | 'regular' | 'coverall' | 'progressive';
+  type: "speed" | "regular" | "coverall" | "progressive";
   buyIn: { gc: number; sc: number };
   prize: { gc: number; sc: number };
   maxPlayers: number;
@@ -42,11 +42,16 @@ export interface BingoPlayer extends Player {
 
 export interface BingoGameState {
   room: BingoRoom;
-  stage: 'waiting' | 'starting' | 'playing' | 'ended';
+  stage: "waiting" | "starting" | "playing" | "ended";
   calledNumbers: CalledNumber[];
   timeRemaining: number;
   currentCall: CalledNumber | null;
-  winners: { playerId: string; pattern: string; cardId: string; winTime: Date }[];
+  winners: {
+    playerId: string;
+    pattern: string;
+    cardId: string;
+    winTime: Date;
+  }[];
   pot: { gc: number; sc: number };
 }
 
@@ -58,71 +63,76 @@ export class BingoEngine extends GameEngine {
   private gameTimer: NodeJS.Timeout | null = null;
   private timeRemaining: number = 0;
   private currentCall: CalledNumber | null = null;
-  private winners: { playerId: string; pattern: string; cardId: string; winTime: Date }[] = [];
+  private winners: {
+    playerId: string;
+    pattern: string;
+    cardId: string;
+    winTime: Date;
+  }[] = [];
   private pot: { gc: number; sc: number } = { gc: 0, sc: 0 };
 
   // Standard Bingo Patterns
   private static readonly WIN_PATTERNS: WinPattern[] = [
     {
-      name: 'Line',
-      description: 'Any horizontal, vertical, or diagonal line',
+      name: "Line",
+      description: "Any horizontal, vertical, or diagonal line",
       pattern: [
         [true, true, true, true, true],
         [false, false, false, false, false],
         [false, false, false, false, false],
         [false, false, false, false, false],
-        [false, false, false, false, false]
+        [false, false, false, false, false],
       ],
-      multiplier: 1.0
+      multiplier: 1.0,
     },
     {
-      name: 'X Pattern',
-      description: 'Both diagonals forming an X',
+      name: "X Pattern",
+      description: "Both diagonals forming an X",
       pattern: [
         [true, false, false, false, true],
         [false, true, false, true, false],
         [false, false, true, false, false],
         [false, true, false, true, false],
-        [true, false, false, false, true]
+        [true, false, false, false, true],
       ],
-      multiplier: 2.0
+      multiplier: 2.0,
     },
     {
-      name: 'Four Corners',
-      description: 'All four corner squares',
+      name: "Four Corners",
+      description: "All four corner squares",
       pattern: [
         [true, false, false, false, true],
         [false, false, false, false, false],
         [false, false, false, false, false],
         [false, false, false, false, false],
-        [true, false, false, false, true]
+        [true, false, false, false, true],
       ],
-      multiplier: 1.5
+      multiplier: 1.5,
     },
     {
-      name: 'Full House',
-      description: 'All numbers on the card',
+      name: "Full House",
+      description: "All numbers on the card",
       pattern: [
         [true, true, true, true, true],
         [true, true, true, true, true],
         [true, true, true, true, true],
         [true, true, true, true, true],
-        [true, true, true, true, true]
+        [true, true, true, true, true],
       ],
-      multiplier: 10.0
+      multiplier: 10.0,
     },
     {
-      name: 'T Pattern',
-      description: 'Top row and middle column',
+      name: "T Pattern",
+      description: "Top row and middle column",
       pattern: [
         [true, true, true, true, true],
         [false, false, true, false, false],
         [false, false, true, false, false],
         [false, false, true, false, false],
-        [false, false, true, false, false]
+        [false, false, true, false, false],
       ],
-      multiplier: 3.0
-    }
+      multiplier: 3.0,
+    },
   ];
 
   constructor(room: BingoRoom) {
@@ -141,16 +151,20 @@ export class BingoEngine extends GameEngine {
   }
 
   private generateBingoCard(playerId: string): BingoCard {
-    const card: (number | null)[][] = Array(5).fill(null).map(() => Array(5).fill(null));
-    const marked: boolean[][] = Array(5).fill(false).map(() => Array(5).fill(false));
+    const card: (number | null)[][] = Array(5)
+      .fill(null)
+      .map(() => Array(5).fill(null));
+    const marked: boolean[][] = Array(5)
+      .fill(false)
+      .map(() => Array(5).fill(false));
 
     // B column: 1-15, I column: 16-30, N column: 31-45, G column: 46-60, O column: 61-75
     const ranges = [
-      [1, 15],   // B
-      [16, 30],  // I
-      [31, 45],  // N
-      [46, 60],  // G
-      [61, 75]   // O
+      [1, 15], // B
+      [16, 30], // I
+      [31, 45], // N
+      [46, 60], // G
+      [61, 75], // O
     ];
 
     for (let col = 0; col < 5; col++) {
@@ -177,7 +191,7 @@ export class BingoEngine extends GameEngine {
       id: this.generateId(),
       numbers: card,
       marked: marked,
-      playerId: playerId
+      playerId: playerId,
     };
   }
 
@@ -189,12 +203,12 @@ export class BingoEngine extends GameEngine {
 
     const number = this.availableNumbers.pop()!;
     const letter = this.getLetterForNumber(number);
-    
+
     const calledNumber: CalledNumber = {
       letter,
       number,
       callTime: new Date(),
-      callOrder: this.calledNumbers.length + 1
+      callOrder: this.calledNumbers.length + 1,
     };
 
     this.calledNumbers.push(calledNumber);
@@ -206,22 +220,22 @@ export class BingoEngine extends GameEngine {
     // Check for winners after each call
     this.checkForWinners();
 
-    this.emit('numberCalled', calledNumber);
+    this.emit("numberCalled", calledNumber);
   }
 
-  private getLetterForNumber(number: number): 'B' | 'I' | 'N' | 'G' | 'O' {
-    if (number <= 15) return 'B';
-    if (number <= 30) return 'I';
-    if (number <= 45) return 'N';
-    if (number <= 60) return 'G';
-    return 'O';
+  private getLetterForNumber(number: number): "B" | "I" | "N" | "G" | "O" {
+    if (number <= 15) return "B";
+    if (number <= 30) return "I";
+    if (number <= 45) return "N";
+    if (number <= 60) return "G";
+    return "O";
   }
 
   private autoMarkNumber(number: number): void {
     const players = this.getPlayers() as BingoPlayer[];
-    
-    players.forEach(player => {
-      player.cards.forEach(card => {
+
+    players.forEach((player) => {
+      player.cards.forEach((card) => {
         for (let row = 0; row < 5; row++) {
           for (let col = 0; col < 5; col++) {
             if (card.numbers[row][col] === number) {
@@ -235,11 +249,11 @@ export class BingoEngine extends GameEngine {
 
   private checkForWinners(): void {
     const players = this.getPlayers() as BingoPlayer[];
-    
-    players.forEach(player => {
+
+    players.forEach((player) => {
       if (player.hasWon) return; // Player already won
-      
-      player.cards.forEach(card => {
+
+      player.cards.forEach((card) => {
         for (const pattern of BingoEngine.WIN_PATTERNS) {
           if (this.checkPattern(card, pattern)) {
             this.declareWinner(player, pattern, card);
@@ -251,10 +265,10 @@ export class BingoEngine extends GameEngine {
 
   private checkPattern(card: BingoCard, pattern: WinPattern): boolean {
     // Check for line patterns (horizontal, vertical, diagonal)
-    if (pattern.name === 'Line') {
+    if (pattern.name === "Line") {
       return this.checkLines(card);
     }
-    
+
     // Check specific patterns
     for (let row = 0; row < 5; row++) {
       for (let col = 0; col < 5; col++) {
@@ -263,21 +277,21 @@ export class BingoEngine extends GameEngine {
         }
       }
     }
-    
+
     return true;
   }
 
   private checkLines(card: BingoCard): boolean {
     // Check horizontal lines
     for (let row = 0; row < 5; row++) {
-      if (card.marked[row].every(marked => marked)) {
+      if (card.marked[row].every((marked) => marked)) {
         return true;
       }
     }
 
     // Check vertical lines
     for (let col = 0; col < 5; col++) {
-      if (card.marked.every(row => row[col])) {
+      if (card.marked.every((row) => row[col])) {
         return true;
       }
     }
@@ -289,7 +303,11 @@ export class BingoEngine extends GameEngine {
     return diagonal1 || diagonal2;
   }
 
-  private declareWinner(player: BingoPlayer, pattern: WinPattern, card: BingoCard): void {
+  private declareWinner(
+    player: BingoPlayer,
+    pattern: WinPattern,
+    card: BingoCard,
+  ): void {
     player.hasWon = true;
     player.winTime = new Date();
     player.winPattern = pattern.name;
@@ -299,7 +317,7 @@ export class BingoEngine extends GameEngine {
       playerId: player.id,
       pattern: pattern.name,
       cardId: card.id,
-      winTime: new Date()
+      winTime: new Date(),
     };
 
     this.winners.push(winner);
@@ -308,25 +326,33 @@ export class BingoEngine extends GameEngine {
     const basePrize = this.room.prize;
     const winAmount = {
       gc: Math.floor(basePrize.gc * pattern.multiplier),
-      sc: basePrize.sc * pattern.multiplier
+      sc: basePrize.sc * pattern.multiplier,
     };
 
     // Award prize
-    this.addBalance(player.id, winAmount.gc, 'GC');
-    this.addBalance(player.id, winAmount.sc, 'SC');
+    this.addBalance(player.id, winAmount.gc, "GC");
+    this.addBalance(player.id, winAmount.sc, "SC");
 
-    this.emit('winner', { player: player.id, pattern: pattern.name, card: card.id, prize: winAmount });
+    this.emit("winner", {
+      player: player.id,
+      pattern: pattern.name,
+      card: card.id,
+      prize: winAmount,
+    });
 
     // End game for certain patterns or if it's speed bingo
-    if (pattern.name === 'Full House' || this.room.type === 'speed') {
+    if (pattern.name === "Full House" || this.room.type === "speed") {
       this.endGame();
     }
   }
 
   private startCallingNumbers(): void {
-    const callInterval = this.room.type === 'speed' ? 2000 : // 2 seconds for speed
-                        this.room.type === 'regular' ? 5000 : // 5 seconds for regular
-                        3000; // 3 seconds for others
+    const callInterval =
+      this.room.type === "speed"
+        ? 2000 // 2 seconds for speed
+        : this.room.type === "regular"
+          ? 5000 // 5 seconds for regular
+          : 3000; // 3 seconds for others
 
     this.callTimer = setInterval(() => {
       this.callNextNumber();
@@ -338,7 +364,7 @@ export class BingoEngine extends GameEngine {
       if (this.timeRemaining <= 0) {
         this.endGame();
       }
-      this.emit('timeUpdate', this.timeRemaining);
+      this.emit("timeUpdate", this.timeRemaining);
     }, 1000);
   }
 
@@ -356,10 +382,10 @@ export class BingoEngine extends GameEngine {
   // Public API Methods
   startGame(): void {
     if (!this.canStart()) {
-      throw new Error('Not enough players to start game');
+      throw new Error("Not enough players to start game");
     }
 
-    this.setState('starting');
+    this.setState("starting");
     this.initializeNumbers();
     this.calledNumbers = [];
     this.winners = [];
@@ -368,7 +394,7 @@ export class BingoEngine extends GameEngine {
 
     // Generate cards for all players
     const players = this.getPlayers() as BingoPlayer[];
-    players.forEach(player => {
+    players.forEach((player) => {
       player.cards = [];
       player.hasWon = false;
       player.winTime = undefined;
@@ -376,93 +402,111 @@ export class BingoEngine extends GameEngine {
       player.winCard = undefined;
 
       // Generate multiple cards based on room type
-      const cardCount = this.room.type === 'speed' ? 1 : 
-                       this.room.type === 'regular' ? 3 : 4;
-      
+      const cardCount =
+        this.room.type === "speed" ? 1 : this.room.type === "regular" ? 3 : 4;
+
       for (let i = 0; i < cardCount; i++) {
         player.cards.push(this.generateBingoCard(player.id));
       }
     });
 
-    this.setState('playing');
+    this.setState("playing");
     this.startCallingNumbers();
-    this.emit('gameStarted', this.getGameState());
+    this.emit("gameStarted", this.getGameState());
   }
 
   endGame(): void {
-    this.setState('ended');
+    this.setState("ended");
     this.stopTimers();
 
     // Distribute remaining prizes if any
     if (this.winners.length === 0 && this.pot.gc > 0) {
       // No winners - return buy-ins or carry over to next game
-      this.emit('noWinners', { pot: this.pot });
+      this.emit("noWinners", { pot: this.pot });
     }
 
-    this.emit('gameEnded', { 
-      winners: this.winners, 
+    this.emit("gameEnded", {
+      winners: this.winners,
       calledNumbers: this.calledNumbers,
-      finalPot: this.pot 
+      finalPot: this.pot,
     });
   }
 
   processAction(playerId: string, action: any): any {
     // Bingo is mostly automated, but players might claim wins manually
-    if (action.type === 'claimWin') {
+    if (action.type === "claimWin") {
       return this.validateAndClaimWin(playerId, action.cardId, action.pattern);
     }
 
-    if (action.type === 'markNumber') {
-      return this.manualMarkNumber(playerId, action.cardId, action.row, action.col);
+    if (action.type === "markNumber") {
+      return this.manualMarkNumber(
+        playerId,
+        action.cardId,
+        action.row,
+        action.col,
+      );
     }
 
-    return { success: false, error: 'Invalid action' };
+    return { success: false, error: "Invalid action" };
   }
 
-  private validateAndClaimWin(playerId: string, cardId: string, patternName: string): any {
+  private validateAndClaimWin(
+    playerId: string,
+    cardId: string,
+    patternName: string,
+  ): any {
     const player = this.getPlayer(playerId) as BingoPlayer;
     if (!player || player.hasWon) {
-      return { success: false, error: 'Invalid player or already won' };
+      return { success: false, error: "Invalid player or already won" };
     }
 
-    const card = player.cards.find(c => c.id === cardId);
+    const card = player.cards.find((c) => c.id === cardId);
     if (!card) {
-      return { success: false, error: 'Card not found' };
+      return { success: false, error: "Card not found" };
     }
 
-    const pattern = BingoEngine.WIN_PATTERNS.find(p => p.name === patternName);
+    const pattern = BingoEngine.WIN_PATTERNS.find(
+      (p) => p.name === patternName,
+    );
     if (!pattern) {
-      return { success: false, error: 'Invalid pattern' };
+      return { success: false, error: "Invalid pattern" };
     }
 
     if (this.checkPattern(card, pattern)) {
       this.declareWinner(player, pattern, card);
-      return { success: true, message: 'Winner confirmed!' };
+      return { success: true, message: "Winner confirmed!" };
     }
 
-    return { success: false, error: 'Pattern not complete' };
+    return { success: false, error: "Pattern not complete" };
   }
 
-  private manualMarkNumber(playerId: string, cardId: string, row: number, col: number): any {
+  private manualMarkNumber(
+    playerId: string,
+    cardId: string,
+    row: number,
+    col: number,
+  ): any {
     const player = this.getPlayer(playerId) as BingoPlayer;
     if (!player) {
-      return { success: false, error: 'Player not found' };
+      return { success: false, error: "Player not found" };
     }
 
-    const card = player.cards.find(c => c.id === cardId);
+    const card = player.cards.find((c) => c.id === cardId);
     if (!card) {
-      return { success: false, error: 'Card not found' };
+      return { success: false, error: "Card not found" };
     }
 
     // Verify the number was called
     const number = card.numbers[row][col];
     if (number === null) {
-      return { success: false, error: 'Free space cannot be marked' };
+      return { success: false, error: "Free space cannot be marked" };
     }
 
-    const wasCalled = this.calledNumbers.some(called => called.number === number);
+    const wasCalled = this.calledNumbers.some(
+      (called) => called.number === number,
+    );
     if (!wasCalled) {
-      return { success: false, error: 'Number not yet called' };
+      return { success: false, error: "Number not yet called" };
     }
 
     card.marked[row][col] = true;
@@ -470,7 +514,7 @@ export class BingoEngine extends GameEngine {
   }
 
   validateAction(playerId: string, action: any): boolean {
-    const validActions = ['claimWin', 'markNumber'];
+    const validActions = ["claimWin", "markNumber"];
     return validActions.includes(action.type);
   }
 
@@ -482,7 +526,7 @@ export class BingoEngine extends GameEngine {
       timeRemaining: this.timeRemaining,
       currentCall: this.currentCall,
       winners: this.winners,
-      pot: this.pot
+      pot: this.pot,
     };
   }
 
@@ -490,7 +534,7 @@ export class BingoEngine extends GameEngine {
     const bingoPlayer: BingoPlayer = {
       ...player,
       cards: [],
-      hasWon: false
+      hasWon: false,
     };
 
     // Charge buy-in

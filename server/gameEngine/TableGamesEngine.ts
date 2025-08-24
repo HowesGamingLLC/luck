@@ -1,8 +1,8 @@
-import { GameEngine, Player, GameResult } from './GameEngine';
+import { GameEngine, Player, GameResult } from "./GameEngine";
 
 export interface TableGame {
   id: string;
-  type: 'blackjack' | 'roulette' | 'baccarat';
+  type: "blackjack" | "roulette" | "baccarat";
   name: string;
   minBet: { gc: number; sc: number };
   maxBet: { gc: number; sc: number };
@@ -11,14 +11,27 @@ export interface TableGame {
 }
 
 export interface Card {
-  suit: 'hearts' | 'diamonds' | 'clubs' | 'spades';
-  rank: 'A' | '2' | '3' | '4' | '5' | '6' | '7' | '8' | '9' | 'T' | 'J' | 'Q' | 'K';
+  suit: "hearts" | "diamonds" | "clubs" | "spades";
+  rank:
+    | "A"
+    | "2"
+    | "3"
+    | "4"
+    | "5"
+    | "6"
+    | "7"
+    | "8"
+    | "9"
+    | "T"
+    | "J"
+    | "Q"
+    | "K";
   value: number;
 }
 
 export interface TablePlayer extends Player {
   currentBet: number;
-  currency: 'GC' | 'SC';
+  currency: "GC" | "SC";
   position: number;
   // Blackjack specific
   hand?: Card[];
@@ -26,13 +39,26 @@ export interface TablePlayer extends Player {
   isSplit?: boolean;
   splitHands?: Card[][];
   // Baccarat specific
-  baccaratBet?: 'player' | 'banker' | 'tie';
+  baccaratBet?: "player" | "banker" | "tie";
   // Roulette specific
   rouletteBets?: RouletteBet[];
 }
 
 export interface RouletteBet {
-  type: 'straight' | 'split' | 'street' | 'corner' | 'line' | 'dozen' | 'column' | 'red' | 'black' | 'odd' | 'even' | 'low' | 'high';
+  type:
+    | "straight"
+    | "split"
+    | "street"
+    | "corner"
+    | "line"
+    | "dozen"
+    | "column"
+    | "red"
+    | "black"
+    | "odd"
+    | "even"
+    | "low"
+    | "high";
   numbers: number[];
   amount: number;
   payout: number;
@@ -40,7 +66,7 @@ export interface RouletteBet {
 
 export interface RouletteResult {
   number: number;
-  color: 'red' | 'black' | 'green';
+  color: "red" | "black" | "green";
   isOdd: boolean;
   dozen: number; // 1, 2, or 3
   column: number; // 1, 2, or 3
@@ -55,7 +81,7 @@ export interface BaccaratHand {
 export interface BaccaratResult {
   playerHand: BaccaratHand;
   bankerHand: BaccaratHand;
-  winner: 'player' | 'banker' | 'tie';
+  winner: "player" | "banker" | "tie";
 }
 
 export class TableGamesEngine extends GameEngine {
@@ -63,55 +89,75 @@ export class TableGamesEngine extends GameEngine {
   private gameStates: Map<string, any> = new Map();
 
   constructor() {
-    super('table-games', 1, 50);
+    super("table-games", 1, 50);
     this.initializeTables();
   }
 
   private initializeTables(): void {
     const tables: TableGame[] = [
       {
-        id: 'blackjack-1',
-        type: 'blackjack',
-        name: 'Classic Blackjack',
+        id: "blackjack-1",
+        type: "blackjack",
+        name: "Classic Blackjack",
         minBet: { gc: 5, sc: 0.05 },
         maxBet: { gc: 500, sc: 5.0 },
         maxPlayers: 6,
-        houseEdge: 0.5
+        houseEdge: 0.5,
       },
       {
-        id: 'roulette-1',
-        type: 'roulette',
-        name: 'European Roulette',
+        id: "roulette-1",
+        type: "roulette",
+        name: "European Roulette",
         minBet: { gc: 1, sc: 0.01 },
         maxBet: { gc: 100, sc: 1.0 },
         maxPlayers: 12,
-        houseEdge: 2.7
+        houseEdge: 2.7,
       },
       {
-        id: 'baccarat-1',
-        type: 'baccarat',
-        name: 'Punto Banco',
+        id: "baccarat-1",
+        type: "baccarat",
+        name: "Punto Banco",
         minBet: { gc: 10, sc: 0.1 },
         maxBet: { gc: 1000, sc: 10.0 },
         maxPlayers: 8,
-        houseEdge: 1.06
-      }
+        houseEdge: 1.06,
+      },
     ];
 
-    tables.forEach(table => this.tables.set(table.id, table));
+    tables.forEach((table) => this.tables.set(table.id, table));
   }
 
   // Blackjack Implementation
   private createDeck(): Card[] {
-    const suits: Card['suit'][] = ['hearts', 'diamonds', 'clubs', 'spades'];
-    const ranks: Card['rank'][] = ['A', '2', '3', '4', '5', '6', '7', '8', '9', 'T', 'J', 'Q', 'K'];
+    const suits: Card["suit"][] = ["hearts", "diamonds", "clubs", "spades"];
+    const ranks: Card["rank"][] = [
+      "A",
+      "2",
+      "3",
+      "4",
+      "5",
+      "6",
+      "7",
+      "8",
+      "9",
+      "T",
+      "J",
+      "Q",
+      "K",
+    ];
     const deck: Card[] = [];
 
     for (const suit of suits) {
       for (let i = 0; i < ranks.length; i++) {
         const rank = ranks[i];
-        const value = rank === 'A' ? 11 : ['J', 'Q', 'K'].includes(rank) ? 10 : 
-                     rank === 'T' ? 10 : parseInt(rank);
+        const value =
+          rank === "A"
+            ? 11
+            : ["J", "Q", "K"].includes(rank)
+              ? 10
+              : rank === "T"
+                ? 10
+                : parseInt(rank);
         deck.push({ suit, rank, value });
       }
     }
@@ -124,7 +170,7 @@ export class TableGamesEngine extends GameEngine {
     let aces = 0;
 
     for (const card of hand) {
-      if (card.rank === 'A') {
+      if (card.rank === "A") {
         aces++;
         score += 11;
       } else {
@@ -141,10 +187,15 @@ export class TableGamesEngine extends GameEngine {
     return score;
   }
 
-  public playBlackjack(playerId: string, tableId: string, action: string, bet?: number): any {
+  public playBlackjack(
+    playerId: string,
+    tableId: string,
+    action: string,
+    bet?: number,
+  ): any {
     const table = this.tables.get(tableId);
-    if (!table || table.type !== 'blackjack') {
-      return { success: false, error: 'Invalid blackjack table' };
+    if (!table || table.type !== "blackjack") {
+      return { success: false, error: "Invalid blackjack table" };
     }
 
     let gameState = this.gameStates.get(tableId) || {
@@ -152,76 +203,76 @@ export class TableGamesEngine extends GameEngine {
       dealerHand: [],
       playerHands: new Map(),
       bets: new Map(),
-      stage: 'betting'
+      stage: "betting",
     };
 
     const player = this.getPlayer(playerId) as TablePlayer;
     if (!player) {
-      return { success: false, error: 'Player not found' };
+      return { success: false, error: "Player not found" };
     }
 
     switch (action) {
-      case 'bet':
+      case "bet":
         if (!bet || bet < table.minBet.gc || bet > table.maxBet.gc) {
-          return { success: false, error: 'Invalid bet amount' };
+          return { success: false, error: "Invalid bet amount" };
         }
-        
+
         player.currentBet = bet;
         gameState.bets.set(playerId, bet);
-        
+
         // Deal initial cards
         const playerHand = [gameState.deck.pop()!, gameState.deck.pop()!];
         const dealerHand = [gameState.deck.pop()!, gameState.deck.pop()!];
-        
+
         gameState.playerHands.set(playerId, playerHand);
         gameState.dealerHand = dealerHand;
-        gameState.stage = 'playing';
-        
+        gameState.stage = "playing";
+
         return {
           success: true,
           playerHand,
           dealerCard: dealerHand[0], // Only show one dealer card
-          playerScore: this.calculateBlackjackScore(playerHand)
+          playerScore: this.calculateBlackjackScore(playerHand),
         };
 
-      case 'hit':
+      case "hit":
         const hand = gameState.playerHands.get(playerId);
-        if (!hand) return { success: false, error: 'No active hand' };
-        
+        if (!hand) return { success: false, error: "No active hand" };
+
         hand.push(gameState.deck.pop()!);
         const score = this.calculateBlackjackScore(hand);
-        
+
         if (score > 21) {
-          return { success: true, hand, score, result: 'bust' };
+          return { success: true, hand, score, result: "bust" };
         }
-        
+
         return { success: true, hand, score };
 
-      case 'stand':
+      case "stand":
         return this.resolveBlackjackHand(playerId, gameState);
 
-      case 'double':
-        if (!this.canAffordWager(playerId, player.currentBet, 'GC')) {
-          return { success: false, error: 'Insufficient funds to double' };
+      case "double":
+        if (!this.canAffordWager(playerId, player.currentBet, "GC")) {
+          return { success: false, error: "Insufficient funds to double" };
         }
-        
+
         const doubleHand = gameState.playerHands.get(playerId);
-        if (!doubleHand) return { success: false, error: 'No active hand' };
-        
+        if (!doubleHand) return { success: false, error: "No active hand" };
+
         player.currentBet *= 2;
         doubleHand.push(gameState.deck.pop()!);
-        
+
         return this.resolveBlackjackHand(playerId, gameState);
 
       default:
-        return { success: false, error: 'Invalid action' };
+        return { success: false, error: "Invalid action" };
     }
   }
 
   private resolveBlackjackHand(playerId: string, gameState: any): any {
     const playerHand = gameState.playerHands.get(playerId);
     const dealerHand = gameState.dealerHand;
-    
+
     // Dealer hits to 17
     while (this.calculateBlackjackScore(dealerHand) < 17) {
       dealerHand.push(gameState.deck.pop()!);
@@ -229,31 +280,31 @@ export class TableGamesEngine extends GameEngine {
 
     const playerScore = this.calculateBlackjackScore(playerHand);
     const dealerScore = this.calculateBlackjackScore(dealerHand);
-    
-    let result = '';
+
+    let result = "";
     let payout = 0;
     const bet = gameState.bets.get(playerId);
 
     if (playerScore > 21) {
-      result = 'bust';
+      result = "bust";
       payout = 0;
     } else if (dealerScore > 21) {
-      result = 'win';
+      result = "win";
       payout = bet * 2;
     } else if (playerScore > dealerScore) {
-      result = 'win';
+      result = "win";
       payout = bet * 2;
     } else if (playerScore < dealerScore) {
-      result = 'lose';
+      result = "lose";
       payout = 0;
     } else {
-      result = 'push';
+      result = "push";
       payout = bet; // Return bet
     }
 
     // Award payout
     if (payout > 0) {
-      this.addBalance(playerId, payout, 'GC');
+      this.addBalance(playerId, payout, "GC");
     }
 
     return {
@@ -262,15 +313,19 @@ export class TableGamesEngine extends GameEngine {
       playerScore,
       dealerScore,
       dealerHand,
-      payout
+      payout,
     };
   }
 
   // Roulette Implementation
-  public playRoulette(playerId: string, tableId: string, bets: RouletteBet[]): any {
+  public playRoulette(
+    playerId: string,
+    tableId: string,
+    bets: RouletteBet[],
+  ): any {
     const table = this.tables.get(tableId);
-    if (!table || table.type !== 'roulette') {
-      return { success: false, error: 'Invalid roulette table' };
+    if (!table || table.type !== "roulette") {
+      return { success: false, error: "Invalid roulette table" };
     }
 
     // Generate random result (0-36 for European roulette)
@@ -283,60 +338,63 @@ export class TableGamesEngine extends GameEngine {
     for (const bet of bets) {
       const isWin = this.checkRouletteBet(bet, result);
       const payout = isWin ? bet.amount * bet.payout : 0;
-      
+
       totalPayout += payout;
       betResults.push({
         type: bet.type,
         amount: bet.amount,
         isWin,
-        payout
+        payout,
       });
     }
 
     // Award total payout
     if (totalPayout > 0) {
-      this.addBalance(playerId, totalPayout, 'GC');
+      this.addBalance(playerId, totalPayout, "GC");
     }
 
     return {
       success: true,
       result,
       betResults,
-      totalPayout
+      totalPayout,
     };
   }
 
   private generateRouletteResult(number: number): RouletteResult {
-    const redNumbers = [1, 3, 5, 7, 9, 12, 14, 16, 18, 19, 21, 23, 25, 27, 30, 32, 34, 36];
-    
+    const redNumbers = [
+      1, 3, 5, 7, 9, 12, 14, 16, 18, 19, 21, 23, 25, 27, 30, 32, 34, 36,
+    ];
+
     return {
       number,
-      color: number === 0 ? 'green' : redNumbers.includes(number) ? 'red' : 'black',
+      color:
+        number === 0 ? "green" : redNumbers.includes(number) ? "red" : "black",
       isOdd: number % 2 === 1,
       dozen: number === 0 ? 0 : Math.ceil(number / 12),
-      column: number === 0 ? 0 : ((number - 1) % 3) + 1
+      column: number === 0 ? 0 : ((number - 1) % 3) + 1,
     };
   }
 
   private checkRouletteBet(bet: RouletteBet, result: RouletteResult): boolean {
     switch (bet.type) {
-      case 'straight':
+      case "straight":
         return bet.numbers.includes(result.number);
-      case 'red':
-        return result.color === 'red';
-      case 'black':
-        return result.color === 'black';
-      case 'odd':
+      case "red":
+        return result.color === "red";
+      case "black":
+        return result.color === "black";
+      case "odd":
         return result.isOdd && result.number !== 0;
-      case 'even':
+      case "even":
         return !result.isOdd && result.number !== 0;
-      case 'low':
+      case "low":
         return result.number >= 1 && result.number <= 18;
-      case 'high':
+      case "high":
         return result.number >= 19 && result.number <= 36;
-      case 'dozen':
+      case "dozen":
         return bet.numbers[0] === result.dozen;
-      case 'column':
+      case "column":
         return bet.numbers[0] === result.column;
       default:
         return false;
@@ -344,14 +402,19 @@ export class TableGamesEngine extends GameEngine {
   }
 
   // Baccarat Implementation
-  public playBaccarat(playerId: string, tableId: string, betType: 'player' | 'banker' | 'tie', amount: number): any {
+  public playBaccarat(
+    playerId: string,
+    tableId: string,
+    betType: "player" | "banker" | "tie",
+    amount: number,
+  ): any {
     const table = this.tables.get(tableId);
-    if (!table || table.type !== 'baccarat') {
-      return { success: false, error: 'Invalid baccarat table' };
+    if (!table || table.type !== "baccarat") {
+      return { success: false, error: "Invalid baccarat table" };
     }
 
     const deck = this.createDeck();
-    
+
     // Deal cards
     const playerCards = [deck.pop()!, deck.pop()!];
     const bankerCards = [deck.pop()!, deck.pop()!];
@@ -372,7 +435,10 @@ export class TableGamesEngine extends GameEngine {
         playerValue = this.calculateBaccaratValue(playerCards);
 
         // Banker third card rule (complex logic)
-        const shouldBankerDraw = this.shouldBankerDrawThird(bankerValue, thirdCard.value);
+        const shouldBankerDraw = this.shouldBankerDrawThird(
+          bankerValue,
+          thirdCard.value,
+        );
         if (shouldBankerDraw) {
           bankerCards.push(deck.pop()!);
           bankerValue = this.calculateBaccaratValue(bankerCards);
@@ -385,26 +451,26 @@ export class TableGamesEngine extends GameEngine {
     }
 
     // Determine winner
-    let winner: 'player' | 'banker' | 'tie';
+    let winner: "player" | "banker" | "tie";
     if (playerValue > bankerValue) {
-      winner = 'player';
+      winner = "player";
     } else if (bankerValue > playerValue) {
-      winner = 'banker';
+      winner = "banker";
     } else {
-      winner = 'tie';
+      winner = "tie";
     }
 
     // Calculate payout
     let payout = 0;
     if (betType === winner) {
       switch (betType) {
-        case 'player':
+        case "player":
           payout = amount * 2; // 1:1
           break;
-        case 'banker':
+        case "banker":
           payout = amount * 1.95; // 1:1 minus 5% commission
           break;
-        case 'tie':
+        case "tie":
           payout = amount * 9; // 8:1
           break;
       }
@@ -412,21 +478,21 @@ export class TableGamesEngine extends GameEngine {
 
     // Award payout
     if (payout > 0) {
-      this.addBalance(playerId, payout, 'GC');
+      this.addBalance(playerId, payout, "GC");
     }
 
     const result: BaccaratResult = {
       playerHand: {
         cards: playerCards,
         value: playerValue,
-        isNatural: playerNatural
+        isNatural: playerNatural,
       },
       bankerHand: {
         cards: bankerCards,
         value: bankerValue,
-        isNatural: bankerNatural
+        isNatural: bankerNatural,
       },
-      winner
+      winner,
     };
 
     return {
@@ -434,22 +500,30 @@ export class TableGamesEngine extends GameEngine {
       result,
       payout,
       betType,
-      amount
+      amount,
     };
   }
 
   private calculateBaccaratValue(cards: Card[]): number {
     const total = cards.reduce((sum, card) => {
-      const value = card.rank === 'A' ? 1 : 
-                   ['J', 'Q', 'K'].includes(card.rank) ? 0 : 
-                   card.rank === 'T' ? 0 : parseInt(card.rank);
+      const value =
+        card.rank === "A"
+          ? 1
+          : ["J", "Q", "K"].includes(card.rank)
+            ? 0
+            : card.rank === "T"
+              ? 0
+              : parseInt(card.rank);
       return sum + value;
     }, 0);
 
     return total % 10;
   }
 
-  private shouldBankerDrawThird(bankerValue: number, playerThirdCard: number): boolean {
+  private shouldBankerDrawThird(
+    bankerValue: number,
+    playerThirdCard: number,
+  ): boolean {
     if (bankerValue >= 7) return false;
     if (bankerValue <= 2) return true;
 
@@ -458,7 +532,7 @@ export class TableGamesEngine extends GameEngine {
       3: [0, 1, 2, 3, 4, 5, 6, 7, 9], // Draw unless player's third card is 8
       4: [2, 3, 4, 5, 6, 7],
       5: [4, 5, 6, 7],
-      6: [6, 7]
+      6: [6, 7],
     };
 
     return rules[bankerValue]?.includes(playerThirdCard) || false;
@@ -466,35 +540,45 @@ export class TableGamesEngine extends GameEngine {
 
   // Required GameEngine methods
   startGame(): void {
-    this.setState('playing');
+    this.setState("playing");
   }
 
   endGame(): void {
-    this.setState('ended');
+    this.setState("ended");
   }
 
   processAction(playerId: string, action: any): any {
     switch (action.gameType) {
-      case 'blackjack':
-        return this.playBlackjack(playerId, action.tableId, action.action, action.bet);
-      case 'roulette':
+      case "blackjack":
+        return this.playBlackjack(
+          playerId,
+          action.tableId,
+          action.action,
+          action.bet,
+        );
+      case "roulette":
         return this.playRoulette(playerId, action.tableId, action.bets);
-      case 'baccarat':
-        return this.playBaccarat(playerId, action.tableId, action.betType, action.amount);
+      case "baccarat":
+        return this.playBaccarat(
+          playerId,
+          action.tableId,
+          action.betType,
+          action.amount,
+        );
       default:
-        return { success: false, error: 'Unknown game type' };
+        return { success: false, error: "Unknown game type" };
     }
   }
 
   validateAction(playerId: string, action: any): boolean {
-    const validGameTypes = ['blackjack', 'roulette', 'baccarat'];
+    const validGameTypes = ["blackjack", "roulette", "baccarat"];
     return validGameTypes.includes(action.gameType);
   }
 
   getGameState(playerId?: string): any {
     return {
       tables: Array.from(this.tables.values()),
-      gameStates: playerId ? this.gameStates.get(playerId) : undefined
+      gameStates: playerId ? this.gameStates.get(playerId) : undefined,
     };
   }
 
@@ -507,15 +591,18 @@ export class TableGamesEngine extends GameEngine {
     return this.tables.get(tableId);
   }
 
-  public joinTable(playerId: string, tableId: string): { success: boolean; error?: string } {
+  public joinTable(
+    playerId: string,
+    tableId: string,
+  ): { success: boolean; error?: string } {
     const table = this.tables.get(tableId);
     if (!table) {
-      return { success: false, error: 'Table not found' };
+      return { success: false, error: "Table not found" };
     }
 
     const player = this.getPlayer(playerId);
     if (!player) {
-      return { success: false, error: 'Player not found' };
+      return { success: false, error: "Player not found" };
     }
 
     return { success: true };

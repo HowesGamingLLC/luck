@@ -1,15 +1,23 @@
-import { GameEngine, Player, GameResult } from './GameEngine';
+import { GameEngine, Player, GameResult } from "./GameEngine";
 
 export interface MiniGame {
   id: string;
   name: string;
-  type: 'crash' | 'dice' | 'plinko' | 'mines' | 'keno' | 'wheel' | 'aviator' | 'limbo';
+  type:
+    | "crash"
+    | "dice"
+    | "plinko"
+    | "mines"
+    | "keno"
+    | "wheel"
+    | "aviator"
+    | "limbo";
   description: string;
   minBet: { gc: number; sc: number };
   maxBet: { gc: number; sc: number };
   maxMultiplier: number;
   houseEdge: number;
-  difficulty: 'Easy' | 'Medium' | 'Hard';
+  difficulty: "Easy" | "Medium" | "Hard";
 }
 
 export interface GameSession {
@@ -17,7 +25,7 @@ export interface GameSession {
   gameType: string;
   active: boolean;
   currentBet: number;
-  currency: 'GC' | 'SC';
+  currency: "GC" | "SC";
   gameData: any;
   startTime: Date;
 }
@@ -74,7 +82,7 @@ export class MiniGamesEngine extends GameEngine {
   private crashGames: Map<string, CrashGame> = new Map();
 
   constructor() {
-    super('mini-games', 1, 10000);
+    super("mini-games", 1, 10000);
     this.initializeGames();
     this.startCrashGameLoop();
   }
@@ -82,74 +90,76 @@ export class MiniGamesEngine extends GameEngine {
   private initializeGames(): void {
     const games: MiniGame[] = [
       {
-        id: 'crash',
-        name: 'Crash',
-        type: 'crash',
-        description: 'Watch the multiplier rise and cash out before it crashes!',
+        id: "crash",
+        name: "Crash",
+        type: "crash",
+        description:
+          "Watch the multiplier rise and cash out before it crashes!",
         minBet: { gc: 1, sc: 0.01 },
         maxBet: { gc: 1000, sc: 10.0 },
         maxMultiplier: 1000,
         houseEdge: 1.0,
-        difficulty: 'Medium'
+        difficulty: "Medium",
       },
       {
-        id: 'dice',
-        name: 'Dice Roll',
-        type: 'dice',
-        description: 'Predict if the dice will roll over or under your target',
+        id: "dice",
+        name: "Dice Roll",
+        type: "dice",
+        description: "Predict if the dice will roll over or under your target",
         minBet: { gc: 1, sc: 0.01 },
         maxBet: { gc: 500, sc: 5.0 },
         maxMultiplier: 99,
         houseEdge: 1.0,
-        difficulty: 'Easy'
+        difficulty: "Easy",
       },
       {
-        id: 'plinko',
-        name: 'Plinko',
-        type: 'plinko',
-        description: 'Drop the ball and watch it bounce to a multiplier',
+        id: "plinko",
+        name: "Plinko",
+        type: "plinko",
+        description: "Drop the ball and watch it bounce to a multiplier",
         minBet: { gc: 1, sc: 0.01 },
         maxBet: { gc: 100, sc: 1.0 },
         maxMultiplier: 1000,
         houseEdge: 1.0,
-        difficulty: 'Easy'
+        difficulty: "Easy",
       },
       {
-        id: 'mines',
-        name: 'Mines',
-        type: 'mines',
-        description: 'Find gems while avoiding mines for increasing multipliers',
+        id: "mines",
+        name: "Mines",
+        type: "mines",
+        description:
+          "Find gems while avoiding mines for increasing multipliers",
         minBet: { gc: 1, sc: 0.01 },
         maxBet: { gc: 200, sc: 2.0 },
         maxMultiplier: 100,
         houseEdge: 1.0,
-        difficulty: 'Hard'
+        difficulty: "Hard",
       },
       {
-        id: 'keno',
-        name: 'Keno',
-        type: 'keno',
-        description: 'Pick numbers and watch the draw for big multipliers',
+        id: "keno",
+        name: "Keno",
+        type: "keno",
+        description: "Pick numbers and watch the draw for big multipliers",
         minBet: { gc: 1, sc: 0.01 },
         maxBet: { gc: 100, sc: 1.0 },
         maxMultiplier: 1000,
         houseEdge: 1.0,
-        difficulty: 'Medium'
+        difficulty: "Medium",
       },
       {
-        id: 'wheel',
-        name: 'Lucky Wheel',
-        type: 'wheel',
-        description: 'Spin the wheel and win instant multipliers',
+        id: "wheel",
+        name: "Lucky Wheel",
+        type: "wheel",
+        description: "Spin the wheel and win instant multipliers",
         minBet: { gc: 1, sc: 0.01 },
         maxBet: { gc: 100, sc: 1.0 },
         maxMultiplier: 50,
         houseEdge: 1.0,
-        difficulty: 'Easy'
-      }
+        difficulty: "Easy",
+      },
     ];
 
-    games.forEach(game => this.games.set(game.id, game));
+    games.forEach((game) => this.games.set(game.id, game));
   }
 
   private startCrashGameLoop(): void {
@@ -165,16 +175,16 @@ export class MiniGamesEngine extends GameEngine {
   private startNewCrashGame(): void {
     const crashPoint = this.generateCrashPoint();
     const gameId = this.generateId();
-    
+
     const crashGame: CrashGame = {
       multiplier: 1.0,
       crashed: false,
       crashPoint,
-      active: true
+      active: true,
     };
 
     this.crashGames.set(gameId, crashGame);
-    this.emit('crashGameStarted', { gameId, crashPoint });
+    this.emit("crashGameStarted", { gameId, crashPoint });
 
     // Simulate multiplier increase
     const interval = setInterval(() => {
@@ -188,10 +198,13 @@ export class MiniGamesEngine extends GameEngine {
       if (crashGame.multiplier >= crashPoint) {
         crashGame.crashed = true;
         crashGame.active = false;
-        this.emit('crashGameEnded', { gameId, crashPoint });
+        this.emit("crashGameEnded", { gameId, crashPoint });
         clearInterval(interval);
       } else {
-        this.emit('crashMultiplierUpdate', { gameId, multiplier: crashGame.multiplier });
+        this.emit("crashMultiplierUpdate", {
+          gameId,
+          multiplier: crashGame.multiplier,
+        });
       }
     }, 100);
   }
@@ -207,39 +220,45 @@ export class MiniGamesEngine extends GameEngine {
   }
 
   // Crash Game Implementation
-  public playCrash(playerId: string, action: 'bet' | 'cashout', amount?: number): any {
+  public playCrash(
+    playerId: string,
+    action: "bet" | "cashout",
+    amount?: number,
+  ): any {
     const player = this.getPlayer(playerId);
-    if (!player) return { success: false, error: 'Player not found' };
+    if (!player) return { success: false, error: "Player not found" };
 
-    if (action === 'bet') {
-      if (!amount) return { success: false, error: 'Bet amount required' };
-      
+    if (action === "bet") {
+      if (!amount) return { success: false, error: "Bet amount required" };
+
       const session: GameSession = {
         playerId,
-        gameType: 'crash',
+        gameType: "crash",
         active: true,
         currentBet: amount,
-        currency: 'GC', // Default currency
+        currency: "GC", // Default currency
         gameData: { betPlaced: true, cashOutMultiplier: null },
-        startTime: new Date()
+        startTime: new Date(),
       };
 
       this.sessions.set(playerId, session);
-      this.deductBalance(playerId, amount, 'GC');
+      this.deductBalance(playerId, amount, "GC");
 
-      return { success: true, message: 'Bet placed', betAmount: amount };
+      return { success: true, message: "Bet placed", betAmount: amount };
     }
 
-    if (action === 'cashout') {
+    if (action === "cashout") {
       const session = this.sessions.get(playerId);
       if (!session || !session.active) {
-        return { success: false, error: 'No active bet' };
+        return { success: false, error: "No active bet" };
       }
 
       // Find current crash game
-      const activeCrashGame = Array.from(this.crashGames.values()).find(g => g.active);
+      const activeCrashGame = Array.from(this.crashGames.values()).find(
+        (g) => g.active,
+      );
       if (!activeCrashGame || activeCrashGame.crashed) {
-        return { success: false, error: 'Game already crashed' };
+        return { success: false, error: "Game already crashed" };
       }
 
       const winAmount = session.currentBet * activeCrashGame.multiplier;
@@ -248,26 +267,31 @@ export class MiniGamesEngine extends GameEngine {
 
       this.addBalance(playerId, winAmount, session.currency);
 
-      return { 
-        success: true, 
-        multiplier: activeCrashGame.multiplier, 
-        winAmount 
+      return {
+        success: true,
+        multiplier: activeCrashGame.multiplier,
+        winAmount,
       };
     }
 
-    return { success: false, error: 'Invalid action' };
+    return { success: false, error: "Invalid action" };
   }
 
   // Dice Game Implementation
-  public playDice(playerId: string, target: number, over: boolean, amount: number): any {
+  public playDice(
+    playerId: string,
+    target: number,
+    over: boolean,
+    amount: number,
+  ): any {
     const player = this.getPlayer(playerId);
-    if (!player) return { success: false, error: 'Player not found' };
+    if (!player) return { success: false, error: "Player not found" };
 
     if (target < 1 || target > 99) {
-      return { success: false, error: 'Target must be between 1 and 99' };
+      return { success: false, error: "Target must be between 1 and 99" };
     }
 
-    this.deductBalance(playerId, amount, 'GC');
+    this.deductBalance(playerId, amount, "GC");
 
     const result = Math.floor(Math.random() * 100) + 1; // 1-100
     const won = over ? result > target : result < target;
@@ -279,7 +303,7 @@ export class MiniGamesEngine extends GameEngine {
       const winChance = over ? (100 - target) / 100 : target / 100;
       multiplier = 0.99 / winChance; // 99% RTP
       winAmount = amount * multiplier;
-      this.addBalance(playerId, winAmount, 'GC');
+      this.addBalance(playerId, winAmount, "GC");
     }
 
     return {
@@ -289,27 +313,27 @@ export class MiniGamesEngine extends GameEngine {
       over,
       won,
       multiplier: won ? multiplier : 0,
-      winAmount
+      winAmount,
     };
   }
 
   // Plinko Game Implementation
   public playPlinko(playerId: string, amount: number, rows: number = 16): any {
     const player = this.getPlayer(playerId);
-    if (!player) return { success: false, error: 'Player not found' };
+    if (!player) return { success: false, error: "Player not found" };
 
-    this.deductBalance(playerId, amount, 'GC');
+    this.deductBalance(playerId, amount, "GC");
 
     // Generate multipliers for Plinko (parabolic distribution)
     const multipliers = this.generatePlinkoMultipliers(rows);
-    
+
     // Simulate ball drop
     const ballPath = this.simulatePlinkoPath(rows);
     const finalSlot = ballPath[ballPath.length - 1];
     const multiplier = multipliers[finalSlot];
     const winAmount = amount * multiplier;
 
-    this.addBalance(playerId, winAmount, 'GC');
+    this.addBalance(playerId, winAmount, "GC");
 
     return {
       success: true,
@@ -317,33 +341,35 @@ export class MiniGamesEngine extends GameEngine {
       finalSlot,
       multiplier,
       winAmount,
-      multipliers
+      multipliers,
     };
   }
 
   private generatePlinkoMultipliers(rows: number): number[] {
     // Standard Plinko multipliers (16 rows)
     if (rows === 16) {
-      return [1000, 130, 26, 9, 4, 2, 1.5, 1.2, 1.1, 1.2, 1.5, 2, 4, 9, 26, 130, 1000];
+      return [
+        1000, 130, 26, 9, 4, 2, 1.5, 1.2, 1.1, 1.2, 1.5, 2, 4, 9, 26, 130, 1000,
+      ];
     }
-    
+
     // Generate multipliers for other row counts
     const slots = rows + 1;
     const multipliers: number[] = [];
-    
+
     for (let i = 0; i < slots; i++) {
       const distance = Math.abs(i - slots / 2);
       const normalized = distance / (slots / 2);
       const multiplier = Math.pow(2, normalized * 4) + 0.5;
       multipliers.push(Math.round(multiplier * 10) / 10);
     }
-    
+
     return multipliers;
   }
 
   private simulatePlinkoPath(rows: number): number[] {
     const path = [Math.floor((rows + 1) / 2)]; // Start in middle
-    
+
     for (let row = 1; row <= rows; row++) {
       const currentPos = path[path.length - 1];
       // 50% chance to go left or right
@@ -351,56 +377,65 @@ export class MiniGamesEngine extends GameEngine {
       const nextPos = Math.max(0, Math.min(row, currentPos + direction));
       path.push(nextPos);
     }
-    
+
     return path;
   }
 
   // Mines Game Implementation
-  public playMines(playerId: string, action: 'start' | 'reveal' | 'cashout', data?: any): any {
+  public playMines(
+    playerId: string,
+    action: "start" | "reveal" | "cashout",
+    data?: any,
+  ): any {
     const player = this.getPlayer(playerId);
-    if (!player) return { success: false, error: 'Player not found' };
+    if (!player) return { success: false, error: "Player not found" };
 
     let session = this.sessions.get(playerId);
 
-    if (action === 'start') {
+    if (action === "start") {
       const { amount, mineCount = 5, gridSize = 25 } = data;
-      
-      this.deductBalance(playerId, amount, 'GC');
-      
+
+      this.deductBalance(playerId, amount, "GC");
+
       const minePositions = this.generateMinePositions(gridSize, mineCount);
-      
+
       session = {
         playerId,
-        gameType: 'mines',
+        gameType: "mines",
         active: true,
         currentBet: amount,
-        currency: 'GC',
+        currency: "GC",
         gameData: {
           gridSize,
           mineCount,
           minePositions,
           revealedCells: [],
           currentMultiplier: 1.0,
-          safeRevealed: 0
+          safeRevealed: 0,
         },
-        startTime: new Date()
+        startTime: new Date(),
       };
 
       this.sessions.set(playerId, session);
 
-      return { success: true, message: 'Mines game started', gridSize, mineCount };
+      return {
+        success: true,
+        message: "Mines game started",
+        gridSize,
+        mineCount,
+      };
     }
 
-    if (!session || session.gameType !== 'mines') {
-      return { success: false, error: 'No active mines game' };
+    if (!session || session.gameType !== "mines") {
+      return { success: false, error: "No active mines game" };
     }
 
-    if (action === 'reveal') {
+    if (action === "reveal") {
       const { cellIndex } = data;
       const gameData = session.gameData;
 
       if (gameData.revealedCells.includes(cellIndex)) {
-        return { success: false, error: 'Cell already revealed' };
+        return { success: false, error: "Cell already revealed" };
       }
 
       gameData.revealedCells.push(cellIndex);
@@ -408,12 +443,12 @@ export class MiniGamesEngine extends GameEngine {
       if (gameData.minePositions.includes(cellIndex)) {
         // Hit a mine
         session.active = false;
-        return { 
-          success: true, 
-          result: 'mine', 
-          cellIndex, 
+        return {
+          success: true,
+          result: "mine",
+          cellIndex,
           gameEnded: true,
-          winAmount: 0 
+          winAmount: 0,
         };
       } else {
         // Safe cell
@@ -429,27 +464,27 @@ export class MiniGamesEngine extends GameEngine {
 
           return {
             success: true,
-            result: 'complete',
+            result: "complete",
             cellIndex,
             gameEnded: true,
             multiplier: gameData.currentMultiplier,
-            winAmount
+            winAmount,
           };
         }
 
         return {
           success: true,
-          result: 'safe',
+          result: "safe",
           cellIndex,
           multiplier: gameData.currentMultiplier,
-          safeRevealed: gameData.safeRevealed
+          safeRevealed: gameData.safeRevealed,
         };
       }
     }
 
-    if (action === 'cashout') {
+    if (action === "cashout") {
       if (!session.active) {
-        return { success: false, error: 'Game not active' };
+        return { success: false, error: "Game not active" };
       }
 
       const winAmount = session.currentBet * session.gameData.currentMultiplier;
@@ -459,11 +494,11 @@ export class MiniGamesEngine extends GameEngine {
       return {
         success: true,
         multiplier: session.gameData.currentMultiplier,
-        winAmount
+        winAmount,
       };
     }
 
-    return { success: false, error: 'Invalid action' };
+    return { success: false, error: "Invalid action" };
   }
 
   private generateMinePositions(gridSize: number, mineCount: number): number[] {
@@ -478,15 +513,19 @@ export class MiniGamesEngine extends GameEngine {
   }
 
   // Keno Game Implementation
-  public playKeno(playerId: string, selectedNumbers: number[], amount: number): any {
+  public playKeno(
+    playerId: string,
+    selectedNumbers: number[],
+    amount: number,
+  ): any {
     const player = this.getPlayer(playerId);
-    if (!player) return { success: false, error: 'Player not found' };
+    if (!player) return { success: false, error: "Player not found" };
 
     if (selectedNumbers.length < 1 || selectedNumbers.length > 10) {
-      return { success: false, error: 'Select 1-10 numbers' };
+      return { success: false, error: "Select 1-10 numbers" };
     }
 
-    this.deductBalance(playerId, amount, 'GC');
+    this.deductBalance(playerId, amount, "GC");
 
     // Draw 20 random numbers from 1-80
     const drawnNumbers: number[] = [];
@@ -498,14 +537,16 @@ export class MiniGamesEngine extends GameEngine {
     }
 
     // Count matches
-    const matches = selectedNumbers.filter(num => drawnNumbers.includes(num)).length;
-    
+    const matches = selectedNumbers.filter((num) =>
+      drawnNumbers.includes(num),
+    ).length;
+
     // Calculate multiplier based on matches and numbers selected
     const multiplier = this.getKenoMultiplier(selectedNumbers.length, matches);
     const winAmount = amount * multiplier;
 
     if (winAmount > 0) {
-      this.addBalance(playerId, winAmount, 'GC');
+      this.addBalance(playerId, winAmount, "GC");
     }
 
     return {
@@ -514,34 +555,38 @@ export class MiniGamesEngine extends GameEngine {
       drawnNumbers,
       matches,
       multiplier,
-      winAmount
+      winAmount,
     };
   }
 
   private getKenoMultiplier(selected: number, matches: number): number {
     // Simplified Keno payout table
     const payouts: { [key: string]: { [key: number]: number } } = {
-      '1': { 1: 3.0 },
-      '2': { 2: 12.0 },
-      '3': { 2: 1.5, 3: 45.0 },
-      '4': { 2: 1.0, 3: 4.0, 4: 120.0 },
-      '5': { 3: 1.0, 4: 12.0, 5: 750.0 },
-      '6': { 3: 0.5, 4: 2.0, 5: 50.0, 6: 1500.0 },
-      '7': { 3: 0.5, 4: 1.0, 5: 5.0, 6: 150.0, 7: 5000.0 },
-      '8': { 4: 0.5, 5: 2.0, 6: 20.0, 7: 450.0, 8: 10000.0 },
-      '9': { 4: 0.5, 5: 1.0, 6: 5.0, 7: 50.0, 8: 1000.0, 9: 15000.0 },
-      '10': { 5: 0.5, 6: 2.0, 7: 10.0, 8: 150.0, 9: 2000.0, 10: 25000.0 }
+      "1": { 1: 3.0 },
+      "2": { 2: 12.0 },
+      "3": { 2: 1.5, 3: 45.0 },
+      "4": { 2: 1.0, 3: 4.0, 4: 120.0 },
+      "5": { 3: 1.0, 4: 12.0, 5: 750.0 },
+      "6": { 3: 0.5, 4: 2.0, 5: 50.0, 6: 1500.0 },
+      "7": { 3: 0.5, 4: 1.0, 5: 5.0, 6: 150.0, 7: 5000.0 },
+      "8": { 4: 0.5, 5: 2.0, 6: 20.0, 7: 450.0, 8: 10000.0 },
+      "9": { 4: 0.5, 5: 1.0, 6: 5.0, 7: 50.0, 8: 1000.0, 9: 15000.0 },
+      "10": { 5: 0.5, 6: 2.0, 7: 10.0, 8: 150.0, 9: 2000.0, 10: 25000.0 },
     };
 
     return payouts[selected.toString()]?.[matches] || 0;
   }
 
   // Wheel Game Implementation
-  public playWheel(playerId: string, amount: number, segments: number = 54): any {
+  public playWheel(
+    playerId: string,
+    amount: number,
+    segments: number = 54,
+  ): any {
     const player = this.getPlayer(playerId);
-    if (!player) return { success: false, error: 'Player not found' };
+    if (!player) return { success: false, error: "Player not found" };
 
-    this.deductBalance(playerId, amount, 'GC');
+    this.deductBalance(playerId, amount, "GC");
 
     // Generate wheel with different multipliers
     const multipliers = this.generateWheelMultipliers(segments);
@@ -549,21 +594,21 @@ export class MiniGamesEngine extends GameEngine {
     const multiplier = multipliers[result];
     const winAmount = amount * multiplier;
 
-    this.addBalance(playerId, winAmount, 'GC');
+    this.addBalance(playerId, winAmount, "GC");
 
     return {
       success: true,
       result,
       multiplier,
       winAmount,
-      segments
+      segments,
     };
   }
 
   private generateWheelMultipliers(segments: number): number[] {
     // Create wheel with varying multipliers (more low values, fewer high values)
     const multipliers: number[] = [];
-    
+
     for (let i = 0; i < segments; i++) {
       if (i < segments * 0.4) multipliers.push(1.2);
       else if (i < segments * 0.7) multipliers.push(1.5);
@@ -578,34 +623,46 @@ export class MiniGamesEngine extends GameEngine {
 
   // Required GameEngine methods
   startGame(): void {
-    this.setState('playing');
+    this.setState("playing");
   }
 
   endGame(): void {
-    this.setState('ended');
+    this.setState("ended");
   }
 
   processAction(playerId: string, action: any): any {
     switch (action.gameType) {
-      case 'crash':
+      case "crash":
         return this.playCrash(playerId, action.action, action.amount);
-      case 'dice':
-        return this.playDice(playerId, action.target, action.over, action.amount);
-      case 'plinko':
+      case "dice":
+        return this.playDice(
+          playerId,
+          action.target,
+          action.over,
+          action.amount,
+        );
+      case "plinko":
         return this.playPlinko(playerId, action.amount, action.rows);
-      case 'mines':
+      case "mines":
         return this.playMines(playerId, action.action, action.data);
-      case 'keno':
+      case "keno":
         return this.playKeno(playerId, action.selectedNumbers, action.amount);
-      case 'wheel':
+      case "wheel":
         return this.playWheel(playerId, action.amount, action.segments);
       default:
-        return { success: false, error: 'Unknown game type' };
+        return { success: false, error: "Unknown game type" };
     }
   }
 
   validateAction(playerId: string, action: any): boolean {
-    const validGameTypes = ['crash', 'dice', 'plinko', 'mines', 'keno', 'wheel'];
+    const validGameTypes = [
+      "crash",
+      "dice",
+      "plinko",
+      "mines",
+      "keno",
+      "wheel",
+    ];
     return validGameTypes.includes(action.gameType);
   }
 
@@ -613,7 +670,9 @@ export class MiniGamesEngine extends GameEngine {
     return {
       games: Array.from(this.games.values()),
       session: playerId ? this.sessions.get(playerId) : undefined,
-      activeCrashGames: Array.from(this.crashGames.values()).filter(g => g.active)
+      activeCrashGames: Array.from(this.crashGames.values()).filter(
+        (g) => g.active,
+      ),
     };
   }
 
@@ -627,6 +686,6 @@ export class MiniGamesEngine extends GameEngine {
   }
 
   public getActiveCrashGames(): CrashGame[] {
-    return Array.from(this.crashGames.values()).filter(g => g.active);
+    return Array.from(this.crashGames.values()).filter((g) => g.active);
   }
 }

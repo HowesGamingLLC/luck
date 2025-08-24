@@ -139,7 +139,8 @@ export default function AdminPanel() {
     clickRate: 0,
     unsubscribeRate: 0,
   });
-  const [selectedTemplate, setSelectedTemplate] = useState<EmailTemplate | null>(null);
+  const [selectedTemplate, setSelectedTemplate] =
+    useState<EmailTemplate | null>(null);
   const [newTemplate, setNewTemplate] = useState({
     name: "",
     subject: "",
@@ -380,7 +381,7 @@ export default function AdminPanel() {
 
   const extractVariables = (content: string): string[] => {
     const matches = content.match(/\{\{(\w+)\}\}/g);
-    return matches ? matches.map(match => match.slice(2, -2)) : [];
+    return matches ? matches.map((match) => match.slice(2, -2)) : [];
   };
 
   const duplicateTemplate = (template: EmailTemplate) => {
@@ -395,7 +396,7 @@ export default function AdminPanel() {
   };
 
   const deleteTemplate = (templateId: string) => {
-    setEmailTemplates(emailTemplates.filter(t => t.id !== templateId));
+    setEmailTemplates(emailTemplates.filter((t) => t.id !== templateId));
   };
 
   const sendTestEmail = (template: EmailTemplate) => {
