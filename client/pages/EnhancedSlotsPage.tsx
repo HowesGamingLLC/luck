@@ -520,15 +520,22 @@ export default function EnhancedSlotsPage() {
 
         {/* Games Grid/List */}
         {paginatedGames.length === 0 ? (
-          <Card className="glass">
-            <CardContent className="p-8 text-center">
-              <Sparkles className="h-12 w-12 mx-auto mb-4 text-muted-foreground" />
-              <h3 className="text-lg font-semibold mb-2">No games found</h3>
-              <p className="text-muted-foreground">
-                Try adjusting your filters or search terms
-              </p>
-            </CardContent>
-          </Card>
+          <>
+            {/* Show demo games when no real games are available */}
+            {games.length === 0 && !isLoading ? (
+              <DemoSlotGame />
+            ) : (
+              <Card className="glass">
+                <CardContent className="p-8 text-center">
+                  <Sparkles className="h-12 w-12 mx-auto mb-4 text-muted-foreground" />
+                  <h3 className="text-lg font-semibold mb-2">No games found</h3>
+                  <p className="text-muted-foreground">
+                    Try adjusting your filters or search terms
+                  </p>
+                </CardContent>
+              </Card>
+            )}
+          </>
         ) : (
           <>
             <div className={cn(
