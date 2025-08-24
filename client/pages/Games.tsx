@@ -397,9 +397,12 @@ export default function Games() {
 
                 {/* Selected Slot Machine */}
                 <div className="flex justify-center">
-                  <SlotMachine 
+                  <SlotMachine
                     theme={getSlotTheme(selectedSlot as any)}
-                    onWin={handleSlotWin}
+                    currency={selectedSlotCurrency}
+                    onWin={(amount, combination, currency) => {
+                      console.log(`Slot Win: ${amount} ${currency} with ${combination.join(', ')}`);
+                    }}
                     onSpin={() => setTotalSpins(prev => prev + 1)}
                     className="max-w-lg w-full"
                   />
