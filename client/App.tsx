@@ -23,6 +23,9 @@ import WalletPage from "./pages/Wallet";
 import SettingsPage from "./pages/Settings";
 import AdminPanel from "./pages/AdminPanel";
 import AdminPackages from "./pages/AdminPackages";
+import SlotsPage from "./pages/SlotsPage";
+import BingoPage from "./pages/BingoPage";
+import SportsbookPage from "./pages/SportsbookPage";
 import KYC from "./pages/KYC";
 import Withdraw from "./pages/Withdraw";
 import Store from "./pages/Store";
@@ -58,6 +61,30 @@ function App() {
                       element={
                         <AuthGuard>
                           <Games />
+                        </AuthGuard>
+                      }
+                    />
+                    <Route
+                      path="/games/slots"
+                      element={
+                        <AuthGuard>
+                          <SlotsPage />
+                        </AuthGuard>
+                      }
+                    />
+                    <Route
+                      path="/games/bingo"
+                      element={
+                        <AuthGuard>
+                          <BingoPage />
+                        </AuthGuard>
+                      }
+                    />
+                    <Route
+                      path="/games/sportsbook"
+                      element={
+                        <AuthGuard>
+                          <SportsbookPage />
                         </AuthGuard>
                       }
                     />
