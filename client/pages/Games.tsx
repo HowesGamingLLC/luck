@@ -1,4 +1,4 @@
-import { SpinWheel } from "@/components/SpinWheel";
+import { DailySpinWheel } from "@/components/DailySpinWheel";
 import { SlotMachine } from "@/components/SlotMachine";
 import { ProgressiveJackpot } from "@/components/ProgressiveJackpot";
 import { SLOT_THEMES, getSlotTheme } from "@/components/SlotThemes";
