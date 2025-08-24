@@ -675,6 +675,11 @@ export default function AdminPanel() {
             </Card>
           </TabsContent>
 
+          {/* User Profiles Tab */}
+          <TabsContent value="profiles" className="space-y-6">
+            <UserProfileManager />
+          </TabsContent>
+
           {/* Jackpot Management Tab */}
           <TabsContent value="jackpots" className="space-y-6">
             <Card className="glass">
