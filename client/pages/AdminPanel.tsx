@@ -681,6 +681,68 @@ export default function AdminPanel() {
             <UserProfileManager />
           </TabsContent>
 
+          {/* AI Employees Tab */}
+          <TabsContent value="ai-employees" className="space-y-6">
+            <Card className="glass">
+              <CardHeader>
+                <CardTitle className="flex items-center gap-2">
+                  <User className="h-5 w-5 text-purple" />
+                  AI Employee Management
+                </CardTitle>
+                <CardDescription>
+                  Manage your AI-powered virtual employees and customer service team
+                </CardDescription>
+              </CardHeader>
+              <CardContent>
+                <div className="text-center py-8">
+                  <User className="h-16 w-16 mx-auto mb-4 text-muted-foreground" />
+                  <h3 className="text-xl font-semibold mb-2">
+                    AI Employee Management Center
+                  </h3>
+                  <p className="text-muted-foreground mb-6 max-w-md mx-auto">
+                    Access the comprehensive AI employee management system with training,
+                    analytics, and performance monitoring capabilities.
+                  </p>
+                  <div className="space-y-4">
+                    <div className="grid grid-cols-1 md:grid-cols-3 gap-4 text-sm">
+                      <div className="p-4 border rounded-lg">
+                        <h4 className="font-semibold mb-2">
+                          🤖 Virtual Employees
+                        </h4>
+                        <p className="text-muted-foreground">
+                          Create and manage AI-powered customer service agents with unique personalities
+                        </p>
+                      </div>
+                      <div className="p-4 border rounded-lg">
+                        <h4 className="font-semibold mb-2">
+                          📊 Performance Analytics
+                        </h4>
+                        <p className="text-muted-foreground">
+                          Monitor response times, customer satisfaction, and resolution rates
+                        </p>
+                      </div>
+                      <div className="p-4 border rounded-lg">
+                        <h4 className="font-semibold mb-2">
+                          🎓 Training System
+                        </h4>
+                        <p className="text-muted-foreground">
+                          Advanced AI training modules to improve employee capabilities
+                        </p>
+                      </div>
+                    </div>
+                    <Button
+                      className="btn-primary"
+                      onClick={() => window.open("/admin/ai-employees", "_blank")}
+                    >
+                      <User className="h-4 w-4 mr-2" />
+                      Open AI Employee Manager
+                    </Button>
+                  </div>
+                </div>
+              </CardContent>
+            </Card>
+          </TabsContent>
+
           {/* Jackpot Management Tab */}
           <TabsContent value="jackpots" className="space-y-6">
             <Card className="glass">
