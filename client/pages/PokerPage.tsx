@@ -98,11 +98,11 @@ export default function PokerPage() {
   const [inGame, setInGame] = useState<boolean>(false);
   const [currentTable, setCurrentTable] = useState<PokerTable | null>(null);
 
-  // Mock poker tables
+  // CoinKrazy.com Branded Poker Tables
   const pokerTables: PokerTable[] = [
     {
       id: "table-1",
-      name: "Beginner Texas Hold'em",
+      name: "CoinKrazy Starter Table",
       gameType: "holdem",
       stakes: "1/2",
       buyIn: { gc: 100, sc: 1.0 },
@@ -116,7 +116,7 @@ export default function PokerPage() {
     },
     {
       id: "table-2",
-      name: "Intermediate Hold'em",
+      name: "CoinKrazy Gold Rush",
       gameType: "holdem",
       stakes: "5/10",
       buyIn: { gc: 500, sc: 5.0 },
@@ -130,7 +130,7 @@ export default function PokerPage() {
     },
     {
       id: "table-3",
-      name: "High Stakes VIP",
+      name: "CoinKrazy Diamond Elite",
       gameType: "holdem",
       stakes: "25/50",
       buyIn: { gc: 2500, sc: 25.0 },
@@ -141,6 +141,48 @@ export default function PokerPage() {
       isActive: true,
       pot: 150,
       gameStage: "turn",
+    },
+    {
+      id: "table-4",
+      name: "CoinKrazy High Roller",
+      gameType: "holdem",
+      stakes: "50/100",
+      buyIn: { gc: 5000, sc: 50.0 },
+      blinds: { small: 50, big: 100 },
+      maxPlayers: 6,
+      currentPlayers: 2,
+      currency: "SC",
+      isActive: true,
+      pot: 350,
+      gameStage: "river",
+    },
+    {
+      id: "table-5",
+      name: "CoinKrazy Turbo Blitz",
+      gameType: "holdem",
+      stakes: "10/20",
+      buyIn: { gc: 1000, sc: 10.0 },
+      blinds: { small: 10, big: 20 },
+      maxPlayers: 9,
+      currentPlayers: 6,
+      currency: "Both",
+      isActive: true,
+      pot: 180,
+      gameStage: "turn",
+    },
+    {
+      id: "table-6",
+      name: "CoinKrazy VIP Lounge",
+      gameType: "holdem",
+      stakes: "100/200",
+      buyIn: { gc: 10000, sc: 100.0 },
+      blinds: { small: 100, big: 200 },
+      maxPlayers: 6,
+      currentPlayers: 4,
+      currency: "SC",
+      isActive: true,
+      pot: 750,
+      gameStage: "preflop",
     },
   ];
 
