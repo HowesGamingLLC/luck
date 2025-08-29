@@ -183,8 +183,8 @@ export function UserProfileManager({
     }
   }, [selectedUserId, users]);
 
-  const loadUsers = () => {
-    const baseUsers = getAllUsers();
+  const loadUsers = async () => {
+    const baseUsers = await getAllUsers();
 
     // Enhance with mock profile data
     const enhancedUsers: UserProfile[] = baseUsers.map((user) => ({
