@@ -167,7 +167,7 @@ export default function AdminPanel() {
     // Simulate API call
     await new Promise((resolve) => setTimeout(resolve, 1000));
 
-    const users = getAllUsers();
+    const users = await getAllUsers();
     const analytics: PlayerAnalytics[] = users.map((user) => {
       // Mock additional data for analytics
       const totalWagered = Math.random() * 1000 + user.totalLosses;
