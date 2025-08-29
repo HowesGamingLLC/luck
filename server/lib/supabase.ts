@@ -5,13 +5,17 @@ const serviceRole = process.env.SUPABASE_SERVICE_ROLE;
 
 if (!supabaseUrl || !serviceRole) {
   console.warn(
-    "Supabase server env vars missing: set SUPABASE_URL and SUPABASE_SERVICE_ROLE."
+    "Supabase server env vars missing: set SUPABASE_URL and SUPABASE_SERVICE_ROLE.",
   );
 }
 
-export const supabaseAdmin = createClient(supabaseUrl ?? "", serviceRole ?? "", {
-  auth: {
-    persistSession: false,
-    autoRefreshToken: false,
+export const supabaseAdmin = createClient(
+  supabaseUrl ?? "",
+  serviceRole ?? "",
+  {
+    auth: {
+      persistSession: false,
+      autoRefreshToken: false,
+    },
   },
-});
+);

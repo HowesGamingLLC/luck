@@ -217,7 +217,8 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     const updateRow: Record<string, any> = {};
     if (updates.name !== undefined) updateRow.name = updates.name;
     if (updates.verified !== undefined) updateRow.verified = updates.verified;
-    if (updates.kycStatus !== undefined) updateRow.kyc_status = updates.kycStatus;
+    if (updates.kycStatus !== undefined)
+      updateRow.kyc_status = updates.kycStatus;
     if (updates.kycDocuments !== undefined)
       updateRow.kyc_documents = updates.kycDocuments;
     if (updates.totalLosses !== undefined)
@@ -282,7 +283,9 @@ export const useAuth = () => {
   return context;
 };
 
-export const getAllUsers = async (): Promise<(User & { password?: never })[]> => {
+export const getAllUsers = async (): Promise<
+  (User & { password?: never })[]
+> => {
   const { data, error } = await supabase.from(PROFILES_TABLE).select("*");
   if (error) {
     console.error("Error fetching users:", error);
