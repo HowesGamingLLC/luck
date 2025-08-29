@@ -6,7 +6,7 @@ import React, {
   ReactNode,
 } from "react";
 import { useAuth } from "@/contexts/AuthContext";
-import { useCurrency, CurrencyType } from "./CurrencyContext";
+import { useCurrency, CurrencyType } from "@/contexts/CurrencyContext";
 
 export interface JackpotData {
   id: string;
