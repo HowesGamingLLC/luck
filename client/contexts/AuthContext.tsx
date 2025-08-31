@@ -5,7 +5,7 @@ import React, {
   useEffect,
   ReactNode,
 } from "react";
-import { supabase } from "@/lib/supabase";
+import { getSupabase, hasSupabaseConfig } from "@/lib/supabase";
 
 export interface User {
   id: string;
