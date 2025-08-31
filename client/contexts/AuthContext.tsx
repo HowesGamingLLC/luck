@@ -206,7 +206,8 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       jackpot_opt_in: false,
     };
 
-    const { error: profileErr } = await supabase
+    const client = getSupabase();
+    const { error: profileErr } = await client
       .from(PROFILES_TABLE)
       .insert(profilePayload);
 
