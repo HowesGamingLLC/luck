@@ -144,20 +144,50 @@ export default function KYC() {
   };
 
   const handleSubmitKYC = async () => {
+    if (!user) return;
     setIsSubmitting(true);
+    try {
+      const uploadedPaths: { id?: string; address?: string; selfie?: string } = {};
 
-    // Simulate API submission
-    await new Promise((resolve) => setTimeout(resolve, 2000));
+      for (const doc of documents) {
+        if (doc.file && (doc.status === "uploaded" || doc.status === "pending")) {
+          const ext = doc.file.name.split(".").pop() || "bin";
+          const res = await fetch("/api/kyc/create-upload", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ type: doc.type, extension: ext }),
+          });
+          if (!res.ok) throw new Error("Failed to create upload URL");
+          const data = await res.json();
+          const put = await fetch(data.signedUrl, {
+            method: "PUT",
+            headers: { "Content-Type": doc.file.type || "application/octet-stream" },
+            body: doc.file,
+          });
+          if (!put.ok) throw new Error("Upload failed");
+          if (doc.type === "id") uploadedPaths.id = data.path;
+          if (doc.type === "address") uploadedPaths.address = data.path;
+          if (doc.type === "selfie") uploadedPaths.selfie = data.path;
+        }
+      }
 
-    // Update KYC status to pending
-    updateKYCStatus("pending");
+      const submit = await fetch("/api/kyc/submit", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ userId: user.id, documents: uploadedPaths }),
+      });
+      if (!submit.ok) throw new Error("KYC submit failed");
 
-    setIsSubmitting(false);
+      await updateKYCStatus("pending");
 
-    // Navigate to dashboard with success message
-    navigate("/dashboard", {
-      state: { message: "KYC verification submitted successfully!" },
-    });
+      navigate("/dashboard", {
+        state: { message: "KYC verification submitted successfully!" },
+      });
+    } catch (e) {
+      alert((e as Error).message);
+    } finally {
+      setIsSubmitting(false);
+    }
   };
 
   const kycStatus = getKYCStatusInfo();
