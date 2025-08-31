@@ -584,13 +584,13 @@ export default function SportsbookPage() {
                             <CardTitle className="text-lg">
                               {game.awayTeam} @ {game.homeTeam}
                             </CardTitle>
-                            <CardDescription className="flex items-center gap-2">
+                            <div className="flex items-center gap-2 text-sm text-muted-foreground">
                               <Badge variant="outline" className="text-xs">
                                 {game.sport.toUpperCase()}
                               </Badge>
                               <Clock className="h-3 w-3" />
                               {getGameTime(game.gameTime)}
-                            </CardDescription>
+                            </div>
                           </div>
                           <Badge
                             className={
