@@ -55,6 +55,14 @@ const AuthContext = createContext<AuthContextType | undefined>(undefined);
 
 const PROFILES_TABLE = "profiles";
 
+// Dev fallback credentials (only used when Supabase is not configured)
+const DEV_ADMIN_EMAIL = import.meta.env.VITE_DEV_ADMIN_EMAIL as
+  | string
+  | undefined;
+const DEV_ADMIN_PASSWORD = import.meta.env.VITE_DEV_ADMIN_PASSWORD as
+  | string
+  | undefined;
+
 function mapProfileRowToUser(row: any): User {
   return {
     id: row.id,
@@ -77,6 +85,21 @@ export function AuthProvider({ children }: { children: ReactNode }) {
 
   useEffect(() => {
     if (!hasSupabaseConfig) {
+      const stored = localStorage.getItem("coinkrazy_auth_user");
+      if (stored) {
+        try {
+          const parsed = JSON.parse(stored) as User & {
+            createdAt?: string | Date;
+            lastLoginAt?: string | Date;
+          };
+          const hydrated: User = {
+            ...parsed,
+            createdAt: new Date(parsed.createdAt ?? new Date()),
+            lastLoginAt: new Date(parsed.lastLoginAt ?? new Date()),
+          };
+          setUser(hydrated);
+        } catch {}
+      }
       setIsLoading(false);
       return;
     }
@@ -130,7 +153,6 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       const mapped = mapProfileRowToUser(data);
       setUser(mapped);
       localStorage.setItem("coinkrazy_auth_user", JSON.stringify(mapped));
-      // Update last login timestamp
       await client
         .from(PROFILES_TABLE)
         .update({ last_login_at: new Date().toISOString() })
@@ -142,6 +164,31 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     setIsLoading(true);
 
     if (!hasSupabaseConfig) {
+      const email = credentials.email.trim().toLowerCase();
+      const password = credentials.password;
+      const matchesDevAdmin =
+        DEV_ADMIN_EMAIL?.toLowerCase() === email &&
+        DEV_ADMIN_PASSWORD === password;
+
+      if (matchesDevAdmin) {
+        const devUser: User = {
+          id: "dev-admin",
+          email: DEV_ADMIN_EMAIL!,
+          name: "Admin",
+          isAdmin: true,
+          verified: true,
+          kycStatus: "approved",
+          createdAt: new Date(),
+          lastLoginAt: new Date(),
+          totalLosses: 0,
+          jackpotOptIn: false,
+        };
+        setUser(devUser);
+        localStorage.setItem("coinkrazy_auth_user", JSON.stringify(devUser));
+        setIsLoading(false);
+        return true;
+      }
+
       setIsLoading(false);
       return false;
     }
@@ -213,7 +260,6 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       console.error("Error creating profile:", profileErr);
     }
 
-    // If email confirmation is enabled, user may need to verify before session exists
     const {
       data: { session },
     } = await client.auth.getSession();
@@ -227,7 +273,13 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   };
 
   const logout = async () => {
-    if (!hasSupabaseConfig) return;
+    if (!hasSupabaseConfig) {
+      setUser(null);
+      localStorage.removeItem("coinkrazy_auth_user");
+      localStorage.removeItem("coinkrazy_user");
+      localStorage.removeItem("coinkrazy_transactions");
+      return;
+    }
     const client = getSupabase();
     await client.auth.signOut();
     setUser(null);
@@ -238,6 +290,13 @@ export function AuthProvider({ children }: { children: ReactNode }) {
 
   const updateProfile = async (updates: Partial<User>) => {
     if (!user) return;
+
+    if (!hasSupabaseConfig) {
+      const updatedUser = { ...user, ...updates } as User;
+      setUser(updatedUser);
+      localStorage.setItem("coinkrazy_auth_user", JSON.stringify(updatedUser));
+      return;
+    }
 
     const updateRow: Record<string, any> = {};
     if (updates.name !== undefined) updateRow.name = updates.name;
@@ -252,8 +311,6 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       updateRow.jackpot_opt_in = updates.jackpotOptIn;
 
     if (Object.keys(updateRow).length === 0) return;
-
-    if (!hasSupabaseConfig) return;
 
     const client = getSupabase();
 
