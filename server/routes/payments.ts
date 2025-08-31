@@ -38,7 +38,28 @@ export const packages = [
 
 type Pkg = (typeof packages)[number];
 
-export const listPackages: RequestHandler = (_req, res) => {
+export const listPackages: RequestHandler = async (_req, res) => {
+  try {
+    if (hasSupabaseServerConfig) {
+      const admin = getSupabaseAdmin();
+      const { data, error } = await admin
+        .from("packages")
+        .select("id,name,gc,bonus_sc,price_cents,active")
+        .or("active.is.null,active.eq.true");
+      if (!error && Array.isArray(data) && data.length) {
+        const normalized = data.map((p: any) => ({
+          id: p.id,
+          name: p.name,
+          gc: Number(p.gc || p.gold_coins || 0),
+          bonusSc: Number(p.bonus_sc || p.bonusSweepCoins || 0),
+          priceCents: Number(p.price_cents || Math.round((p.price || 0) * 100)),
+        }));
+        return res.json({ success: true, packages: normalized });
+      }
+    }
+  } catch (e) {
+    // ignore and fallback
+  }
   res.json({ success: true, packages });
 };
 

@@ -114,6 +114,14 @@ export function createServer() {
   app.get("/api/payments/stats", payments.getSalesStats);
   app.get("/api/status/db", payments.dbStatus);
 
+  // Admin packages
+  const adminPackages =
+    require("./routes/adminPackages") as typeof import("./routes/adminPackages");
+  app.get("/api/admin/packages", adminPackages.listAdminPackages);
+  app.post("/api/admin/packages", adminPackages.createAdminPackage);
+  app.put("/api/admin/packages/:id", adminPackages.updateAdminPackage);
+  app.delete("/api/admin/packages/:id", adminPackages.deleteAdminPackage);
+
   // Leaderboard routes
   const leaderboard =
     require("./routes/leaderboard") as typeof import("./routes/leaderboard");
