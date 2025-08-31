@@ -134,5 +134,9 @@ export function createServer() {
   app.post("/api/leaderboard/award-weekly", leaderboard.awardWeeklyBonuses);
   leaderboard.startLeaderboardScheduler();
 
+  // Auth admin utilities (dev ops)
+  const authRoutes = require("./routes/auth") as typeof import("./routes/auth");
+  app.post("/api/auth/seed-test-user", authRoutes.seedTestUser);
+
   return app;
 }
