@@ -76,10 +76,17 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
+    if (!hasSupabaseConfig) {
+      setIsLoading(false);
+      return;
+    }
+
+    const client = getSupabase();
+
     const init = async () => {
       const {
         data: { session },
-      } = await supabase.auth.getSession();
+      } = await client.auth.getSession();
 
       if (session?.user) {
         await loadAndSetProfile(session.user.id);
@@ -88,7 +95,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       setIsLoading(false);
     };
 
-    const { data: authListener } = supabase.auth.onAuthStateChange(
+    const { data: authListener } = client.auth.onAuthStateChange(
       async (_event, session) => {
         if (session?.user) {
           await loadAndSetProfile(session.user.id);
