@@ -131,7 +131,8 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       setUser(mapped);
       localStorage.setItem("coinkrazy_auth_user", JSON.stringify(mapped));
       // Update last login timestamp
-      await supabase
+      const client = getSupabase();
+      await client
         .from(PROFILES_TABLE)
         .update({ last_login_at: new Date().toISOString() })
         .eq("id", userId);
