@@ -55,7 +55,7 @@ export interface GoldCoinPackage {
 }
 
 export default function Store() {
-  const { isAuthenticated } = useAuth();
+  const { isAuthenticated, user: authUser } = useAuth();
   const { updateBalance } = useCurrency();
   const [selectedPackage, setSelectedPackage] =
     useState<GoldCoinPackage | null>(null);
