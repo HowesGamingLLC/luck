@@ -165,7 +165,13 @@ async function awardWeeklyBonusesInternal(): Promise<{ awarded: boolean; winners
     data = fallback.data as any;
     error = fallback.error as any;
   }
-  if (error) return { awarded: false, weekKey, reason: error.message };
+  if (error) {
+    const msg = String(error.message || "");
+    if (msg.includes("Could not find the table 'public.transactions'") || msg.toLowerCase().includes("relation \"transactions\" does not exist")) {
+      return { awarded: false, weekKey, reason: "transactions table missing" };
+    }
+    return { awarded: false, weekKey, reason: error.message };
+  }
 
   const totals = new Map<string, number>();
   (data || []).forEach((row: any) => {
