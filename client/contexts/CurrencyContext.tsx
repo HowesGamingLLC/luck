@@ -129,15 +129,22 @@ export function CurrencyProvider({ children }: { children: ReactNode }) {
           } else if (savedUser) {
             setUser(JSON.parse(savedUser));
           } else {
-            setUser(createInitialUser({ id: authUser.id, email: authUser.email }));
+            setUser(
+              createInitialUser({ id: authUser.id, email: authUser.email }),
+            );
           }
 
           // Realtime balance updates
           const channel = client
             .channel("profiles-balance-" + authUser.id)
             .on(
-              'postgres_changes',
-              { event: 'UPDATE', schema: 'public', table: 'profiles', filter: `id=eq.${authUser.id}` },
+              "postgres_changes",
+              {
+                event: "UPDATE",
+                schema: "public",
+                table: "profiles",
+                filter: `id=eq.${authUser.id}`,
+              },
               (payload: any) => {
                 const newRow = payload.new as any;
                 setUser((prev) =>
@@ -239,13 +246,23 @@ export function CurrencyProvider({ children }: { children: ReactNode }) {
       if (!prevUser) return prevUser;
       const updatedUser = { ...prevUser };
       if (currency === CurrencyType.GC) {
-        updatedUser.balance.goldCoins = Math.max(0, updatedUser.balance.goldCoins + amount);
-        if (type === "win") updatedUser.totalWon.goldCoins += Math.max(0, amount);
-        else if (type === "wager") updatedUser.totalWagered.goldCoins += Math.abs(amount);
+        updatedUser.balance.goldCoins = Math.max(
+          0,
+          updatedUser.balance.goldCoins + amount,
+        );
+        if (type === "win")
+          updatedUser.totalWon.goldCoins += Math.max(0, amount);
+        else if (type === "wager")
+          updatedUser.totalWagered.goldCoins += Math.abs(amount);
       } else {
-        updatedUser.balance.sweepCoins = Math.max(0, updatedUser.balance.sweepCoins + amount);
-        if (type === "win") updatedUser.totalWon.sweepCoins += Math.max(0, amount);
-        else if (type === "wager") updatedUser.totalWagered.sweepCoins += Math.abs(amount);
+        updatedUser.balance.sweepCoins = Math.max(
+          0,
+          updatedUser.balance.sweepCoins + amount,
+        );
+        if (type === "win")
+          updatedUser.totalWon.sweepCoins += Math.max(0, amount);
+        else if (type === "wager")
+          updatedUser.totalWagered.sweepCoins += Math.abs(amount);
       }
       return updatedUser;
     });

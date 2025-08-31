@@ -39,16 +39,23 @@ export default function AdminDBStatus() {
           )}
           {status && (
             <div className="space-y-3">
-              <div className="text-sm">Supabase configured: {status.hasSupabaseServerConfig ? "Yes" : "No"}</div>
+              <div className="text-sm">
+                Supabase configured:{" "}
+                {status.hasSupabaseServerConfig ? "Yes" : "No"}
+              </div>
               {status.tables && (
                 <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
                   {Object.entries(status.tables).map(([name, t]) => (
                     <Card key={name}>
                       <CardContent className="p-4">
-                        <div className="text-xs text-muted-foreground">{name}</div>
+                        <div className="text-xs text-muted-foreground">
+                          {name}
+                        </div>
                         <div className="text-xl font-bold">{t.count}</div>
                         {t.error && (
-                          <div className="text-xs text-red-500 mt-1">{t.error}</div>
+                          <div className="text-xs text-red-500 mt-1">
+                            {t.error}
+                          </div>
                         )}
                       </CardContent>
                     </Card>

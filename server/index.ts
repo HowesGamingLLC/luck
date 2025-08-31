@@ -48,7 +48,8 @@ export function createServer() {
     if (buf && buf.length) req.rawBody = buf.toString();
   };
   app.use("/api/square/webhook", express.json({ verify: rawBodySaver }));
-  const paymentsEarly = require("./routes/payments") as typeof import("./routes/payments");
+  const paymentsEarly =
+    require("./routes/payments") as typeof import("./routes/payments");
   app.post("/api/square/webhook", paymentsEarly.squareWebhook);
 
   // Middleware
