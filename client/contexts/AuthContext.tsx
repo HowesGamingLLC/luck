@@ -256,7 +256,11 @@ export function AuthProvider({ children }: { children: ReactNode }) {
 
     if (Object.keys(updateRow).length === 0) return;
 
-    const { error } = await supabase
+    if (!hasSupabaseConfig) return;
+
+    const client = getSupabase();
+
+    const { error } = await client
       .from(PROFILES_TABLE)
       .update(updateRow)
       .eq("id", user.id);
