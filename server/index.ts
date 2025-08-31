@@ -101,7 +101,8 @@ export function createServer() {
     if (buf && buf.length) req.rawBody = buf.toString();
   };
   app.use("/api/square/webhook", express.json({ verify: rawBodySaver }));
-  const payments = require("./routes/payments") as typeof import("./routes/payments");
+  const payments =
+    require("./routes/payments") as typeof import("./routes/payments");
   app.get("/api/payments/packages", payments.listPackages);
   app.post("/api/payments/create", payments.createPaymentLink);
   app.post("/api/square/webhook", payments.squareWebhook);

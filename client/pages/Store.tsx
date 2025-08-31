@@ -197,7 +197,11 @@ export default function Store() {
       });
       const data = await res.json();
       if (!res.ok || !data?.url) {
-        throw new Error(data?.error ? JSON.stringify(data.error) : "Failed to create payment link");
+        throw new Error(
+          data?.error
+            ? JSON.stringify(data.error)
+            : "Failed to create payment link",
+        );
       }
       window.location.href = data.url;
     } catch (error) {

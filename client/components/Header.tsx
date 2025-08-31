@@ -64,12 +64,10 @@ export function Header() {
 
   const isActive = (path: string) => location.pathname === path;
 
-
   const handleLogout = () => {
     logout();
     navigate("/");
   };
-
 
   return (
     <header className="sticky top-0 z-50 w-full border-b border-border/40 bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
@@ -113,14 +111,20 @@ export function Header() {
                   <Coins className="h-4 w-4 text-gold" />
                   <span className="text-xs text-muted-foreground">Gold</span>
                   <span className="text-sm font-semibold text-gold">
-                    {formatCurrency(currencyUser.balance.goldCoins, CurrencyType.GC)}
+                    {formatCurrency(
+                      currencyUser.balance.goldCoins,
+                      CurrencyType.GC,
+                    )}
                   </span>
                 </div>
                 <div className="flex items-center gap-2 bg-card px-3 py-1.5 rounded-lg border">
                   <Gem className="h-4 w-4 text-teal" />
                   <span className="text-xs text-muted-foreground">Sweep</span>
                   <span className="text-sm font-semibold text-teal">
-                    {formatCurrency(currencyUser.balance.sweepCoins, CurrencyType.SC)}
+                    {formatCurrency(
+                      currencyUser.balance.sweepCoins,
+                      CurrencyType.SC,
+                    )}
                   </span>
                 </div>
               </div>
@@ -332,7 +336,6 @@ export function Header() {
                       )}
                     </span>
                   </div>
-
 
                   {/* Mobile Auth Actions */}
                   {!isAuthenticated && (

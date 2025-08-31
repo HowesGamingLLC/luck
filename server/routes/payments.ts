@@ -11,10 +11,28 @@ function assertEnv(): { ok: boolean; missing: string[] } {
 
 // Simple package catalog (source of truth)
 export const packages = [
-  { id: "starter", name: "Starter Pack", gc: 10000, bonusSc: 5, priceCents: 999 },
-  { id: "popular", name: "Popular Pack", gc: 50000, bonusSc: 30, priceCents: 3999 },
+  {
+    id: "starter",
+    name: "Starter Pack",
+    gc: 10000,
+    bonusSc: 5,
+    priceCents: 999,
+  },
+  {
+    id: "popular",
+    name: "Popular Pack",
+    gc: 50000,
+    bonusSc: 30,
+    priceCents: 3999,
+  },
   { id: "pro", name: "Pro Pack", gc: 100000, bonusSc: 75, priceCents: 6999 },
-  { id: "whale", name: "Whale Pack", gc: 250000, bonusSc: 200, priceCents: 14999 },
+  {
+    id: "whale",
+    name: "Whale Pack",
+    gc: 250000,
+    bonusSc: 200,
+    priceCents: 14999,
+  },
   { id: "daily", name: "Daily Deal", gc: 25000, bonusSc: 15, priceCents: 1999 },
 ] as const;
 
@@ -26,14 +44,21 @@ export const listPackages: RequestHandler = (_req, res) => {
 
 export const createPaymentLink: RequestHandler = async (req, res) => {
   const env = assertEnv();
-  if (!env.ok) return res.status(400).json({ success: false, error: `Missing env: ${env.missing.join(",")}` });
+  if (!env.ok)
+    return res
+      .status(400)
+      .json({ success: false, error: `Missing env: ${env.missing.join(",")}` });
 
   const { packageId, quantity = 1, userId, email, returnUrl } = req.body || {};
   const pkg: Pkg | undefined = packages.find((p) => p.id === packageId);
   const locationId = process.env.SQUARE_LOCATION_ID;
 
-  if (!pkg) return res.status(404).json({ success: false, error: "Package not found" });
-  if (!locationId) return res.status(400).json({ success: false, error: "Missing SQUARE_LOCATION_ID" });
+  if (!pkg)
+    return res.status(404).json({ success: false, error: "Package not found" });
+  if (!locationId)
+    return res
+      .status(400)
+      .json({ success: false, error: "Missing SQUARE_LOCATION_ID" });
 
   const idempotencyKey = crypto.randomUUID();
   const order = {
@@ -48,25 +73,32 @@ export const createPaymentLink: RequestHandler = async (req, res) => {
     ],
   };
 
-  const resp = await fetch("https://connect.squareup.com/v2/online-checkout/payment-links", {
-    method: "POST",
-    headers: {
-      "Content-Type": "application/json",
-      Authorization: `Bearer ${process.env.SQUARE_ACCESS_TOKEN}`,
+  const resp = await fetch(
+    "https://connect.squareup.com/v2/online-checkout/payment-links",
+    {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${process.env.SQUARE_ACCESS_TOKEN}`,
+      },
+      body: JSON.stringify({
+        idempotency_key: idempotencyKey,
+        order,
+        checkout_options: { redirect_url: returnUrl || undefined },
+        pre_populate_buyer_email: email || undefined,
+      }),
     },
-    body: JSON.stringify({
-      idempotency_key: idempotencyKey,
-      order,
-      checkout_options: { redirect_url: returnUrl || undefined },
-      pre_populate_buyer_email: email || undefined,
-    }),
-  });
+  );
 
   const data = await resp.json();
   if (!resp.ok) {
     return res.status(resp.status).json({ success: false, error: data });
   }
-  return res.json({ success: true, url: data.payment_link?.url, link: data.payment_link });
+  return res.json({
+    success: true,
+    url: data.payment_link?.url,
+    link: data.payment_link,
+  });
 };
 
 function verifySquareSignature(req: any): boolean {
@@ -110,7 +142,10 @@ export const squareWebhook: RequestHandler = async (req, res) => {
             });
             if (error) {
               // Fallback: direct update if columns exist
-              await admin.from("profiles").update({ gold_coins: (null as any), sweep_coins: (null as any) }).eq("id", uid);
+              await admin
+                .from("profiles")
+                .update({ gold_coins: null as any, sweep_coins: null as any })
+                .eq("id", uid);
             }
           }
         }
@@ -133,7 +168,9 @@ export const dbStatus: RequestHandler = async (_req, res) => {
     const tables = ["profiles", "orders", "transactions"];
     status.tables = {};
     for (const t of tables) {
-      const { count, error } = await admin.from(t).select("id", { count: "exact", head: true });
+      const { count, error } = await admin
+        .from(t)
+        .select("id", { count: "exact", head: true });
       status.tables[t] = { count: count ?? 0, error: error?.message ?? null };
     }
   } catch (e: any) {
