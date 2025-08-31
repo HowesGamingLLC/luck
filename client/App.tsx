@@ -197,7 +197,7 @@ function App() {
                       path="/admin/sales"
                       element={
                         <AuthGuard requireAdmin={true}>
-                          {require("./pages/AdminSales").default()}
+                          <AdminSales />
                         </AuthGuard>
                       }
                     />
