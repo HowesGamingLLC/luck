@@ -110,6 +110,8 @@ export function createServer() {
     require("./routes/payments") as typeof import("./routes/payments");
   app.get("/api/payments/packages", payments.listPackages);
   app.post("/api/payments/create", payments.createPaymentLink);
+  app.get("/api/payments/orders", payments.listOrders);
+  app.get("/api/payments/stats", payments.getSalesStats);
   app.get("/api/status/db", payments.dbStatus);
 
   // Leaderboard routes

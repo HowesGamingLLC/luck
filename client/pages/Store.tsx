@@ -65,109 +65,81 @@ export default function Store() {
     "card" | "paypal" | "crypto"
   >("card");
 
-  // Gold coin packages - these could be managed by admin
-  const packages: GoldCoinPackage[] = [
-    {
-      id: "starter",
-      name: "Starter Pack",
-      goldCoins: 10000,
-      bonusSweepCoins: 5,
-      price: 9.99,
-      popular: false,
-      bestValue: false,
-      icon: Coins,
-      color: "from-blue-500 to-blue-600",
-      description: "Perfect for new players to get started",
-      features: [
-        "10,000 Gold Coins",
-        "5 FREE Sweep Coins",
-        "Instant delivery",
-        "24/7 support",
-      ],
-    },
-    {
-      id: "popular",
-      name: "Popular Choice",
-      goldCoins: 50000,
-      bonusSweepCoins: 30,
-      price: 39.99,
-      originalPrice: 49.99,
-      popular: true,
-      bestValue: false,
-      icon: Star,
-      color: "from-purple-500 to-purple-600",
-      description: "Most popular package with great value",
-      features: [
-        "50,000 Gold Coins",
-        "30 FREE Sweep Coins",
-        "20% bonus coins",
-        "Priority support",
-      ],
-      savings: 20,
-    },
-    {
-      id: "premium",
-      name: "Premium Pack",
-      goldCoins: 100000,
-      bonusSweepCoins: 75,
-      price: 69.99,
-      originalPrice: 99.99,
-      popular: false,
-      bestValue: true,
-      icon: Crown,
-      color: "from-gold to-yellow-600",
-      description: "Best value for serious players",
-      features: [
-        "100,000 Gold Coins",
-        "75 FREE Sweep Coins",
-        "50% bonus coins",
-        "VIP support",
-        "Exclusive rewards",
-      ],
-      savings: 30,
-    },
-    {
-      id: "mega",
-      name: "Mega Package",
-      goldCoins: 250000,
-      bonusSweepCoins: 200,
-      price: 149.99,
-      originalPrice: 199.99,
-      popular: false,
-      bestValue: false,
-      icon: Gem,
-      color: "from-red-500 to-pink-600",
-      description: "Ultimate package for high rollers",
-      features: [
-        "250,000 Gold Coins",
-        "200 FREE Sweep Coins",
-        "100% bonus coins",
-        "VIP treatment",
-        "Personal account manager",
-      ],
-      savings: 25,
-    },
-    {
-      id: "daily",
-      name: "Daily Special",
-      goldCoins: 25000,
-      bonusSweepCoins: 15,
-      price: 19.99,
-      originalPrice: 24.99,
-      popular: false,
-      bestValue: false,
-      icon: Zap,
-      color: "from-green-500 to-green-600",
-      description: "Limited time offer - today only!",
-      features: [
-        "25,000 Gold Coins",
-        "15 FREE Sweep Coins",
-        "Daily deal pricing",
-        "Fast delivery",
-      ],
-      savings: 20,
-    },
-  ];
+  const [serverPackages, setServerPackages] = useState<any[]>([]);
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState<string | null>(null);
+
+  useEffect(() => {
+    const load = async () => {
+      setLoading(true);
+      setError(null);
+      try {
+        const res = await fetch("/api/payments/packages");
+        const data = await res.json();
+        if (!res.ok || !data?.packages) throw new Error(data?.error || "Failed to load packages");
+        setServerPackages(data.packages);
+      } catch (e: any) {
+        setError(e?.message || String(e));
+      } finally {
+        setLoading(false);
+      }
+    };
+    load();
+  }, []);
+
+  const mapIcon = (id: string) => {
+    switch (id) {
+      case "starter":
+        return Coins;
+      case "popular":
+        return Star;
+      case "pro":
+        return Crown;
+      case "whale":
+        return Gem;
+      case "daily":
+        return Zap;
+      default:
+        return Coins;
+    }
+  };
+
+  const packages: GoldCoinPackage[] = serverPackages.map((p) => ({
+    id: p.id,
+    name: p.name,
+    goldCoins: p.gc,
+    bonusSweepCoins: p.bonusSc,
+    price: (p.priceCents || 0) / 100,
+    popular: p.id === "popular",
+    bestValue: p.id === "pro",
+    icon: mapIcon(p.id),
+    color:
+      p.id === "starter"
+        ? "from-blue-500 to-blue-600"
+        : p.id === "popular"
+          ? "from-purple-500 to-purple-600"
+          : p.id === "pro"
+            ? "from-gold to-yellow-600"
+            : p.id === "whale"
+              ? "from-red-500 to-pink-600"
+              : "from-green-500 to-green-600",
+    description:
+      p.id === "starter"
+        ? "Perfect for new players to get started"
+        : p.id === "popular"
+          ? "Most popular package with great value"
+          : p.id === "pro"
+            ? "Best value for serious players"
+            : p.id === "whale"
+              ? "Ultimate package for high rollers"
+              : "Limited time offer - today only!",
+    features: [
+      `${Number(p.gc).toLocaleString()} Gold Coins`,
+      `${p.bonusSc} FREE Sweep Coins`,
+      "Instant delivery",
+      "24/7 support",
+    ],
+  }));
 
   const handlePurchase = async (pkg: GoldCoinPackage) => {
     if (!isAuthenticated) {

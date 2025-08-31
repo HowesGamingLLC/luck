@@ -193,6 +193,14 @@ function App() {
                       }
                     />
                     <Route
+                      path="/admin/sales"
+                      element={
+                        <AuthGuard requireAdmin={true}>
+                          {require("./pages/AdminSales").default()}
+                        </AuthGuard>
+                      }
+                    />
+                    <Route
                       path="/admin/db-status"
                       element={
                         <AuthGuard requireAdmin={true}>

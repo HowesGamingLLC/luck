@@ -126,6 +126,7 @@ export const squareWebhook: RequestHandler = async (req, res) => {
       if (payment?.status === "COMPLETED") {
         const reference = payment.order?.reference_id as string | undefined;
         const totalMoney = payment.total_money?.amount as number | undefined;
+        const paymentId = payment.id as string | undefined;
         if (reference) {
           const [uid, pkgId, qtyStr] = reference.split(":");
           const pack = packages.find((p) => p.id === pkgId);
@@ -143,6 +144,21 @@ export const squareWebhook: RequestHandler = async (req, res) => {
             if (error) {
               console.error("increment_profile_balances RPC error", error);
             }
+            // Record order (if orders table exists)
+            try {
+              await admin.from("orders").insert({
+                user_id: uid,
+                package_id: pkgId,
+                quantity: qty,
+                amount_cents: totalMoney ?? pack.priceCents * qty,
+                gc_awarded: gcAmount,
+                sc_bonus: scBonus,
+                payment_id: paymentId,
+                status: "COMPLETED",
+              });
+            } catch (e) {
+              console.error("orders insert failed", e);
+            }
           }
         }
       }
@@ -152,6 +168,54 @@ export const squareWebhook: RequestHandler = async (req, res) => {
   }
 
   res.json({ success: true });
+};
+
+export const listOrders: RequestHandler = async (req, res) => {
+  if (!hasSupabaseServerConfig) return res.json({ success: true, orders: [] });
+  try {
+    const admin = getSupabaseAdmin();
+    const limit = Math.min(Number(req.query.limit || 100), 500);
+    const { data, error } = await admin
+      .from("orders")
+      .select("id,user_id,package_id,quantity,amount_cents,gc_awarded,sc_bonus,payment_id,status,created_at")
+      .order("created_at", { ascending: false })
+      .limit(limit);
+    if (error) return res.status(500).json({ success: false, error: error.message });
+    return res.json({ success: true, orders: data || [] });
+  } catch (e: any) {
+    return res.status(500).json({ success: false, error: e?.message || String(e) });
+  }
+};
+
+export const getSalesStats: RequestHandler = async (_req, res) => {
+  try {
+    if (!hasSupabaseServerConfig) {
+      const perPackage = packages.map((p) => ({ id: p.id, name: p.name, count: 0, grossCents: 0 }));
+      return res.json({ success: true, perPackage, totalSalesCents: 0, totalOrders: 0 });
+    }
+    const admin = getSupabaseAdmin();
+    const { data, error } = await admin
+      .from("orders")
+      .select("package_id, amount_cents")
+      .neq("status", "CANCELLED");
+    if (error) return res.status(500).json({ success: false, error: error.message });
+    const counts = new Map<string, { count: number; gross: number }>();
+    for (const p of packages) counts.set(p.id, { count: 0, gross: 0 });
+    let totalOrders = 0;
+    (data || []).forEach((row: any) => {
+      const k = row.package_id as string;
+      const cur = counts.get(k) || { count: 0, gross: 0 };
+      cur.count += 1;
+      cur.gross += Number(row.amount_cents || 0);
+      counts.set(k, cur);
+      totalOrders += 1;
+    });
+    const perPackage = packages.map((p) => ({ id: p.id, name: p.name, count: counts.get(p.id)?.count || 0, grossCents: counts.get(p.id)?.gross || 0 }));
+    const totalSalesCents = perPackage.reduce((s, x) => s + x.grossCents, 0);
+    return res.json({ success: true, perPackage, totalSalesCents, totalOrders });
+  } catch (e: any) {
+    return res.status(500).json({ success: false, error: e?.message || String(e) });
+  }
 };
 
 export const dbStatus: RequestHandler = async (_req, res) => {
