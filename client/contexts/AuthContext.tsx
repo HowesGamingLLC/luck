@@ -216,9 +216,10 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     }
 
     // If email confirmation is enabled, user may need to verify before session exists
+    const client = getSupabase();
     const {
       data: { session },
-    } = await supabase.auth.getSession();
+    } = await client.auth.getSession();
 
     if (session?.user) {
       await loadAndSetProfile(session.user.id);
