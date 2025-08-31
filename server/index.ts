@@ -112,5 +112,12 @@ export function createServer() {
   app.post("/api/payments/create", payments.createPaymentLink);
   app.get("/api/status/db", payments.dbStatus);
 
+  // Leaderboard routes
+  const leaderboard =
+    require("./routes/leaderboard") as typeof import("./routes/leaderboard");
+  app.get("/api/leaderboard", leaderboard.getLeaderboard);
+  app.post("/api/leaderboard/award-weekly", leaderboard.awardWeeklyBonuses);
+  leaderboard.startLeaderboardScheduler();
+
   return app;
 }
