@@ -105,15 +105,10 @@ export function createServer() {
   app.get("/api/public/rate-limit", getRateLimitStatus);
 
   // Payments and status
-  const rawBodySaver = (req: any, _res: any, buf: any) => {
-    if (buf && buf.length) req.rawBody = buf.toString();
-  };
-  app.use("/api/square/webhook", express.json({ verify: rawBodySaver }));
   const payments =
     require("./routes/payments") as typeof import("./routes/payments");
   app.get("/api/payments/packages", payments.listPackages);
   app.post("/api/payments/create", payments.createPaymentLink);
-  app.post("/api/square/webhook", payments.squareWebhook);
   app.get("/api/status/db", payments.dbStatus);
 
   return app;
