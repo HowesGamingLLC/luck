@@ -86,7 +86,13 @@ export const getLeaderboard: RequestHandler = async (req, res) => {
       error = fallback.error as any;
     }
 
-    if (error) return res.status(500).json({ success: false, error: error.message });
+    if (error) {
+      const msg = String(error.message || "");
+      if (msg.includes("Could not find the table 'public.transactions'") || msg.toLowerCase().includes("relation \"transactions\" does not exist")) {
+        return res.json({ success: true, period, start, end, entries: [] });
+      }
+      return res.status(500).json({ success: false, error: error.message });
+    }
 
     const totals = new Map<string, number>();
     (data || []).forEach((row: any) => {
