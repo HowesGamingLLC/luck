@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { Link, useLocation, useNavigate } from "react-router-dom";
+import { LuckyAiLogo } from "./LuckyAiLogo";
 import { Button } from "@/components/ui/button";
 import {
   DropdownMenu,
@@ -74,12 +75,7 @@ export function Header() {
       <div className="container flex h-16 items-center">
         {/* Logo */}
         <Link to="/" className="mr-6 flex items-center space-x-2">
-          <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-gradient-to-br from-purple to-gold">
-            <span className="text-lg font-bold text-white">C</span>
-          </div>
-          <span className="text-xl font-display font-bold gradient-text">
-            CoinKrazy.com
-          </span>
+          <LuckyAiLogo size={32} showText={true} />
         </Link>
 
         {/* Desktop Navigation */}
