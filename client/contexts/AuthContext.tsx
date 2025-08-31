@@ -145,7 +145,17 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       .maybeSingle();
 
     if (error) {
-      console.error("Error loading profile:", error);
+      console.error("Error loading profile:", (error as any)?.message || error);
+      try {
+        const res = await fetch(`/api/profiles/${userId}`);
+        if (res.ok) {
+          const serverProfile = await res.json();
+          const mapped = mapProfileRowToUser(serverProfile);
+          setUser(mapped);
+          localStorage.setItem("coinkrazy_auth_user", JSON.stringify(mapped));
+          return;
+        }
+      } catch {}
       return;
     }
 
@@ -179,7 +189,14 @@ export function AuthProvider({ children }: { children: ReactNode }) {
         .select()
         .maybeSingle();
       if (insertErr) {
-        console.error("Error creating missing profile:", insertErr);
+        console.error("Error creating missing profile:", (insertErr as any)?.message || insertErr);
+        try {
+          const res = await fetch(`/api/profiles/${userId}`);
+          if (res.ok) {
+            const serverProfile = await res.json();
+            profile = serverProfile;
+          }
+        } catch {}
       } else {
         profile = inserted;
       }
