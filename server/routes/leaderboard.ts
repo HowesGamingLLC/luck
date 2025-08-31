@@ -149,11 +149,16 @@ async function awardWeeklyBonusesInternal(): Promise<{ awarded: boolean; winners
   }
 
   // Compute winners for last week
-  const { data, error } = await admin
+  let { data, error } = await admin
     .from("transactions")
     .select("user_id, amount, type, currency, created_at")
     .gte("created_at", lastWeek.start.toISOString())
     .lte("created_at", lastWeek.end.toISOString());
+  if (error && String(error.message).toLowerCase().includes("created_at")) {
+    const fallback = await admin.from("transactions").select("user_id, amount, type, currency");
+    data = fallback.data as any;
+    error = fallback.error as any;
+  }
   if (error) return { awarded: false, weekKey, reason: error.message };
 
   const totals = new Map<string, number>();
