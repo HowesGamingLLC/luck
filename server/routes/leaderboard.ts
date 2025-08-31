@@ -73,11 +73,18 @@ export const getLeaderboard: RequestHandler = async (req, res) => {
 
     const admin = getSupabaseAdmin();
     // Sum GC wins per user within the period
-    const { data, error } = await admin
+    let { data, error } = await admin
       .from("transactions")
       .select("user_id, amount, type, currency, created_at")
       .gte("created_at", start.toISOString())
       .lte("created_at", end.toISOString());
+
+    if (error && String(error.message).toLowerCase().includes("created_at")) {
+      // Fallback if created_at column doesn't exist
+      const fallback = await admin.from("transactions").select("user_id, amount, type, currency");
+      data = fallback.data as any;
+      error = fallback.error as any;
+    }
 
     if (error) return res.status(500).json({ success: false, error: error.message });
 
