@@ -149,8 +149,43 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       return;
     }
 
-    if (data) {
-      const mapped = mapProfileRowToUser(data);
+    let profile = data;
+
+    if (!profile) {
+      const { data: userRes } = await client.auth.getUser();
+      const email = userRes.user?.email ?? "";
+      const nameFromMeta = (userRes.user?.user_metadata as any)?.name as
+        | string
+        | undefined;
+      const defaultName = nameFromMeta || email?.split("@")[0] || "Player";
+      const profilePayload = {
+        id: userId,
+        email,
+        name: defaultName,
+        is_admin:
+          DEV_ADMIN_EMAIL && email.toLowerCase() === DEV_ADMIN_EMAIL.toLowerCase(),
+        verified: false,
+        kyc_status: "not_submitted",
+        kyc_documents: null,
+        created_at: new Date().toISOString(),
+        last_login_at: new Date().toISOString(),
+        total_losses: 0,
+        jackpot_opt_in: false,
+      };
+      const { data: inserted, error: insertErr } = await client
+        .from(PROFILES_TABLE)
+        .insert(profilePayload)
+        .select()
+        .maybeSingle();
+      if (insertErr) {
+        console.error("Error creating missing profile:", insertErr);
+      } else {
+        profile = inserted;
+      }
+    }
+
+    if (profile) {
+      const mapped = mapProfileRowToUser(profile);
       setUser(mapped);
       localStorage.setItem("coinkrazy_auth_user", JSON.stringify(mapped));
       await client
