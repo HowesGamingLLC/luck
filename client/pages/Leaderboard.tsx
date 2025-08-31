@@ -1,362 +1,87 @@
-import { useState } from "react";
-import {
-  Card,
-  CardContent,
-  CardDescription,
-  CardHeader,
-  CardTitle,
-} from "@/components/ui/card";
+import { useEffect, useMemo, useState } from "react";
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select";
-import {
-  Trophy,
-  Crown,
-  Star,
-  TrendingUp,
-  Zap,
-  Target,
-  Gift,
-  Search,
-  Medal,
-  Coins,
-  Users,
-  Calendar,
-  Clock,
-} from "lucide-react";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import { Trophy, Crown, Star, TrendingUp, Zap, Target, Gift, Search, Medal, Coins, Users, Calendar, Clock, Info } from "lucide-react";
+import { useAuth } from "@/contexts/AuthContext";
 
-interface Player {
-  id: string;
+interface LeaderboardEntry {
+  user_id: string;
   name: string;
-  avatar?: string;
   rank: number;
-  value: number;
-  change: number;
-  level: number;
-  verified: boolean;
-  badge?: string;
+  value: number; // total GC wins in period
 }
 
-// Mock leaderboard data
-const mockLeaderboards = {
-  daily: {
-    biggestWinners: [
-      {
-        id: "1",
-        name: "CryptoKing",
-        rank: 1,
-        value: 2500,
-        change: 5,
-        level: 25,
-        verified: true,
-        badge: "VIP",
-      },
-      {
-        id: "2",
-        name: "LuckyLisa",
-        rank: 2,
-        value: 1850,
-        change: 2,
-        level: 18,
-        verified: true,
-      },
-      {
-        id: "3",
-        name: "SpinMaster",
-        rank: 3,
-        value: 1420,
-        change: -1,
-        level: 22,
-        verified: false,
-      },
-      {
-        id: "4",
-        name: "GoldRusher",
-        rank: 4,
-        value: 980,
-        change: 3,
-        level: 15,
-        verified: true,
-      },
-      {
-        id: "5",
-        name: "John Doe",
-        rank: 5,
-        value: 850,
-        change: 1,
-        level: 12,
-        verified: true,
-      }, // Current user
-      {
-        id: "6",
-        name: "WheelWizard",
-        rank: 6,
-        value: 720,
-        change: -2,
-        level: 19,
-        verified: false,
-      },
-      {
-        id: "7",
-        name: "JackpotJoe",
-        rank: 7,
-        value: 650,
-        change: 0,
-        level: 14,
-        verified: true,
-      },
-      {
-        id: "8",
-        name: "SpinQueen",
-        rank: 8,
-        value: 540,
-        change: 4,
-        level: 16,
-        verified: true,
-      },
-    ],
-    mostSpins: [
-      {
-        id: "1",
-        name: "SpinAddict",
-        rank: 1,
-        value: 127,
-        change: 2,
-        level: 20,
-        verified: true,
-      },
-      {
-        id: "2",
-        name: "WheelWarrior",
-        rank: 2,
-        value: 98,
-        change: 1,
-        level: 17,
-        verified: false,
-      },
-      {
-        id: "3",
-        name: "NonStopGamer",
-        rank: 3,
-        value: 89,
-        change: -1,
-        level: 23,
-        verified: true,
-      },
-      {
-        id: "4",
-        name: "John Doe",
-        rank: 4,
-        value: 76,
-        change: 3,
-        level: 12,
-        verified: true,
-      }, // Current user
-    ],
-    highestWinRate: [
-      {
-        id: "1",
-        name: "PerfectRecord",
-        rank: 1,
-        value: 95,
-        change: 0,
-        level: 21,
-        verified: true,
-        badge: "Pro",
-      },
-      {
-        id: "2",
-        name: "AlwaysWins",
-        rank: 2,
-        value: 88,
-        change: 1,
-        level: 19,
-        verified: true,
-      },
-      {
-        id: "3",
-        name: "LuckyStreak",
-        rank: 3,
-        value: 82,
-        change: -1,
-        level: 16,
-        verified: false,
-      },
-      {
-        id: "4",
-        name: "John Doe",
-        rank: 4,
-        value: 68,
-        change: 2,
-        level: 12,
-        verified: true,
-      }, // Current user
-    ],
-  },
-  weekly: {
-    biggestWinners: [
-      {
-        id: "1",
-        name: "WeeklyChamp",
-        rank: 1,
-        value: 15750,
-        change: 0,
-        level: 28,
-        verified: true,
-        badge: "Champion",
-      },
-      {
-        id: "2",
-        name: "BigWinner99",
-        rank: 2,
-        value: 12340,
-        change: 1,
-        level: 25,
-        verified: true,
-      },
-      {
-        id: "3",
-        name: "GoldDigger",
-        rank: 3,
-        value: 9870,
-        change: -1,
-        level: 22,
-        verified: true,
-      },
-      {
-        id: "15",
-        name: "John Doe",
-        rank: 15,
-        value: 4250,
-        change: 5,
-        level: 12,
-        verified: true,
-      }, // Current user
-    ],
-    mostSpins: [
-      {
-        id: "1",
-        name: "SpinMachine",
-        rank: 1,
-        value: 892,
-        change: 0,
-        level: 24,
-        verified: true,
-      },
-      {
-        id: "2",
-        name: "NeverStops",
-        rank: 2,
-        value: 756,
-        change: 2,
-        level: 21,
-        verified: false,
-      },
-      {
-        id: "8",
-        name: "John Doe",
-        rank: 8,
-        value: 347,
-        change: 1,
-        level: 12,
-        verified: true,
-      }, // Current user
-    ],
-    highestWinRate: [
-      {
-        id: "1",
-        name: "WeeklyPro",
-        rank: 1,
-        value: 92,
-        change: 1,
-        level: 26,
-        verified: true,
-      },
-      {
-        id: "2",
-        name: "ConsistentWin",
-        rank: 2,
-        value: 89,
-        change: 0,
-        level: 23,
-        verified: true,
-      },
-      {
-        id: "12",
-        name: "John Doe",
-        rank: 12,
-        value: 71,
-        change: 3,
-        level: 12,
-        verified: true,
-      }, // Current user
-    ],
-  },
-};
+type Period = "daily" | "weekly";
 
-const prizes = {
+const gcPrizes = {
   daily: [
-    { rank: 1, prize: "$500 Bonus", icon: Crown, color: "text-gold" },
-    { rank: 2, prize: "$300 Bonus", icon: Medal, color: "text-gray-400" },
-    { rank: 3, prize: "$200 Bonus", icon: Medal, color: "text-amber-600" },
-    { rank: "4-10", prize: "$50 Bonus", icon: Gift, color: "text-purple" },
+    { rank: 1, prize: "50,000 GC", icon: Crown, color: "text-gold" },
+    { rank: 2, prize: "30,000 GC", icon: Medal, color: "text-gray-400" },
+    { rank: 3, prize: "20,000 GC", icon: Medal, color: "text-amber-600" },
+    { rank: "4-10", prize: "5,000 GC", icon: Gift, color: "text-purple" },
   ],
   weekly: [
-    { rank: 1, prize: "$2,000 Jackpot", icon: Crown, color: "text-gold" },
-    { rank: 2, prize: "$1,000 Bonus", icon: Medal, color: "text-gray-400" },
-    { rank: 3, prize: "$500 Bonus", icon: Medal, color: "text-amber-600" },
-    { rank: "4-25", prize: "$100 Bonus", icon: Gift, color: "text-purple" },
+    { rank: 1, prize: "200,000 GC", icon: Crown, color: "text-gold" },
+    { rank: 2, prize: "100,000 GC", icon: Medal, color: "text-gray-400" },
+    { rank: 3, prize: "50,000 GC", icon: Medal, color: "text-amber-600" },
+    { rank: "4-25", prize: "10,000 GC", icon: Gift, color: "text-purple" },
   ],
 };
 
 export default function Leaderboard() {
-  const [selectedPeriod, setSelectedPeriod] = useState("daily");
+  const [selectedPeriod, setSelectedPeriod] = useState<Period>("daily");
   const [selectedCategory, setSelectedCategory] = useState("biggestWinners");
   const [searchQuery, setSearchQuery] = useState("");
+  const [entries, setEntries] = useState<LeaderboardEntry[]>([]);
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState<string | null>(null);
+  const { user } = useAuth();
 
-  const currentUser = "John Doe";
+  useEffect(() => {
+    const load = async () => {
+      setLoading(true);
+      setError(null);
+      try {
+        const url = `/api/leaderboard?period=${encodeURIComponent(selectedPeriod)}`;
+        const res = await fetch(url);
+        const data = await res.json();
+        if (!res.ok || !data?.success) throw new Error(data?.error || "Failed to load leaderboard");
+        setEntries((data.entries || []) as LeaderboardEntry[]);
+      } catch (e: any) {
+        setError(e?.message || String(e));
+        setEntries([]);
+      } finally {
+        setLoading(false);
+      }
+    };
+    if (selectedCategory === "biggestWinners") load();
+    else {
+      // Unsupported categories for now
+      setEntries([]);
+    }
+  }, [selectedPeriod, selectedCategory]);
 
-  const getCurrentData = () => {
-    return (
-      mockLeaderboards[selectedPeriod as keyof typeof mockLeaderboards]?.[
-        selectedCategory as keyof typeof mockLeaderboards.daily
-      ] || []
-    );
-  };
-
-  const filteredData = getCurrentData().filter((player) =>
-    player.name.toLowerCase().includes(searchQuery.toLowerCase()),
-  );
+  const filtered = useMemo(() => {
+    const q = searchQuery.trim().toLowerCase();
+    return (entries || []).filter((p) => (q ? p.name.toLowerCase().includes(q) : true));
+  }, [entries, searchQuery]);
 
   const getRankIcon = (rank: number) => {
     if (rank === 1) return <Crown className="h-5 w-5 text-gold" />;
     if (rank === 2) return <Medal className="h-5 w-5 text-gray-400" />;
     if (rank === 3) return <Medal className="h-5 w-5 text-amber-600" />;
-    return (
-      <span className="text-lg font-bold text-muted-foreground">#{rank}</span>
-    );
+    return <span className="text-lg font-bold text-muted-foreground">#{rank}</span>;
   };
 
   const getValueLabel = () => {
-    switch (selectedCategory) {
-      case "biggestWinners":
-        return "$";
-      case "mostSpins":
-        return "";
-      case "highestWinRate":
-        return "%";
-      default:
-        return "";
-    }
+    if (selectedCategory === "biggestWinners") return "GC";
+    if (selectedCategory === "mostSpins") return "";
+    if (selectedCategory === "highestWinRate") return "%";
+    return "";
   };
 
   const getCategoryIcon = () => {
@@ -372,29 +97,23 @@ export default function Leaderboard() {
     }
   };
 
+  const currentUserName = user?.email || "You";
+
   return (
     <div className="min-h-[calc(100vh-4rem)] py-8">
       <div className="container">
-        {/* Header */}
         <div className="text-center mb-8">
-          <h1 className="text-4xl font-display font-bold gradient-text mb-4">
-            Leaderboard
-          </h1>
+          <h1 className="text-4xl font-display font-bold gradient-text mb-4">Leaderboard</h1>
           <p className="text-xl text-muted-foreground max-w-2xl mx-auto">
-            Compete with players worldwide and climb the ranks to win amazing
-            prizes!
+            Climb the ranks with Gold Coins. Weekly top 3 also receive Sweep Coin bonuses every Monday (1st +10 SC, 2nd +5 SC, 3rd +5 SC).
           </p>
         </div>
 
-        {/* Controls */}
         <Card className="glass mb-8">
           <CardContent className="p-6">
             <div className="flex flex-col md:flex-row gap-4 items-center">
               <div className="flex flex-col sm:flex-row gap-4 flex-1">
-                <Select
-                  value={selectedPeriod}
-                  onValueChange={setSelectedPeriod}
-                >
+                <Select value={selectedPeriod} onValueChange={(v) => setSelectedPeriod(v as Period)}>
                   <SelectTrigger className="w-full sm:w-[180px]">
                     <SelectValue />
                   </SelectTrigger>
@@ -414,10 +133,7 @@ export default function Leaderboard() {
                   </SelectContent>
                 </Select>
 
-                <Select
-                  value={selectedCategory}
-                  onValueChange={setSelectedCategory}
-                >
+                <Select value={selectedCategory} onValueChange={setSelectedCategory}>
                   <SelectTrigger className="w-full sm:w-[200px]">
                     <SelectValue />
                   </SelectTrigger>
@@ -425,19 +141,19 @@ export default function Leaderboard() {
                     <SelectItem value="biggestWinners">
                       <div className="flex items-center gap-2">
                         <Coins className="h-4 w-4" />
-                        Biggest Winners
+                        Biggest Winners (GC)
                       </div>
                     </SelectItem>
                     <SelectItem value="mostSpins">
                       <div className="flex items-center gap-2">
                         <Zap className="h-4 w-4" />
-                        Most Spins
+                        Most Spins (coming soon)
                       </div>
                     </SelectItem>
                     <SelectItem value="highestWinRate">
                       <div className="flex items-center gap-2">
                         <Target className="h-4 w-4" />
-                        Highest Win Rate
+                        Highest Win Rate (coming soon)
                       </div>
                     </SelectItem>
                   </SelectContent>
@@ -458,7 +174,6 @@ export default function Leaderboard() {
         </Card>
 
         <div className="grid lg:grid-cols-4 gap-8">
-          {/* Main Leaderboard */}
           <div className="lg:col-span-3">
             <Card className="glass">
               <CardHeader>
@@ -471,94 +186,64 @@ export default function Leaderboard() {
                     {selectedPeriod === "daily" ? "Today" : "This Week"}
                   </Badge>
                 </CardTitle>
-                <CardDescription>
-                  Top players competing for amazing prizes
-                </CardDescription>
+                <CardDescription>Top players competing for GC prizes</CardDescription>
               </CardHeader>
               <CardContent>
-                <div className="space-y-3">
-                  {filteredData.map((player, index) => (
-                    <div
-                      key={player.id}
-                      className={`flex items-center gap-4 p-4 rounded-lg transition-all duration-200 ${
-                        player.name === currentUser
-                          ? "bg-gradient-to-r from-purple/20 to-gold/20 border border-purple/50"
-                          : "bg-card/50 hover:bg-card/80"
-                      } ${player.rank <= 3 ? "border border-gold/30" : ""}`}
-                    >
-                      {/* Rank */}
-                      <div className="w-12 flex justify-center">
-                        {getRankIcon(player.rank)}
-                      </div>
-
-                      {/* Avatar */}
-                      <Avatar className="h-10 w-10">
-                        <AvatarImage src={player.avatar} alt={player.name} />
-                        <AvatarFallback>
-                          {player.name
-                            .split(" ")
-                            .map((n) => n[0])
-                            .join("")}
-                        </AvatarFallback>
-                      </Avatar>
-
-                      {/* Player Info */}
-                      <div className="flex-1">
-                        <div className="flex items-center gap-2">
-                          <span className="font-semibold">{player.name}</span>
-                          {player.name === currentUser && (
-                            <Badge className="bg-teal text-white text-xs">
-                              You
-                            </Badge>
-                          )}
-                          {player.verified && (
-                            <Badge variant="outline" className="text-xs">
-                              Verified
-                            </Badge>
-                          )}
-                          {player.badge && (
-                            <Badge className="bg-gradient-to-r from-purple to-gold text-white text-xs">
-                              {player.badge}
-                            </Badge>
-                          )}
+                {error && (
+                  <div className="text-sm text-destructive mb-4 flex items-center gap-2">
+                    <Info className="h-4 w-4" />
+                    {error}
+                  </div>
+                )}
+                {loading ? (
+                  <div className="text-sm text-muted-foreground">Loading...</div>
+                ) : (
+                  <div className="space-y-3">
+                    {filtered.map((player) => (
+                      <div
+                        key={player.user_id}
+                        className={`flex items-center gap-4 p-4 rounded-lg transition-all duration-200 ${
+                          user && player.user_id === user.id
+                            ? "bg-gradient-to-r from-purple/20 to-gold/20 border border-purple/50"
+                            : "bg-card/50 hover:bg-card/80"
+                        } ${player.rank <= 3 ? "border border-gold/30" : ""}`}
+                      >
+                        <div className="w-12 flex justify-center">{getRankIcon(player.rank)}</div>
+                        <Avatar className="h-10 w-10">
+                          <AvatarImage src={undefined} alt={player.name} />
+                          <AvatarFallback>
+                            {player.name
+                              .split(" ")
+                              .map((n) => n[0])
+                              .join("")}
+                          </AvatarFallback>
+                        </Avatar>
+                        <div className="flex-1">
+                          <div className="flex items-center gap-2">
+                            <span className="font-semibold">{player.name}</span>
+                            {user && player.user_id === user.id && (
+                              <Badge className="bg-teal text-white text-xs">You</Badge>
+                            )}
+                          </div>
                         </div>
-                        <p className="text-sm text-muted-foreground">
-                          Level {player.level}
-                        </p>
-                      </div>
-
-                      {/* Value */}
-                      <div className="text-right">
-                        <div className="font-bold text-lg">
-                          {getValueLabel()}
-                          {player.value.toLocaleString()}
-                        </div>
-                        <div
-                          className={`text-sm flex items-center gap-1 ${
-                            player.change > 0
-                              ? "text-success"
-                              : player.change < 0
-                                ? "text-destructive"
-                                : "text-muted-foreground"
-                          }`}
-                        >
-                          {player.change > 0 && (
-                            <TrendingUp className="h-3 w-3" />
-                          )}
-                          {player.change !== 0 &&
-                            `${player.change > 0 ? "+" : ""}${player.change}`}
+                        <div className="text-right">
+                          <div className="font-bold text-lg">
+                            {player.value.toLocaleString()} {getValueLabel()}
+                          </div>
+                          <div className="text-sm text-muted-foreground">Total Wins</div>
                         </div>
                       </div>
-                    </div>
-                  ))}
-                </div>
+                    ))}
+                    {!filtered.length && (
+                      <div className="text-sm text-muted-foreground">No entries yet.</div>
+                    )}
+                  </div>
+                )}
               </CardContent>
             </Card>
           </div>
 
-          {/* Sidebar */}
           <div className="space-y-6">
-            {/* Prize Pool */}
             <Card className="glass">
               <CardHeader>
                 <CardTitle className="flex items-center gap-2">
@@ -567,83 +252,56 @@ export default function Leaderboard() {
                 </CardTitle>
               </CardHeader>
               <CardContent className="space-y-3">
-                {prizes[selectedPeriod as keyof typeof prizes].map(
-                  (prize, index) => {
-                    const Icon = prize.icon;
-                    return (
-                      <div key={index} className="flex items-center gap-3">
-                        <Icon className={`h-5 w-5 ${prize.color}`} />
-                        <div className="flex-1">
-                          <div className="text-sm font-medium">
-                            Rank {prize.rank}
-                          </div>
-                          <div className={`text-sm ${prize.color}`}>
-                            {prize.prize}
-                          </div>
-                        </div>
+                {gcPrizes[selectedPeriod].map((prize, idx) => {
+                  const Icon = prize.icon;
+                  return (
+                    <div key={idx} className="flex items-center gap-3">
+                      <Icon className={`h-5 w-5 ${prize.color}`} />
+                      <div className="flex-1">
+                        <div className="text-sm font-medium">Rank {prize.rank}</div>
+                        <div className={`text-sm ${prize.color}`}>{prize.prize}</div>
                       </div>
-                    );
-                  },
-                )}
+                    </div>
+                  );
+                })}
+                <div className="text-xs text-muted-foreground pt-2">
+                  Weekly top 3 also receive SC bonuses every Monday: 1st +10 SC, 2nd +5 SC, 3rd +5 SC.
+                </div>
               </CardContent>
             </Card>
 
-            {/* Competition Stats */}
             <Card className="glass">
               <CardHeader>
                 <CardTitle className="flex items-center gap-2">
                   <Users className="h-5 w-5 text-purple" />
-                  Competition Stats
+                  Competition Info
                 </CardTitle>
               </CardHeader>
-              <CardContent className="space-y-4">
-                <div className="text-center">
-                  <div className="text-2xl font-bold text-purple">2,847</div>
-                  <p className="text-sm text-muted-foreground">
-                    Active Players
-                  </p>
-                </div>
-                <div className="text-center">
-                  <div className="text-2xl font-bold text-gold">$12,500</div>
-                  <p className="text-sm text-muted-foreground">
-                    Total Prize Pool
-                  </p>
-                </div>
-                <div className="text-center">
-                  <div className="text-2xl font-bold text-teal">6h 23m</div>
-                  <p className="text-sm text-muted-foreground">
-                    Time Remaining
-                  </p>
-                </div>
+              <CardContent className="space-y-2 text-sm text-muted-foreground">
+                <div>Rankings are based on total Gold Coin wins for the selected period.</div>
+                <div>Bonuses are credited automatically to winners.</div>
               </CardContent>
             </Card>
 
-            {/* Your Position */}
-            <Card className="glass border-purple/50">
-              <CardHeader>
-                <CardTitle className="flex items-center gap-2">
-                  <Star className="h-5 w-5 text-gold" />
-                  Your Position
-                </CardTitle>
-              </CardHeader>
-              <CardContent>
-                <div className="text-center">
-                  <div className="text-3xl font-bold gradient-text mb-2">
-                    #
-                    {filteredData.find((p) => p.name === currentUser)?.rank ||
-                      "N/A"}
+            {user && (
+              <Card className="glass border-purple/50">
+                <CardHeader>
+                  <CardTitle className="flex items-center gap-2">
+                    <Star className="h-5 w-5 text-gold" />
+                    Your Position
+                  </CardTitle>
+                </CardHeader>
+                <CardContent>
+                  <div className="text-center">
+                    <div className="text-3xl font-bold gradient-text mb-2">
+                      #{entries.find((p) => p.user_id === user.id)?.rank ?? "N/A"}
+                    </div>
+                    <p className="text-sm text-muted-foreground mb-4">Total Wins</p>
+                    <Button className="btn-primary w-full">View Full Profile</Button>
                   </div>
-                  <p className="text-sm text-muted-foreground mb-4">
-                    {selectedCategory === "biggestWinners" && "Total Winnings"}
-                    {selectedCategory === "mostSpins" && "Total Spins"}
-                    {selectedCategory === "highestWinRate" && "Win Rate"}
-                  </p>
-                  <Button className="btn-primary w-full">
-                    View Full Profile
-                  </Button>
-                </div>
-              </CardContent>
-            </Card>
+                </CardContent>
+              </Card>
+            )}
           </div>
         </div>
       </div>
