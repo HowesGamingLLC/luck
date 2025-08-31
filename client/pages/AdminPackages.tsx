@@ -59,7 +59,8 @@ export default function AdminPackages() {
       try {
         const res = await fetch("/api/admin/packages");
         const data = await res.json();
-        if (!res.ok || !data?.success) throw new Error(data?.error || "Failed to load");
+        if (!res.ok || !data?.success)
+          throw new Error(data?.error || "Failed to load");
         const mapped = (data.packages || []).map((p: any) => ({
           id: p.id,
           name: p.name,

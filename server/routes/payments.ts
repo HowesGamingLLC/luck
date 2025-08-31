@@ -198,28 +198,44 @@ export const listOrders: RequestHandler = async (req, res) => {
     const limit = Math.min(Number(req.query.limit || 100), 500);
     const { data, error } = await admin
       .from("orders")
-      .select("id,user_id,package_id,quantity,amount_cents,gc_awarded,sc_bonus,payment_id,status,created_at")
+      .select(
+        "id,user_id,package_id,quantity,amount_cents,gc_awarded,sc_bonus,payment_id,status,created_at",
+      )
       .order("created_at", { ascending: false })
       .limit(limit);
-    if (error) return res.status(500).json({ success: false, error: error.message });
+    if (error)
+      return res.status(500).json({ success: false, error: error.message });
     return res.json({ success: true, orders: data || [] });
   } catch (e: any) {
-    return res.status(500).json({ success: false, error: e?.message || String(e) });
+    return res
+      .status(500)
+      .json({ success: false, error: e?.message || String(e) });
   }
 };
 
 export const getSalesStats: RequestHandler = async (_req, res) => {
   try {
     if (!hasSupabaseServerConfig) {
-      const perPackage = packages.map((p) => ({ id: p.id, name: p.name, count: 0, grossCents: 0 }));
-      return res.json({ success: true, perPackage, totalSalesCents: 0, totalOrders: 0 });
+      const perPackage = packages.map((p) => ({
+        id: p.id,
+        name: p.name,
+        count: 0,
+        grossCents: 0,
+      }));
+      return res.json({
+        success: true,
+        perPackage,
+        totalSalesCents: 0,
+        totalOrders: 0,
+      });
     }
     const admin = getSupabaseAdmin();
     const { data, error } = await admin
       .from("orders")
       .select("package_id, amount_cents")
       .neq("status", "CANCELLED");
-    if (error) return res.status(500).json({ success: false, error: error.message });
+    if (error)
+      return res.status(500).json({ success: false, error: error.message });
     const counts = new Map<string, { count: number; gross: number }>();
     for (const p of packages) counts.set(p.id, { count: 0, gross: 0 });
     let totalOrders = 0;
@@ -231,11 +247,23 @@ export const getSalesStats: RequestHandler = async (_req, res) => {
       counts.set(k, cur);
       totalOrders += 1;
     });
-    const perPackage = packages.map((p) => ({ id: p.id, name: p.name, count: counts.get(p.id)?.count || 0, grossCents: counts.get(p.id)?.gross || 0 }));
+    const perPackage = packages.map((p) => ({
+      id: p.id,
+      name: p.name,
+      count: counts.get(p.id)?.count || 0,
+      grossCents: counts.get(p.id)?.gross || 0,
+    }));
     const totalSalesCents = perPackage.reduce((s, x) => s + x.grossCents, 0);
-    return res.json({ success: true, perPackage, totalSalesCents, totalOrders });
+    return res.json({
+      success: true,
+      perPackage,
+      totalSalesCents,
+      totalOrders,
+    });
   } catch (e: any) {
-    return res.status(500).json({ success: false, error: e?.message || String(e) });
+    return res
+      .status(500)
+      .json({ success: false, error: e?.message || String(e) });
   }
 };
 

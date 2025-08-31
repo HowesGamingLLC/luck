@@ -1,11 +1,38 @@
 import { useEffect, useMemo, useState } from "react";
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { Trophy, Crown, Star, TrendingUp, Zap, Target, Gift, Search, Medal, Coins, Users, Calendar, Clock, Info } from "lucide-react";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
+import {
+  Trophy,
+  Crown,
+  Star,
+  TrendingUp,
+  Zap,
+  Target,
+  Gift,
+  Search,
+  Medal,
+  Coins,
+  Users,
+  Calendar,
+  Clock,
+  Info,
+} from "lucide-react";
 import { useAuth } from "@/contexts/AuthContext";
 
 interface LeaderboardEntry {
@@ -49,7 +76,8 @@ export default function Leaderboard() {
         const url = `/api/leaderboard?period=${encodeURIComponent(selectedPeriod)}`;
         const res = await fetch(url);
         const data = await res.json();
-        if (!res.ok || !data?.success) throw new Error(data?.error || "Failed to load leaderboard");
+        if (!res.ok || !data?.success)
+          throw new Error(data?.error || "Failed to load leaderboard");
         setEntries((data.entries || []) as LeaderboardEntry[]);
       } catch (e: any) {
         setError(e?.message || String(e));
@@ -67,14 +95,18 @@ export default function Leaderboard() {
 
   const filtered = useMemo(() => {
     const q = searchQuery.trim().toLowerCase();
-    return (entries || []).filter((p) => (q ? p.name.toLowerCase().includes(q) : true));
+    return (entries || []).filter((p) =>
+      q ? p.name.toLowerCase().includes(q) : true,
+    );
   }, [entries, searchQuery]);
 
   const getRankIcon = (rank: number) => {
     if (rank === 1) return <Crown className="h-5 w-5 text-gold" />;
     if (rank === 2) return <Medal className="h-5 w-5 text-gray-400" />;
     if (rank === 3) return <Medal className="h-5 w-5 text-amber-600" />;
-    return <span className="text-lg font-bold text-muted-foreground">#{rank}</span>;
+    return (
+      <span className="text-lg font-bold text-muted-foreground">#{rank}</span>
+    );
   };
 
   const getValueLabel = () => {
@@ -103,9 +135,12 @@ export default function Leaderboard() {
     <div className="min-h-[calc(100vh-4rem)] py-8">
       <div className="container">
         <div className="text-center mb-8">
-          <h1 className="text-4xl font-display font-bold gradient-text mb-4">Leaderboard</h1>
+          <h1 className="text-4xl font-display font-bold gradient-text mb-4">
+            Leaderboard
+          </h1>
           <p className="text-xl text-muted-foreground max-w-2xl mx-auto">
-            Climb the ranks with Gold Coins. Weekly top 3 also receive Sweep Coin bonuses every Monday (1st +10 SC, 2nd +5 SC, 3rd +5 SC).
+            Climb the ranks with Gold Coins. Weekly top 3 also receive Sweep
+            Coin bonuses every Monday (1st +10 SC, 2nd +5 SC, 3rd +5 SC).
           </p>
         </div>
 
@@ -113,7 +148,10 @@ export default function Leaderboard() {
           <CardContent className="p-6">
             <div className="flex flex-col md:flex-row gap-4 items-center">
               <div className="flex flex-col sm:flex-row gap-4 flex-1">
-                <Select value={selectedPeriod} onValueChange={(v) => setSelectedPeriod(v as Period)}>
+                <Select
+                  value={selectedPeriod}
+                  onValueChange={(v) => setSelectedPeriod(v as Period)}
+                >
                   <SelectTrigger className="w-full sm:w-[180px]">
                     <SelectValue />
                   </SelectTrigger>
@@ -133,7 +171,10 @@ export default function Leaderboard() {
                   </SelectContent>
                 </Select>
 
-                <Select value={selectedCategory} onValueChange={setSelectedCategory}>
+                <Select
+                  value={selectedCategory}
+                  onValueChange={setSelectedCategory}
+                >
                   <SelectTrigger className="w-full sm:w-[200px]">
                     <SelectValue />
                   </SelectTrigger>
@@ -186,7 +227,9 @@ export default function Leaderboard() {
                     {selectedPeriod === "daily" ? "Today" : "This Week"}
                   </Badge>
                 </CardTitle>
-                <CardDescription>Top players competing for GC prizes</CardDescription>
+                <CardDescription>
+                  Top players competing for GC prizes
+                </CardDescription>
               </CardHeader>
               <CardContent>
                 {error && (
@@ -196,7 +239,9 @@ export default function Leaderboard() {
                   </div>
                 )}
                 {loading ? (
-                  <div className="text-sm text-muted-foreground">Loading...</div>
+                  <div className="text-sm text-muted-foreground">
+                    Loading...
+                  </div>
                 ) : (
                   <div className="space-y-3">
                     {filtered.map((player) => (
@@ -208,7 +253,9 @@ export default function Leaderboard() {
                             : "bg-card/50 hover:bg-card/80"
                         } ${player.rank <= 3 ? "border border-gold/30" : ""}`}
                       >
-                        <div className="w-12 flex justify-center">{getRankIcon(player.rank)}</div>
+                        <div className="w-12 flex justify-center">
+                          {getRankIcon(player.rank)}
+                        </div>
                         <Avatar className="h-10 w-10">
                           <AvatarImage src={undefined} alt={player.name} />
                           <AvatarFallback>
@@ -222,7 +269,9 @@ export default function Leaderboard() {
                           <div className="flex items-center gap-2">
                             <span className="font-semibold">{player.name}</span>
                             {user && player.user_id === user.id && (
-                              <Badge className="bg-teal text-white text-xs">You</Badge>
+                              <Badge className="bg-teal text-white text-xs">
+                                You
+                              </Badge>
                             )}
                           </div>
                         </div>
@@ -230,12 +279,16 @@ export default function Leaderboard() {
                           <div className="font-bold text-lg">
                             {player.value.toLocaleString()} {getValueLabel()}
                           </div>
-                          <div className="text-sm text-muted-foreground">Total Wins</div>
+                          <div className="text-sm text-muted-foreground">
+                            Total Wins
+                          </div>
                         </div>
                       </div>
                     ))}
                     {!filtered.length && (
-                      <div className="text-sm text-muted-foreground">No entries yet.</div>
+                      <div className="text-sm text-muted-foreground">
+                        No entries yet.
+                      </div>
                     )}
                   </div>
                 )}
@@ -258,14 +311,19 @@ export default function Leaderboard() {
                     <div key={idx} className="flex items-center gap-3">
                       <Icon className={`h-5 w-5 ${prize.color}`} />
                       <div className="flex-1">
-                        <div className="text-sm font-medium">Rank {prize.rank}</div>
-                        <div className={`text-sm ${prize.color}`}>{prize.prize}</div>
+                        <div className="text-sm font-medium">
+                          Rank {prize.rank}
+                        </div>
+                        <div className={`text-sm ${prize.color}`}>
+                          {prize.prize}
+                        </div>
                       </div>
                     </div>
                   );
                 })}
                 <div className="text-xs text-muted-foreground pt-2">
-                  Weekly top 3 also receive SC bonuses every Monday: 1st +10 SC, 2nd +5 SC, 3rd +5 SC.
+                  Weekly top 3 also receive SC bonuses every Monday: 1st +10 SC,
+                  2nd +5 SC, 3rd +5 SC.
                 </div>
               </CardContent>
             </Card>
@@ -278,7 +336,10 @@ export default function Leaderboard() {
                 </CardTitle>
               </CardHeader>
               <CardContent className="space-y-2 text-sm text-muted-foreground">
-                <div>Rankings are based on total Gold Coin wins for the selected period.</div>
+                <div>
+                  Rankings are based on total Gold Coin wins for the selected
+                  period.
+                </div>
                 <div>Bonuses are credited automatically to winners.</div>
               </CardContent>
             </Card>
@@ -294,10 +355,16 @@ export default function Leaderboard() {
                 <CardContent>
                   <div className="text-center">
                     <div className="text-3xl font-bold gradient-text mb-2">
-                      #{entries.find((p) => p.user_id === user.id)?.rank ?? "N/A"}
+                      #
+                      {entries.find((p) => p.user_id === user.id)?.rank ??
+                        "N/A"}
                     </div>
-                    <p className="text-sm text-muted-foreground mb-4">Total Wins</p>
-                    <Button className="btn-primary w-full">View Full Profile</Button>
+                    <p className="text-sm text-muted-foreground mb-4">
+                      Total Wins
+                    </p>
+                    <Button className="btn-primary w-full">
+                      View Full Profile
+                    </Button>
                   </div>
                 </CardContent>
               </Card>

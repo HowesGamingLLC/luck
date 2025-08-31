@@ -37,7 +37,15 @@ function getPeriodRange(period: Period) {
   }
   if (period === "monthly") {
     const start = new Date(now.getFullYear(), now.getMonth(), 1, 0, 0, 0, 0);
-    const end = new Date(now.getFullYear(), now.getMonth() + 1, 0, 23, 59, 59, 999);
+    const end = new Date(
+      now.getFullYear(),
+      now.getMonth() + 1,
+      0,
+      23,
+      59,
+      59,
+      999,
+    );
     return { start, end };
   }
   return { start: new Date(0), end: now };
@@ -47,7 +55,9 @@ function getLastWeekRange() {
   const now = new Date();
   const thisWeekStart = startOfWeekMonday(now);
   const lastWeekEnd = new Date(thisWeekStart.getTime() - 1);
-  const lastWeekStart = startOfWeekMonday(new Date(thisWeekStart.getTime() - 24 * 3600 * 1000));
+  const lastWeekStart = startOfWeekMonday(
+    new Date(thisWeekStart.getTime() - 24 * 3600 * 1000),
+  );
   return { start: lastWeekStart, end: lastWeekEnd };
 }
 
@@ -58,13 +68,21 @@ function isoWeekKey(d: Date) {
   dt.setDate(dt.getDate() + 3 - ((dt.getDay() + 6) % 7));
   const week1 = new Date(dt.getFullYear(), 0, 4);
   const weekNo =
-    1 + Math.round(((dt.getTime() - week1.getTime()) / 86400000 - 3 + ((week1.getDay() + 6) % 7)) / 7);
+    1 +
+    Math.round(
+      ((dt.getTime() - week1.getTime()) / 86400000 -
+        3 +
+        ((week1.getDay() + 6) % 7)) /
+        7,
+    );
   return `${dt.getFullYear()}-W${String(weekNo).padStart(2, "0")}`;
 }
 
 export const getLeaderboard: RequestHandler = async (req, res) => {
   try {
-    const period = (String(req.query.period || "weekly").toLowerCase() as Period) || "weekly";
+    const period =
+      (String(req.query.period || "weekly").toLowerCase() as Period) ||
+      "weekly";
     const { start, end } = getPeriodRange(period);
 
     if (!hasSupabaseServerConfig) {
@@ -81,14 +99,19 @@ export const getLeaderboard: RequestHandler = async (req, res) => {
 
     if (error && String(error.message).toLowerCase().includes("created_at")) {
       // Fallback if created_at column doesn't exist
-      const fallback = await admin.from("transactions").select("user_id, amount, type, currency");
+      const fallback = await admin
+        .from("transactions")
+        .select("user_id, amount, type, currency");
       data = fallback.data as any;
       error = fallback.error as any;
     }
 
     if (error) {
       const msg = String(error.message || "");
-      if (msg.includes("Could not find the table 'public.transactions'") || msg.toLowerCase().includes("relation \"transactions\" does not exist")) {
+      if (
+        msg.includes("Could not find the table 'public.transactions'") ||
+        msg.toLowerCase().includes('relation "transactions" does not exist')
+      ) {
         return res.json({ success: true, period, start, end, entries: [] });
       }
       return res.status(500).json({ success: false, error: error.message });
@@ -96,8 +119,14 @@ export const getLeaderboard: RequestHandler = async (req, res) => {
 
     const totals = new Map<string, number>();
     (data || []).forEach((row: any) => {
-      if (row.type === "win" && (row.currency === "GC" || row.currency === "gc")) {
-        totals.set(row.user_id, (totals.get(row.user_id) || 0) + Number(row.amount || 0));
+      if (
+        row.type === "win" &&
+        (row.currency === "GC" || row.currency === "gc")
+      ) {
+        totals.set(
+          row.user_id,
+          (totals.get(row.user_id) || 0) + Number(row.amount || 0),
+        );
       }
     });
 
@@ -113,7 +142,12 @@ export const getLeaderboard: RequestHandler = async (req, res) => {
         .from("profiles")
         .select("id,name,email")
         .in("id", ids);
-      (profiles || []).forEach((p: any) => profilesById.set(p.id, { name: p.name || p.email || p.id, email: p.email }));
+      (profiles || []).forEach((p: any) =>
+        profilesById.set(p.id, {
+          name: p.name || p.email || p.id,
+          email: p.email,
+        }),
+      );
     }
 
     const entries = sorted.map(([user_id, value], idx) => {
@@ -144,8 +178,18 @@ async function bonusesAlreadyAwardedForWeek(weekKey: string): Promise<boolean> {
   return (data || []).length > 0;
 }
 
-async function awardWeeklyBonusesInternal(): Promise<{ awarded: boolean; winners?: any[]; weekKey: string; reason?: string }>{
-  if (!hasSupabaseServerConfig) return { awarded: false, weekKey: isoWeekKey(new Date()), reason: "No Supabase config" };
+async function awardWeeklyBonusesInternal(): Promise<{
+  awarded: boolean;
+  winners?: any[];
+  weekKey: string;
+  reason?: string;
+}> {
+  if (!hasSupabaseServerConfig)
+    return {
+      awarded: false,
+      weekKey: isoWeekKey(new Date()),
+      reason: "No Supabase config",
+    };
   const admin = getSupabaseAdmin();
   const lastWeek = getLastWeekRange();
   const weekKey = isoWeekKey(lastWeek.start);
@@ -161,13 +205,18 @@ async function awardWeeklyBonusesInternal(): Promise<{ awarded: boolean; winners
     .gte("created_at", lastWeek.start.toISOString())
     .lte("created_at", lastWeek.end.toISOString());
   if (error && String(error.message).toLowerCase().includes("created_at")) {
-    const fallback = await admin.from("transactions").select("user_id, amount, type, currency");
+    const fallback = await admin
+      .from("transactions")
+      .select("user_id, amount, type, currency");
     data = fallback.data as any;
     error = fallback.error as any;
   }
   if (error) {
     const msg = String(error.message || "");
-    if (msg.includes("Could not find the table 'public.transactions'") || msg.toLowerCase().includes("relation \"transactions\" does not exist")) {
+    if (
+      msg.includes("Could not find the table 'public.transactions'") ||
+      msg.toLowerCase().includes('relation "transactions" does not exist')
+    ) {
       return { awarded: false, weekKey, reason: "transactions table missing" };
     }
     return { awarded: false, weekKey, reason: error.message };
@@ -175,8 +224,14 @@ async function awardWeeklyBonusesInternal(): Promise<{ awarded: boolean; winners
 
   const totals = new Map<string, number>();
   (data || []).forEach((row: any) => {
-    if (row.type === "win" && (row.currency === "GC" || row.currency === "gc")) {
-      totals.set(row.user_id, (totals.get(row.user_id) || 0) + Number(row.amount || 0));
+    if (
+      row.type === "win" &&
+      (row.currency === "GC" || row.currency === "gc")
+    ) {
+      totals.set(
+        row.user_id,
+        (totals.get(row.user_id) || 0) + Number(row.amount || 0),
+      );
     }
   });
   const winners = Array.from(totals.entries())
@@ -221,7 +276,8 @@ export const awardWeeklyBonuses: RequestHandler = async (req, res) => {
     const secret = process.env.LEADERBOARD_AWARD_SECRET;
     if (secret) {
       const header = req.header("x-award-secret");
-      if (header !== secret) return res.status(403).json({ success: false, error: "Forbidden" });
+      if (header !== secret)
+        return res.status(403).json({ success: false, error: "Forbidden" });
     }
     const result = await awardWeeklyBonusesInternal();
     res.json({ success: true, result });

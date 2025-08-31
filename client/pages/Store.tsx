@@ -76,7 +76,8 @@ export default function Store() {
       try {
         const res = await fetch("/api/payments/packages");
         const data = await res.json();
-        if (!res.ok || !data?.packages) throw new Error(data?.error || "Failed to load packages");
+        if (!res.ok || !data?.packages)
+          throw new Error(data?.error || "Failed to load packages");
         setServerPackages(data.packages);
       } catch (e: any) {
         setError(e?.message || String(e));

@@ -1,6 +1,19 @@
 import { useEffect, useMemo, useState } from "react";
-import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
-import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
+import {
+  Card,
+  CardContent,
+  CardHeader,
+  CardTitle,
+  CardDescription,
+} from "@/components/ui/card";
+import {
+  Table,
+  TableBody,
+  TableCell,
+  TableHead,
+  TableHeader,
+  TableRow,
+} from "@/components/ui/table";
 import { Badge } from "@/components/ui/badge";
 import { DollarSign, Package, TrendingUp } from "lucide-react";
 
@@ -41,8 +54,10 @@ export default function AdminSales() {
         ]);
         const sJson = await sRes.json();
         const oJson = await oRes.json();
-        if (!sRes.ok || !sJson?.success) throw new Error(sJson?.error || "Failed to load stats");
-        if (!oRes.ok || !oJson?.success) throw new Error(oJson?.error || "Failed to load orders");
+        if (!sRes.ok || !sJson?.success)
+          throw new Error(sJson?.error || "Failed to load stats");
+        if (!oRes.ok || !oJson?.success)
+          throw new Error(oJson?.error || "Failed to load orders");
         setStats(sJson as StatsResp);
         setOrders(oJson.orders || []);
       } catch (e: any) {
@@ -60,8 +75,12 @@ export default function AdminSales() {
     <div className="min-h-[calc(100vh-4rem)] py-8">
       <div className="container">
         <div className="mb-8">
-          <h1 className="text-4xl font-display font-bold gradient-text">Sales Dashboard</h1>
-          <p className="text-muted-foreground">Real-time package sales and revenue</p>
+          <h1 className="text-4xl font-display font-bold gradient-text">
+            Sales Dashboard
+          </h1>
+          <p className="text-muted-foreground">
+            Real-time package sales and revenue
+          </p>
         </div>
 
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
@@ -86,7 +105,9 @@ export default function AdminSales() {
               </CardTitle>
             </CardHeader>
             <CardContent>
-              <div className="text-2xl font-bold">{stats?.totalOrders ?? "—"}</div>
+              <div className="text-2xl font-bold">
+                {stats?.totalOrders ?? "—"}
+              </div>
               <CardDescription>All-time</CardDescription>
             </CardContent>
           </Card>
@@ -98,7 +119,9 @@ export default function AdminSales() {
               </CardTitle>
             </CardHeader>
             <CardContent>
-              <div className="text-2xl font-bold">{stats?.perPackage.length ?? "—"}</div>
+              <div className="text-2xl font-bold">
+                {stats?.perPackage.length ?? "—"}
+              </div>
               <CardDescription>From catalog</CardDescription>
             </CardContent>
           </Card>
@@ -107,7 +130,9 @@ export default function AdminSales() {
         <Card className="glass mb-8">
           <CardHeader>
             <CardTitle>Sales by Package</CardTitle>
-            <CardDescription>Counts and gross revenue per package</CardDescription>
+            <CardDescription>
+              Counts and gross revenue per package
+            </CardDescription>
           </CardHeader>
           <CardContent>
             <div className="rounded-md border overflow-x-auto">
@@ -124,7 +149,9 @@ export default function AdminSales() {
                     <TableRow key={row.id}>
                       <TableCell className="font-medium">{row.name}</TableCell>
                       <TableCell className="text-right">{row.count}</TableCell>
-                      <TableCell className="text-right">{currency(row.grossCents)}</TableCell>
+                      <TableCell className="text-right">
+                        {currency(row.grossCents)}
+                      </TableCell>
                     </TableRow>
                   ))}
                 </TableBody>
@@ -139,7 +166,9 @@ export default function AdminSales() {
             <CardDescription>Latest 100 orders</CardDescription>
           </CardHeader>
           <CardContent>
-            {error && <div className="text-sm text-destructive mb-2">{error}</div>}
+            {error && (
+              <div className="text-sm text-destructive mb-2">{error}</div>
+            )}
             {loading ? (
               <div className="text-sm text-muted-foreground">Loading...</div>
             ) : (
@@ -159,24 +188,41 @@ export default function AdminSales() {
                       <TableRow key={o.id}>
                         <TableCell>
                           <div className="text-sm">{o.id}</div>
-                          <div className="text-xs text-muted-foreground">{o.user_id}</div>
+                          <div className="text-xs text-muted-foreground">
+                            {o.user_id}
+                          </div>
                         </TableCell>
                         <TableCell>
                           <Badge variant="secondary">{o.package_id}</Badge>
                         </TableCell>
                         <TableCell>
-                          <div className="text-xs">{o.gc_awarded.toLocaleString()} GC</div>
+                          <div className="text-xs">
+                            {o.gc_awarded.toLocaleString()} GC
+                          </div>
                           <div className="text-xs">+{o.sc_bonus} SC</div>
                         </TableCell>
                         <TableCell>
-                          <Badge className={o.status === "COMPLETED" ? "bg-green-600" : "bg-muted"}>{o.status}</Badge>
+                          <Badge
+                            className={
+                              o.status === "COMPLETED"
+                                ? "bg-green-600"
+                                : "bg-muted"
+                            }
+                          >
+                            {o.status}
+                          </Badge>
                         </TableCell>
-                        <TableCell className="text-right">{currency(o.amount_cents)}</TableCell>
+                        <TableCell className="text-right">
+                          {currency(o.amount_cents)}
+                        </TableCell>
                       </TableRow>
                     ))}
                     {!orders.length && (
                       <TableRow>
-                        <TableCell colSpan={5} className="text-center text-sm text-muted-foreground">
+                        <TableCell
+                          colSpan={5}
+                          className="text-center text-sm text-muted-foreground"
+                        >
                           No orders yet.
                         </TableCell>
                       </TableRow>
