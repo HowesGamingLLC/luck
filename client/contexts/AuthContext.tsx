@@ -163,7 +163,8 @@ export function AuthProvider({ children }: { children: ReactNode }) {
         email,
         name: defaultName,
         is_admin:
-          DEV_ADMIN_EMAIL && email.toLowerCase() === DEV_ADMIN_EMAIL.toLowerCase(),
+          DEV_ADMIN_EMAIL &&
+          email.toLowerCase() === DEV_ADMIN_EMAIL.toLowerCase(),
         verified: false,
         kyc_status: "not_submitted",
         kyc_documents: null,
