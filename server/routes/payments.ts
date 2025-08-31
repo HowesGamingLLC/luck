@@ -141,11 +141,7 @@ export const squareWebhook: RequestHandler = async (req, res) => {
               p_sweep_delta: scBonus,
             });
             if (error) {
-              // Fallback: direct update if columns exist
-              await admin
-                .from("profiles")
-                .update({ gold_coins: null as any, sweep_coins: null as any })
-                .eq("id", uid);
+              console.error("increment_profile_balances RPC error", error);
             }
           }
         }
