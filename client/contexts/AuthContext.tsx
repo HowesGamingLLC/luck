@@ -131,7 +131,6 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       setUser(mapped);
       localStorage.setItem("coinkrazy_auth_user", JSON.stringify(mapped));
       // Update last login timestamp
-      const client = getSupabase();
       await client
         .from(PROFILES_TABLE)
         .update({ last_login_at: new Date().toISOString() })
@@ -206,7 +205,6 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       jackpot_opt_in: false,
     };
 
-    const client = getSupabase();
     const { error: profileErr } = await client
       .from(PROFILES_TABLE)
       .insert(profilePayload);
@@ -216,7 +214,6 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     }
 
     // If email confirmation is enabled, user may need to verify before session exists
-    const client = getSupabase();
     const {
       data: { session },
     } = await client.auth.getSession();
