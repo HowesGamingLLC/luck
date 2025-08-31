@@ -172,7 +172,14 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       return false;
     }
 
-    const { data: signUpRes, error } = await supabase.auth.signUp({
+    if (!hasSupabaseConfig) {
+      setIsLoading(false);
+      return false;
+    }
+
+    const client = getSupabase();
+
+    const { data: signUpRes, error } = await client.auth.signUp({
       email: data.email,
       password: data.password,
       options: {
