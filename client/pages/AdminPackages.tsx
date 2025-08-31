@@ -47,71 +47,41 @@ import {
   TrendingUp,
 } from "lucide-react";
 
-// Mock packages data - in real app this would come from database
-const initialPackages: GoldCoinPackage[] = [
-  {
-    id: "starter",
-    name: "Starter Pack",
-    goldCoins: 10000,
-    bonusSweepCoins: 5,
-    price: 9.99,
-    popular: false,
-    bestValue: false,
-    icon: Coins,
-    color: "from-blue-500 to-blue-600",
-    description: "Perfect for new players to get started",
-    features: [
-      "10,000 Gold Coins",
-      "5 FREE Sweep Coins",
-      "Instant delivery",
-      "24/7 support",
-    ],
-  },
-  {
-    id: "popular",
-    name: "Popular Choice",
-    goldCoins: 50000,
-    bonusSweepCoins: 30,
-    price: 39.99,
-    originalPrice: 49.99,
-    popular: true,
-    bestValue: false,
-    icon: Star,
-    color: "from-purple-500 to-purple-600",
-    description: "Most popular package with great value",
-    features: [
-      "50,000 Gold Coins",
-      "30 FREE Sweep Coins",
-      "20% bonus coins",
-      "Priority support",
-    ],
-    savings: 20,
-  },
-  {
-    id: "premium",
-    name: "Premium Pack",
-    goldCoins: 100000,
-    bonusSweepCoins: 75,
-    price: 69.99,
-    originalPrice: 99.99,
-    popular: false,
-    bestValue: true,
-    icon: Crown,
-    color: "from-gold to-yellow-600",
-    description: "Best value for serious players",
-    features: [
-      "100,000 Gold Coins",
-      "75 FREE Sweep Coins",
-      "50% bonus coins",
-      "VIP support",
-      "Exclusive rewards",
-    ],
-    savings: 30,
-  },
-];
-
 export default function AdminPackages() {
-  const [packages, setPackages] = useState<GoldCoinPackage[]>(initialPackages);
+  const [packages, setPackages] = useState<GoldCoinPackage[]>([]);
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState<string | null>(null);
+
+  useEffect(() => {
+    const load = async () => {
+      setLoading(true);
+      setError(null);
+      try {
+        const res = await fetch("/api/admin/packages");
+        const data = await res.json();
+        if (!res.ok || !data?.success) throw new Error(data?.error || "Failed to load");
+        const mapped = (data.packages || []).map((p: any) => ({
+          id: p.id,
+          name: p.name,
+          goldCoins: Number(p.gc || 0),
+          bonusSweepCoins: Number(p.bonus_sc || 0),
+          price: Number((p.price_cents || 0) / 100),
+          popular: false,
+          bestValue: false,
+          icon: Coins,
+          color: p.color || "from-blue-500 to-blue-600",
+          description: p.description || "",
+          features: [],
+        }));
+        setPackages(mapped);
+      } catch (e: any) {
+        setError(e?.message || String(e));
+      } finally {
+        setLoading(false);
+      }
+    };
+    load();
+  }, []);
   const [editingPackage, setEditingPackage] = useState<GoldCoinPackage | null>(
     null,
   );
