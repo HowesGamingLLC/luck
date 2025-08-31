@@ -60,6 +60,7 @@ export default function Store() {
   const [selectedPackage, setSelectedPackage] =
     useState<GoldCoinPackage | null>(null);
   const [isProcessing, setIsProcessing] = useState(false);
+  const [buyerEmail, setBuyerEmail] = useState("");
   const [paymentMethod, setPaymentMethod] = useState<
     "card" | "paypal" | "crypto"
   >("card");
