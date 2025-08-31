@@ -456,7 +456,8 @@ export const getAllUsers = async (): Promise<
   const client = getSupabase();
   const { data, error } = await client.from(PROFILES_TABLE).select("*");
   if (error) {
-    const msg = (error as any)?.message || (error as any)?.hint || String(error);
+    const msg =
+      (error as any)?.message || (error as any)?.hint || String(error);
     console.error(`Error fetching users: ${msg}`);
     return fallbackFromStorage();
   }
