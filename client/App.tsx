@@ -193,6 +193,14 @@ function App() {
                       }
                     />
                     <Route
+                      path="/admin/db-status"
+                      element={
+                        <AuthGuard requireAdmin={true}>
+                          <AdminDBStatus />
+                        </AuthGuard>
+                      }
+                    />
+                    <Route
                       path="/admin/ai-employees"
                       element={
                         <AuthGuard requireAdmin={true}>
