@@ -43,6 +43,14 @@ import {
 export function createServer() {
   const app = express();
 
+  // Webhook raw body (must be before global JSON parser)
+  const rawBodySaver = (req: any, _res: any, buf: any) => {
+    if (buf && buf.length) req.rawBody = buf.toString();
+  };
+  app.use("/api/square/webhook", express.json({ verify: rawBodySaver }));
+  const paymentsEarly = require("./routes/payments") as typeof import("./routes/payments");
+  app.post("/api/square/webhook", paymentsEarly.squareWebhook);
+
   // Middleware
   app.use(cors());
   app.use(express.json());
