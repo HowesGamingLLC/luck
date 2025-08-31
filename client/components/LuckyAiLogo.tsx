@@ -28,7 +28,9 @@ export function LuckyAiLogo({
         decoding="async"
       />
       {showText && (
-        <span className={`text-xl font-display font-bold gradient-text ${textClassName ?? ""}`}>
+        <span
+          className={`text-xl font-display font-bold gradient-text ${textClassName ?? ""}`}
+        >
           CoinKrazy.com
         </span>
       )}

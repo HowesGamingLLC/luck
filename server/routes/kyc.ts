@@ -17,7 +17,9 @@ async function ensureBucket() {
 export const createKycUploadUrl: RequestHandler = async (req, res) => {
   try {
     if (!hasSupabaseServerConfig) {
-      return res.status(501).json({ error: "Supabase not configured on server" });
+      return res
+        .status(501)
+        .json({ error: "Supabase not configured on server" });
     }
     const { type, extension } = req.body as {
       type: "id" | "address" | "selfie";
@@ -29,7 +31,8 @@ export const createKycUploadUrl: RequestHandler = async (req, res) => {
     await ensureBucket();
 
     const userId = (req as any).userId || "anonymous"; // Optional: plug in auth middleware later
-    const ext = (extension || "").replace(/[^a-zA-Z0-9.]/g, "").toLowerCase() || "bin";
+    const ext =
+      (extension || "").replace(/[^a-zA-Z0-9.]/g, "").toLowerCase() || "bin";
     const fileName = `${type}-${Date.now()}.${ext.replace(/^\./, "")}`;
     const filePath = `${userId}/${fileName}`;
 
@@ -37,7 +40,8 @@ export const createKycUploadUrl: RequestHandler = async (req, res) => {
       .from(KYC_BUCKET)
       .createSignedUploadUrl(filePath);
 
-    if (error || !data) return res.status(500).json({ error: String(error?.message || error) });
+    if (error || !data)
+      return res.status(500).json({ error: String(error?.message || error) });
 
     return res.json({ ...data, path: filePath, bucket: KYC_BUCKET });
   } catch (e: any) {
@@ -48,7 +52,9 @@ export const createKycUploadUrl: RequestHandler = async (req, res) => {
 export const submitKyc: RequestHandler = async (req, res) => {
   try {
     if (!hasSupabaseServerConfig) {
-      return res.status(501).json({ error: "Supabase not configured on server" });
+      return res
+        .status(501)
+        .json({ error: "Supabase not configured on server" });
     }
     const { userId, documents } = req.body as {
       userId: string;

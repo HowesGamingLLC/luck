@@ -189,7 +189,10 @@ export function AuthProvider({ children }: { children: ReactNode }) {
         .select()
         .maybeSingle();
       if (insertErr) {
-        console.error("Error creating missing profile:", (insertErr as any)?.message || insertErr);
+        console.error(
+          "Error creating missing profile:",
+          (insertErr as any)?.message || insertErr,
+        );
         try {
           const res = await fetch(`/api/profiles/${userId}`);
           if (res.ok) {

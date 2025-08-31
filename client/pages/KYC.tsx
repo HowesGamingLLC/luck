@@ -147,10 +147,14 @@ export default function KYC() {
     if (!user) return;
     setIsSubmitting(true);
     try {
-      const uploadedPaths: { id?: string; address?: string; selfie?: string } = {};
+      const uploadedPaths: { id?: string; address?: string; selfie?: string } =
+        {};
 
       for (const doc of documents) {
-        if (doc.file && (doc.status === "uploaded" || doc.status === "pending")) {
+        if (
+          doc.file &&
+          (doc.status === "uploaded" || doc.status === "pending")
+        ) {
           const ext = doc.file.name.split(".").pop() || "bin";
           const res = await fetch("/api/kyc/create-upload", {
             method: "POST",
@@ -161,7 +165,9 @@ export default function KYC() {
           const data = await res.json();
           const put = await fetch(data.signedUrl, {
             method: "PUT",
-            headers: { "Content-Type": doc.file.type || "application/octet-stream" },
+            headers: {
+              "Content-Type": doc.file.type || "application/octet-stream",
+            },
             body: doc.file,
           });
           if (!put.ok) throw new Error("Upload failed");

@@ -6,7 +6,9 @@ const PROFILES_TABLE = "profiles";
 export const getOrCreateProfileById: RequestHandler = async (req, res) => {
   try {
     if (!hasSupabaseServerConfig) {
-      return res.status(501).json({ error: "Supabase not configured on server" });
+      return res
+        .status(501)
+        .json({ error: "Supabase not configured on server" });
     }
     const { id } = req.params as { id: string };
     if (!id) return res.status(400).json({ error: "Missing id" });
