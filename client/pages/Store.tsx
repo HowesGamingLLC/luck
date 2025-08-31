@@ -184,31 +184,22 @@ export default function Store() {
     setIsProcessing(true);
 
     try {
-      // Simulate payment processing
-      await new Promise((resolve) => setTimeout(resolve, 3000));
-
-      // In a real app, this would integrate with a payment processor like Stripe
-      // For demo purposes, we'll simulate a successful payment
-
-      // Update user balance with purchased coins
-      updateBalance(
-        CurrencyType.GC,
-        selectedPackage.goldCoins,
-        `Purchase - ${selectedPackage.name}`,
-        "bonus",
-      );
-      updateBalance(
-        CurrencyType.SC,
-        selectedPackage.bonusSweepCoins,
-        `Bonus SC - ${selectedPackage.name}`,
-        "bonus",
-      );
-
-      alert(
-        `Purchase successful! You received ${selectedPackage.goldCoins.toLocaleString()} Gold Coins and ${selectedPackage.bonusSweepCoins} Sweep Coins!`,
-      );
-
-      setSelectedPackage(null);
+      const res = await fetch("/api/payments/create", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          packageId: selectedPackage.id,
+          quantity: 1,
+          userId: authUser?.id,
+          email: buyerEmail || authUser?.email,
+          returnUrl: window.location.origin + "/wallet",
+        }),
+      });
+      const data = await res.json();
+      if (!res.ok || !data?.url) {
+        throw new Error(data?.error ? JSON.stringify(data.error) : "Failed to create payment link");
+      }
+      window.location.href = data.url;
     } catch (error) {
       alert("Payment failed. Please try again.");
     } finally {
