@@ -441,6 +441,17 @@ export default function Store() {
 
             {selectedPackage && (
               <div className="space-y-6">
+                {/* Buyer email */}
+                <div className="space-y-2">
+                  <Label htmlFor="buyerEmail">Email for receipt</Label>
+                  <Input
+                    id="buyerEmail"
+                    placeholder={authUser?.email || "you@example.com"}
+                    value={buyerEmail}
+                    onChange={(e) => setBuyerEmail(e.target.value)}
+                  />
+                </div>
+
                 {/* Package Summary */}
                 <div className="border rounded-lg p-4 space-y-3">
                   <div className="flex items-center gap-3">
