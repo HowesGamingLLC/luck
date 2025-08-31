@@ -430,12 +430,36 @@ export const useAuth = () => {
 export const getAllUsers = async (): Promise<
   (User & { password?: never })[]
 > => {
-  if (!hasSupabaseConfig) return [];
+  const fallbackFromStorage = (): User[] => {
+    try {
+      const raw = localStorage.getItem("coinkrazy_auth_user");
+      if (!raw) return [];
+      const parsed = JSON.parse(raw) as User & {
+        createdAt?: string | Date;
+        lastLoginAt?: string | Date;
+      };
+      return [
+        {
+          ...parsed,
+          createdAt: new Date(parsed.createdAt ?? new Date()),
+          lastLoginAt: new Date(parsed.lastLoginAt ?? new Date()),
+        },
+      ];
+    } catch {
+      return [];
+    }
+  };
+
+  if (!hasSupabaseConfig) return fallbackFromStorage();
+
   const client = getSupabase();
   const { data, error } = await client.from(PROFILES_TABLE).select("*");
   if (error) {
-    console.error("Error fetching users:", error);
-    return [];
+    console.error("Error fetching users:", {
+      message: (error as any)?.message,
+      details: error,
+    });
+    return fallbackFromStorage();
   }
   return (data ?? []).map(mapProfileRowToUser);
 };
