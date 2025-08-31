@@ -138,5 +138,9 @@ export function createServer() {
   const authRoutes = require("./routes/auth") as typeof import("./routes/auth");
   app.post("/api/auth/seed-test-user", authRoutes.seedTestUser);
 
+  // Profiles
+  const profiles = require("./routes/profiles") as typeof import("./routes/profiles");
+  app.get("/api/profiles/:id", profiles.getOrCreateProfileById);
+
   return app;
 }
