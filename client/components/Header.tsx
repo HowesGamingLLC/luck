@@ -45,11 +45,7 @@ export function Header() {
   const navigate = useNavigate();
 
   const { user: authUser, isAuthenticated, isAdmin, logout } = useAuth();
-  const {
-    user: currencyUser,
-    selectedCurrency,
-    setSelectedCurrency,
-  } = useCurrency();
+  const { user: currencyUser } = useCurrency();
 
   const navItems = isAuthenticated
     ? [
@@ -68,23 +64,12 @@ export function Header() {
 
   const isActive = (path: string) => location.pathname === path;
 
-  const getCurrentBalance = () => {
-    if (!currencyUser) return 0;
-    return selectedCurrency === CurrencyType.GC
-      ? currencyUser.balance.goldCoins
-      : currencyUser.balance.sweepCoins;
-  };
 
   const handleLogout = () => {
     logout();
     navigate("/");
   };
 
-  const toggleCurrency = () => {
-    setSelectedCurrency(
-      selectedCurrency === CurrencyType.GC ? CurrencyType.SC : CurrencyType.GC,
-    );
-  };
 
   return (
     <header className="sticky top-0 z-50 w-full border-b border-border/40 bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
@@ -122,60 +107,22 @@ export function Header() {
         <div className="flex items-center space-x-4">
           {isAuthenticated && currencyUser ? (
             <>
-              {/* Currency Toggle */}
-              <div className="hidden lg:flex items-center space-x-3 bg-card px-4 py-2 rounded-lg border">
-                <div className="flex items-center space-x-2">
-                  <span className="text-xs text-muted-foreground">
-                    Currency:
+              {/* Balances */}
+              <div className="hidden md:flex items-center gap-2">
+                <div className="flex items-center gap-2 bg-card px-3 py-1.5 rounded-lg border">
+                  <Coins className="h-4 w-4 text-gold" />
+                  <span className="text-xs text-muted-foreground">Gold</span>
+                  <span className="text-sm font-semibold text-gold">
+                    {formatCurrency(currencyUser.balance.goldCoins, CurrencyType.GC)}
                   </span>
-                  <div className="flex items-center space-x-2">
-                    <Coins
-                      className={`h-4 w-4 ${selectedCurrency === CurrencyType.GC ? "text-gold" : "text-muted-foreground"}`}
-                    />
-                    <Switch
-                      checked={selectedCurrency === CurrencyType.SC}
-                      onCheckedChange={toggleCurrency}
-                      className="data-[state=checked]:bg-teal"
-                    />
-                    <Gem
-                      className={`h-4 w-4 ${selectedCurrency === CurrencyType.SC ? "text-teal" : "text-muted-foreground"}`}
-                    />
-                  </div>
                 </div>
-              </div>
-
-              {/* Current Balance Display */}
-              <div className="hidden sm:flex items-center space-x-2 bg-card px-3 py-1.5 rounded-lg border">
-                <span className="text-lg">
-                  {getCurrencyIcon(selectedCurrency)}
-                </span>
-                <div className="text-right">
-                  <div
-                    className={`text-sm font-semibold ${getCurrencyColor(selectedCurrency)}`}
-                  >
-                    {formatCurrency(getCurrentBalance(), selectedCurrency)}
-                  </div>
-                  <div className="text-xs text-muted-foreground">
-                    {selectedCurrency === CurrencyType.GC
-                      ? "Fun Play"
-                      : "Real Money"}
-                  </div>
-                </div>
-              </div>
-
-              {/* Quick Currency Toggle (Mobile) */}
-              <div className="lg:hidden">
-                <Button
-                  variant="ghost"
-                  size="sm"
-                  onClick={toggleCurrency}
-                  className="flex items-center space-x-1"
-                >
-                  <span className="text-lg">
-                    {getCurrencyIcon(selectedCurrency)}
+                <div className="flex items-center gap-2 bg-card px-3 py-1.5 rounded-lg border">
+                  <Gem className="h-4 w-4 text-teal" />
+                  <span className="text-xs text-muted-foreground">Sweep</span>
+                  <span className="text-sm font-semibold text-teal">
+                    {formatCurrency(currencyUser.balance.sweepCoins, CurrencyType.SC)}
                   </span>
-                  <RotateCcw className="h-3 w-3" />
-                </Button>
+                </div>
               </div>
 
               {/* User Menu */}
@@ -386,23 +333,6 @@ export function Header() {
                     </span>
                   </div>
 
-                  {/* Mobile Currency Toggle */}
-                  <div className="flex items-center justify-between px-3 py-2">
-                    <span className="text-sm">Active Currency:</span>
-                    <Button
-                      variant="outline"
-                      size="sm"
-                      onClick={toggleCurrency}
-                      className="flex items-center gap-2"
-                    >
-                      <span className="text-lg">
-                        {getCurrencyIcon(selectedCurrency)}
-                      </span>
-                      <span className={getCurrencyColor(selectedCurrency)}>
-                        {selectedCurrency}
-                      </span>
-                    </Button>
-                  </div>
 
                   {/* Mobile Auth Actions */}
                   {!isAuthenticated && (
