@@ -1,7 +1,8 @@
 import { createClient, type SupabaseClient } from "@supabase/supabase-js";
 
 export const hasSupabaseServerConfig =
-  Boolean(process.env.SUPABASE_URL) && Boolean(process.env.SUPABASE_SERVICE_ROLE);
+  Boolean(process.env.SUPABASE_URL) &&
+  Boolean(process.env.SUPABASE_SERVICE_ROLE);
 
 let adminSingleton: SupabaseClient | null = null;
 
