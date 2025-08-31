@@ -114,6 +114,11 @@ export function createServer() {
   app.get("/api/payments/stats", payments.getSalesStats);
   app.get("/api/status/db", payments.dbStatus);
 
+  // KYC routes
+  const kyc = require("./routes/kyc") as typeof import("./routes/kyc");
+  app.post("/api/kyc/create-upload", kyc.createKycUploadUrl);
+  app.post("/api/kyc/submit", kyc.submitKyc);
+
   // Admin packages
   const adminPackages =
     require("./routes/adminPackages") as typeof import("./routes/adminPackages");
