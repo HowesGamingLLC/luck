@@ -237,3 +237,8 @@ export function getRNGService(): RNGService {
   }
   return _rngService;
 }
+
+// Re-export as rngService for backward compatibility
+Object.defineProperty(exports, 'rngService', {
+  get: getRNGService,
+});
