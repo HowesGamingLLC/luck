@@ -39,9 +39,16 @@ export interface DrawRoundData {
 export class PooledDrawEngine extends EventEmitter implements GameEngine {
   gameId: string;
   config: PooledDrawConfig;
-  private supabase = getSupabaseAdmin();
+  private supabase: any = null;
   private currentRound: DrawRoundData | null = null;
   private drawTimer: NodeJS.Timeout | null = null;
+
+  private getSupabase() {
+    if (!this.supabase) {
+      this.supabase = getSupabaseAdmin();
+    }
+    return this.supabase;
+  }
 
   constructor(gameId: string, config: GameEngineConfig) {
     super();
@@ -54,6 +61,7 @@ export class PooledDrawEngine extends EventEmitter implements GameEngine {
    * Initialize a new draw round
    */
   async createRound(): Promise<string> {
+    const supabase = this.getSupabase();
     const now = new Date();
     const nextDraw = new Date(
       now.getTime() + (this.config.poolDrawIntervalMinutes || 60) * 60 * 1000,
@@ -64,7 +72,7 @@ export class PooledDrawEngine extends EventEmitter implements GameEngine {
     const serverSeedHash = rngService.hashSeed(serverSeed);
 
     // Create round in database
-    const { data, error } = await this.supabase
+    const { data, error } = await supabase
       .from("game_rounds")
       .insert({
         game_id: this.gameId,
@@ -164,7 +172,8 @@ export class PooledDrawEngine extends EventEmitter implements GameEngine {
     const clientSeedHash = rngService.hashSeed(entryData.clientSeed);
 
     // Create entry record
-    const { data, error } = await this.supabase
+    const supabase = this.getSupabase();
+    const { data, error } = await supabase
       .from("game_entries")
       .insert({
         round_id: entryData.roundId,
@@ -202,6 +211,7 @@ export class PooledDrawEngine extends EventEmitter implements GameEngine {
    * Execute draw and select winners
    */
   async drawRound(roundId: string): Promise<any> {
+    const supabase = this.getSupabase();
     const round = this.currentRound;
     if (!round || round.roundId !== roundId) {
       throw new Error("Round not found");
@@ -216,7 +226,7 @@ export class PooledDrawEngine extends EventEmitter implements GameEngine {
     round.status = "drawing";
 
     // Get all entries for this round
-    const { data: entries, error: entriesError } = await this.supabase
+    const { data: entries, error: entriesError } = await supabase
       .from("game_entries")
       .select("*")
       .eq("round_id", roundId)
@@ -237,7 +247,7 @@ export class PooledDrawEngine extends EventEmitter implements GameEngine {
 
     for (let i = 0; i < winnerCount; i++) {
       // Get server seed from round
-      const { data: roundData } = await this.supabase
+      const { data: roundData } = await supabase
         .from("game_rounds")
         .select("server_seed")
         .eq("id", roundId)
@@ -276,7 +286,7 @@ export class PooledDrawEngine extends EventEmitter implements GameEngine {
     }
 
     // Create result record
-    const { data: resultData } = await this.supabase
+    const { data: resultData } = await supabase
       .from("game_results")
       .insert({
         round_id: roundId,
@@ -307,7 +317,7 @@ export class PooledDrawEngine extends EventEmitter implements GameEngine {
 
     // Mark winning entries
     for (const winner of round.winners) {
-      await this.supabase
+      await supabase
         .from("game_entries")
         .update({ status: "won" })
         .eq("id", winner.entryId);
@@ -335,7 +345,8 @@ export class PooledDrawEngine extends EventEmitter implements GameEngine {
   async getWinners(
     roundId: string,
   ): Promise<Array<{ userId: string; prizeAmount: number; prizeType: string }>> {
-    const { data, error } = await this.supabase
+    const supabase = this.getSupabase();
+    const { data, error } = await supabase
       .from("game_payouts")
       .select("user_id, payout_amount_gc, payout_amount_sc, win_type")
       .eq("round_id", roundId)
@@ -356,8 +367,9 @@ export class PooledDrawEngine extends EventEmitter implements GameEngine {
    * Cancel a round
    */
   async cancelRound(roundId: string): Promise<void> {
+    const supabase = this.getSupabase();
     // Refund all entries
-    const { data: entries } = await this.supabase
+    const { data: entries } = await supabase
       .from("game_entries")
       .select("*")
       .eq("round_id", roundId)
@@ -366,13 +378,13 @@ export class PooledDrawEngine extends EventEmitter implements GameEngine {
     // TODO: Process refunds
 
     // Mark entries as cancelled
-    await this.supabase
+    await supabase
       .from("game_entries")
       .update({ status: "cancelled" })
       .eq("round_id", roundId);
 
     // Mark round as cancelled
-    await this.supabase
+    await supabase
       .from("game_rounds")
       .update({ status: "cancelled" })
       .eq("id", roundId);
@@ -388,7 +400,8 @@ export class PooledDrawEngine extends EventEmitter implements GameEngine {
    * Get round status
    */
   async getRoundStatus(roundId: string): Promise<any> {
-    const { data } = await this.supabase
+    const supabase = this.getSupabase();
+    const { data } = await supabase
       .from("game_rounds")
       .select("*")
       .eq("id", roundId)
@@ -401,7 +414,8 @@ export class PooledDrawEngine extends EventEmitter implements GameEngine {
    * Get player entries for a round
    */
   async getPlayerEntries(userId: string, roundId: string): Promise<any[]> {
-    const { data } = await this.supabase
+    const supabase = this.getSupabase();
+    const { data } = await supabase
       .from("game_entries")
       .select("*")
       .eq("user_id", userId)
@@ -414,13 +428,14 @@ export class PooledDrawEngine extends EventEmitter implements GameEngine {
    * Get round statistics
    */
   async getRoundStats(roundId: string): Promise<any> {
-    const { data: round } = await this.supabase
+    const supabase = this.getSupabase();
+    const { data: round } = await supabase
       .from("game_rounds")
       .select("*")
       .eq("id", roundId)
       .single();
 
-    const { count: entryCount } = await this.supabase
+    const { count: entryCount } = await supabase
       .from("game_entries")
       .select("*", { count: "exact" })
       .eq("round_id", roundId)
