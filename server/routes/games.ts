@@ -5,13 +5,16 @@ import { rngService } from "../services/RNGService";
 import { entryValidationService } from "../services/EntryValidationService";
 import { payoutService } from "../services/PayoutService";
 
-const supabase = getSupabaseAdmin();
+function getSupabase() {
+  return getSupabaseAdmin();
+}
 
 /**
  * Get all games
  */
 export const getGames: RequestHandler = async (req, res) => {
   try {
+    const supabase = getSupabase();
     const { enabled, category, offset = 0, limit = 20 } = req.query;
 
     let query = supabase.from("games").select("*");
