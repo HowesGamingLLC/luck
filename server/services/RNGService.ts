@@ -23,7 +23,14 @@ export interface RNGResult {
  */
 export class RNGService {
   private readonly ALGORITHM = "sha256";
-  private supabase = getSupabaseAdmin();
+  private supabase: any = null;
+
+  private getSupabase() {
+    if (!this.supabase) {
+      this.supabase = getSupabaseAdmin();
+    }
+    return this.supabase;
+  }
 
   /**
    * Generate a server seed
