@@ -57,6 +57,17 @@ export function createServer() {
   app.use(express.json());
   app.use(express.urlencoded({ extended: true }));
 
+  // Auth middleware - attach user from Authorization header or session
+  app.use((req: any, res, next) => {
+    // For now, just set a placeholder - in production, verify JWT
+    const authHeader = req.headers.authorization;
+    if (authHeader) {
+      // Extract user from token - implement proper JWT verification
+      req.user = { id: "placeholder-user-id" };
+    }
+    next();
+  });
+
   // Example API routes
   app.get("/api/ping", (_req, res) => {
     const ping = process.env.PING_MESSAGE ?? "ping";
