@@ -3,7 +3,9 @@ import { getSupabaseAdmin } from "../lib/supabase";
 import { gameRegistry } from "../services/GameRegistry";
 import { payoutService } from "../services/PayoutService";
 
-const supabase = getSupabaseAdmin();
+function getSupabase() {
+  return getSupabaseAdmin();
+}
 
 /**
  * Middleware: Verify admin role
@@ -36,6 +38,7 @@ export const requireAdmin: RequestHandler = async (req, res, next) => {
  */
 export const getDashboard: RequestHandler = async (req, res) => {
   try {
+    const supabase = getSupabase();
     // Get total games
     const { count: gameCount } = await supabase
       .from("games")
@@ -89,6 +92,7 @@ export const getDashboard: RequestHandler = async (req, res) => {
  */
 export const updateGameConfig: RequestHandler = async (req, res) => {
   try {
+    const supabase = getSupabase();
     const { gameId } = req.params;
     const updates = req.body;
 
@@ -115,6 +119,7 @@ export const updateGameConfig: RequestHandler = async (req, res) => {
  */
 export const toggleGameEnabled: RequestHandler = async (req, res) => {
   try {
+    const supabase = getSupabase();
     const { gameId } = req.params;
     const { enabled } = req.body;
 
@@ -146,6 +151,7 @@ export const toggleGameEnabled: RequestHandler = async (req, res) => {
  */
 export const pauseRound: RequestHandler = async (req, res) => {
   try {
+    const supabase = getSupabase();
     const { roundId } = req.params;
 
     const { data: round, error: getError } = await supabase
@@ -186,6 +192,7 @@ export const pauseRound: RequestHandler = async (req, res) => {
  */
 export const cancelRound: RequestHandler = async (req, res) => {
   try {
+    const supabase = getSupabase();
     const { roundId } = req.params;
     const { reason } = req.body;
 
@@ -235,6 +242,7 @@ export const cancelRound: RequestHandler = async (req, res) => {
  */
 export const monitorRound: RequestHandler = async (req, res) => {
   try {
+    const supabase = getSupabase();
     const { roundId } = req.params;
 
     const { data: round, error: roundError } = await supabase
@@ -338,6 +346,7 @@ export const adjustPayout: RequestHandler = async (req, res) => {
  */
 export const getRngVerification: RequestHandler = async (req, res) => {
   try {
+    const supabase = getSupabase();
     const { roundId } = req.params;
 
     const { data: logs } = await supabase
@@ -368,6 +377,7 @@ export const getRngVerification: RequestHandler = async (req, res) => {
  */
 export const getAdminAuditLog: RequestHandler = async (req, res) => {
   try {
+    const supabase = getSupabase();
     const { limit = 100, offset = 0, adminId, action } = req.query;
 
     let query = supabase.from("admin_game_actions").select("*");
@@ -404,6 +414,7 @@ async function logAdminAction(
   details: any,
 ): Promise<void> {
   try {
+    const supabase = getSupabase();
     await supabase.from("admin_game_actions").insert({
       admin_id: adminId,
       game_id: gameId,
