@@ -93,6 +93,20 @@ export class TableGamesEngine extends GameEngine {
     this.initializeTables();
   }
 
+  // Check if player can afford a wager
+  private canAffordWager(
+    playerId: string,
+    amount: number,
+    currency: "GC" | "SC",
+  ): boolean {
+    const player = this.getPlayer(playerId);
+    if (!player) return false;
+
+    const balance =
+      currency === "GC" ? player.balance.goldCoins : player.balance.sweepCoins;
+    return balance >= amount;
+  }
+
   private initializeTables(): void {
     const tables: TableGame[] = [
       {
