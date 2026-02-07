@@ -228,5 +228,12 @@ export class RNGService {
   }
 }
 
-// Singleton instance
-export const rngService = new RNGService();
+// Singleton instance - created lazily
+let _rngService: RNGService | null = null;
+
+export function getRNGService(): RNGService {
+  if (!_rngService) {
+    _rngService = new RNGService();
+  }
+  return _rngService;
+}
