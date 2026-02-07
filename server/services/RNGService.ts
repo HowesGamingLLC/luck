@@ -155,7 +155,8 @@ export class RNGService {
     const executionTime = Date.now() - startTime;
 
     try {
-      await this.supabase.from("rng_audit_logs").insert({
+      const supabase = this.getSupabase();
+      await supabase.from("rng_audit_logs").insert({
         game_id: gameId,
         round_id: roundId,
         server_seed_used: result.seeds.serverSeed,
