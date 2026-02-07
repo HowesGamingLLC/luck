@@ -345,7 +345,7 @@ export function IframeSlotGame({
             <li>Confirm you are in an eligible jurisdiction</li>
           </ul>
 
-          {!user?.isVerified && (
+          {!user?.verified && (
             <Alert>
               <AlertDescription>
                 Please complete identity verification to use Sweep Coins.
