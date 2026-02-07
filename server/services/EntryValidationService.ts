@@ -343,5 +343,14 @@ export class EntryValidationService {
   }
 }
 
-// Singleton instance
-export const entryValidationService = new EntryValidationService();
+// Singleton instance - created lazily
+let _entryValidationService: EntryValidationService | null = null;
+
+export function getEntryValidationService(): EntryValidationService {
+  if (!_entryValidationService) {
+    _entryValidationService = new EntryValidationService();
+  }
+  return _entryValidationService;
+}
+
+export const entryValidationService = getEntryValidationService();

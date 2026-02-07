@@ -368,5 +368,14 @@ export class PayoutService {
   }
 }
 
-// Singleton instance
-export const payoutService = new PayoutService();
+// Singleton instance - created lazily
+let _payoutService: PayoutService | null = null;
+
+export function getPayoutService(): PayoutService {
+  if (!_payoutService) {
+    _payoutService = new PayoutService();
+  }
+  return _payoutService;
+}
+
+export const payoutService = getPayoutService();
