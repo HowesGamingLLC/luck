@@ -106,8 +106,12 @@ export function IframeSlotGame({
       return;
     }
 
-    if (!canAffordWager(game.minBet, currency)) {
-      setError(`Insufficient ${currency} balance. Minimum bet: ${game.minBet}`);
+    // Check balance for minimum bet
+    const minBet = currency === CurrencyType.GC ? game.minBet : 0.01;
+    const userBalance = currency === CurrencyType.GC ? user.balance?.goldCoins || 0 : user.balance?.sweepCoins || 0;
+
+    if (userBalance < minBet) {
+      setError(`Insufficient ${currency} balance. Minimum bet: ${minBet}`);
       return;
     }
 
@@ -208,7 +212,7 @@ export function IframeSlotGame({
       setIsLoading(false);
       stopSessionMonitoring();
     }
-  }, [gameSession, game.id, user?.sessionToken, onGameEnd]);
+  }, [gameSession, game.id, onGameEnd]);
 
   // Generate unique session ID
   const generateSessionId = () => {
