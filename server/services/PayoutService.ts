@@ -27,7 +27,14 @@ export interface PayoutResult {
  * - Transaction tracking
  */
 export class PayoutService {
-  private supabase = getSupabaseAdmin();
+  private supabase: any = null;
+
+  private getSupabase() {
+    if (!this.supabase) {
+      this.supabase = getSupabaseAdmin();
+    }
+    return this.supabase;
+  }
 
   /**
    * Process payouts for a round
@@ -57,11 +64,12 @@ export class PayoutService {
     payout: Payout,
   ): Promise<PayoutResult> {
     try {
+      const supabase = this.getSupabase();
       const payoutId = this.generatePayoutId();
       const transactionIds: string[] = [];
 
       // Create payout record
-      const { error: payoutError } = await this.supabase
+      const { error: payoutError } = await supabase
         .from("game_payouts")
         .insert({
           id: payoutId,
@@ -151,7 +159,7 @@ export class PayoutService {
       }
 
       // Update payout status to completed
-      await this.supabase
+      await supabase
         .from("game_payouts")
         .update({
           status: "completed",
@@ -193,10 +201,11 @@ export class PayoutService {
     description: string,
   ): Promise<string | null> {
     try {
+      const supabase = this.getSupabase();
       const dbField = balanceField === "goldCoins" ? "gold_coins_balance" : "sweep_coins_balance";
 
       // Use Supabase RPC or raw SQL for atomic update
-      const { data, error } = await this.supabase.rpc("update_balance", {
+      const { data, error } = await supabase.rpc("update_balance", {
         p_user_id: userId,
         p_field: dbField,
         p_amount: amount,
@@ -209,8 +218,8 @@ export class PayoutService {
 
       // Create transaction record
       const txId = this.generateTransactionId();
-      
-      await this.supabase.from("balance_transactions").insert({
+
+      await supabase.from("balance_transactions").insert({
         id: txId,
         user_id: userId,
         type,
@@ -232,7 +241,8 @@ export class PayoutService {
    */
   async getPendingPayouts(roundId: string): Promise<any[]> {
     try {
-      const { data, error } = await this.supabase
+      const supabase = this.getSupabase();
+      const { data, error } = await supabase
         .from("game_payouts")
         .select("*")
         .eq("round_id", roundId)
@@ -251,7 +261,8 @@ export class PayoutService {
    */
   async retryFailedPayouts(roundId: string): Promise<PayoutResult[]> {
     try {
-      const { data: failedPayouts } = await this.supabase
+      const supabase = this.getSupabase();
+      const { data: failedPayouts } = await supabase
         .from("game_payouts")
         .select("*")
         .eq("round_id", roundId)
@@ -321,7 +332,8 @@ export class PayoutService {
    */
   async getPayoutStats(gameId: string, startDate?: Date, endDate?: Date) {
     try {
-      let query = this.supabase
+      const supabase = this.getSupabase();
+      let query = supabase
         .from("game_payouts")
         .select("payout_amount_gc, payout_amount_sc, status");
 
