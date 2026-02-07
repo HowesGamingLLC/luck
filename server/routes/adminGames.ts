@@ -279,10 +279,8 @@ export const monitorRound: RequestHandler = async (req, res) => {
     res.json({
       round,
       entries: {
-        totalGc: entriesGc,
-        totalSc: entriesSc,
-        countGc: entriesGc,
-        countSc: entriesSc,
+        countGc: entriesByGc,
+        countSc: entriesBySc,
         totalPrizePoolGc: totalGc,
         totalPrizePoolSc: totalSc,
       },
