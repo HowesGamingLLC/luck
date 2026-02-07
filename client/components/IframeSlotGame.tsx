@@ -88,11 +88,11 @@ export function IframeSlotGame({
 
     // For sweep coins, additional compliance checks
     if (currency === CurrencyType.SC) {
-      return hasAgreedToTerms && user?.isVerified;
+      return hasAgreedToTerms && user?.verified;
     }
 
     return false;
-  }, [mode, currency, hasAgreedToTerms, user?.isVerified, game.providerId]);
+  }, [mode, currency, hasAgreedToTerms, user?.verified, game.providerId]);
 
   // Launch game iframe
   const launchGame = useCallback(async () => {

@@ -160,18 +160,18 @@ export abstract class GameEngine extends EventEmitter {
     return randomBytes(16).toString("hex");
   }
 
-  // Game lifecycle
-  protected gameState_: "waiting" | "starting" | "playing" | "ended" =
+  // Game lifecycle status
+  protected gameStatus_: "waiting" | "starting" | "playing" | "ended" =
     "waiting";
 
-  get gameState(): string {
-    return this.gameState_;
+  get gameStatus(): string {
+    return this.gameStatus_;
   }
 
-  protected setState(
+  protected setGameStatus(
     state: "waiting" | "starting" | "playing" | "ended",
   ): void {
-    this.gameState_ = state;
+    this.gameStatus_ = state;
     this.emit("stateChanged", state);
   }
 }
