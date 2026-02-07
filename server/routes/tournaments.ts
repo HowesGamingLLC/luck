@@ -74,11 +74,25 @@ export const unregisterFromTournament: RequestHandler = (req, res) => {
       return res.status(400).json({ error: "Player ID is required" });
     }
 
-    const result = tournamentEngine.unregisterPlayer(id, playerId);
-
-    if (!result.success) {
-      return res.status(400).json({ error: result.error });
+    const tournament = tournamentEngine.getTournament(id);
+    if (!tournament) {
+      return res.status(404).json({ error: "Tournament not found" });
     }
+
+    // Remove player from tournament participants
+    const playerIndex = tournament.participants.findIndex(
+      (p) => p.id === playerId,
+    );
+    if (playerIndex === -1) {
+      return res.status(400).json({ error: "Player not found in tournament" });
+    }
+
+    const player = tournament.participants[playerIndex];
+    tournament.participants.splice(playerIndex, 1);
+
+    // Refund buy-in
+    tournament.prizePool.gc -= player.balance.goldCoins;
+    tournament.prizePool.sc -= player.balance.sweepCoins;
 
     res.json({
       success: true,
@@ -152,11 +166,19 @@ export const startTournament: RequestHandler = (req, res) => {
 export const cancelTournament: RequestHandler = (req, res) => {
   try {
     const { id } = req.params;
-    const result = tournamentEngine.cancelTournament(id);
+    const tournament = tournamentEngine.getTournament(id);
 
-    if (!result.success) {
-      return res.status(400).json({ error: result.error });
+    if (!tournament) {
+      return res.status(404).json({ error: "Tournament not found" });
     }
+
+    if (tournament.status !== "registering") {
+      return res
+        .status(400)
+        .json({ error: "Can only cancel tournaments in registering status" });
+    }
+
+    tournament.status = "cancelled";
 
     res.json({ success: true, message: "Tournament cancelled successfully" });
   } catch (error) {
