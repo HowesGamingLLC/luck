@@ -279,11 +279,7 @@ export default function KYC() {
                 <h3 className="text-lg font-semibold">{kycStatus.text}</h3>
                 <p className="text-muted-foreground">{kycStatus.description}</p>
               </div>
-              <Badge
-                variant={
-                  user?.kycStatus === "approved" ? "default" : "secondary"
-                }
-              >
+              <Badge variant="secondary">
                 {kycStatus.text}
               </Badge>
             </div>
