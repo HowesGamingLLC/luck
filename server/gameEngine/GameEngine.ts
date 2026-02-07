@@ -161,17 +161,17 @@ export abstract class GameEngine extends EventEmitter {
   }
 
   // Game lifecycle status
-  protected gameStatus_: "waiting" | "starting" | "playing" | "ended" =
+  protected gameState_: "waiting" | "starting" | "playing" | "ended" =
     "waiting";
 
-  get gameStatus(): string {
-    return this.gameStatus_;
+  get gameStateStatus(): string {
+    return this.gameState_;
   }
 
-  protected setGameStatus(
+  protected setState(
     state: "waiting" | "starting" | "playing" | "ended",
   ): void {
-    this.gameStatus_ = state;
+    this.gameState_ = state;
     this.emit("stateChanged", state);
   }
 }
