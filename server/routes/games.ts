@@ -46,6 +46,7 @@ export const getGames: RequestHandler = async (req, res) => {
  */
 export const getGameDetails: RequestHandler = async (req, res) => {
   try {
+    const supabase = getSupabase();
     const { gameId } = req.params;
 
     // Get game
@@ -104,6 +105,7 @@ export const getGameDetails: RequestHandler = async (req, res) => {
  */
 export const createGame: RequestHandler = async (req, res) => {
   try {
+    const supabase = getSupabase();
     const { name, description, gameType, category, config } = req.body;
 
     if (!name || !gameType || !category) {
@@ -168,6 +170,7 @@ export const createGame: RequestHandler = async (req, res) => {
  */
 export const submitEntry: RequestHandler = async (req, res) => {
   try {
+    const supabase = getSupabase();
     const userId = req.user?.id;
     const { gameId, roundId, clientSeed, currencyType } = req.body;
 
@@ -261,6 +264,7 @@ export const submitEntry: RequestHandler = async (req, res) => {
  */
 export const getPlayerEntries: RequestHandler = async (req, res) => {
   try {
+    const supabase = getSupabase();
     const userId = req.user?.id;
     const { roundId } = req.params;
 
@@ -290,6 +294,7 @@ export const getPlayerEntries: RequestHandler = async (req, res) => {
  */
 export const getRoundStatus: RequestHandler = async (req, res) => {
   try {
+    const supabase = getSupabase();
     const { roundId } = req.params;
 
     const { data: round, error: roundError } = await supabase
@@ -332,6 +337,7 @@ export const getRoundStatus: RequestHandler = async (req, res) => {
  */
 export const verifyResult: RequestHandler = async (req, res) => {
   try {
+    const supabase = getSupabase();
     const { roundId, verificationCode } = req.params;
 
     // Get result
@@ -377,6 +383,7 @@ export const verifyResult: RequestHandler = async (req, res) => {
  */
 export const getUserGameHistory: RequestHandler = async (req, res) => {
   try {
+    const supabase = getSupabase();
     const userId = req.user?.id;
     const { gameId, limit = 50, offset = 0 } = req.query;
 
