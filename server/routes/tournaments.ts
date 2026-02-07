@@ -123,7 +123,7 @@ export const createTournament: RequestHandler = (req, res) => {
         .json({ error: "Name, game type, and tournament type are required" });
     }
 
-    const tournament = tournamentEngine.scheduleTournament(tournamentData);
+    const tournament = tournamentEngine.createTournament(tournamentData);
     res.json({ tournament });
   } catch (error) {
     console.error("Error creating tournament:", error);

@@ -301,7 +301,6 @@ export default function Dashboard() {
                 <DailySpinWheel
                   size={300}
                   onSpin={handleDailySpinResult}
-                  disabled={dailySpinClaimed}
                 />
               </CardContent>
             </Card>

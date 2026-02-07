@@ -130,7 +130,6 @@ export function IframeSlotGame({
         method: "POST",
         headers: {
           "Content-Type": "application/json",
-          Authorization: `Bearer ${user.sessionToken}`,
         },
         body: JSON.stringify(launchParams),
       });
@@ -196,7 +195,6 @@ export function IframeSlotGame({
         method: "POST",
         headers: {
           "Content-Type": "application/json",
-          Authorization: `Bearer ${user?.sessionToken}`,
         },
         body: JSON.stringify(sessionData),
       });
@@ -225,7 +223,6 @@ export function IframeSlotGame({
           method: "POST",
           headers: {
             "Content-Type": "application/json",
-            Authorization: `Bearer ${user?.sessionToken}`,
           },
           body: JSON.stringify({ sessionToken }),
         });

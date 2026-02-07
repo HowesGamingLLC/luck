@@ -270,7 +270,7 @@ export default function KYC() {
 
         {/* Status Banner */}
         <Card
-          className={`mb-8 border-${kycStatus.color.split("-")[1]}-500 bg-${kycStatus.color.split("-")[1]}-500/5`}
+          className="mb-8 border-orange-500 bg-orange-500/5"
         >
           <CardContent className="p-6">
             <div className="flex items-center gap-4">
