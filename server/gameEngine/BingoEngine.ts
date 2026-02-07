@@ -521,7 +521,7 @@ export class BingoEngine extends GameEngine {
   getGameState(playerId?: string): BingoGameState {
     return {
       room: this.room,
-      stage: this.gameState_ as any,
+      stage: this.gameStateStatus as any,
       calledNumbers: this.calledNumbers,
       timeRemaining: this.timeRemaining,
       currentCall: this.currentCall,
