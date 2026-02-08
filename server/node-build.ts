@@ -1,6 +1,8 @@
 import path from "path";
+import http from "http";
 import { createServer } from "./index";
 import * as express from "express";
+import { webSocketService } from "./services/WebSocketService";
 
 const app = createServer();
 const port = process.env.PORT || 3000;
@@ -22,19 +24,32 @@ app.get("*", (req, res) => {
   res.sendFile(path.join(distPath, "index.html"));
 });
 
-app.listen(port, () => {
+// Create HTTP server and attach Express and WebSocket
+const httpServer = http.createServer(app);
+webSocketService.initialize(httpServer);
+
+httpServer.listen(port, () => {
   console.log(`🚀 Fusion Starter server running on port ${port}`);
   console.log(`📱 Frontend: http://localhost:${port}`);
   console.log(`🔧 API: http://localhost:${port}/api`);
+  console.log(`🔌 WebSocket: ws://localhost:${port}`);
 });
 
 // Graceful shutdown
 process.on("SIGTERM", () => {
   console.log("🛑 Received SIGTERM, shutting down gracefully");
-  process.exit(0);
+  webSocketService.shutdown();
+  httpServer.close(() => {
+    console.log("Server closed");
+    process.exit(0);
+  });
 });
 
 process.on("SIGINT", () => {
   console.log("🛑 Received SIGINT, shutting down gracefully");
-  process.exit(0);
+  webSocketService.shutdown();
+  httpServer.close(() => {
+    console.log("Server closed");
+    process.exit(0);
+  });
 });
