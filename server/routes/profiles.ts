@@ -1,63 +1,56 @@
 import type { RequestHandler } from "express";
-import { getSupabaseAdmin, hasSupabaseServerConfig } from "../lib/supabase";
-
-const PROFILES_TABLE = "profiles";
+import { query } from "../lib/db";
+import { profilesQueries } from "../lib/db-queries";
 
 export const getOrCreateProfileById: RequestHandler = async (req, res) => {
   try {
-    if (!hasSupabaseServerConfig) {
-      return res
-        .status(501)
-        .json({ error: "Supabase not configured on server" });
-    }
     const { id } = req.params as { id: string };
     if (!id) return res.status(400).json({ error: "Missing id" });
 
-    const admin = getSupabaseAdmin();
-
-    let { data: profile, error } = await admin
-      .from(PROFILES_TABLE)
-      .select("*")
-      .eq("id", id)
-      .maybeSingle();
-
-    if (error) return res.status(500).json({ error: error.message });
+    // Try to get existing profile
+    let profile = await profilesQueries.getByUserId(id);
 
     if (!profile) {
       // Create a minimal profile when missing
-      // Attempt to read auth user for email/name
-      let email = "";
-      let name = "Player";
-      try {
-        const { data: userRes } = await admin.auth.admin.getUserById(id);
-        email = userRes.user?.email ?? "";
-        const metaName = (userRes.user?.user_metadata as any)?.name as
-          | string
-          | undefined;
-        name = metaName || email?.split("@")[0] || "Player";
-      } catch {}
-
       const newProfile = {
-        id,
-        email,
-        name,
-        is_admin: false,
+        user_id: id,
+        email: "",
+        name: "Player",
         verified: false,
-        kyc_status: "not_submitted",
-        kyc_documents: null,
-        created_at: new Date().toISOString(),
-        last_login_at: new Date().toISOString(),
-        total_losses: 0,
-        jackpot_opt_in: false,
+        kyc_status: "pending" as const,
+        gold_coins_balance: 0,
+        sweep_coins_balance: 0,
+        gold_coins: 0,
+        sweep_coins: 0,
       };
 
-      const { data: inserted, error: upsertErr } = await admin
-        .from(PROFILES_TABLE)
-        .upsert(newProfile)
-        .select("*")
-        .maybeSingle();
-      if (upsertErr) return res.status(500).json({ error: upsertErr.message });
-      profile = inserted;
+      try {
+        const result = await query(
+          `INSERT INTO profiles (user_id, email, name, verified, kyc_status, gold_coins_balance, sweep_coins_balance, gold_coins, sweep_coins)
+           VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9)
+           RETURNING *`,
+          [
+            newProfile.user_id,
+            newProfile.email,
+            newProfile.name,
+            newProfile.verified,
+            newProfile.kyc_status,
+            newProfile.gold_coins_balance,
+            newProfile.sweep_coins_balance,
+            newProfile.gold_coins,
+            newProfile.sweep_coins,
+          ],
+        );
+        profile = result.rows[0];
+      } catch (error: any) {
+        // Profile might already exist (race condition)
+        profile = await profilesQueries.getByUserId(id);
+        if (!profile) {
+          return res
+            .status(500)
+            .json({ error: error?.message || "Failed to create profile" });
+        }
+      }
     }
 
     return res.json(profile);
