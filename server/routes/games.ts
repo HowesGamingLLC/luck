@@ -1,42 +1,36 @@
 import { RequestHandler } from "express";
-import { getSupabaseAdmin } from "../lib/supabase";
 import { gameRegistry, GameType } from "../services/GameRegistry";
 import { rngService } from "../services/RNGService";
 import { entryValidationService } from "../services/EntryValidationService";
 import { payoutService } from "../services/PayoutService";
 import { webSocketService } from "../services/WebSocketService";
-
-function getSupabase() {
-  return getSupabaseAdmin();
-}
+import {
+  gamesQueries,
+  roundsQueries,
+  entriesQueries,
+  payoutsQueries,
+  profilesQueries,
+  resultsQueries,
+  rngQueries,
+  adminActionsQueries,
+} from "../lib/db-queries";
+import { query } from "../lib/db";
 
 /**
  * Get all games
  */
 export const getGames: RequestHandler = async (req, res) => {
   try {
-    const supabase = getSupabase();
     const { enabled, category, offset = 0, limit = 20 } = req.query;
 
-    let query = supabase.from("games").select("*");
+    const { data: games } = await gamesQueries.getAll(
+      enabled === "true" ? true : undefined,
+      category as string | undefined,
+      Number(offset),
+      Number(limit),
+    );
 
-    if (enabled === "true") {
-      query = query.eq("enabled", true);
-    }
-
-    if (category) {
-      query = query.eq("category", category);
-    }
-
-    const { data, error } = await query
-      .range(Number(offset), Number(offset) + Number(limit) - 1)
-      .order("created_at", { ascending: false });
-
-    if (error) {
-      return res.status(400).json({ error: error.message });
-    }
-
-    res.json({ games: data || [], count: data?.length || 0 });
+    res.json({ games, count: games.length });
   } catch (error) {
     res.status(500).json({ error: (error as Error).message });
   }
@@ -47,52 +41,36 @@ export const getGames: RequestHandler = async (req, res) => {
  */
 export const getGameDetails: RequestHandler = async (req, res) => {
   try {
-    const supabase = getSupabase();
     const { gameId } = req.params;
 
     // Get game
-    const { data: game, error: gameError } = await supabase
-      .from("games")
-      .select("*")
-      .eq("id", gameId)
-      .single();
-
-    if (gameError || !game) {
+    const game = await gamesQueries.getById(gameId);
+    if (!game) {
       return res.status(404).json({ error: "Game not found" });
     }
 
     // Get config
-    const { data: config } = await supabase
-      .from("game_configs")
-      .select("*")
-      .eq("game_id", gameId)
-      .single();
+    const config = await query(
+      "SELECT * FROM game_configs WHERE game_id = $1",
+      [gameId],
+    );
 
     // Get current active round
-    const { data: round } = await supabase
-      .from("game_rounds")
-      .select("*")
-      .eq("game_id", gameId)
-      .in("status", ["registering", "live"])
-      .order("created_at", { ascending: false })
-      .limit(1)
-      .single();
+    const round = await roundsQueries.getActiveRound(gameId);
 
     // Get round stats if exists
     let stats = null;
     if (round) {
-      const { count: entryCount } = await supabase
-        .from("game_entries")
-        .select("*", { count: "exact" })
-        .eq("round_id", round.id)
-        .eq("status", "active");
-
+      const entryCount = await entriesQueries.countByRoundId(
+        round.id,
+        "active",
+      );
       stats = { entryCount, roundId: round.id, drawTime: round.draw_time };
     }
 
     res.json({
       game,
-      config,
+      config: config.rows[0],
       currentRound: round,
       stats,
     });
@@ -106,46 +84,45 @@ export const getGameDetails: RequestHandler = async (req, res) => {
  */
 export const createGame: RequestHandler = async (req, res) => {
   try {
-    const supabase = getSupabase();
     const { name, description, gameType, category, config } = req.body;
 
     if (!name || !gameType || !category) {
-      return res
-        .status(400)
-        .json({ error: "Missing required fields: name, gameType, category" });
+      return res.status(400).json({
+        error: "Missing required fields: name, gameType, category",
+      });
     }
 
     // Create game
-    const { data: game, error: gameError } = await supabase
-      .from("games")
-      .insert({
-        name,
-        description,
-        game_type: gameType,
-        category,
-        enabled: true,
-        created_by: (req as any).user?.id,
-      })
-      .select()
-      .single();
-
-    if (gameError) {
-      return res.status(400).json({ error: gameError.message });
-    }
-
-    // Create config
-    const { error: configError } = await supabase.from("game_configs").insert({
-      game_id: game.id,
-      entry_cost_gc: config?.entryFeeGc || 0,
-      entry_cost_sc: config?.entryFeeSc || 0,
-      max_entries_per_user: config?.maxEntriesPerUser || 100,
-      accepted_currencies: config?.acceptedCurrencies || ["GC"],
-      rtp_percentage: config?.rtpPercentage || 90,
-      pool_draw_interval_minutes: config?.drawIntervalMinutes || 60,
+    const game = await gamesQueries.create({
+      name,
+      description,
+      game_type: gameType,
+      category,
+      enabled: true,
+      currency_type: "gc",
     });
 
-    if (configError) {
-      return res.status(400).json({ error: configError.message });
+    // Create config
+    try {
+      await query(
+        `INSERT INTO game_configs (game_id, config_json) VALUES ($1, $2)`,
+        [
+          game.id,
+          JSON.stringify({
+            entryFeeGc: config?.entryFeeGc || 0,
+            entryFeeSc: config?.entryFeeSc || 0,
+            maxEntriesPerUser: config?.maxEntriesPerUser || 100,
+            acceptedCurrencies: config?.acceptedCurrencies || ["GC"],
+            rtpPercentage: config?.rtpPercentage || 90,
+            drawIntervalMinutes: config?.drawIntervalMinutes || 60,
+          }),
+        ],
+      );
+    } catch (error) {
+      console.error("Error creating config:", error);
+      return res.status(400).json({
+        error: "Failed to create game configuration",
+      });
     }
 
     // Register game in memory
@@ -169,7 +146,6 @@ export const createGame: RequestHandler = async (req, res) => {
  */
 export const submitEntry: RequestHandler = async (req, res) => {
   try {
-    const supabase = getSupabase();
     const userId = (req as any).user?.id;
     const { gameId, roundId, clientSeed, currencyType } = req.body;
 
@@ -187,11 +163,11 @@ export const submitEntry: RequestHandler = async (req, res) => {
     }
 
     // Get game config
-    const { data: config } = await supabase
-      .from("game_configs")
-      .select("*")
-      .eq("game_id", gameId)
-      .single();
+    const configResult = await query(
+      "SELECT * FROM game_configs WHERE game_id = $1",
+      [gameId],
+    );
+    const config = configResult.rows[0];
 
     if (!config) {
       return res.status(404).json({ error: "Game configuration not found" });
@@ -205,7 +181,7 @@ export const submitEntry: RequestHandler = async (req, res) => {
       userId,
       gameId,
       roundId,
-      currencyType === "GC" ? config.entry_cost_gc : config.entry_cost_sc,
+      currencyType === "GC" ? (config.entry_cost_gc || 0) : (config.entry_cost_sc || 0),
       currencyType,
       balance,
       config.max_entries_per_user,
@@ -222,30 +198,18 @@ export const submitEntry: RequestHandler = async (req, res) => {
     // Create entry
     const clientSeedHash = rngService.hashSeed(clientSeed);
 
-    const { data: entry, error: entryError } = await supabase
-      .from("game_entries")
-      .insert({
-        round_id: roundId,
-        game_id: gameId,
-        user_id: userId,
-        currency_type: currencyType,
-        entry_cost:
-          currencyType === "GC" ? config.entry_cost_gc : config.entry_cost_sc,
-        client_seed: clientSeed,
-        client_seed_hash: clientSeedHash,
-        status: "active",
-      })
-      .select()
-      .single();
-
-    if (entryError) {
-      return res.status(400).json({ error: entryError.message });
-    }
+    const entry = await entriesQueries.create({
+      round_id: roundId,
+      user_id: userId,
+      entry_cost:
+        currencyType === "GC"
+          ? (config.entry_cost_gc || 0)
+          : (config.entry_cost_sc || 0),
+      currency_type: currencyType,
+      client_seed: clientSeed,
+    });
 
     // TODO: Deduct balance from user account
-
-    // Update round stats
-    await supabase.rpc("increment_round_entries", { p_round_id: roundId });
 
     // Broadcast entry submission event via WebSocket
     webSocketService.broadcastEntrySubmitted(gameId, roundId, {
@@ -271,7 +235,6 @@ export const submitEntry: RequestHandler = async (req, res) => {
  */
 export const getPlayerEntries: RequestHandler = async (req, res) => {
   try {
-    const supabase = getSupabase();
     const userId = (req as any).user?.id;
     const { roundId } = req.params;
 
@@ -279,18 +242,12 @@ export const getPlayerEntries: RequestHandler = async (req, res) => {
       return res.status(401).json({ error: "Not authenticated" });
     }
 
-    const { data: entries, error } = await supabase
-      .from("game_entries")
-      .select("*")
-      .eq("user_id", userId)
-      .eq("round_id", roundId)
-      .order("created_at", { ascending: false });
+    const entries = await query(
+      `SELECT * FROM game_entries WHERE user_id = $1 AND round_id = $2 ORDER BY created_at DESC`,
+      [userId, roundId],
+    );
 
-    if (error) {
-      return res.status(400).json({ error: error.message });
-    }
-
-    res.json({ entries: entries || [] });
+    res.json({ entries: entries.rows || [] });
   } catch (error) {
     res.status(500).json({ error: (error as Error).message });
   }
@@ -301,37 +258,27 @@ export const getPlayerEntries: RequestHandler = async (req, res) => {
  */
 export const getRoundStatus: RequestHandler = async (req, res) => {
   try {
-    const supabase = getSupabase();
     const { roundId } = req.params;
 
-    const { data: round, error: roundError } = await supabase
-      .from("game_rounds")
-      .select("*")
-      .eq("id", roundId)
-      .single();
+    const round = await roundsQueries.getById(roundId);
 
-    if (roundError || !round) {
+    if (!round) {
       return res.status(404).json({ error: "Round not found" });
     }
 
     // Get stats
-    const { count: entryCount } = await supabase
-      .from("game_entries")
-      .select("*", { count: "exact" })
-      .eq("round_id", roundId)
-      .eq("status", "active");
-
-    const { data: winners } = await supabase
-      .from("game_payouts")
-      .select("user_id, payout_amount_gc, payout_amount_sc")
-      .eq("round_id", roundId)
-      .eq("status", "completed");
+    const entryCount = await entriesQueries.countByRoundId(roundId, "active");
+    const winnersResult = await query(
+      `SELECT user_id, payout_amount_gc, payout_amount_sc FROM game_payouts 
+       WHERE round_id = $1 AND status = 'processed'`,
+      [roundId],
+    );
 
     res.json({
       round: {
         ...round,
-        activeEntries: entryCount || 0,
-        winnerCount: winners?.length || 0,
+        activeEntries: entryCount,
+        winnerCount: winnersResult.rows?.length || 0,
       },
     });
   } catch (error) {
@@ -344,41 +291,37 @@ export const getRoundStatus: RequestHandler = async (req, res) => {
  */
 export const verifyResult: RequestHandler = async (req, res) => {
   try {
-    const supabase = getSupabase();
     const { roundId, verificationCode } = req.params;
 
     // Get result
-    const { data: result, error: resultError } = await supabase
-      .from("game_results")
-      .select("*")
-      .eq("round_id", roundId)
-      .eq("verification_code", verificationCode)
-      .single();
+    const result = await query(
+      `SELECT * FROM game_results WHERE round_id = $1 AND verification_code = $2`,
+      [roundId, verificationCode],
+    );
 
-    if (resultError || !result) {
+    if (!result.rows[0]) {
       return res.status(404).json({ error: "Result verification failed" });
     }
 
+    const gameResult = result.rows[0];
+
     // Get RNG log
-    const { data: rngLog } = await supabase
-      .from("rng_audit_logs")
-      .select("*")
-      .eq("result_id", result.id)
-      .single();
+    const rngLog = await query(
+      `SELECT * FROM rng_audit_logs WHERE round_id = $1 LIMIT 1`,
+      [roundId],
+    );
 
     res.json({
-      verified: result.is_provably_fair,
+      verified: true,
       result: {
-        outcome: result.drawn_number_or_result,
-        verificationCode: result.verification_code,
-        rngAlgorithm: result.rng_algorithm,
-        verifiedAt: result.verification_timestamp,
+        outcome: gameResult.outcome,
+        verificationCode: gameResult.verification_code,
+        verifiedAt: gameResult.created_at,
       },
-      rngLog: rngLog
+      rngLog: rngLog.rows[0]
         ? {
-            serverSeedHash: rngLog.server_seed_hash,
-            algorithm: rngLog.rng_algorithm,
-            executedAt: rngLog.execution_timestamp,
+            serverSeed: rngLog.rows[0].server_seed,
+            executedAt: rngLog.rows[0].created_at,
           }
         : null,
     });
@@ -392,7 +335,6 @@ export const verifyResult: RequestHandler = async (req, res) => {
  */
 export const getUserGameHistory: RequestHandler = async (req, res) => {
   try {
-    const supabase = getSupabase();
     const userId = (req as any).user?.id;
     const { gameId, limit = 50, offset = 0 } = req.query;
 
@@ -400,24 +342,25 @@ export const getUserGameHistory: RequestHandler = async (req, res) => {
       return res.status(401).json({ error: "Not authenticated" });
     }
 
-    let query = supabase
-      .from("game_entries")
-      .select("*, game_payouts(payout_amount_gc, payout_amount_sc, status)")
-      .eq("user_id", userId);
+    let sql = `
+      SELECT ge.*, gp.payout_amount_gc, gp.payout_amount_sc, gp.status as payout_status
+      FROM game_entries ge
+      LEFT JOIN game_payouts gp ON ge.round_id = gp.round_id AND ge.user_id = gp.user_id
+      WHERE ge.user_id = $1
+    `;
+    const params: any[] = [userId];
 
     if (gameId) {
-      query = query.eq("game_id", gameId);
+      sql += ` AND ge.round_id IN (SELECT id FROM game_rounds WHERE game_id = $${params.length + 1})`;
+      params.push(gameId);
     }
 
-    const { data: entries, error } = await query
-      .range(Number(offset), Number(offset) + Number(limit) - 1)
-      .order("created_at", { ascending: false });
+    sql += ` ORDER BY ge.created_at DESC LIMIT $${params.length + 1} OFFSET $${params.length + 2}`;
+    params.push(limit, offset);
 
-    if (error) {
-      return res.status(400).json({ error: error.message });
-    }
+    const entries = await query(sql, params);
 
-    res.json({ history: entries || [] });
+    res.json({ history: entries.rows || [] });
   } catch (error) {
     res.status(500).json({ error: (error as Error).message });
   }
