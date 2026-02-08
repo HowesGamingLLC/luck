@@ -333,7 +333,7 @@ export const adjustPayout: RequestHandler = async (req, res) => {
     // TODO: Implement payout adjustment with transaction
 
     // Log action
-    await logAdminAction(req.user?.id, null, "adjust_payout", {
+    await logAdminAction((req as any).user?.id, null, "adjust_payout", {
       roundId,
       userId,
       adjustmentAmount,
