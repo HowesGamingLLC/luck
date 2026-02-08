@@ -232,6 +232,9 @@ export const cancelRound: RequestHandler = async (req, res) => {
       reason,
     });
 
+    // Broadcast round cancellation via WebSocket
+    webSocketService.broadcastRoundCancelled(round.game_id, roundId, reason || "Round cancelled by admin");
+
     res.json({ success: true, message: "Round cancelled and entries refunded" });
   } catch (error) {
     res.status(500).json({ error: (error as Error).message });
