@@ -219,6 +219,14 @@ function App() {
                       }
                     />
                     <Route
+                      path="/admin/games"
+                      element={
+                        <AuthGuard requireAdmin={true}>
+                          <AdminGamesPanel />
+                        </AuthGuard>
+                      }
+                    />
+                    <Route
                       path="/admin/*"
                       element={
                         <AuthGuard requireAdmin={true}>
