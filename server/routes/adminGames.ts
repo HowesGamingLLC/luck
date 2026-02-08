@@ -181,7 +181,7 @@ export const pauseRound: RequestHandler = async (req, res) => {
     }
 
     // Log action
-    await logAdminAction(req.user?.id, round.game_id, "pause_round", { roundId });
+    await logAdminAction((req as any).user?.id, round.game_id, "pause_round", { roundId });
 
     res.json({ success: true, message: "Round paused" });
   } catch (error) {
