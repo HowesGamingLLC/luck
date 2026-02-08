@@ -316,12 +316,31 @@ export class PooledDrawEngine extends EventEmitter implements GameEngine {
       await payoutService.processRoundPayouts(roundId, resultId, payouts);
     }
 
-    // Mark winning entries
+    // Mark winning entries and broadcast winner announcements
     for (const winner of round.winners) {
       await supabase
         .from("game_entries")
         .update({ status: "won" })
         .eq("id", winner.entryId);
+
+      // Broadcast individual winner announcement via WebSocket
+      webSocketService.broadcastWinnerAnnounced(
+        this.gameId,
+        roundId,
+        winner.userId,
+        winner.prizeGc + winner.prizeSc, // Total prize value
+        winner.prizeGc > 0 ? "gc_and_sc" : "sc"
+      );
+
+      // Send personal notification to winner
+      webSocketService.sendUserNotification(winner.userId, {
+        type: "you_won",
+        gameId: this.gameId,
+        roundId,
+        prizeGc: winner.prizeGc,
+        prizeSc: winner.prizeSc,
+        message: `Congratulations! You won ${winner.prizeGc} GC and ${winner.prizeSc} SC!`,
+      });
     }
 
     round.status = "completed";
