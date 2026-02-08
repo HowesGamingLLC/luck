@@ -1,9 +1,11 @@
 # Jackpota-Style Sweepstakes Gaming Platform
+
 ## MVP Implementation Guide
 
 ### 🎯 Project Overview
 
 This is a comprehensive Iowa-compliant sweepstakes gaming platform featuring:
+
 - Multiple game types (Pooled Draws, Instant Wins, Progressive Jackpots, Scheduled Draws)
 - Dual currency system (Gold Coins for play-only, Sweep Coins for redeemable prizes)
 - Server-side RNG with cryptographic security
@@ -67,6 +69,7 @@ client/
 ## ✅ COMPLETED Components
 
 ### 1. Database Schema (`server/migrations/001_create_games_tables.sql`)
+
 - Games table (all game types)
 - GameConfigurations (per-game settings)
 - GameRounds (individual draws/instances)
@@ -78,12 +81,14 @@ client/
 - GameStatistics (analytics)
 
 ### 2. Game Registry (`server/services/GameRegistry.ts`)
+
 - Factory pattern for game instantiation
 - Type-safe game engine interface
 - Game registration and lookup
 - Support for 4+ game types
 
 ### 3. RNG Service (`server/services/RNGService.ts`)
+
 - SHA256-based cryptographic RNG
 - Provably-fair seed management
 - Client seed validation
@@ -92,6 +97,7 @@ client/
 - Batch verification support
 
 ### 4. Entry Validation Service (`server/services/EntryValidationService.ts`)
+
 - Balance verification
 - Rate limiting (per minute/hour/day)
 - Max entries per round enforcement
@@ -100,6 +106,7 @@ client/
 - Comprehensive error reporting
 
 ### 5. Payout Service (`server/services/PayoutService.ts`)
+
 - Atomic transaction processing
 - Rollback safety on partial failures
 - Balance update tracking
@@ -108,6 +115,7 @@ client/
 - Failed payout retry mechanism
 
 ### 6. Game APIs (`server/routes/games.ts`)
+
 - `GET /api/games` - List all games with filters
 - `GET /api/games/:gameId` - Get game details + current round
 - `POST /api/games` - Create new game (admin)
@@ -118,6 +126,7 @@ client/
 - `GET /api/games/history` - Get user game history
 
 ### 7. Admin APIs (`server/routes/adminGames.ts`)
+
 - `GET /api/admin/games/dashboard` - Dashboard stats
 - `PUT /api/admin/games/:gameId/config` - Update game config
 - `PUT /api/admin/games/:gameId/toggle` - Enable/disable game
@@ -130,6 +139,7 @@ client/
 - `GET /api/admin/audit-log` - Admin action history
 
 ### 8. Pooled Draw Engine (`server/gameEngine/PooledDrawEngine.ts`)
+
 - Timed jackpot draws
 - Server seed generation at round creation
 - Entry processing with client seed hashing
@@ -142,14 +152,16 @@ client/
 ## ⏳ TODO: Next Phases
 
 ### Phase 2: Complete Game Engines
+
 ```
 [ ] InstantWinEngine - Full implementation
-[ ] ProgressiveJackpotEngine - Full implementation  
+[ ] ProgressiveJackpotEngine - Full implementation
 [ ] ScheduledDrawEngine - Full implementation
 [ ] WebSocket integration for all engines
 ```
 
 ### Phase 3: Frontend Game UIs
+
 ```
 [ ] GameLauncher component
 [ ] PooledDrawGame component
@@ -162,6 +174,7 @@ client/
 ```
 
 ### Phase 4: Real-Time Infrastructure
+
 ```
 [ ] WebSocket server setup
 [ ] Redis pub/sub integration
@@ -172,6 +185,7 @@ client/
 ```
 
 ### Phase 5: Deployment & Security
+
 ```
 [ ] Database migration runner
 [ ] JWT authentication integration
@@ -203,6 +217,7 @@ supabase db push
 ### 2. Environment Setup
 
 Add to `.env`:
+
 ```env
 # Game Configuration
 GAME_RNG_ALGORITHM=sha256
@@ -265,6 +280,7 @@ curl -X POST http://localhost:8080/api/games/entries/submit \
 ## 📊 Game Type Specifications
 
 ### Pooled Draw (Jackpot)
+
 - **Entry Model**: Pay once, wait for draw
 - **Draw Model**: Random selection from pool
 - **Winner Model**: One or more winners split pool
@@ -272,6 +288,7 @@ curl -X POST http://localhost:8080/api/games/entries/submit \
 - **Examples**: Daily Jackpot, Hourly Drawings
 
 ### Instant Win
+
 - **Entry Model**: Pay, get immediate result
 - **Draw Model**: RNG on entry submission
 - **Winner Model**: Win or lose instantly
@@ -279,6 +296,7 @@ curl -X POST http://localhost:8080/api/games/entries/submit \
 - **Examples**: Scratch cards, Spin wheels
 
 ### Progressive Jackpot
+
 - **Entry Model**: Pay entry (contribution to jackpot)
 - **Draw Model**: Random selection
 - **Winner Model**: Hit jackpot (rare)
@@ -286,6 +304,7 @@ curl -X POST http://localhost:8080/api/games/entries/submit \
 - **Examples**: Mega Millions style games
 
 ### Scheduled Draw
+
 - **Entry Model**: Register before deadline
 - **Draw Model**: Fixed time draw
 - **Winner Model**: Random from entries
@@ -297,23 +316,24 @@ curl -X POST http://localhost:8080/api/games/entries/submit \
 ## 🎮 Game Flow Examples
 
 ### Pooled Draw Flow
+
 ```
 1. Round Created (T+0m)
    - Server seed generated
    - Registration opens
-   
+
 2. Entry Submitted (T+5m)
    - Balance checked
    - Client seed validated
    - Entry recorded
    - Prize pool updated
-   
+
 3. Draw Time (T+60m)
    - RNG executed with server + client seeds
    - Winners selected
    - Payouts created
    - Results logged
-   
+
 4. Winner Notification
    - Player sees win in history
    - Payout processed
@@ -321,17 +341,18 @@ curl -X POST http://localhost:8080/api/games/entries/submit \
 ```
 
 ### Instant Win Flow
+
 ```
 1. Player clicks "Play"
    - Balance checked
    - Client seed requested
-   
+
 2. Spin/Click
    - Entry submitted with client seed
    - Server generates result immediately
    - Payout created if win
    - UI updates in real-time
-   
+
 3. Result Verification
    - Player can verify result was fair
    - Show server seed, client seed, final hash
@@ -342,6 +363,7 @@ curl -X POST http://localhost:8080/api/games/entries/submit \
 ## 📈 Metrics & Analytics
 
 Track per-game:
+
 - Total entries
 - Unique players
 - Prize pool size
@@ -356,6 +378,7 @@ Track per-game:
 ## 🔄 Implementation Checklist
 
 ### Phase 1 (✅ DONE)
+
 - [x] Database schema
 - [x] Game registry
 - [x] RNG service
@@ -366,6 +389,7 @@ Track per-game:
 - [x] Pooled draw engine
 
 ### Phase 2 (IN PROGRESS)
+
 - [ ] Complete InstantWinEngine
 - [ ] Complete ProgressiveJackpotEngine
 - [ ] Complete ScheduledDrawEngine
@@ -376,6 +400,7 @@ Track per-game:
 - [ ] Real-time updates
 
 ### Phase 3 (PENDING)
+
 - [ ] Frontend game components
 - [ ] Provably-fair verification page
 - [ ] Player history/stats
@@ -390,6 +415,7 @@ Track per-game:
 ## 🧪 Testing
 
 ### Manual Testing
+
 ```bash
 # 1. Create game
 curl -X POST http://localhost:8080/api/games ...
@@ -408,6 +434,7 @@ curl http://localhost:8080/api/games/{roundId}/verify/{code}
 ```
 
 ### Unit Testing
+
 ```bash
 pnpm test
 ```
@@ -426,6 +453,7 @@ pnpm test
 ## 🤝 Contributing
 
 When adding new game types:
+
 1. Create new engine file extending GameEngine interface
 2. Register in GameRegistry
 3. Create associated API routes
@@ -438,6 +466,7 @@ When adding new game types:
 ## 📞 Support
 
 For implementation questions:
+
 - Check existing game engines for patterns
 - Review service implementations
 - Test with curl before frontend integration

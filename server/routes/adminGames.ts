@@ -56,7 +56,10 @@ export const getDashboard: RequestHandler = async (req, res) => {
     const { count: todayEntries } = await supabase
       .from("game_entries")
       .select("*", { count: "exact" })
-      .gte("created_at", new Date(Date.now() - 24 * 60 * 60 * 1000).toISOString());
+      .gte(
+        "created_at",
+        new Date(Date.now() - 24 * 60 * 60 * 1000).toISOString(),
+      );
 
     // Get pending payouts
     const { count: pendingPayouts } = await supabase
@@ -69,10 +72,15 @@ export const getDashboard: RequestHandler = async (req, res) => {
       .from("game_payouts")
       .select("payout_amount_gc, payout_amount_sc")
       .eq("status", "completed")
-      .gte("created_at", new Date(Date.now() - 24 * 60 * 60 * 1000).toISOString());
+      .gte(
+        "created_at",
+        new Date(Date.now() - 24 * 60 * 60 * 1000).toISOString(),
+      );
 
-    const totalGcPaid = todayPayouts?.reduce((sum, p) => sum + (p.payout_amount_gc || 0), 0) || 0;
-    const totalScPaid = todayPayouts?.reduce((sum, p) => sum + (p.payout_amount_sc || 0), 0) || 0;
+    const totalGcPaid =
+      todayPayouts?.reduce((sum, p) => sum + (p.payout_amount_gc || 0), 0) || 0;
+    const totalScPaid =
+      todayPayouts?.reduce((sum, p) => sum + (p.payout_amount_sc || 0), 0) || 0;
 
     res.json({
       stats: {
@@ -108,7 +116,12 @@ export const updateGameConfig: RequestHandler = async (req, res) => {
     }
 
     // Log admin action
-    await logAdminAction((req as any).user?.id, gameId, "modify_config", updates);
+    await logAdminAction(
+      (req as any).user?.id,
+      gameId,
+      "modify_config",
+      updates,
+    );
 
     res.json({ success: true, message: "Configuration updated" });
   } catch (error) {
@@ -142,7 +155,10 @@ export const toggleGameEnabled: RequestHandler = async (req, res) => {
       { enabled },
     );
 
-    res.json({ success: true, message: `Game ${enabled ? "enabled" : "disabled"}` });
+    res.json({
+      success: true,
+      message: `Game ${enabled ? "enabled" : "disabled"}`,
+    });
   } catch (error) {
     res.status(500).json({ error: (error as Error).message });
   }
@@ -168,7 +184,9 @@ export const pauseRound: RequestHandler = async (req, res) => {
 
     // Can only pause if currently registering
     if (round.status !== "registering") {
-      return res.status(400).json({ error: "Can only pause rounds in registering status" });
+      return res
+        .status(400)
+        .json({ error: "Can only pause rounds in registering status" });
     }
 
     const { error } = await supabase
@@ -181,7 +199,9 @@ export const pauseRound: RequestHandler = async (req, res) => {
     }
 
     // Log action
-    await logAdminAction((req as any).user?.id, round.game_id, "pause_round", { roundId });
+    await logAdminAction((req as any).user?.id, round.game_id, "pause_round", {
+      roundId,
+    });
 
     res.json({ success: true, message: "Round paused" });
   } catch (error) {
@@ -234,9 +254,16 @@ export const cancelRound: RequestHandler = async (req, res) => {
     });
 
     // Broadcast round cancellation via WebSocket
-    webSocketService.broadcastRoundCancelled(round.game_id, roundId, reason || "Round cancelled by admin");
+    webSocketService.broadcastRoundCancelled(
+      round.game_id,
+      roundId,
+      reason || "Round cancelled by admin",
+    );
 
-    res.json({ success: true, message: "Round cancelled and entries refunded" });
+    res.json({
+      success: true,
+      message: "Round cancelled and entries refunded",
+    });
   } catch (error) {
     res.status(500).json({ error: (error as Error).message });
   }
@@ -267,15 +294,19 @@ export const monitorRound: RequestHandler = async (req, res) => {
       .eq("round_id", roundId)
       .eq("status", "active");
 
-    const entriesByGc = entries?.filter((e) => e.currency_type === "GC").length || 0;
-    const entriesBySc = entries?.filter((e) => e.currency_type === "SC").length || 0;
+    const entriesByGc =
+      entries?.filter((e) => e.currency_type === "GC").length || 0;
+    const entriesBySc =
+      entries?.filter((e) => e.currency_type === "SC").length || 0;
 
-    const totalGc = entries
-      ?.filter((e) => e.currency_type === "GC")
-      .reduce((sum, e) => sum + e.entry_cost, 0) || 0;
-    const totalSc = entries
-      ?.filter((e) => e.currency_type === "SC")
-      .reduce((sum, e) => sum + e.entry_cost, 0) || 0;
+    const totalGc =
+      entries
+        ?.filter((e) => e.currency_type === "GC")
+        .reduce((sum, e) => sum + e.entry_cost, 0) || 0;
+    const totalSc =
+      entries
+        ?.filter((e) => e.currency_type === "SC")
+        .reduce((sum, e) => sum + e.entry_cost, 0) || 0;
 
     // Get winners if completed
     let winners = null;
@@ -314,7 +345,9 @@ export const manualDraw: RequestHandler = async (req, res) => {
     // TODO: Implement manual draw using game engine
 
     // Log action
-    await logAdminAction((req as any).user?.id, null, "manual_draw", { roundId });
+    await logAdminAction((req as any).user?.id, null, "manual_draw", {
+      roundId,
+    });
 
     res.json({ success: true, message: "Draw executed manually" });
   } catch (error) {

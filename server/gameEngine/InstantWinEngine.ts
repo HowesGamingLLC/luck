@@ -1,4 +1,8 @@
-import { GameEngine, GameEngineConfig, GameType } from "../services/GameRegistry";
+import {
+  GameEngine,
+  GameEngineConfig,
+  GameType,
+} from "../services/GameRegistry";
 import { rngService } from "../services/RNGService";
 import { payoutService } from "../services/PayoutService";
 import { webSocketService } from "../services/WebSocketService";
@@ -71,9 +75,7 @@ export class InstantWinEngine implements GameEngine {
     const supabase = this.getSupabase();
     const { data: profile, error: profileError } = await supabase
       .from("profiles")
-      .select(
-        "gold_coins, sweep_coins"
-      )
+      .select("gold_coins, sweep_coins")
       .eq("id", userId)
       .single();
 
@@ -146,7 +148,7 @@ export class InstantWinEngine implements GameEngine {
       roundId,
       clientSeed,
       100, // 1-100 for win probability
-      false
+      false,
     );
 
     // Determine win based on RTP percentage
@@ -202,7 +204,7 @@ export class InstantWinEngine implements GameEngine {
           roundId,
           userId,
           prizeGc + prizeSc,
-          prizeGc > 0 ? "gc" : "sc"
+          prizeGc > 0 ? "gc" : "sc",
         );
 
         webSocketService.sendUserNotification(userId, {
@@ -251,7 +253,9 @@ export class InstantWinEngine implements GameEngine {
    */
   async getWinners(
     roundId: string,
-  ): Promise<Array<{ userId: string; prizeAmount: number; prizeType: string }>> {
+  ): Promise<
+    Array<{ userId: string; prizeAmount: number; prizeType: string }>
+  > {
     const supabase = this.getSupabase();
     const { data, error } = await supabase
       .from("game_payouts")
@@ -362,10 +366,10 @@ export class InstantWinEngine implements GameEngine {
       .eq("round_id", roundId)
       .eq("status", "completed");
 
-    const totalPayout = payouts
-      ?.reduce(
+    const totalPayout =
+      payouts?.reduce(
         (sum, p) => sum + (p.payout_amount_gc + p.payout_amount_sc),
-        0
+        0,
       ) || 0;
 
     return {

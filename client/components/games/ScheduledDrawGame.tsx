@@ -72,7 +72,7 @@ const ScheduledDrawGame = ({
         setTimeRemaining(
           scheduleType === "hourly"
             ? `${minutes}m ${seconds}s`
-            : `${hours}h ${minutes}m ${seconds}s`
+            : `${hours}h ${minutes}m ${seconds}s`,
         );
       }
     }, 1000);
@@ -178,7 +178,9 @@ const ScheduledDrawGame = ({
             <div className="bg-slate-700/50 rounded-lg p-4 text-center border border-slate-600">
               <Clock className="h-5 w-5 mx-auto mb-2 text-blue-400" />
               <p className="text-xs text-slate-400 mb-1">Frequency</p>
-              <p className="font-semibold text-white capitalize">{scheduleType}</p>
+              <p className="font-semibold text-white capitalize">
+                {scheduleType}
+              </p>
             </div>
             <div className="bg-slate-700/50 rounded-lg p-4 text-center border border-slate-600">
               <Users className="h-5 w-5 mx-auto mb-2 text-cyan-400" />
@@ -222,21 +224,11 @@ const ScheduledDrawGame = ({
               How It Works
             </h3>
             <div className="space-y-2 text-sm text-blue-200">
-              <p>
-                • Entries are accepted until the scheduled draw time
-              </p>
-              <p>
-                • Draw happens automatically at the scheduled time
-              </p>
-              <p>
-                • Winners are selected using provably-fair RNG
-              </p>
-              <p>
-                • Prizes are distributed immediately after the draw
-              </p>
-              <p>
-                • Live countdown ensures transparency
-              </p>
+              <p>• Entries are accepted until the scheduled draw time</p>
+              <p>• Draw happens automatically at the scheduled time</p>
+              <p>• Winners are selected using provably-fair RNG</p>
+              <p>• Prizes are distributed immediately after the draw</p>
+              <p>• Live countdown ensures transparency</p>
             </div>
           </div>
 
@@ -344,7 +336,8 @@ const ScheduledDrawGame = ({
           <Alert className="bg-cyan-900/20 border-cyan-800">
             <Play className="h-4 w-4 text-cyan-400" />
             <AlertDescription className="text-cyan-300">
-              Get in before the draw! Watch the countdown for the exact draw time.
+              Get in before the draw! Watch the countdown for the exact draw
+              time.
             </AlertDescription>
           </Alert>
         </CardContent>

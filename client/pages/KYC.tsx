@@ -269,9 +269,7 @@ export default function KYC() {
         </div>
 
         {/* Status Banner */}
-        <Card
-          className="mb-8 border-orange-500 bg-orange-500/5"
-        >
+        <Card className="mb-8 border-orange-500 bg-orange-500/5">
           <CardContent className="p-6">
             <div className="flex items-center gap-4">
               <KYCIcon className={`h-8 w-8 ${kycStatus.color}`} />
@@ -279,9 +277,7 @@ export default function KYC() {
                 <h3 className="text-lg font-semibold">{kycStatus.text}</h3>
                 <p className="text-muted-foreground">{kycStatus.description}</p>
               </div>
-              <Badge variant="secondary">
-                {kycStatus.text}
-              </Badge>
+              <Badge variant="secondary">{kycStatus.text}</Badge>
             </div>
           </CardContent>
         </Card>

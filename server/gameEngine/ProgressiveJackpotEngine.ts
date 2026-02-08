@@ -1,4 +1,8 @@
-import { GameEngine, GameEngineConfig, GameType } from "../services/GameRegistry";
+import {
+  GameEngine,
+  GameEngineConfig,
+  GameType,
+} from "../services/GameRegistry";
 import { rngService } from "../services/RNGService";
 import { payoutService } from "../services/PayoutService";
 import { webSocketService } from "../services/WebSocketService";
@@ -16,7 +20,10 @@ export interface ProgressiveJackpotConfig extends GameEngineConfig {
  * Progressive Jackpot Engine: Linked prize pools that grow with each entry
  * Prize pool accumulates and resets when a winner is selected
  */
-export class ProgressiveJackpotEngine extends EventEmitter implements GameEngine {
+export class ProgressiveJackpotEngine
+  extends EventEmitter
+  implements GameEngine
+{
   gameId: string;
   gameType: GameType = "progressive_jackpot";
   config: ProgressiveJackpotConfig;
@@ -34,7 +41,8 @@ export class ProgressiveJackpotEngine extends EventEmitter implements GameEngine
     super();
     this.gameId = gameId;
     this.config = config as ProgressiveJackpotConfig;
-    this.currentJackpot = (this.config as ProgressiveJackpotConfig).minJackpot || 10000;
+    this.currentJackpot =
+      (this.config as ProgressiveJackpotConfig).minJackpot || 10000;
   }
 
   /**
@@ -146,9 +154,7 @@ export class ProgressiveJackpotEngine extends EventEmitter implements GameEngine
     // Increment jackpot
     const newJackpot = this.currentJackpot + this.config.jackpotIncrement;
     this.currentJackpot =
-      newJackpot > this.config.maxJackpot
-        ? this.config.maxJackpot
-        : newJackpot;
+      newJackpot > this.config.maxJackpot ? this.config.maxJackpot : newJackpot;
 
     // Update round with new jackpot
     await supabase
@@ -162,7 +168,7 @@ export class ProgressiveJackpotEngine extends EventEmitter implements GameEngine
       roundId,
       "registering",
       round.entry_count + 1,
-      this.currentJackpot
+      this.currentJackpot,
     );
 
     return entry.id;
@@ -201,7 +207,7 @@ export class ProgressiveJackpotEngine extends EventEmitter implements GameEngine
       roundId,
       entries[0].client_seed,
       entries.length,
-      false
+      false,
     );
 
     const winnerIndex = rngResult.value;
@@ -253,7 +259,7 @@ export class ProgressiveJackpotEngine extends EventEmitter implements GameEngine
         roundId,
         winner.user_id,
         this.currentJackpot,
-        "gc"
+        "gc",
       );
 
       // Send personal notification
@@ -281,7 +287,9 @@ export class ProgressiveJackpotEngine extends EventEmitter implements GameEngine
    */
   async getWinners(
     roundId: string,
-  ): Promise<Array<{ userId: string; prizeAmount: number; prizeType: string }>> {
+  ): Promise<
+    Array<{ userId: string; prizeAmount: number; prizeType: string }>
+  > {
     const supabase = this.getSupabase();
     const { data, error } = await supabase
       .from("game_payouts")
@@ -387,10 +395,10 @@ export class ProgressiveJackpotEngine extends EventEmitter implements GameEngine
       .eq("round_id", roundId)
       .eq("status", "completed");
 
-    const totalPayout = payouts
-      ?.reduce(
+    const totalPayout =
+      payouts?.reduce(
         (sum, p) => sum + (p.payout_amount_gc + p.payout_amount_sc),
-        0
+        0,
       ) || 0;
 
     return {

@@ -77,28 +77,73 @@ export function createServer() {
   app.get("/api/demo", handleDemo);
 
   // Game routes
-  const gameRoutes = require("./routes/games") as typeof import("./routes/games");
+  const gameRoutes =
+    require("./routes/games") as typeof import("./routes/games");
   app.get("/api/games", gameRoutes.getGames);
   app.get("/api/games/:gameId", gameRoutes.getGameDetails);
   app.post("/api/games", gameRoutes.createGame);
   app.post("/api/games/entries/submit", gameRoutes.submitEntry);
   app.get("/api/games/rounds/:roundId/entries", gameRoutes.getPlayerEntries);
   app.get("/api/games/rounds/:roundId/status", gameRoutes.getRoundStatus);
-  app.get("/api/games/:roundId/verify/:verificationCode", gameRoutes.verifyResult);
+  app.get(
+    "/api/games/:roundId/verify/:verificationCode",
+    gameRoutes.verifyResult,
+  );
   app.get("/api/games/history", gameRoutes.getUserGameHistory);
 
   // Admin game routes
-  const adminGameRoutes = require("./routes/adminGames") as typeof import("./routes/adminGames");
-  app.get("/api/admin/games/dashboard", adminGameRoutes.requireAdmin, adminGameRoutes.getDashboard);
-  app.put("/api/admin/games/:gameId/config", adminGameRoutes.requireAdmin, adminGameRoutes.updateGameConfig);
-  app.put("/api/admin/games/:gameId/toggle", adminGameRoutes.requireAdmin, adminGameRoutes.toggleGameEnabled);
-  app.post("/api/admin/games/rounds/:roundId/pause", adminGameRoutes.requireAdmin, adminGameRoutes.pauseRound);
-  app.post("/api/admin/games/rounds/:roundId/cancel", adminGameRoutes.requireAdmin, adminGameRoutes.cancelRound);
-  app.get("/api/admin/games/rounds/:roundId/monitor", adminGameRoutes.requireAdmin, adminGameRoutes.monitorRound);
-  app.post("/api/admin/games/rounds/:roundId/draw", adminGameRoutes.requireAdmin, adminGameRoutes.manualDraw);
-  app.post("/api/admin/games/payouts/adjust", adminGameRoutes.requireAdmin, adminGameRoutes.adjustPayout);
-  app.get("/api/admin/games/rng/:roundId/verify", adminGameRoutes.requireAdmin, adminGameRoutes.getRngVerification);
-  app.get("/api/admin/audit-log", adminGameRoutes.requireAdmin, adminGameRoutes.getAdminAuditLog);
+  const adminGameRoutes =
+    require("./routes/adminGames") as typeof import("./routes/adminGames");
+  app.get(
+    "/api/admin/games/dashboard",
+    adminGameRoutes.requireAdmin,
+    adminGameRoutes.getDashboard,
+  );
+  app.put(
+    "/api/admin/games/:gameId/config",
+    adminGameRoutes.requireAdmin,
+    adminGameRoutes.updateGameConfig,
+  );
+  app.put(
+    "/api/admin/games/:gameId/toggle",
+    adminGameRoutes.requireAdmin,
+    adminGameRoutes.toggleGameEnabled,
+  );
+  app.post(
+    "/api/admin/games/rounds/:roundId/pause",
+    adminGameRoutes.requireAdmin,
+    adminGameRoutes.pauseRound,
+  );
+  app.post(
+    "/api/admin/games/rounds/:roundId/cancel",
+    adminGameRoutes.requireAdmin,
+    adminGameRoutes.cancelRound,
+  );
+  app.get(
+    "/api/admin/games/rounds/:roundId/monitor",
+    adminGameRoutes.requireAdmin,
+    adminGameRoutes.monitorRound,
+  );
+  app.post(
+    "/api/admin/games/rounds/:roundId/draw",
+    adminGameRoutes.requireAdmin,
+    adminGameRoutes.manualDraw,
+  );
+  app.post(
+    "/api/admin/games/payouts/adjust",
+    adminGameRoutes.requireAdmin,
+    adminGameRoutes.adjustPayout,
+  );
+  app.get(
+    "/api/admin/games/rng/:roundId/verify",
+    adminGameRoutes.requireAdmin,
+    adminGameRoutes.getRngVerification,
+  );
+  app.get(
+    "/api/admin/audit-log",
+    adminGameRoutes.requireAdmin,
+    adminGameRoutes.getAdminAuditLog,
+  );
 
   // Tournament routes
   app.get("/api/tournaments", getTournaments);

@@ -201,9 +201,7 @@ const ProgressiveJackpotGame = ({
               </p>
               <p>• Jackpot keeps growing until someone wins the top prize</p>
               <p>• Winner is selected based on provably-fair RNG</p>
-              <p>
-                • After a win, jackpot resets and starts growing again
-              </p>
+              <p>• After a win, jackpot resets and starts growing again</p>
             </div>
           </div>
 

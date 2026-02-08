@@ -108,7 +108,10 @@ export function IframeSlotGame({
 
     // Check balance for minimum bet
     const minBet = currency === CurrencyType.GC ? game.minBet : 0.01;
-    const userBalance = currency === CurrencyType.GC ? user.balance?.goldCoins || 0 : user.balance?.sweepCoins || 0;
+    const userBalance =
+      currency === CurrencyType.GC
+        ? user.balance?.goldCoins || 0
+        : user.balance?.sweepCoins || 0;
 
     if (userBalance < minBet) {
       setError(`Insufficient ${currency} balance. Minimum bet: ${minBet}`);

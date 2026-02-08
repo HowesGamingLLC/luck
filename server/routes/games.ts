@@ -134,17 +134,15 @@ export const createGame: RequestHandler = async (req, res) => {
     }
 
     // Create config
-    const { error: configError } = await supabase
-      .from("game_configs")
-      .insert({
-        game_id: game.id,
-        entry_cost_gc: config?.entryFeeGc || 0,
-        entry_cost_sc: config?.entryFeeSc || 0,
-        max_entries_per_user: config?.maxEntriesPerUser || 100,
-        accepted_currencies: config?.acceptedCurrencies || ["GC"],
-        rtp_percentage: config?.rtpPercentage || 90,
-        pool_draw_interval_minutes: config?.drawIntervalMinutes || 60,
-      });
+    const { error: configError } = await supabase.from("game_configs").insert({
+      game_id: game.id,
+      entry_cost_gc: config?.entryFeeGc || 0,
+      entry_cost_sc: config?.entryFeeSc || 0,
+      max_entries_per_user: config?.maxEntriesPerUser || 100,
+      accepted_currencies: config?.acceptedCurrencies || ["GC"],
+      rtp_percentage: config?.rtpPercentage || 90,
+      pool_draw_interval_minutes: config?.drawIntervalMinutes || 60,
+    });
 
     if (configError) {
       return res.status(400).json({ error: configError.message });
@@ -180,9 +178,7 @@ export const submitEntry: RequestHandler = async (req, res) => {
     }
 
     if (!gameId || !roundId || !clientSeed) {
-      return res
-        .status(400)
-        .json({ error: "Missing required fields" });
+      return res.status(400).json({ error: "Missing required fields" });
     }
 
     // Validate client seed
@@ -233,7 +229,8 @@ export const submitEntry: RequestHandler = async (req, res) => {
         game_id: gameId,
         user_id: userId,
         currency_type: currencyType,
-        entry_cost: currencyType === "GC" ? config.entry_cost_gc : config.entry_cost_sc,
+        entry_cost:
+          currencyType === "GC" ? config.entry_cost_gc : config.entry_cost_sc,
         client_seed: clientSeed,
         client_seed_hash: clientSeedHash,
         status: "active",
@@ -377,11 +374,13 @@ export const verifyResult: RequestHandler = async (req, res) => {
         rngAlgorithm: result.rng_algorithm,
         verifiedAt: result.verification_timestamp,
       },
-      rngLog: rngLog ? {
-        serverSeedHash: rngLog.server_seed_hash,
-        algorithm: rngLog.rng_algorithm,
-        executedAt: rngLog.execution_timestamp,
-      } : null,
+      rngLog: rngLog
+        ? {
+            serverSeedHash: rngLog.server_seed_hash,
+            algorithm: rngLog.rng_algorithm,
+            executedAt: rngLog.execution_timestamp,
+          }
+        : null,
     });
   } catch (error) {
     res.status(500).json({ error: (error as Error).message });

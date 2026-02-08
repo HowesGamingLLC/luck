@@ -298,10 +298,7 @@ export default function Dashboard() {
                 </CardDescription>
               </CardHeader>
               <CardContent className="flex justify-center">
-                <DailySpinWheel
-                  size={300}
-                  onSpin={handleDailySpinResult}
-                />
+                <DailySpinWheel size={300} onSpin={handleDailySpinResult} />
               </CardContent>
             </Card>
 

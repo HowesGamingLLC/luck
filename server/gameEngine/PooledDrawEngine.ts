@@ -17,7 +17,13 @@ export interface PooledDrawConfig extends GameEngineConfig {
 
 export interface DrawRoundData {
   roundId: string;
-  status: "pending" | "registering" | "live" | "drawing" | "completed" | "cancelled";
+  status:
+    | "pending"
+    | "registering"
+    | "live"
+    | "drawing"
+    | "completed"
+    | "cancelled";
   totalEntries: number;
   uniquePlayers: number;
   prizePoolGc: number;
@@ -34,7 +40,7 @@ export interface DrawRoundData {
 /**
  * Pooled Draw Engine: Timed lottery-style games where entries accumulate
  * until a scheduled draw time, then winners are selected randomly
- * 
+ *
  * Example: "Daily Jackpot at 8 PM - Win from accumulated prize pool"
  */
 export class PooledDrawEngine extends EventEmitter implements GameEngine {
@@ -79,7 +85,9 @@ export class PooledDrawEngine extends EventEmitter implements GameEngine {
       .insert({
         game_id: this.gameId,
         config_id: "default", // TODO: use actual config ID
-        round_number: Math.floor(Date.now() / (this.config.poolDrawIntervalMinutes || 60) / 60 / 1000),
+        round_number: Math.floor(
+          Date.now() / (this.config.poolDrawIntervalMinutes || 60) / 60 / 1000,
+        ),
         status: "registering",
         starts_at: now.toISOString(),
         draw_time: nextDraw.toISOString(),
@@ -166,9 +174,7 @@ export class PooledDrawEngine extends EventEmitter implements GameEngine {
     const currencyType = entryData.currencyType || "GC";
 
     const entryAmount =
-      currencyType === "GC"
-        ? this.config.entryFeeGc
-        : this.config.entryFeeSc;
+      currencyType === "GC" ? this.config.entryFeeGc : this.config.entryFeeSc;
 
     // Hash client seed
     const clientSeedHash = rngService.hashSeed(clientSeed);
@@ -205,7 +211,11 @@ export class PooledDrawEngine extends EventEmitter implements GameEngine {
       this.currentRound.prizePoolGc += entryAmount;
     }
 
-    this.emit("entryProcessed", { entryId, userId, roundId: entryData.roundId });
+    this.emit("entryProcessed", {
+      entryId,
+      userId,
+      roundId: entryData.roundId,
+    });
     return entryId;
   }
 
@@ -240,10 +250,7 @@ export class PooledDrawEngine extends EventEmitter implements GameEngine {
     }
 
     // Execute RNG for each winner position
-    const winnerCount = Math.min(
-      this.config.winnerCount || 1,
-      entries.length,
-    );
+    const winnerCount = Math.min(this.config.winnerCount || 1, entries.length);
 
     const winnerIndices = new Set<number>();
 
@@ -330,7 +337,7 @@ export class PooledDrawEngine extends EventEmitter implements GameEngine {
         roundId,
         winner.userId,
         winner.prizeGc + winner.prizeSc, // Total prize value
-        winner.prizeGc > 0 ? "gc_and_sc" : "sc"
+        winner.prizeGc > 0 ? "gc_and_sc" : "sc",
       );
 
       // Send personal notification to winner
@@ -365,7 +372,9 @@ export class PooledDrawEngine extends EventEmitter implements GameEngine {
    */
   async getWinners(
     roundId: string,
-  ): Promise<Array<{ userId: string; prizeAmount: number; prizeType: string }>> {
+  ): Promise<
+    Array<{ userId: string; prizeAmount: number; prizeType: string }>
+  > {
     const supabase = this.getSupabase();
     const { data, error } = await supabase
       .from("game_payouts")

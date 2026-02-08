@@ -183,7 +183,7 @@ export class PayoutService {
           round.game_id,
           roundId,
           payout.payoutAmountGc + payout.payoutAmountSc,
-          payout.payoutAmountGc > 0 ? "mixed" : "sc"
+          payout.payoutAmountGc > 0 ? "mixed" : "sc",
         );
       }
 
@@ -221,7 +221,10 @@ export class PayoutService {
   ): Promise<string | null> {
     try {
       const supabase = this.getSupabase();
-      const dbField = balanceField === "goldCoins" ? "gold_coins_balance" : "sweep_coins_balance";
+      const dbField =
+        balanceField === "goldCoins"
+          ? "gold_coins_balance"
+          : "sweep_coins_balance";
 
       // Use Supabase RPC or raw SQL for atomic update
       const { data, error } = await supabase.rpc("update_balance", {
@@ -290,18 +293,14 @@ export class PayoutService {
       const results: PayoutResult[] = [];
 
       for (const payout of failedPayouts || []) {
-        const result = await this.processPayout(
-          roundId,
-          payout.result_id,
-          {
-            userId: payout.user_id,
-            entryId: payout.entry_id,
-            winType: payout.win_type,
-            prizeTier: payout.prize_tier,
-            payoutAmountGc: payout.payout_amount_gc,
-            payoutAmountSc: payout.payout_amount_sc,
-          },
-        );
+        const result = await this.processPayout(roundId, payout.result_id, {
+          userId: payout.user_id,
+          entryId: payout.entry_id,
+          winType: payout.win_type,
+          prizeTier: payout.prize_tier,
+          payoutAmountGc: payout.payout_amount_gc,
+          payoutAmountSc: payout.payout_amount_sc,
+        });
 
         results.push(result);
       }
@@ -321,14 +320,19 @@ export class PayoutService {
     totalPrizePoolSc: number,
     winners: Array<{ userId: string; prizeMultiplier: number }>,
   ): Payout[] {
-    const totalMultiplier = winners.reduce((sum, w) => sum + w.prizeMultiplier, 0);
+    const totalMultiplier = winners.reduce(
+      (sum, w) => sum + w.prizeMultiplier,
+      0,
+    );
 
     return winners.map((winner) => ({
       userId: winner.userId,
       winType: "jackpot_share",
       prizeTier: 1,
-      payoutAmountGc: (totalPrizePoolGc * winner.prizeMultiplier) / totalMultiplier,
-      payoutAmountSc: (totalPrizePoolSc * winner.prizeMultiplier) / totalMultiplier,
+      payoutAmountGc:
+        (totalPrizePoolGc * winner.prizeMultiplier) / totalMultiplier,
+      payoutAmountSc:
+        (totalPrizePoolSc * winner.prizeMultiplier) / totalMultiplier,
     }));
   }
 
@@ -372,11 +376,15 @@ export class PayoutService {
 
       const stats = {
         totalPayouts: payouts?.length || 0,
-        totalGcPaid: payouts?.reduce((sum, p) => sum + (p.payout_amount_gc || 0), 0) || 0,
-        totalScPaid: payouts?.reduce((sum, p) => sum + (p.payout_amount_sc || 0), 0) || 0,
-        completedCount: payouts?.filter((p) => p.status === "completed").length || 0,
+        totalGcPaid:
+          payouts?.reduce((sum, p) => sum + (p.payout_amount_gc || 0), 0) || 0,
+        totalScPaid:
+          payouts?.reduce((sum, p) => sum + (p.payout_amount_sc || 0), 0) || 0,
+        completedCount:
+          payouts?.filter((p) => p.status === "completed").length || 0,
         failedCount: payouts?.filter((p) => p.status === "failed").length || 0,
-        pendingCount: payouts?.filter((p) => p.status === "pending").length || 0,
+        pendingCount:
+          payouts?.filter((p) => p.status === "pending").length || 0,
       };
 
       return stats;

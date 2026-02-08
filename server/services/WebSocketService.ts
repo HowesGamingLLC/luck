@@ -1,5 +1,5 @@
-import { Server as SocketIOServer, Socket } from 'socket.io';
-import { Server as HTTPServer } from 'http';
+import { Server as SocketIOServer, Socket } from "socket.io";
+import { Server as HTTPServer } from "http";
 
 interface GameSubscription {
   userId: string;
@@ -8,7 +8,13 @@ interface GameSubscription {
 }
 
 interface GameUpdate {
-  type: 'entry_submitted' | 'round_status' | 'winner_announced' | 'payout_processed' | 'game_created' | 'round_cancelled';
+  type:
+    | "entry_submitted"
+    | "round_status"
+    | "winner_announced"
+    | "payout_processed"
+    | "game_created"
+    | "round_cancelled";
   gameId: string;
   roundId?: string;
   data: any;
@@ -26,14 +32,14 @@ class WebSocketService {
   public initialize(httpServer: HTTPServer): SocketIOServer {
     this.io = new SocketIOServer(httpServer, {
       cors: {
-        origin: process.env.VITE_PUBLIC_URL || 'http://localhost:5173',
+        origin: process.env.VITE_PUBLIC_URL || "http://localhost:5173",
         credentials: true,
       },
-      transports: ['websocket', 'polling'],
+      transports: ["websocket", "polling"],
     });
 
     this.setupConnectionHandlers();
-    console.log('[WebSocket] Server initialized');
+    console.log("[WebSocket] Server initialized");
 
     return this.io;
   }
@@ -44,31 +50,34 @@ class WebSocketService {
   private setupConnectionHandlers(): void {
     if (!this.io) return;
 
-    this.io.on('connection', (socket: Socket) => {
+    this.io.on("connection", (socket: Socket) => {
       console.log(`[WebSocket] User connected: ${socket.id}`);
 
       // Handle user authentication
-      socket.on('authenticate', (data: { userId: string }) => {
+      socket.on("authenticate", (data: { userId: string }) => {
         this.handleUserAuthentication(socket, data.userId);
       });
 
       // Handle game subscription
-      socket.on('subscribe_game', (data: { gameId: string; roundId?: string }) => {
-        this.handleGameSubscription(socket, data.gameId, data.roundId);
-      });
+      socket.on(
+        "subscribe_game",
+        (data: { gameId: string; roundId?: string }) => {
+          this.handleGameSubscription(socket, data.gameId, data.roundId);
+        },
+      );
 
       // Handle game unsubscription
-      socket.on('unsubscribe_game', (data: { gameId: string }) => {
+      socket.on("unsubscribe_game", (data: { gameId: string }) => {
         this.handleGameUnsubscription(socket, data.gameId);
       });
 
       // Handle disconnect
-      socket.on('disconnect', () => {
+      socket.on("disconnect", () => {
         this.handleUserDisconnection(socket);
       });
 
       // Handle errors
-      socket.on('error', (error: any) => {
+      socket.on("error", (error: any) => {
         console.error(`[WebSocket] Error from ${socket.id}:`, error);
       });
     });
@@ -88,21 +97,29 @@ class WebSocketService {
     (socket as any).userId = userId;
     socket.join(`user:${userId}`);
 
-    console.log(`[WebSocket] User ${userId} authenticated with socket ${socket.id}`);
-    socket.emit('authenticated', { userId, socketId: socket.id });
+    console.log(
+      `[WebSocket] User ${userId} authenticated with socket ${socket.id}`,
+    );
+    socket.emit("authenticated", { userId, socketId: socket.id });
   }
 
   /**
    * Handle user subscribing to a game
    */
-  private handleGameSubscription(socket: Socket, gameId: string, roundId?: string): void {
+  private handleGameSubscription(
+    socket: Socket,
+    gameId: string,
+    roundId?: string,
+  ): void {
     const userId = (socket as any).userId;
     if (!userId) {
-      socket.emit('error', { message: 'Not authenticated' });
+      socket.emit("error", { message: "Not authenticated" });
       return;
     }
 
-    const roomKey = roundId ? `game:${gameId}:round:${roundId}` : `game:${gameId}`;
+    const roomKey = roundId
+      ? `game:${gameId}:round:${roundId}`
+      : `game:${gameId}`;
     socket.join(roomKey);
 
     // Track subscription
@@ -112,7 +129,7 @@ class WebSocketService {
     this.gameRoomSubscriptions.get(roomKey)!.add(socket.id);
 
     console.log(`[WebSocket] User ${userId} subscribed to ${roomKey}`);
-    socket.emit('game_subscribed', { gameId, roundId });
+    socket.emit("game_subscribed", { gameId, roundId });
   }
 
   /**
@@ -142,7 +159,9 @@ class WebSocketService {
    */
   private handleUserDisconnection(socket: Socket): void {
     const userId = (socket as any).userId;
-    console.log(`[WebSocket] User disconnected: ${socket.id}${userId ? ` (${userId})` : ''}`);
+    console.log(
+      `[WebSocket] User disconnected: ${socket.id}${userId ? ` (${userId})` : ""}`,
+    );
 
     if (userId) {
       const sockets = this.userSockets.get(userId);
@@ -169,11 +188,11 @@ class WebSocketService {
   public broadcastGameUpdate(update: GameUpdate): void {
     if (!this.io) return;
 
-    const roomKey = update.roundId 
+    const roomKey = update.roundId
       ? `game:${update.gameId}:round:${update.roundId}`
       : `game:${update.gameId}`;
 
-    this.io.to(roomKey).emit('game_update', {
+    this.io.to(roomKey).emit("game_update", {
       ...update,
       deliveredAt: new Date().toISOString(),
     });
@@ -187,7 +206,7 @@ class WebSocketService {
   public sendUserNotification(userId: string, notification: any): void {
     if (!this.io) return;
 
-    this.io.to(`user:${userId}`).emit('notification', {
+    this.io.to(`user:${userId}`).emit("notification", {
       ...notification,
       deliveredAt: new Date().toISOString(),
     });
@@ -198,9 +217,13 @@ class WebSocketService {
   /**
    * Broadcast entry submission event
    */
-  public broadcastEntrySubmitted(gameId: string, roundId: string, data: any): void {
+  public broadcastEntrySubmitted(
+    gameId: string,
+    roundId: string,
+    data: any,
+  ): void {
     this.broadcastGameUpdate({
-      type: 'entry_submitted',
+      type: "entry_submitted",
       gameId,
       roundId,
       data,
@@ -211,9 +234,15 @@ class WebSocketService {
   /**
    * Broadcast round status change
    */
-  public broadcastRoundStatus(gameId: string, roundId: string, status: string, entryCount: number, prizePool: number): void {
+  public broadcastRoundStatus(
+    gameId: string,
+    roundId: string,
+    status: string,
+    entryCount: number,
+    prizePool: number,
+  ): void {
     this.broadcastGameUpdate({
-      type: 'round_status',
+      type: "round_status",
       gameId,
       roundId,
       data: { status, entryCount, prizePool },
@@ -224,9 +253,15 @@ class WebSocketService {
   /**
    * Broadcast winner announcement
    */
-  public broadcastWinnerAnnounced(gameId: string, roundId: string, winnerId: string, prizeAmount: number, prizeType: string): void {
+  public broadcastWinnerAnnounced(
+    gameId: string,
+    roundId: string,
+    winnerId: string,
+    prizeAmount: number,
+    prizeType: string,
+  ): void {
     this.broadcastGameUpdate({
-      type: 'winner_announced',
+      type: "winner_announced",
       gameId,
       roundId,
       data: { winnerId, prizeAmount, prizeType },
@@ -237,9 +272,15 @@ class WebSocketService {
   /**
    * Broadcast payout processed
    */
-  public broadcastPayoutProcessed(userId: string, gameId: string, roundId: string, amount: number, currency: string): void {
+  public broadcastPayoutProcessed(
+    userId: string,
+    gameId: string,
+    roundId: string,
+    amount: number,
+    currency: string,
+  ): void {
     this.broadcastGameUpdate({
-      type: 'payout_processed',
+      type: "payout_processed",
       gameId,
       roundId,
       data: { userId, amount, currency },
@@ -248,7 +289,7 @@ class WebSocketService {
 
     // Also send personal notification to user
     this.sendUserNotification(userId, {
-      type: 'payout_received',
+      type: "payout_received",
       amount,
       currency,
       gameId,
@@ -262,7 +303,7 @@ class WebSocketService {
     if (!this.io) return;
 
     // Send to admin users
-    this.io.emit('game_created', {
+    this.io.emit("game_created", {
       game,
       timestamp: Date.now(),
     });
@@ -271,9 +312,13 @@ class WebSocketService {
   /**
    * Broadcast round cancellation
    */
-  public broadcastRoundCancelled(gameId: string, roundId: string, reason: string): void {
+  public broadcastRoundCancelled(
+    gameId: string,
+    roundId: string,
+    reason: string,
+  ): void {
     this.broadcastGameUpdate({
-      type: 'round_cancelled',
+      type: "round_cancelled",
       gameId,
       roundId,
       data: { reason },
@@ -292,7 +337,7 @@ class WebSocketService {
    * Get active subscriptions for a game
    */
   public getGameSubscriberCount(gameId: string, roundId?: string): number {
-    const roomKey = roundId 
+    const roomKey = roundId
       ? `game:${gameId}:round:${roundId}`
       : `game:${gameId}`;
 
@@ -317,7 +362,7 @@ class WebSocketService {
     }
     this.userSockets.clear();
     this.gameRoomSubscriptions.clear();
-    console.log('[WebSocket] Server shutdown');
+    console.log("[WebSocket] Server shutdown");
   }
 }
 

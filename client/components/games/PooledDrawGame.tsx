@@ -236,9 +236,7 @@ const PooledDrawGame = ({
                 </p>
               </div>
               <div>
-                <p className="text-xs text-slate-400 mb-1">
-                  Sweep Coins (SC)
-                </p>
+                <p className="text-xs text-slate-400 mb-1">Sweep Coins (SC)</p>
                 <p className="text-lg font-semibold text-purple-400">
                   {entryFeeSc}
                 </p>
@@ -350,9 +348,7 @@ const PooledDrawGame = ({
           <CardTitle className="text-white">How It Works</CardTitle>
         </CardHeader>
         <CardContent className="text-slate-300 space-y-2">
-          <p>
-            ✓ Submit your entry with GC or SC before the draw time
-          </p>
+          <p>✓ Submit your entry with GC or SC before the draw time</p>
           <p>✓ All entries contribute to the shared prize pool</p>
           <p>✓ Winners are selected randomly using provably-fair RNG</p>
           <p>✓ Prizes are distributed automatically after the draw</p>

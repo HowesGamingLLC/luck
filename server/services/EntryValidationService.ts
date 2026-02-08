@@ -252,7 +252,10 @@ export class EntryValidationService {
   /**
    * Detect potential abuse patterns
    */
-  private async detectAbuse(userId: string, gameId: string): Promise<ValidationResult> {
+  private async detectAbuse(
+    userId: string,
+    gameId: string,
+  ): Promise<ValidationResult> {
     try {
       // Check for rapid same-game entries
       const supabase = this.getSupabase();
@@ -276,7 +279,8 @@ export class EntryValidationService {
           intervals.push(time2.getTime() - time1.getTime());
         }
 
-        const avgInterval = intervals.reduce((a, b) => a + b, 0) / intervals.length;
+        const avgInterval =
+          intervals.reduce((a, b) => a + b, 0) / intervals.length;
 
         // If average interval < 100ms, likely bot activity
         if (avgInterval < 100) {

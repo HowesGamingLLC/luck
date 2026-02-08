@@ -1,4 +1,8 @@
-import { GameEngine, GameEngineConfig, GameType } from "../services/GameRegistry";
+import {
+  GameEngine,
+  GameEngineConfig,
+  GameType,
+} from "../services/GameRegistry";
 import { rngService } from "../services/RNGService";
 import { payoutService } from "../services/PayoutService";
 import { webSocketService } from "../services/WebSocketService";
@@ -252,7 +256,7 @@ export class ScheduledDrawEngine extends EventEmitter implements GameEngine {
     // Select winners
     const winnerCount = Math.min(
       this.config.maxWinners || 3,
-      Math.floor(entries.length / 10) || 1
+      Math.floor(entries.length / 10) || 1,
     );
     const winners = [];
 
@@ -262,7 +266,7 @@ export class ScheduledDrawEngine extends EventEmitter implements GameEngine {
         roundId,
         entries[0].client_seed,
         entries.length,
-        false
+        false,
       );
 
       const winner = entries[rngResult.value];
@@ -294,7 +298,7 @@ export class ScheduledDrawEngine extends EventEmitter implements GameEngine {
         prizeTier: 1,
         payoutAmountGc: prizePerWinner,
         payoutAmountSc: 0,
-      })
+      }),
     );
 
     await Promise.all(payoutPromises);
@@ -312,7 +316,7 @@ export class ScheduledDrawEngine extends EventEmitter implements GameEngine {
         roundId,
         winner.user_id,
         prizePerWinner,
-        "gc"
+        "gc",
       );
     }
 
@@ -345,7 +349,9 @@ export class ScheduledDrawEngine extends EventEmitter implements GameEngine {
    */
   async getWinners(
     roundId: string,
-  ): Promise<Array<{ userId: string; prizeAmount: number; prizeType: string }>> {
+  ): Promise<
+    Array<{ userId: string; prizeAmount: number; prizeType: string }>
+  > {
     const supabase = this.getSupabase();
     const { data, error } = await supabase
       .from("game_payouts")
@@ -381,7 +387,11 @@ export class ScheduledDrawEngine extends EventEmitter implements GameEngine {
       .eq("round_id", roundId);
 
     // Broadcast cancellation
-    webSocketService.broadcastRoundCancelled(this.gameId, roundId, "Round cancelled");
+    webSocketService.broadcastRoundCancelled(
+      this.gameId,
+      roundId,
+      "Round cancelled",
+    );
   }
 
   /**
@@ -454,10 +464,10 @@ export class ScheduledDrawEngine extends EventEmitter implements GameEngine {
       .eq("round_id", roundId)
       .eq("status", "completed");
 
-    const totalPayout = payouts
-      ?.reduce(
+    const totalPayout =
+      payouts?.reduce(
         (sum, p) => sum + (p.payout_amount_gc + p.payout_amount_sc),
-        0
+        0,
       ) || 0;
 
     return {

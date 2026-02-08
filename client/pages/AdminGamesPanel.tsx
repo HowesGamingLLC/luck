@@ -62,7 +62,11 @@ interface GameStats {
 interface Game {
   id: string;
   name: string;
-  type: "pooled_draw" | "instant_win" | "progressive_jackpot" | "scheduled_draw";
+  type:
+    | "pooled_draw"
+    | "instant_win"
+    | "progressive_jackpot"
+    | "scheduled_draw";
   enabled: boolean;
   entryFeeGc: number;
   entryFeeSc: number;
@@ -130,9 +134,7 @@ const AdminGamesPanel = () => {
 
       if (res.ok) {
         setGames(
-          games.map((g) =>
-            g.id === gameId ? { ...g, enabled: !enabled } : g
-          )
+          games.map((g) => (g.id === gameId ? { ...g, enabled: !enabled } : g)),
         );
         toast({
           title: "Success",
@@ -338,19 +340,31 @@ const AdminGamesPanel = () => {
         {/* Main Content */}
         <Tabs defaultValue="games" className="space-y-4">
           <TabsList className="bg-slate-800 border-slate-700">
-            <TabsTrigger value="games" className="data-[state=active]:bg-amber-600">
+            <TabsTrigger
+              value="games"
+              className="data-[state=active]:bg-amber-600"
+            >
               <Gamepad2 className="h-4 w-4 mr-2" />
               Games
             </TabsTrigger>
-            <TabsTrigger value="rounds" className="data-[state=active]:bg-amber-600">
+            <TabsTrigger
+              value="rounds"
+              className="data-[state=active]:bg-amber-600"
+            >
               <Play className="h-4 w-4 mr-2" />
               Active Rounds
             </TabsTrigger>
-            <TabsTrigger value="config" className="data-[state=active]:bg-amber-600">
+            <TabsTrigger
+              value="config"
+              className="data-[state=active]:bg-amber-600"
+            >
               <Settings className="h-4 w-4 mr-2" />
               Configuration
             </TabsTrigger>
-            <TabsTrigger value="analytics" className="data-[state=active]:bg-amber-600">
+            <TabsTrigger
+              value="analytics"
+              className="data-[state=active]:bg-amber-600"
+            >
               <BarChart3 className="h-4 w-4 mr-2" />
               Analytics
             </TabsTrigger>
@@ -372,12 +386,20 @@ const AdminGamesPanel = () => {
                       <TableRow className="border-slate-700 hover:bg-slate-700/50">
                         <TableHead className="text-slate-300">Name</TableHead>
                         <TableHead className="text-slate-300">Type</TableHead>
-                        <TableHead className="text-slate-300">Entry Fee (GC)</TableHead>
-                        <TableHead className="text-slate-300">Entry Fee (SC)</TableHead>
-                        <TableHead className="text-slate-300">Max Entries</TableHead>
+                        <TableHead className="text-slate-300">
+                          Entry Fee (GC)
+                        </TableHead>
+                        <TableHead className="text-slate-300">
+                          Entry Fee (SC)
+                        </TableHead>
+                        <TableHead className="text-slate-300">
+                          Max Entries
+                        </TableHead>
                         <TableHead className="text-slate-300">RTP</TableHead>
                         <TableHead className="text-slate-300">Status</TableHead>
-                        <TableHead className="text-slate-300">Actions</TableHead>
+                        <TableHead className="text-slate-300">
+                          Actions
+                        </TableHead>
                       </TableRow>
                     </TableHeader>
                     <TableBody>
@@ -406,9 +428,7 @@ const AdminGamesPanel = () => {
                           </TableCell>
                           <TableCell>
                             <Badge
-                              variant={
-                                game.enabled ? "default" : "secondary"
-                              }
+                              variant={game.enabled ? "default" : "secondary"}
                             >
                               {game.enabled ? "Enabled" : "Disabled"}
                             </Badge>
@@ -456,27 +476,40 @@ const AdminGamesPanel = () => {
                   <Alert className="bg-blue-900/20 border-blue-800">
                     <AlertTriangle className="h-4 w-4 text-blue-400" />
                     <AlertDescription className="text-blue-300">
-                      Active rounds are currently loading. Real-time updates will be available via WebSocket.
+                      Active rounds are currently loading. Real-time updates
+                      will be available via WebSocket.
                     </AlertDescription>
                   </Alert>
 
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                     <Card className="bg-slate-700 border-slate-600">
                       <CardHeader>
-                        <CardTitle className="text-white">Round Actions</CardTitle>
+                        <CardTitle className="text-white">
+                          Round Actions
+                        </CardTitle>
                       </CardHeader>
                       <CardContent className="space-y-4">
                         <div>
-                          <Label htmlFor="round-select" className="text-slate-300">
+                          <Label
+                            htmlFor="round-select"
+                            className="text-slate-300"
+                          >
                             Select Round
                           </Label>
                           <Select>
-                            <SelectTrigger id="round-select" className="bg-slate-600 border-slate-500 text-white">
+                            <SelectTrigger
+                              id="round-select"
+                              className="bg-slate-600 border-slate-500 text-white"
+                            >
                               <SelectValue placeholder="Choose a round..." />
                             </SelectTrigger>
                             <SelectContent className="bg-slate-700 border-slate-600">
-                              <SelectItem value="round-1">Round 1 (Pooled Draw)</SelectItem>
-                              <SelectItem value="round-2">Round 2 (Instant Win)</SelectItem>
+                              <SelectItem value="round-1">
+                                Round 1 (Pooled Draw)
+                              </SelectItem>
+                              <SelectItem value="round-2">
+                                Round 2 (Instant Win)
+                              </SelectItem>
                             </SelectContent>
                           </Select>
                         </div>
@@ -511,7 +544,9 @@ const AdminGamesPanel = () => {
 
                     <Card className="bg-slate-700 border-slate-600">
                       <CardHeader>
-                        <CardTitle className="text-white">Round Details</CardTitle>
+                        <CardTitle className="text-white">
+                          Round Details
+                        </CardTitle>
                       </CardHeader>
                       <CardContent className="space-y-4 text-slate-300">
                         <div className="flex justify-between">
@@ -632,21 +667,15 @@ const AdminGamesPanel = () => {
                   </h3>
                   <div className="space-y-4">
                     <div className="flex items-center justify-between p-4 bg-slate-700 rounded-lg">
-                      <span className="text-slate-300">
-                        Provably Fair RNG
-                      </span>
+                      <span className="text-slate-300">Provably Fair RNG</span>
                       <Switch defaultChecked />
                     </div>
                     <div className="flex items-center justify-between p-4 bg-slate-700 rounded-lg">
-                      <span className="text-slate-300">
-                        Accept GC Entries
-                      </span>
+                      <span className="text-slate-300">Accept GC Entries</span>
                       <Switch defaultChecked />
                     </div>
                     <div className="flex items-center justify-between p-4 bg-slate-700 rounded-lg">
-                      <span className="text-slate-300">
-                        Accept SC Entries
-                      </span>
+                      <span className="text-slate-300">Accept SC Entries</span>
                       <Switch defaultChecked />
                     </div>
                     <div className="flex items-center justify-between p-4 bg-slate-700 rounded-lg">
@@ -681,7 +710,9 @@ const AdminGamesPanel = () => {
                     <CardContent>
                       <div className="space-y-4">
                         <div>
-                          <p className="text-sm text-slate-400 mb-2">Gold Coins</p>
+                          <p className="text-sm text-slate-400 mb-2">
+                            Gold Coins
+                          </p>
                           <p className="text-2xl font-bold text-yellow-400">
                             {stats?.todayRevenueGc.toLocaleString() || "0"}
                           </p>
@@ -738,20 +769,23 @@ const AdminGamesPanel = () => {
           </CardHeader>
           <CardContent className="text-blue-100 space-y-2">
             <p>
-              • Use the Games tab to enable/disable games and view current configuration
+              • Use the Games tab to enable/disable games and view current
+              configuration
             </p>
             <p>
-              • Monitor active rounds in the Rounds tab and take actions like pause or
-              cancel
+              • Monitor active rounds in the Rounds tab and take actions like
+              pause or cancel
             </p>
             <p>
-              • Configure game parameters (RTP, entry fees, max entries) in Configuration
+              • Configure game parameters (RTP, entry fees, max entries) in
+              Configuration
             </p>
             <p>
               • View real-time analytics and revenue tracking in Analytics tab
             </p>
             <p>
-              • Real-time updates for active rounds will sync via WebSocket connection
+              • Real-time updates for active rounds will sync via WebSocket
+              connection
             </p>
           </CardContent>
         </Card>

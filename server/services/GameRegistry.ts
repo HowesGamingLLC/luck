@@ -20,15 +20,24 @@ export interface GameEngine {
   gameId: string;
   gameType: GameType;
   config: GameEngineConfig;
-  
+
   // Core operations
   createRound(): Promise<string>;
-  validateEntry(userId: string, entryData: any): Promise<{ valid: boolean; error?: string }>;
-  processEntry(userId: string, roundId: string, entryData: any): Promise<string>;
+  validateEntry(
+    userId: string,
+    entryData: any,
+  ): Promise<{ valid: boolean; error?: string }>;
+  processEntry(
+    userId: string,
+    roundId: string,
+    entryData: any,
+  ): Promise<string>;
   drawRound(roundId: string): Promise<any>;
-  getWinners(roundId: string): Promise<Array<{ userId: string; prizeAmount: number; prizeType: string }>>;
+  getWinners(
+    roundId: string,
+  ): Promise<Array<{ userId: string; prizeAmount: number; prizeType: string }>>;
   cancelRound(roundId: string): Promise<void>;
-  
+
   // State queries
   getRoundStatus(roundId: string): Promise<any>;
   getPlayerEntries(userId: string, roundId: string): Promise<any[]>;
@@ -47,7 +56,11 @@ export class GameRegistry {
   /**
    * Register a game instance
    */
-  async registerGame(gameId: string, gameType: GameType, config: GameEngineConfig): Promise<GameEngine> {
+  async registerGame(
+    gameId: string,
+    gameType: GameType,
+    config: GameEngineConfig,
+  ): Promise<GameEngine> {
     const enginePath = this.gameTypeMap.get(gameType);
     if (!enginePath) {
       throw new Error(`Unknown game type: ${gameType}`);
@@ -56,7 +69,9 @@ export class GameRegistry {
     try {
       // Lazy load the engine class
       const module = await import(enginePath);
-      const EngineClass = Object.values(module)[0] as new (...args: any[]) => GameEngine;
+      const EngineClass = Object.values(module)[0] as new (
+        ...args: any[]
+      ) => GameEngine;
 
       if (!EngineClass) {
         throw new Error(`Engine class not found in ${enginePath}`);
@@ -66,7 +81,9 @@ export class GameRegistry {
       this.engines.set(gameId, engine);
       return engine;
     } catch (error) {
-      throw new Error(`Failed to load game engine: ${(error as Error).message}`);
+      throw new Error(
+        `Failed to load game engine: ${(error as Error).message}`,
+      );
     }
   }
 

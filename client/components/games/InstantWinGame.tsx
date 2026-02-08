@@ -74,7 +74,7 @@ const InstantWinGame = ({
       const result = Math.random() < winRate / 100;
       const winAmount = result
         ? Math.floor(
-            (selectedCurrency === "GC" ? entryFeeGc : entryFeeSc) * 2.5
+            (selectedCurrency === "GC" ? entryFeeGc : entryFeeSc) * 2.5,
           )
         : 0;
 
