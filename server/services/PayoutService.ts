@@ -169,6 +169,24 @@ export class PayoutService {
         })
         .eq("id", payoutId);
 
+      // Get game ID from round for WebSocket broadcasting
+      const { data: round } = await supabase
+        .from("game_rounds")
+        .select("game_id")
+        .eq("id", roundId)
+        .single();
+
+      // Broadcast payout processed event via WebSocket
+      if (round) {
+        webSocketService.broadcastPayoutProcessed(
+          payout.userId,
+          round.game_id,
+          roundId,
+          payout.payoutAmountGc + payout.payoutAmountSc,
+          payout.payoutAmountGc > 0 ? "mixed" : "sc"
+        );
+      }
+
       return {
         payoutId,
         userId: payout.userId,
