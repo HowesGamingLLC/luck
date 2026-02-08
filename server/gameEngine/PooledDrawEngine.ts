@@ -158,26 +158,26 @@ export class PooledDrawEngine extends EventEmitter implements GameEngine {
    */
   async processEntry(
     userId: string,
-    entryData: {
-      clientSeed: string;
-      roundId: string;
-      currencyType: "GC" | "SC";
-    },
+    roundId: string,
+    entryData: any,
   ): Promise<string> {
+    const clientSeed = entryData.clientSeed;
+    const currencyType = entryData.currencyType || "GC";
+
     const entryAmount =
-      entryData.currencyType === "GC"
+      currencyType === "GC"
         ? this.config.entryFeeGc
         : this.config.entryFeeSc;
 
     // Hash client seed
-    const clientSeedHash = rngService.hashSeed(entryData.clientSeed);
+    const clientSeedHash = rngService.hashSeed(clientSeed);
 
     // Create entry record
     const supabase = this.getSupabase();
     const { data, error } = await supabase
       .from("game_entries")
       .insert({
-        round_id: entryData.roundId,
+        round_id: roundId,
         game_id: this.gameId,
         user_id: userId,
         currency_type: entryData.currencyType,
