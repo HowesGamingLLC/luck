@@ -276,27 +276,128 @@ export class ProgressiveJackpotEngine extends EventEmitter implements GameEngine
     };
   }
 
-  async drawRound(): Promise<any> {
-    throw new Error("Not implemented");
+  /**
+   * Get winners
+   */
+  async getWinners(
+    roundId: string,
+  ): Promise<Array<{ userId: string; prizeAmount: number; prizeType: string }>> {
+    const supabase = this.getSupabase();
+    const { data, error } = await supabase
+      .from("game_payouts")
+      .select("user_id, payout_amount_gc, payout_amount_sc, win_type")
+      .eq("round_id", roundId)
+      .eq("status", "completed");
+
+    if (error || !data) {
+      return [];
+    }
+
+    return data.map((payout) => ({
+      userId: payout.user_id,
+      prizeAmount: payout.payout_amount_gc + payout.payout_amount_sc,
+      prizeType: payout.win_type,
+    }));
   }
 
-  async getWinners(): Promise<Array<{ userId: string; prizeAmount: number; prizeType: string }>> {
-    throw new Error("Not implemented");
+  /**
+   * Cancel round
+   */
+  async cancelRound(roundId: string): Promise<void> {
+    const supabase = this.getSupabase();
+
+    await supabase
+      .from("game_rounds")
+      .update({ status: "cancelled" })
+      .eq("id", roundId);
+
+    await supabase
+      .from("game_entries")
+      .update({ status: "cancelled" })
+      .eq("round_id", roundId);
   }
 
-  async cancelRound(): Promise<void> {
-    throw new Error("Not implemented");
+  /**
+   * Get round status
+   */
+  async getRoundStatus(roundId: string): Promise<any> {
+    const supabase = this.getSupabase();
+    const { data: round, error } = await supabase
+      .from("game_rounds")
+      .select("*")
+      .eq("id", roundId)
+      .single();
+
+    if (error || !round) {
+      return null;
+    }
+
+    const { count: entryCount } = await supabase
+      .from("game_entries")
+      .select("*", { count: "exact" })
+      .eq("round_id", roundId);
+
+    return {
+      ...round,
+      entryCount: entryCount || 0,
+      currentJackpot: this.currentJackpot,
+    };
   }
 
-  async getRoundStatus(): Promise<any> {
-    throw new Error("Not implemented");
+  /**
+   * Get player entries
+   */
+  async getPlayerEntries(userId: string, roundId: string): Promise<any[]> {
+    const supabase = this.getSupabase();
+    const { data, error } = await supabase
+      .from("game_entries")
+      .select("*")
+      .eq("user_id", userId)
+      .eq("round_id", roundId)
+      .order("created_at", { ascending: false });
+
+    return (data || []).map((entry) => ({
+      id: entry.id,
+      status: entry.status,
+      entryCost: entry.entry_cost,
+      currencyType: entry.currency_type,
+      createdAt: entry.created_at,
+    }));
   }
 
-  async getPlayerEntries(): Promise<any[]> {
-    throw new Error("Not implemented");
-  }
+  /**
+   * Get round statistics
+   */
+  async getRoundStats(roundId: string): Promise<any> {
+    const supabase = this.getSupabase();
 
-  async getRoundStats(): Promise<any> {
-    throw new Error("Not implemented");
+    const { count: totalEntries } = await supabase
+      .from("game_entries")
+      .select("*", { count: "exact" })
+      .eq("round_id", roundId);
+
+    const { count: uniquePlayers } = await supabase
+      .from("game_entries")
+      .select("user_id", { count: "exact" })
+      .eq("round_id", roundId);
+
+    const { data: payouts } = await supabase
+      .from("game_payouts")
+      .select("payout_amount_gc, payout_amount_sc")
+      .eq("round_id", roundId)
+      .eq("status", "completed");
+
+    const totalPayout = payouts
+      ?.reduce(
+        (sum, p) => sum + (p.payout_amount_gc + p.payout_amount_sc),
+        0
+      ) || 0;
+
+    return {
+      totalEntries: totalEntries || 0,
+      uniquePlayers: uniquePlayers || 0,
+      currentJackpot: this.currentJackpot,
+      totalPayout,
+    };
   }
 }
