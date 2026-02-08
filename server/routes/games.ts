@@ -124,7 +124,7 @@ export const createGame: RequestHandler = async (req, res) => {
         game_type: gameType,
         category,
         enabled: true,
-        created_by: req.user?.id,
+        created_by: (req as any).user?.id,
       })
       .select()
       .single();
