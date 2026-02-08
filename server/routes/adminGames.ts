@@ -314,7 +314,7 @@ export const manualDraw: RequestHandler = async (req, res) => {
     // TODO: Implement manual draw using game engine
 
     // Log action
-    await logAdminAction(req.user?.id, null, "manual_draw", { roundId });
+    await logAdminAction((req as any).user?.id, null, "manual_draw", { roundId });
 
     res.json({ success: true, message: "Draw executed manually" });
   } catch (error) {
