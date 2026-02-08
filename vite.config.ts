@@ -38,7 +38,7 @@ function expressPlugin(): Plugin {
 
       // Initialize WebSocket on Vite's http server
       if (server.httpServer) {
-        webSocketService.initialize(server.httpServer);
+        webSocketService.initialize(server.httpServer as any);
         console.log("[Vite Plugin] WebSocket service initialized");
       }
 
