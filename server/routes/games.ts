@@ -4,6 +4,7 @@ import { gameRegistry, GameType } from "../services/GameRegistry";
 import { rngService } from "../services/RNGService";
 import { entryValidationService } from "../services/EntryValidationService";
 import { payoutService } from "../services/PayoutService";
+import { webSocketService } from "../services/WebSocketService";
 
 function getSupabase() {
   return getSupabaseAdmin();
