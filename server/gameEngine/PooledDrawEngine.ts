@@ -39,6 +39,7 @@ export interface DrawRoundData {
  */
 export class PooledDrawEngine extends EventEmitter implements GameEngine {
   gameId: string;
+  gameType: "pooled_draw" = "pooled_draw";
   config: PooledDrawConfig;
   private supabase: any = null;
   private currentRound: DrawRoundData | null = null;
