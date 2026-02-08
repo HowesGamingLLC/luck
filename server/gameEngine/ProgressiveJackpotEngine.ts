@@ -6,7 +6,13 @@ import {
 import { rngService } from "../services/RNGService";
 import { payoutService } from "../services/PayoutService";
 import { webSocketService } from "../services/WebSocketService";
-import { getSupabaseAdmin } from "../lib/supabase";
+import { query } from "../lib/db";
+import {
+  roundsQueries,
+  entriesQueries,
+  resultsQueries,
+  payoutsQueries,
+} from "../lib/db-queries";
 import { EventEmitter } from "events";
 
 export interface ProgressiveJackpotConfig extends GameEngineConfig {
@@ -27,15 +33,7 @@ export class ProgressiveJackpotEngine
   gameId: string;
   gameType: GameType = "progressive_jackpot";
   config: ProgressiveJackpotConfig;
-  private supabase: any = null;
   private currentJackpot = 0;
-
-  private getSupabase() {
-    if (!this.supabase) {
-      this.supabase = getSupabaseAdmin();
-    }
-    return this.supabase;
-  }
 
   constructor(gameId: string, config: GameEngineConfig) {
     super();
@@ -49,27 +47,18 @@ export class ProgressiveJackpotEngine
    * Create a new progressive jackpot round
    */
   async createRound(): Promise<string> {
-    const supabase = this.getSupabase();
     const now = new Date();
 
-    const { data, error } = await supabase
-      .from("game_rounds")
-      .insert({
-        game_id: this.gameId,
-        status: "registering",
-        starts_at: now.toISOString(),
-        draw_time: new Date(now.getTime() + 24 * 60 * 60 * 1000).toISOString(), // 24h later
-        server_seed: rngService.generateServerSeed(),
-        prize_pool_gc: this.currentJackpot,
-      })
-      .select()
-      .single();
+    const round = await roundsQueries.create({
+      game_id: this.gameId,
+      status: "registering",
+      start_time: now,
+      draw_time: new Date(now.getTime() + 24 * 60 * 60 * 1000),
+      server_seed: rngService.generateServerSeed(),
+      prize_pool_gc: this.currentJackpot,
+    });
 
-    if (error) {
-      throw new Error(`Failed to create round: ${error.message}`);
-    }
-
-    return data.id;
+    return round.id;
   }
 
   /**
@@ -81,19 +70,21 @@ export class ProgressiveJackpotEngine
   ): Promise<{ valid: boolean; error?: string }> {
     const currencyType = entryData.currencyType || "GC";
 
-    const supabase = this.getSupabase();
-    const { data: profile, error: profileError } = await supabase
-      .from("profiles")
-      .select("gold_coins, sweep_coins")
-      .eq("id", userId)
-      .single();
+    const result = await query(
+      `SELECT gold_coins_balance, sweep_coins_balance FROM profiles WHERE user_id = $1`,
+      [userId],
+    );
 
-    if (profileError || !profile) {
+    const profile = result.rows[0];
+
+    if (!profile) {
       return { valid: false, error: "User not found" };
     }
 
     const balance =
-      currencyType === "GC" ? profile.gold_coins : profile.sweep_coins;
+      currencyType === "GC"
+        ? profile.gold_coins_balance
+        : profile.sweep_coins_balance;
     const entryCost =
       currencyType === "GC" ? this.config.entryFeeGc : this.config.entryFeeSc;
 
@@ -112,7 +103,6 @@ export class ProgressiveJackpotEngine
     roundId: string,
     entryData: any,
   ): Promise<string> {
-    const supabase = this.getSupabase();
     const clientSeed = entryData.clientSeed;
     const currencyType = entryData.currencyType || "GC";
 
@@ -120,36 +110,21 @@ export class ProgressiveJackpotEngine
       currencyType === "GC" ? this.config.entryFeeGc : this.config.entryFeeSc;
 
     // Get round
-    const { data: round, error: roundError } = await supabase
-      .from("game_rounds")
-      .select("*")
-      .eq("id", roundId)
-      .single();
+    const round = await roundsQueries.getById(roundId);
 
-    if (roundError || !round) {
+    if (!round) {
       throw new Error("Round not found");
     }
 
     // Create entry
-    const clientSeedHash = rngService.hashSeed(clientSeed);
-    const { data: entry, error: entryError } = await supabase
-      .from("game_entries")
-      .insert({
-        round_id: roundId,
-        game_id: this.gameId,
-        user_id: userId,
-        currency_type: currencyType,
-        entry_cost: entryCost,
-        client_seed: clientSeed,
-        client_seed_hash: clientSeedHash,
-        status: "active",
-      })
-      .select()
-      .single();
-
-    if (entryError) {
-      throw new Error(`Failed to create entry: ${entryError.message}`);
-    }
+    const entry = await entriesQueries.create({
+      round_id: roundId,
+      user_id: userId,
+      status: "active",
+      entry_cost: entryCost,
+      currency_type: currencyType,
+      client_seed: clientSeed,
+    });
 
     // Increment jackpot
     const newJackpot = this.currentJackpot + this.config.jackpotIncrement;
@@ -157,17 +132,15 @@ export class ProgressiveJackpotEngine
       newJackpot > this.config.maxJackpot ? this.config.maxJackpot : newJackpot;
 
     // Update round with new jackpot
-    await supabase
-      .from("game_rounds")
-      .update({ prize_pool_gc: this.currentJackpot })
-      .eq("id", roundId);
+    await roundsQueries.update(roundId, { prize_pool_gc: this.currentJackpot });
 
     // Broadcast jackpot update
+    const entryCount = await entriesQueries.countByRoundId(roundId);
     webSocketService.broadcastRoundStatus(
       this.gameId,
       roundId,
       "registering",
-      round.entry_count + 1,
+      entryCount,
       this.currentJackpot,
     );
 
@@ -178,26 +151,16 @@ export class ProgressiveJackpotEngine
    * Execute draw for progressive jackpot
    */
   async drawRound(roundId: string): Promise<any> {
-    const supabase = this.getSupabase();
+    const round = await roundsQueries.getById(roundId);
 
-    const { data: round, error: roundError } = await supabase
-      .from("game_rounds")
-      .select("*")
-      .eq("id", roundId)
-      .single();
-
-    if (roundError || !round) {
+    if (!round) {
       throw new Error("Round not found");
     }
 
     // Get all entries
-    const { data: entries, error: entriesError } = await supabase
-      .from("game_entries")
-      .select("*")
-      .eq("round_id", roundId)
-      .eq("status", "active");
+    const entries = await entriesQueries.getByRoundId(roundId, "active");
 
-    if (entriesError || !entries || entries.length === 0) {
+    if (!entries || entries.length === 0) {
       return { success: false, reason: "no_entries" };
     }
 
@@ -205,7 +168,7 @@ export class ProgressiveJackpotEngine
     const rngResult = await rngService.executeRNG(
       this.gameId,
       roundId,
-      entries[0].client_seed,
+      entries[0].client_seed || "default",
       entries.length,
       false,
     );
@@ -214,17 +177,14 @@ export class ProgressiveJackpotEngine
     const winner = entries[winnerIndex];
 
     // Create result
-    const { data: result } = await supabase
-      .from("game_results")
-      .insert({
-        round_id: roundId,
-        game_id: this.gameId,
-        drawn_number_or_result: { winner_id: winner.user_id },
-        is_provably_fair: true,
-        verification_code: `jackpot_${roundId}`,
-      })
-      .select()
-      .single();
+    const result = await resultsQueries.create({
+      round_id: roundId,
+      user_id: winner.user_id,
+      outcome: "won",
+      payout_amount_gc: this.currentJackpot,
+      payout_amount_sc: 0,
+      verification_code: `jackpot_${roundId}`,
+    });
 
     // Process payout with entire jackpot
     if (result) {
@@ -238,18 +198,12 @@ export class ProgressiveJackpotEngine
       });
 
       // Mark winner entry
-      await supabase
-        .from("game_entries")
-        .update({ status: "won" })
-        .eq("id", winner.id);
+      await entriesQueries.update(winner.id, { status: "won" });
 
       // Mark loser entries
       for (const entry of entries) {
         if (entry.id !== winner.id) {
-          await supabase
-            .from("game_entries")
-            .update({ status: "lost" })
-            .eq("id", entry.id);
+          await entriesQueries.update(entry.id, { status: "lost" });
         }
       }
 
@@ -290,21 +244,13 @@ export class ProgressiveJackpotEngine
   ): Promise<
     Array<{ userId: string; prizeAmount: number; prizeType: string }>
   > {
-    const supabase = this.getSupabase();
-    const { data, error } = await supabase
-      .from("game_payouts")
-      .select("user_id, payout_amount_gc, payout_amount_sc, win_type")
-      .eq("round_id", roundId)
-      .eq("status", "completed");
+    const payouts = await payoutsQueries.getByRoundId(roundId);
 
-    if (error || !data) {
-      return [];
-    }
-
-    return data.map((payout) => ({
+    return payouts.map((payout) => ({
       userId: payout.user_id,
-      prizeAmount: payout.payout_amount_gc + payout.payout_amount_sc,
-      prizeType: payout.win_type,
+      prizeAmount:
+        (payout.payout_amount_gc || 0) + (payout.payout_amount_sc || 0),
+      prizeType: payout.win_type || "jackpot",
     }));
   }
 
@@ -312,42 +258,29 @@ export class ProgressiveJackpotEngine
    * Cancel round
    */
   async cancelRound(roundId: string): Promise<void> {
-    const supabase = this.getSupabase();
+    await roundsQueries.update(roundId, { status: "cancelled" });
 
-    await supabase
-      .from("game_rounds")
-      .update({ status: "cancelled" })
-      .eq("id", roundId);
-
-    await supabase
-      .from("game_entries")
-      .update({ status: "cancelled" })
-      .eq("round_id", roundId);
+    const entries = await entriesQueries.getByRoundId(roundId);
+    for (const entry of entries) {
+      await entriesQueries.update(entry.id, { status: "cancelled" });
+    }
   }
 
   /**
    * Get round status
    */
   async getRoundStatus(roundId: string): Promise<any> {
-    const supabase = this.getSupabase();
-    const { data: round, error } = await supabase
-      .from("game_rounds")
-      .select("*")
-      .eq("id", roundId)
-      .single();
+    const round = await roundsQueries.getById(roundId);
 
-    if (error || !round) {
+    if (!round) {
       return null;
     }
 
-    const { count: entryCount } = await supabase
-      .from("game_entries")
-      .select("*", { count: "exact" })
-      .eq("round_id", roundId);
+    const entryCount = await entriesQueries.countByRoundId(roundId);
 
     return {
       ...round,
-      entryCount: entryCount || 0,
+      entryCount,
       currentJackpot: this.currentJackpot,
     };
   }
@@ -356,15 +289,12 @@ export class ProgressiveJackpotEngine
    * Get player entries
    */
   async getPlayerEntries(userId: string, roundId: string): Promise<any[]> {
-    const supabase = this.getSupabase();
-    const { data, error } = await supabase
-      .from("game_entries")
-      .select("*")
-      .eq("user_id", userId)
-      .eq("round_id", roundId)
-      .order("created_at", { ascending: false });
+    const entries = await query(
+      `SELECT * FROM game_entries WHERE user_id = $1 AND round_id = $2 ORDER BY created_at DESC`,
+      [userId, roundId],
+    ).then((result) => result.rows);
 
-    return (data || []).map((entry) => ({
+    return (entries || []).map((entry) => ({
       id: entry.id,
       status: entry.status,
       entryCost: entry.entry_cost,
@@ -377,33 +307,25 @@ export class ProgressiveJackpotEngine
    * Get round statistics
    */
   async getRoundStats(roundId: string): Promise<any> {
-    const supabase = this.getSupabase();
+    const entries = await entriesQueries.getByRoundId(roundId);
+    const totalEntries = entries.length;
 
-    const { count: totalEntries } = await supabase
-      .from("game_entries")
-      .select("*", { count: "exact" })
-      .eq("round_id", roundId);
+    // Get unique player count
+    const uniquePlayersResult = await query(
+      `SELECT DISTINCT user_id FROM game_entries WHERE round_id = $1`,
+      [roundId],
+    );
+    const uniquePlayers = uniquePlayersResult.rows.length;
 
-    const { count: uniquePlayers } = await supabase
-      .from("game_entries")
-      .select("user_id", { count: "exact" })
-      .eq("round_id", roundId);
-
-    const { data: payouts } = await supabase
-      .from("game_payouts")
-      .select("payout_amount_gc, payout_amount_sc")
-      .eq("round_id", roundId)
-      .eq("status", "completed");
-
-    const totalPayout =
-      payouts?.reduce(
-        (sum, p) => sum + (p.payout_amount_gc + p.payout_amount_sc),
-        0,
-      ) || 0;
+    const payouts = await payoutsQueries.getByRoundId(roundId);
+    const totalPayout = payouts.reduce(
+      (sum, p) => sum + ((p.payout_amount_gc || 0) + (p.payout_amount_sc || 0)),
+      0,
+    );
 
     return {
-      totalEntries: totalEntries || 0,
-      uniquePlayers: uniquePlayers || 0,
+      totalEntries,
+      uniquePlayers,
       currentJackpot: this.currentJackpot,
       totalPayout,
     };
