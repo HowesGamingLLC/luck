@@ -13,11 +13,12 @@ function getSupabase() {
  */
 export const requireAdmin: RequestHandler = async (req, res, next) => {
   try {
-    const userId = req.user?.id;
+    const userId = (req as any).user?.id;
     if (!userId) {
       return res.status(401).json({ error: "Not authenticated" });
     }
 
+    const supabase = getSupabase();
     const { data: user, error } = await supabase
       .from("profiles")
       .select("is_admin")
