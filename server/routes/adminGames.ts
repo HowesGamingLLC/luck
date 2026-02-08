@@ -2,6 +2,7 @@ import { RequestHandler } from "express";
 import { getSupabaseAdmin } from "../lib/supabase";
 import { gameRegistry } from "../services/GameRegistry";
 import { payoutService } from "../services/PayoutService";
+import { webSocketService } from "../services/WebSocketService";
 
 function getSupabase() {
   return getSupabaseAdmin();
