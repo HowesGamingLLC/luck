@@ -2,6 +2,7 @@ import { GameEngine, GameEngineConfig } from "../services/GameRegistry";
 import { rngService } from "../services/RNGService";
 import { payoutService } from "../services/PayoutService";
 import { entryValidationService } from "../services/EntryValidationService";
+import { webSocketService } from "../services/WebSocketService";
 import { getSupabaseAdmin } from "../lib/supabase";
 import { EventEmitter } from "events";
 
