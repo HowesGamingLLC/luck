@@ -244,7 +244,9 @@ export class ScheduledDrawEngine extends EventEmitter implements GameEngine {
     });
 
     // Calculate prize per winner
-    const prizePerWinner = Math.floor((round.prize_pool_gc || 0) / winners.length);
+    const prizePerWinner = Math.floor(
+      (round.prize_pool_gc || 0) / winners.length,
+    );
 
     // Process payouts for winners
     const payoutPromises = winners.map((winner) =>

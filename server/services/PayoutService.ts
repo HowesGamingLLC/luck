@@ -1,5 +1,9 @@
 import { transaction, query } from "../lib/db";
-import { payoutsQueries, roundsQueries, balanceQueries } from "../lib/db-queries";
+import {
+  payoutsQueries,
+  roundsQueries,
+  balanceQueries,
+} from "../lib/db-queries";
 import { webSocketService } from "./WebSocketService";
 import { PoolClient } from "pg";
 

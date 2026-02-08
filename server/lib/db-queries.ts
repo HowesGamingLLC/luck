@@ -1,10 +1,4 @@
-import {
-  query,
-  queryOne,
-  queryAll,
-  transaction,
-  getClient,
-} from "./db";
+import { query, queryOne, queryAll, transaction, getClient } from "./db";
 import type {
   Game,
   GameConfig,
@@ -127,7 +121,10 @@ export const roundsQueries = {
     ]) as Promise<GameRound>;
   },
 
-  async update(id: string, updates: Partial<GameRound>): Promise<GameRound | null> {
+  async update(
+    id: string,
+    updates: Partial<GameRound>,
+  ): Promise<GameRound | null> {
     const fields = Object.keys(updates)
       .map((k, i) => `${k} = $${i + 2}`)
       .join(", ");
@@ -199,7 +196,10 @@ export const entriesQueries = {
     ]) as Promise<GameEntry>;
   },
 
-  async update(id: string, updates: Partial<GameEntry>): Promise<GameEntry | null> {
+  async update(
+    id: string,
+    updates: Partial<GameEntry>,
+  ): Promise<GameEntry | null> {
     const fields = Object.keys(updates)
       .map((k, i) => `${k} = $${i + 2}`)
       .join(", ");
@@ -209,10 +209,7 @@ export const entriesQueries = {
     return queryOne<GameEntry>(sql, [id, ...values]);
   },
 
-  async countRecentByUser(
-    userId: string,
-    minutes: number,
-  ): Promise<number> {
+  async countRecentByUser(userId: string, minutes: number): Promise<number> {
     const sql = `
       SELECT COUNT(*) as count FROM game_entries 
       WHERE user_id = $1 AND created_at > NOW() - INTERVAL '1 minute' * $2
@@ -233,7 +230,10 @@ export const payoutsQueries = {
     );
   },
 
-  async getByRoundAndUser(roundId: string, userId: string): Promise<GamePayout | null> {
+  async getByRoundAndUser(
+    roundId: string,
+    userId: string,
+  ): Promise<GamePayout | null> {
     return queryOne<GamePayout>(
       "SELECT * FROM game_payouts WHERE round_id = $1 AND user_id = $2",
       [roundId, userId],
@@ -256,7 +256,10 @@ export const payoutsQueries = {
     ]) as Promise<GamePayout>;
   },
 
-  async update(id: string, updates: Partial<GamePayout>): Promise<GamePayout | null> {
+  async update(
+    id: string,
+    updates: Partial<GamePayout>,
+  ): Promise<GamePayout | null> {
     const fields = Object.keys(updates)
       .map((k, i) => `${k} = $${i + 2}`)
       .join(", ");
@@ -272,10 +275,9 @@ export const payoutsQueries = {
  */
 export const profilesQueries = {
   async getByUserId(userId: string): Promise<Profile | null> {
-    return queryOne<Profile>(
-      "SELECT * FROM profiles WHERE user_id = $1",
-      [userId],
-    );
+    return queryOne<Profile>("SELECT * FROM profiles WHERE user_id = $1", [
+      userId,
+    ]);
   },
 
   async getOrCreate(userId: string): Promise<Profile> {
@@ -290,7 +292,10 @@ export const profilesQueries = {
     return queryOne<Profile>(sql, [userId]) as Promise<Profile>;
   },
 
-  async update(userId: string, updates: Partial<Profile>): Promise<Profile | null> {
+  async update(
+    userId: string,
+    updates: Partial<Profile>,
+  ): Promise<Profile | null> {
     const fields = Object.keys(updates)
       .map((k, i) => `${k} = $${i + 2}`)
       .join(", ");
@@ -335,7 +340,9 @@ export const resultsQueries = {
  */
 export const packagesQueries = {
   async getAll(): Promise<Package[]> {
-    return queryAll<Package>("SELECT * FROM packages WHERE active = true ORDER BY price_cents ASC");
+    return queryAll<Package>(
+      "SELECT * FROM packages WHERE active = true ORDER BY price_cents ASC",
+    );
   },
 
   async getById(id: string): Promise<Package | null> {

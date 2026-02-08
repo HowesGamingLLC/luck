@@ -181,7 +181,9 @@ export const submitEntry: RequestHandler = async (req, res) => {
       userId,
       gameId,
       roundId,
-      currencyType === "GC" ? (config.entry_cost_gc || 0) : (config.entry_cost_sc || 0),
+      currencyType === "GC"
+        ? config.entry_cost_gc || 0
+        : config.entry_cost_sc || 0,
       currencyType,
       balance,
       config.max_entries_per_user,
@@ -203,8 +205,8 @@ export const submitEntry: RequestHandler = async (req, res) => {
       user_id: userId,
       entry_cost:
         currencyType === "GC"
-          ? (config.entry_cost_gc || 0)
-          : (config.entry_cost_sc || 0),
+          ? config.entry_cost_gc || 0
+          : config.entry_cost_sc || 0,
       currency_type: currencyType,
       client_seed: clientSeed,
     });

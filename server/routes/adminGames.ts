@@ -39,9 +39,9 @@ export const requireAdmin: RequestHandler = async (req, res, next) => {
 export const getDashboard: RequestHandler = async (req, res) => {
   try {
     // Get total games
-    const gameCount = await query(
-      `SELECT COUNT(*) as count FROM games`,
-    ).then((r) => parseInt(r.rows[0]?.count || "0", 10));
+    const gameCount = await query(`SELECT COUNT(*) as count FROM games`).then(
+      (r) => parseInt(r.rows[0]?.count || "0", 10),
+    );
 
     // Get active rounds
     const activeRounds = await query(
@@ -104,10 +104,10 @@ export const updateGameConfig: RequestHandler = async (req, res) => {
       .join(", ");
     const values = Object.values(updates);
 
-    await query(
-      `UPDATE game_configs SET ${fields} WHERE game_id = $1`,
-      [gameId, ...values],
-    );
+    await query(`UPDATE game_configs SET ${fields} WHERE game_id = $1`, [
+      gameId,
+      ...values,
+    ]);
 
     // Log admin action
     await logAdminAction(
@@ -254,10 +254,12 @@ export const monitorRound: RequestHandler = async (req, res) => {
 
     const entries = entriesResult.rows || [];
 
-    const entriesByGc = entries.filter((e: any) => e.currency_type === "GC")
-      .length;
-    const entriesBySc = entries.filter((e: any) => e.currency_type === "SC")
-      .length;
+    const entriesByGc = entries.filter(
+      (e: any) => e.currency_type === "GC",
+    ).length;
+    const entriesBySc = entries.filter(
+      (e: any) => e.currency_type === "SC",
+    ).length;
 
     const totalGc = entries
       .filter((e: any) => e.currency_type === "GC")

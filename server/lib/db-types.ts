@@ -31,7 +31,13 @@ export interface GameConfig {
 export interface GameRound {
   id: string;
   game_id: string;
-  status: "registering" | "live" | "drawing" | "completed" | "cancelled" | "paused";
+  status:
+    | "registering"
+    | "live"
+    | "drawing"
+    | "completed"
+    | "cancelled"
+    | "paused";
   start_time?: Date;
   draw_time?: Date;
   end_time?: Date;
