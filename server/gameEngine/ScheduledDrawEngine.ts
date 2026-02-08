@@ -212,27 +212,268 @@ export class ScheduledDrawEngine extends EventEmitter implements GameEngine {
     return entry.id;
   }
 
-  async drawRound(): Promise<any> {
-    throw new Error("Not implemented");
+  /**
+   * Execute draw for scheduled time
+   */
+  async drawRound(roundId: string): Promise<any> {
+    const supabase = this.getSupabase();
+
+    const { data: round, error: roundError } = await supabase
+      .from("game_rounds")
+      .select("*")
+      .eq("id", roundId)
+      .single();
+
+    if (roundError || !round) {
+      throw new Error("Round not found");
+    }
+
+    if (round.status !== "registering") {
+      return { success: false, reason: "invalid_status" };
+    }
+
+    // Get all entries
+    const { data: entries, error: entriesError } = await supabase
+      .from("game_entries")
+      .select("*")
+      .eq("round_id", roundId)
+      .eq("status", "active");
+
+    if (entriesError || !entries || entries.length === 0) {
+      return { success: false, reason: "no_entries" };
+    }
+
+    // Update round status to drawing
+    await supabase
+      .from("game_rounds")
+      .update({ status: "drawing" })
+      .eq("id", roundId);
+
+    // Select winners
+    const winnerCount = Math.min(
+      this.config.maxWinners || 3,
+      Math.floor(entries.length / 10) || 1
+    );
+    const winners = [];
+
+    for (let i = 0; i < winnerCount; i++) {
+      const rngResult = await rngService.executeRNG(
+        this.gameId,
+        roundId,
+        entries[0].client_seed,
+        entries.length,
+        false
+      );
+
+      const winner = entries[rngResult.value];
+      winners.push(winner);
+    }
+
+    // Create result
+    const { data: result } = await supabase
+      .from("game_results")
+      .insert({
+        round_id: roundId,
+        game_id: this.gameId,
+        drawn_number_or_result: { winners: winners.map((w) => w.user_id) },
+        is_provably_fair: true,
+        verification_code: `scheduled_${roundId}`,
+      })
+      .select()
+      .single();
+
+    // Calculate prize per winner
+    const prizePerWinner = Math.floor(round.prize_pool_gc / winners.length);
+
+    // Process payouts for winners
+    const payoutPromises = winners.map((winner) =>
+      payoutService.processPayout(roundId, result.id, {
+        userId: winner.user_id,
+        entryId: winner.id,
+        winType: "scheduled_draw_winner",
+        prizeTier: 1,
+        payoutAmountGc: prizePerWinner,
+        payoutAmountSc: 0,
+      })
+    );
+
+    await Promise.all(payoutPromises);
+
+    // Mark winners
+    for (const winner of winners) {
+      await supabase
+        .from("game_entries")
+        .update({ status: "won" })
+        .eq("id", winner.id);
+
+      // Broadcast individual winner
+      webSocketService.broadcastWinnerAnnounced(
+        this.gameId,
+        roundId,
+        winner.user_id,
+        prizePerWinner,
+        "gc"
+      );
+    }
+
+    // Mark losers
+    for (const entry of entries) {
+      if (!winners.find((w) => w.id === entry.id)) {
+        await supabase
+          .from("game_entries")
+          .update({ status: "lost" })
+          .eq("id", entry.id);
+      }
+    }
+
+    // Update round status to completed
+    await supabase
+      .from("game_rounds")
+      .update({ status: "completed" })
+      .eq("id", roundId);
+
+    return {
+      success: true,
+      roundId,
+      winners: winners.map((w) => w.user_id),
+      prizePerWinner,
+    };
   }
 
-  async getWinners(): Promise<Array<{ userId: string; prizeAmount: number; prizeType: string }>> {
-    throw new Error("Not implemented");
+  /**
+   * Get winners
+   */
+  async getWinners(
+    roundId: string,
+  ): Promise<Array<{ userId: string; prizeAmount: number; prizeType: string }>> {
+    const supabase = this.getSupabase();
+    const { data, error } = await supabase
+      .from("game_payouts")
+      .select("user_id, payout_amount_gc, payout_amount_sc, win_type")
+      .eq("round_id", roundId)
+      .eq("status", "completed");
+
+    if (error || !data) {
+      return [];
+    }
+
+    return data.map((payout) => ({
+      userId: payout.user_id,
+      prizeAmount: payout.payout_amount_gc + payout.payout_amount_sc,
+      prizeType: payout.win_type,
+    }));
   }
 
-  async cancelRound(): Promise<void> {
-    throw new Error("Not implemented");
+  /**
+   * Cancel round
+   */
+  async cancelRound(roundId: string): Promise<void> {
+    const supabase = this.getSupabase();
+
+    await supabase
+      .from("game_rounds")
+      .update({ status: "cancelled" })
+      .eq("id", roundId);
+
+    await supabase
+      .from("game_entries")
+      .update({ status: "cancelled" })
+      .eq("round_id", roundId);
+
+    // Broadcast cancellation
+    webSocketService.broadcastRoundCancelled(this.gameId, roundId, "Round cancelled");
   }
 
-  async getRoundStatus(): Promise<any> {
-    throw new Error("Not implemented");
+  /**
+   * Get round status
+   */
+  async getRoundStatus(roundId: string): Promise<any> {
+    const supabase = this.getSupabase();
+    const { data: round, error } = await supabase
+      .from("game_rounds")
+      .select("*")
+      .eq("id", roundId)
+      .single();
+
+    if (error || !round) {
+      return null;
+    }
+
+    const { count: entryCount } = await supabase
+      .from("game_entries")
+      .select("*", { count: "exact" })
+      .eq("round_id", roundId);
+
+    return {
+      ...round,
+      entryCount: entryCount || 0,
+    };
   }
 
-  async getPlayerEntries(): Promise<any[]> {
-    throw new Error("Not implemented");
+  /**
+   * Get player entries
+   */
+  async getPlayerEntries(userId: string, roundId: string): Promise<any[]> {
+    const supabase = this.getSupabase();
+    const { data, error } = await supabase
+      .from("game_entries")
+      .select("*")
+      .eq("user_id", userId)
+      .eq("round_id", roundId)
+      .order("created_at", { ascending: false });
+
+    return (data || []).map((entry) => ({
+      id: entry.id,
+      status: entry.status,
+      entryCost: entry.entry_cost,
+      currencyType: entry.currency_type,
+      createdAt: entry.created_at,
+    }));
   }
 
-  async getRoundStats(): Promise<any> {
-    throw new Error("Not implemented");
+  /**
+   * Get round statistics
+   */
+  async getRoundStats(roundId: string): Promise<any> {
+    const supabase = this.getSupabase();
+
+    const { count: totalEntries } = await supabase
+      .from("game_entries")
+      .select("*", { count: "exact" })
+      .eq("round_id", roundId);
+
+    const { count: winCount } = await supabase
+      .from("game_entries")
+      .select("*", { count: "exact" })
+      .eq("round_id", roundId)
+      .eq("status", "won");
+
+    const { data: payouts } = await supabase
+      .from("game_payouts")
+      .select("payout_amount_gc, payout_amount_sc")
+      .eq("round_id", roundId)
+      .eq("status", "completed");
+
+    const totalPayout = payouts
+      ?.reduce(
+        (sum, p) => sum + (p.payout_amount_gc + p.payout_amount_sc),
+        0
+      ) || 0;
+
+    return {
+      totalEntries: totalEntries || 0,
+      wins: winCount || 0,
+      winRate: totalEntries ? ((winCount || 0) / totalEntries) * 100 : 0,
+      totalPayout,
+    };
+  }
+
+  /**
+   * Cleanup on shutdown
+   */
+  destroy(): void {
+    if (this.drawSchedule) {
+      clearInterval(this.drawSchedule);
+    }
   }
 }
