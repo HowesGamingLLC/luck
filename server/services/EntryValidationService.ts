@@ -1,4 +1,5 @@
-import { getSupabaseAdmin } from "../lib/supabase";
+import { query } from "../lib/db";
+import { profilesQueries, entriesQueries } from "../lib/db-queries";
 
 export interface ValidationResult {
   valid: boolean;
@@ -20,15 +21,7 @@ export interface UserBalance {
  * - Max entries enforcement
  */
 export class EntryValidationService {
-  private supabase: any = null;
   private readonly MAX_ENTRIES_PER_MINUTE = 10;
-
-  private getSupabase() {
-    if (!this.supabase) {
-      this.supabase = getSupabaseAdmin();
-    }
-    return this.supabase;
-  }
   private readonly MAX_ENTRIES_PER_HOUR = 100;
   private readonly MAX_ENTRIES_PER_DAY = 500;
 
@@ -81,14 +74,9 @@ export class EntryValidationService {
    */
   private async validateUser(userId: string): Promise<ValidationResult> {
     try {
-      const supabase = this.getSupabase();
-      const { data: user, error } = await supabase
-        .from("profiles")
-        .select("id, verified, kyc_status")
-        .eq("id", userId)
-        .single();
+      const user = await profilesQueries.getByUserId(userId);
 
-      if (error || !user) {
+      if (!user) {
         return {
           valid: false,
           error: "User not found",
@@ -149,20 +137,9 @@ export class EntryValidationService {
    */
   private async validateRateLimit(userId: string): Promise<ValidationResult> {
     try {
-      const now = new Date();
-      const oneMinuteAgo = new Date(now.getTime() - 60 * 1000);
-      const oneHourAgo = new Date(now.getTime() - 60 * 60 * 1000);
-      const oneDayAgo = new Date(now.getTime() - 24 * 60 * 60 * 1000);
-
       // Check minute limit
-      const supabase = this.getSupabase();
-      const { count: minuteCount, error: minError } = await supabase
-        .from("game_entries")
-        .select("id", { count: "exact" })
-        .eq("user_id", userId)
-        .gt("created_at", oneMinuteAgo.toISOString());
-
-      if (minuteCount && minuteCount >= this.MAX_ENTRIES_PER_MINUTE) {
+      const minuteCount = await entriesQueries.countRecentByUser(userId, 1);
+      if (minuteCount >= this.MAX_ENTRIES_PER_MINUTE) {
         return {
           valid: false,
           error: "Too many entries per minute",
@@ -172,13 +149,8 @@ export class EntryValidationService {
       }
 
       // Check hour limit
-      const { count: hourCount, error: hourError } = await supabase
-        .from("game_entries")
-        .select("id", { count: "exact" })
-        .eq("user_id", userId)
-        .gt("created_at", oneHourAgo.toISOString());
-
-      if (hourCount && hourCount >= this.MAX_ENTRIES_PER_HOUR) {
+      const hourCount = await entriesQueries.countRecentByUser(userId, 60);
+      if (hourCount >= this.MAX_ENTRIES_PER_HOUR) {
         return {
           valid: false,
           error: "Too many entries per hour",
@@ -188,13 +160,8 @@ export class EntryValidationService {
       }
 
       // Check daily limit
-      const { count: dayCount, error: dayError } = await supabase
-        .from("game_entries")
-        .select("id", { count: "exact" })
-        .eq("user_id", userId)
-        .gt("created_at", oneDayAgo.toISOString());
-
-      if (dayCount && dayCount >= this.MAX_ENTRIES_PER_DAY) {
+      const dayCount = await entriesQueries.countRecentByUser(userId, 1440);
+      if (dayCount >= this.MAX_ENTRIES_PER_DAY) {
         return {
           valid: false,
           error: "Daily entry limit exceeded",
@@ -222,15 +189,9 @@ export class EntryValidationService {
     maxAllowed: number,
   ): Promise<ValidationResult> {
     try {
-      const supabase = this.getSupabase();
-      const { count, error } = await supabase
-        .from("game_entries")
-        .select("id", { count: "exact" })
-        .eq("user_id", userId)
-        .eq("round_id", roundId)
-        .eq("status", "active");
+      const count = await entriesQueries.countByRoundId(roundId);
 
-      if (count && count >= maxAllowed) {
+      if (count >= maxAllowed) {
         return {
           valid: false,
           error: `Maximum entries per round reached (${maxAllowed})`,
@@ -258,17 +219,17 @@ export class EntryValidationService {
   ): Promise<ValidationResult> {
     try {
       // Check for rapid same-game entries
-      const supabase = this.getSupabase();
       const now = new Date();
       const fiveMinutesAgo = new Date(now.getTime() - 5 * 60 * 1000);
 
-      const { data: recentEntries } = await supabase
-        .from("game_entries")
-        .select("created_at")
-        .eq("user_id", userId)
-        .eq("game_id", gameId)
-        .gt("created_at", fiveMinutesAgo.toISOString())
-        .limit(20);
+      const result = await query(
+        `SELECT created_at FROM game_entries 
+         WHERE user_id = $1 AND created_at > $2
+         ORDER BY created_at DESC LIMIT 20`,
+        [userId, fiveMinutesAgo],
+      );
+
+      const recentEntries = result.rows;
 
       if (recentEntries && recentEntries.length >= 15) {
         // Check time intervals
@@ -293,9 +254,6 @@ export class EntryValidationService {
         }
       }
 
-      // Check for entries from multiple accounts in same IP
-      // (This would require IP logging - implement separately)
-
       return { valid: true };
     } catch (e) {
       return { valid: true }; // Don't block on abuse check failure
@@ -307,12 +265,7 @@ export class EntryValidationService {
    */
   async getUserBalance(userId: string): Promise<UserBalance> {
     try {
-      const supabase = this.getSupabase();
-      const { data: profile, error } = await supabase
-        .from("profiles")
-        .select("gold_coins_balance, sweep_coins_balance")
-        .eq("id", userId)
-        .single();
+      const profile = await profilesQueries.getByUserId(userId);
 
       return {
         goldCoins: profile?.gold_coins_balance || 0,
