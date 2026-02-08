@@ -1,5 +1,5 @@
 import { createHash, randomBytes } from "crypto";
-import { getSupabaseAdmin } from "../lib/supabase";
+import { rngQueries } from "../lib/db-queries";
 
 export interface RNGSeed {
   serverSeed: string;
@@ -23,14 +23,6 @@ export interface RNGResult {
  */
 export class RNGService {
   private readonly ALGORITHM = "sha256";
-  private supabase: any = null;
-
-  private getSupabase() {
-    if (!this.supabase) {
-      this.supabase = getSupabaseAdmin();
-    }
-    return this.supabase;
-  }
 
   /**
    * Generate a server seed
