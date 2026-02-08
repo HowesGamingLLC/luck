@@ -228,7 +228,7 @@ export const cancelRound: RequestHandler = async (req, res) => {
     // TODO: Process refunds
 
     // Log action
-    await logAdminAction(req.user?.id, round.game_id, "cancel_round", {
+    await logAdminAction((req as any).user?.id, round.game_id, "cancel_round", {
       roundId,
       reason,
     });
