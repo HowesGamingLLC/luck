@@ -172,7 +172,7 @@ export const createGame: RequestHandler = async (req, res) => {
 export const submitEntry: RequestHandler = async (req, res) => {
   try {
     const supabase = getSupabase();
-    const userId = req.user?.id;
+    const userId = (req as any).user?.id;
     const { gameId, roundId, clientSeed, currencyType } = req.body;
 
     if (!userId) {
