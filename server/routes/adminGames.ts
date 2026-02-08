@@ -108,7 +108,7 @@ export const updateGameConfig: RequestHandler = async (req, res) => {
     }
 
     // Log admin action
-    await logAdminAction(req.user?.id, gameId, "modify_config", updates);
+    await logAdminAction((req as any).user?.id, gameId, "modify_config", updates);
 
     res.json({ success: true, message: "Configuration updated" });
   } catch (error) {
