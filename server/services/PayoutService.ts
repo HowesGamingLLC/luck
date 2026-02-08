@@ -1,5 +1,7 @@
-import { getSupabaseAdmin } from "../lib/supabase";
+import { transaction, query } from "../lib/db";
+import { payoutsQueries, roundsQueries, balanceQueries } from "../lib/db-queries";
 import { webSocketService } from "./WebSocketService";
+import { PoolClient } from "pg";
 
 export interface Payout {
   userId: string;
@@ -28,15 +30,6 @@ export interface PayoutResult {
  * - Transaction tracking
  */
 export class PayoutService {
-  private supabase: any = null;
-
-  private getSupabase() {
-    if (!this.supabase) {
-      this.supabase = getSupabaseAdmin();
-    }
-    return this.supabase;
-  }
-
   /**
    * Process payouts for a round
    * Uses database transaction for atomicity
@@ -65,136 +58,108 @@ export class PayoutService {
     payout: Payout,
   ): Promise<PayoutResult> {
     try {
-      const supabase = this.getSupabase();
       const payoutId = this.generatePayoutId();
       const transactionIds: string[] = [];
 
-      // Create payout record
-      const { error: payoutError } = await supabase
-        .from("game_payouts")
-        .insert({
-          id: payoutId,
-          result_id: resultId,
-          round_id: roundId,
-          user_id: payout.userId,
-          entry_id: payout.entryId,
-          win_type: payout.winType,
-          prize_tier: payout.prizeTier,
-          payout_amount_gc: payout.payoutAmountGc,
-          payout_amount_sc: payout.payoutAmountSc,
-          status: "processing",
-          created_at: new Date().toISOString(),
-        });
-
-      if (payoutError) {
-        return {
-          payoutId,
-          userId: payout.userId,
-          totalGc: 0,
-          totalSc: 0,
-          status: "failed",
-          error: `Failed to create payout record: ${payoutError.message}`,
-          transactionIds: [],
-        };
-      }
-
-      // Process GC payout if applicable
-      if (payout.payoutAmountGc > 0) {
-        const gcTxId = await this.updateBalance(
-          payout.userId,
-          "goldCoins",
-          payout.payoutAmountGc,
-          "win",
-          `Payout from round ${roundId}`,
+      return await transaction(async (client: PoolClient) => {
+        // Create payout record
+        const payoutResult = await client.query(
+          `INSERT INTO game_payouts (id, round_id, user_id, payout_amount_gc, payout_amount_sc, win_type, status)
+           VALUES ($1, $2, $3, $4, $5, $6, 'processing')
+           RETURNING id`,
+          [
+            payoutId,
+            roundId,
+            payout.userId,
+            payout.payoutAmountGc,
+            payout.payoutAmountSc,
+            payout.winType,
+          ],
         );
 
-        if (gcTxId) {
-          transactionIds.push(gcTxId);
-        } else {
+        if (!payoutResult.rows[0]) {
           return {
             payoutId,
             userId: payout.userId,
             totalGc: 0,
             totalSc: 0,
             status: "failed",
-            error: "Failed to process GC payout",
+            error: "Failed to create payout record",
             transactionIds: [],
           };
         }
-      }
 
-      // Process SC payout if applicable
-      if (payout.payoutAmountSc > 0) {
-        const scTxId = await this.updateBalance(
-          payout.userId,
-          "sweepCoins",
-          payout.payoutAmountSc,
-          "win",
-          `Sweepstakes payout from round ${roundId}`,
-        );
+        // Process GC payout if applicable
+        if (payout.payoutAmountGc > 0) {
+          const gcTxId = await this.updateBalanceInTransaction(
+            client,
+            payout.userId,
+            "gold_coins_balance",
+            payout.payoutAmountGc,
+            "win",
+            `Payout from round ${roundId}`,
+          );
 
-        if (scTxId) {
-          transactionIds.push(scTxId);
-        } else {
-          // Rollback GC payout if SC fails
-          if (payout.payoutAmountGc > 0) {
-            await this.updateBalance(
-              payout.userId,
-              "goldCoins",
-              -payout.payoutAmountGc,
-              "rollback",
-              `Rollback GC payout for ${payoutId}`,
-            );
+          if (gcTxId) {
+            transactionIds.push(gcTxId);
+          } else {
+            throw new Error("Failed to process GC payout");
           }
-
-          return {
-            payoutId,
-            userId: payout.userId,
-            totalGc: payout.payoutAmountGc,
-            totalSc: 0,
-            status: "partial",
-            error: "Failed to process SC payout",
-            transactionIds,
-          };
         }
-      }
 
-      // Update payout status to completed
-      await supabase
-        .from("game_payouts")
-        .update({
-          status: "completed",
-          processed_at: new Date().toISOString(),
-          transaction_id: transactionIds.join(","),
-        })
-        .eq("id", payoutId);
+        // Process SC payout if applicable
+        if (payout.payoutAmountSc > 0) {
+          const scTxId = await this.updateBalanceInTransaction(
+            client,
+            payout.userId,
+            "sweep_coins_balance",
+            payout.payoutAmountSc,
+            "win",
+            `Sweepstakes payout from round ${roundId}`,
+          );
 
-      // Get game ID from round for WebSocket broadcasting
-      const { data: round } = await supabase
-        .from("game_rounds")
-        .select("game_id")
-        .eq("id", roundId)
-        .single();
+          if (scTxId) {
+            transactionIds.push(scTxId);
+          } else {
+            throw new Error("Failed to process SC payout");
+          }
+        }
 
-      // Broadcast payout processed event via WebSocket
-      if (round) {
-        webSocketService.broadcastPayoutProcessed(
-          payout.userId,
-          round.game_id,
-          roundId,
-          payout.payoutAmountGc + payout.payoutAmountSc,
-          payout.payoutAmountGc > 0 ? "mixed" : "sc",
+        // Update payout status to completed
+        await client.query(
+          `UPDATE game_payouts SET status = 'processed', updated_at = CURRENT_TIMESTAMP 
+           WHERE id = $1`,
+          [payoutId],
         );
-      }
 
-      return {
-        payoutId,
-        userId: payout.userId,
-        totalGc: payout.payoutAmountGc,
-        totalSc: payout.payoutAmountSc,
-        status: "completed",
-        transactionIds,
-      };
+        // Get game ID from round for WebSocket broadcasting
+        const roundResult = await client.query(
+          `SELECT game_id FROM game_rounds WHERE id = $1`,
+          [roundId],
+        );
+
+        const round = roundResult.rows[0];
+
+        // Broadcast payout processed event via WebSocket
+        if (round) {
+          webSocketService.broadcastPayoutProcessed(
+            payout.userId,
+            round.game_id,
+            roundId,
+            payout.payoutAmountGc + payout.payoutAmountSc,
+            payout.payoutAmountGc > 0 ? "mixed" : "sc",
+          );
+        }
+
+        return {
+          payoutId,
+          userId: payout.userId,
+          totalGc: payout.payoutAmountGc,
+          totalSc: payout.payoutAmountSc,
+          status: "completed",
+          transactionIds,
+        };
+      });
     } catch (error) {
       return {
         payoutId: "",
@@ -209,47 +174,40 @@ export class PayoutService {
   }
 
   /**
-   * Update user balance atomically
-   * Returns transaction ID if successful, null otherwise
+   * Update user balance atomically within a transaction
    */
-  private async updateBalance(
+  private async updateBalanceInTransaction(
+    client: PoolClient,
     userId: string,
-    balanceField: "goldCoins" | "sweepCoins",
+    balanceField: "gold_coins_balance" | "sweep_coins_balance",
     amount: number,
     type: "win" | "wager" | "refund" | "rollback" | "bonus",
     description: string,
   ): Promise<string | null> {
     try {
-      const supabase = this.getSupabase();
-      const dbField =
-        balanceField === "goldCoins"
-          ? "gold_coins_balance"
-          : "sweep_coins_balance";
-
-      // Use Supabase RPC or raw SQL for atomic update
-      const { data, error } = await supabase.rpc("update_balance", {
-        p_user_id: userId,
-        p_field: dbField,
-        p_amount: amount,
-      });
-
-      if (error) {
-        console.error(`Balance update error for ${userId}:`, error);
-        return null;
-      }
+      // Update profile balance
+      await client.query(
+        `UPDATE profiles SET ${balanceField} = ${balanceField} + $1, updated_at = CURRENT_TIMESTAMP 
+         WHERE user_id = $2`,
+        [amount, userId],
+      );
 
       // Create transaction record
       const txId = this.generateTransactionId();
+      const currency = balanceField === "gold_coins_balance" ? "GC" : "SC";
 
-      await supabase.from("balance_transactions").insert({
-        id: txId,
-        user_id: userId,
-        type,
-        currency: balanceField === "goldCoins" ? "GC" : "SC",
-        amount,
-        description,
-        created_at: new Date().toISOString(),
-      });
+      await client.query(
+        `INSERT INTO balance_transactions (id, user_id, type, amount_gc, amount_sc, description)
+         VALUES ($1, $2, $3, $4, $5, $6)`,
+        [
+          txId,
+          userId,
+          type,
+          currency === "GC" ? amount : 0,
+          currency === "SC" ? amount : 0,
+          description,
+        ],
+      );
 
       return txId;
     } catch (error) {
@@ -263,15 +221,13 @@ export class PayoutService {
    */
   async getPendingPayouts(roundId: string): Promise<any[]> {
     try {
-      const supabase = this.getSupabase();
-      const { data, error } = await supabase
-        .from("game_payouts")
-        .select("*")
-        .eq("round_id", roundId)
-        .eq("status", "pending")
-        .order("created_at", { ascending: true });
+      const result = await query(
+        `SELECT * FROM game_payouts WHERE round_id = $1 AND status = 'pending'
+         ORDER BY created_at ASC`,
+        [roundId],
+      );
 
-      return data || [];
+      return result.rows || [];
     } catch (error) {
       console.error("Failed to fetch pending payouts:", error);
       return [];
@@ -283,21 +239,20 @@ export class PayoutService {
    */
   async retryFailedPayouts(roundId: string): Promise<PayoutResult[]> {
     try {
-      const supabase = this.getSupabase();
-      const { data: failedPayouts } = await supabase
-        .from("game_payouts")
-        .select("*")
-        .eq("round_id", roundId)
-        .eq("status", "failed");
+      const result = await query(
+        `SELECT * FROM game_payouts WHERE round_id = $1 AND status = 'failed'`,
+        [roundId],
+      );
 
+      const failedPayouts = result.rows || [];
       const results: PayoutResult[] = [];
 
-      for (const payout of failedPayouts || []) {
-        const result = await this.processPayout(roundId, payout.result_id, {
+      for (const payout of failedPayouts) {
+        const result = await this.processPayout(roundId, payout.round_id, {
           userId: payout.user_id,
           entryId: payout.entry_id,
           winType: payout.win_type,
-          prizeTier: payout.prize_tier,
+          prizeTier: payout.prize_tier || 1,
           payoutAmountGc: payout.payout_amount_gc,
           payoutAmountSc: payout.payout_amount_sc,
         });
@@ -355,36 +310,36 @@ export class PayoutService {
    */
   async getPayoutStats(gameId: string, startDate?: Date, endDate?: Date) {
     try {
-      const supabase = this.getSupabase();
-      let query = supabase
-        .from("game_payouts")
-        .select("payout_amount_gc, payout_amount_sc, status");
+      let sql = "SELECT * FROM game_payouts WHERE 1=1";
+      const params: any[] = [];
 
       if (startDate) {
-        query = query.gte("created_at", startDate.toISOString());
+        sql += ` AND created_at >= $${params.length + 1}`;
+        params.push(startDate);
       }
 
       if (endDate) {
-        query = query.lte("created_at", endDate.toISOString());
+        sql += ` AND created_at <= $${params.length + 1}`;
+        params.push(endDate);
       }
 
-      const { data: payouts, error } = await query;
-
-      if (error) {
-        return null;
-      }
+      const result = await query(sql, params);
+      const payouts = result.rows || [];
 
       const stats = {
-        totalPayouts: payouts?.length || 0,
-        totalGcPaid:
-          payouts?.reduce((sum, p) => sum + (p.payout_amount_gc || 0), 0) || 0,
-        totalScPaid:
-          payouts?.reduce((sum, p) => sum + (p.payout_amount_sc || 0), 0) || 0,
-        completedCount:
-          payouts?.filter((p) => p.status === "completed").length || 0,
-        failedCount: payouts?.filter((p) => p.status === "failed").length || 0,
-        pendingCount:
-          payouts?.filter((p) => p.status === "pending").length || 0,
+        totalPayouts: payouts.length,
+        totalGcPaid: payouts.reduce(
+          (sum: number, p: any) => sum + (p.payout_amount_gc || 0),
+          0,
+        ),
+        totalScPaid: payouts.reduce(
+          (sum: number, p: any) => sum + (p.payout_amount_sc || 0),
+          0,
+        ),
+        completedCount: payouts.filter((p: any) => p.status === "processed")
+          .length,
+        failedCount: payouts.filter((p: any) => p.status === "failed").length,
+        pendingCount: payouts.filter((p: any) => p.status === "pending").length,
       };
 
       return stats;
