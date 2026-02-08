@@ -2,6 +2,7 @@ import { defineConfig, Plugin } from "vite";
 import react from "@vitejs/plugin-react-swc";
 import path from "path";
 import { createServer } from "./server";
+import { webSocketService } from "./server/services/WebSocketService";
 
 // https://vitejs.dev/config/
 export default defineConfig(({ mode }) => ({
@@ -34,6 +35,17 @@ function expressPlugin(): Plugin {
 
       // Add Express app as middleware to Vite dev server
       server.middlewares.use(app);
+
+      // Initialize WebSocket on Vite's http server
+      if (server.httpServer) {
+        webSocketService.initialize(server.httpServer);
+        console.log("[Vite Plugin] WebSocket service initialized");
+      }
+
+      return () => {
+        // Cleanup on server close
+        webSocketService.shutdown();
+      };
     },
   };
 }
