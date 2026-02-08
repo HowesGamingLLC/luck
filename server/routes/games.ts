@@ -250,6 +250,15 @@ export const submitEntry: RequestHandler = async (req, res) => {
     // Update round stats
     await supabase.rpc("increment_round_entries", { p_round_id: roundId });
 
+    // Broadcast entry submission event via WebSocket
+    webSocketService.broadcastEntrySubmitted(gameId, roundId, {
+      entryId: entry.id,
+      userId,
+      currencyType,
+      entryCost: entry.entry_cost,
+      timestamp: new Date().toISOString(),
+    });
+
     res.json({
       success: true,
       entryId: entry.id,
