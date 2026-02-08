@@ -3,7 +3,13 @@ import { rngService } from "../services/RNGService";
 import { payoutService } from "../services/PayoutService";
 import { entryValidationService } from "../services/EntryValidationService";
 import { webSocketService } from "../services/WebSocketService";
-import { getSupabaseAdmin } from "../lib/supabase";
+import { query } from "../lib/db";
+import {
+  roundsQueries,
+  entriesQueries,
+  resultsQueries,
+  payoutsQueries,
+} from "../lib/db-queries";
 import { EventEmitter } from "events";
 
 export interface PooledDrawConfig extends GameEngineConfig {
@@ -47,16 +53,8 @@ export class PooledDrawEngine extends EventEmitter implements GameEngine {
   gameId: string;
   gameType: "pooled_draw" = "pooled_draw";
   config: PooledDrawConfig;
-  private supabase: any = null;
   private currentRound: DrawRoundData | null = null;
   private drawTimer: NodeJS.Timeout | null = null;
-
-  private getSupabase() {
-    if (!this.supabase) {
-      this.supabase = getSupabaseAdmin();
-    }
-    return this.supabase;
-  }
 
   constructor(gameId: string, config: GameEngineConfig) {
     super();
@@ -69,7 +67,6 @@ export class PooledDrawEngine extends EventEmitter implements GameEngine {
    * Initialize a new draw round
    */
   async createRound(): Promise<string> {
-    const supabase = this.getSupabase();
     const now = new Date();
     const nextDraw = new Date(
       now.getTime() + (this.config.poolDrawIntervalMinutes || 60) * 60 * 1000,
@@ -77,32 +74,19 @@ export class PooledDrawEngine extends EventEmitter implements GameEngine {
 
     // Generate server seed at round creation
     const serverSeed = rngService.generateServerSeed();
-    const serverSeedHash = rngService.hashSeed(serverSeed);
 
     // Create round in database
-    const { data, error } = await supabase
-      .from("game_rounds")
-      .insert({
-        game_id: this.gameId,
-        config_id: "default", // TODO: use actual config ID
-        round_number: Math.floor(
-          Date.now() / (this.config.poolDrawIntervalMinutes || 60) / 60 / 1000,
-        ),
-        status: "registering",
-        starts_at: now.toISOString(),
-        draw_time: nextDraw.toISOString(),
-        server_seed: serverSeed,
-        server_seed_hash: serverSeedHash,
-        client_seed_required: true,
-      })
-      .select()
-      .single();
+    const round = await roundsQueries.create({
+      game_id: this.gameId,
+      status: "registering",
+      start_time: now,
+      draw_time: nextDraw,
+      server_seed: serverSeed,
+      prize_pool_gc: this.config.baseJackpotGc || 0,
+      prize_pool_sc: this.config.baseJackpotSc || 0,
+    });
 
-    if (error) {
-      throw new Error(`Failed to create round: ${error.message}`);
-    }
-
-    const roundId = data.id;
+    const roundId = round.id;
 
     // Initialize round state
     this.currentRound = {
@@ -176,37 +160,23 @@ export class PooledDrawEngine extends EventEmitter implements GameEngine {
     const entryAmount =
       currencyType === "GC" ? this.config.entryFeeGc : this.config.entryFeeSc;
 
-    // Hash client seed
-    const clientSeedHash = rngService.hashSeed(clientSeed);
-
     // Create entry record
-    const supabase = this.getSupabase();
-    const { data, error } = await supabase
-      .from("game_entries")
-      .insert({
-        round_id: roundId,
-        game_id: this.gameId,
-        user_id: userId,
-        currency_type: currencyType,
-        entry_cost: entryAmount,
-        client_seed: clientSeed,
-        client_seed_hash: clientSeedHash,
-        status: "active",
-      })
-      .select()
-      .single();
+    const entry = await entriesQueries.create({
+      round_id: roundId,
+      user_id: userId,
+      status: "active",
+      entry_cost: entryAmount,
+      currency_type: currencyType,
+      client_seed: clientSeed,
+    });
 
-    if (error) {
-      throw new Error(`Failed to create entry: ${error.message}`);
-    }
-
-    const entryId = data.id;
+    const entryId = entry.id;
 
     // Deduct balance
     // TODO: Implement actual balance deduction
 
     // Update round stats
-    if (this.currentRound?.roundId === entryData.roundId) {
+    if (this.currentRound?.roundId === roundId) {
       this.currentRound.totalEntries++;
       this.currentRound.prizePoolGc += entryAmount;
     }
@@ -214,7 +184,7 @@ export class PooledDrawEngine extends EventEmitter implements GameEngine {
     this.emit("entryProcessed", {
       entryId,
       userId,
-      roundId: entryData.roundId,
+      roundId: roundId,
     });
     return entryId;
   }
@@ -223,7 +193,6 @@ export class PooledDrawEngine extends EventEmitter implements GameEngine {
    * Execute draw and select winners
    */
   async drawRound(roundId: string): Promise<any> {
-    const supabase = this.getSupabase();
     const round = this.currentRound;
     if (!round || round.roundId !== roundId) {
       throw new Error("Round not found");
@@ -238,34 +207,24 @@ export class PooledDrawEngine extends EventEmitter implements GameEngine {
     round.status = "drawing";
 
     // Get all entries for this round
-    const { data: entries, error: entriesError } = await supabase
-      .from("game_entries")
-      .select("*")
-      .eq("round_id", roundId)
-      .eq("status", "active");
+    const entries = await entriesQueries.getByRoundId(roundId, "active");
 
-    if (entriesError || !entries || entries.length === 0) {
+    if (!entries || entries.length === 0) {
       round.status = "completed";
       return { success: false, reason: "no_entries" };
     }
 
+    // Get round for server seed
+    const roundData = await roundsQueries.getById(roundId);
+    if (!roundData?.server_seed) {
+      throw new Error("Server seed not found");
+    }
+
     // Execute RNG for each winner position
     const winnerCount = Math.min(this.config.winnerCount || 1, entries.length);
-
     const winnerIndices = new Set<number>();
 
     for (let i = 0; i < winnerCount; i++) {
-      // Get server seed from round
-      const { data: roundData } = await supabase
-        .from("game_rounds")
-        .select("server_seed")
-        .eq("id", roundId)
-        .single();
-
-      if (!roundData?.server_seed) {
-        throw new Error("Server seed not found");
-      }
-
       // Get any client seed from an entry
       const firstEntry = entries[0];
 
@@ -295,20 +254,14 @@ export class PooledDrawEngine extends EventEmitter implements GameEngine {
     }
 
     // Create result record
-    const { data: resultData } = await supabase
-      .from("game_results")
-      .insert({
-        round_id: roundId,
-        game_id: this.gameId,
-        server_seed_used: "", // TODO
-        drawn_number_or_result: { winners: round.winners },
-        is_provably_fair: true,
-        verification_code: "pending",
-      })
-      .select()
-      .single();
-
-    const resultId = resultData?.id;
+    const result = await resultsQueries.create({
+      round_id: roundId,
+      user_id: round.winners[0]?.userId || "system",
+      outcome: "drawn",
+      payout_amount_gc: round.prizePoolGc,
+      payout_amount_sc: round.prizePoolSc,
+      verification_code: "pending",
+    });
 
     // Process payouts
     const payouts = round.winners.map((winner) => ({
@@ -320,16 +273,13 @@ export class PooledDrawEngine extends EventEmitter implements GameEngine {
       payoutAmountSc: winner.prizeSc,
     }));
 
-    if (resultId) {
-      await payoutService.processRoundPayouts(roundId, resultId, payouts);
+    if (result) {
+      await payoutService.processRoundPayouts(roundId, result.id, payouts);
     }
 
     // Mark winning entries and broadcast winner announcements
     for (const winner of round.winners) {
-      await supabase
-        .from("game_entries")
-        .update({ status: "won" })
-        .eq("id", winner.entryId);
+      await entriesQueries.update(winner.entryId, { status: "won" });
 
       // Broadcast individual winner announcement via WebSocket
       webSocketService.broadcastWinnerAnnounced(
@@ -375,21 +325,13 @@ export class PooledDrawEngine extends EventEmitter implements GameEngine {
   ): Promise<
     Array<{ userId: string; prizeAmount: number; prizeType: string }>
   > {
-    const supabase = this.getSupabase();
-    const { data, error } = await supabase
-      .from("game_payouts")
-      .select("user_id, payout_amount_gc, payout_amount_sc, win_type")
-      .eq("round_id", roundId)
-      .eq("status", "completed");
+    const payouts = await payoutsQueries.getByRoundId(roundId);
 
-    if (error || !data) {
-      return [];
-    }
-
-    return data.map((payout) => ({
+    return payouts.map((payout) => ({
       userId: payout.user_id,
-      prizeAmount: payout.payout_amount_gc + payout.payout_amount_sc,
-      prizeType: payout.win_type,
+      prizeAmount:
+        (payout.payout_amount_gc || 0) + (payout.payout_amount_sc || 0),
+      prizeType: payout.win_type || "jackpot",
     }));
   }
 
@@ -397,27 +339,18 @@ export class PooledDrawEngine extends EventEmitter implements GameEngine {
    * Cancel a round
    */
   async cancelRound(roundId: string): Promise<void> {
-    const supabase = this.getSupabase();
-    // Refund all entries
-    const { data: entries } = await supabase
-      .from("game_entries")
-      .select("*")
-      .eq("round_id", roundId)
-      .eq("status", "active");
+    // Get all entries
+    const entries = await entriesQueries.getByRoundId(roundId, "active");
 
-    // TODO: Process refunds
+    // TODO: Process refunds for all entries
 
     // Mark entries as cancelled
-    await supabase
-      .from("game_entries")
-      .update({ status: "cancelled" })
-      .eq("round_id", roundId);
+    for (const entry of entries) {
+      await entriesQueries.update(entry.id, { status: "cancelled" });
+    }
 
     // Mark round as cancelled
-    await supabase
-      .from("game_rounds")
-      .update({ status: "cancelled" })
-      .eq("id", roundId);
+    await roundsQueries.update(roundId, { status: "cancelled" });
 
     if (this.currentRound?.roundId === roundId) {
       this.currentRound.status = "cancelled";
@@ -430,46 +363,25 @@ export class PooledDrawEngine extends EventEmitter implements GameEngine {
    * Get round status
    */
   async getRoundStatus(roundId: string): Promise<any> {
-    const supabase = this.getSupabase();
-    const { data } = await supabase
-      .from("game_rounds")
-      .select("*")
-      .eq("id", roundId)
-      .single();
-
-    return data;
+    return await roundsQueries.getById(roundId);
   }
 
   /**
    * Get player entries for a round
    */
   async getPlayerEntries(userId: string, roundId: string): Promise<any[]> {
-    const supabase = this.getSupabase();
-    const { data } = await supabase
-      .from("game_entries")
-      .select("*")
-      .eq("user_id", userId)
-      .eq("round_id", roundId);
-
-    return data || [];
+    return await query(
+      `SELECT * FROM game_entries WHERE user_id = $1 AND round_id = $2`,
+      [userId, roundId],
+    ).then((result) => result.rows);
   }
 
   /**
    * Get round statistics
    */
   async getRoundStats(roundId: string): Promise<any> {
-    const supabase = this.getSupabase();
-    const { data: round } = await supabase
-      .from("game_rounds")
-      .select("*")
-      .eq("id", roundId)
-      .single();
-
-    const { count: entryCount } = await supabase
-      .from("game_entries")
-      .select("*", { count: "exact" })
-      .eq("round_id", roundId)
-      .eq("status", "active");
+    const round = await roundsQueries.getById(roundId);
+    const entryCount = await entriesQueries.countByRoundId(roundId, "active");
 
     return {
       ...round,
