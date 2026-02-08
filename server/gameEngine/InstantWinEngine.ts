@@ -1,10 +1,11 @@
-import { GameEngine, GameEngineConfig } from "../services/GameRegistry";
+import { GameEngine, GameEngineConfig, GameType } from "../services/GameRegistry";
 
 /**
  * Instant Win Engine: Spin-based games with immediate results
  */
 export class InstantWinEngine implements GameEngine {
   gameId: string;
+  gameType: GameType = "instant_win";
   config: GameEngineConfig;
 
   constructor(gameId: string, config: GameEngineConfig) {
@@ -16,11 +17,11 @@ export class InstantWinEngine implements GameEngine {
     throw new Error("Not implemented");
   }
 
-  async validateEntry(): Promise<{ valid: boolean; error?: string }> {
+  async validateEntry(userId: string, entryData: any): Promise<{ valid: boolean; error?: string }> {
     throw new Error("Not implemented");
   }
 
-  async processEntry(): Promise<string> {
+  async processEntry(userId: string, roundId: string, entryData: any): Promise<string> {
     throw new Error("Not implemented");
   }
 
