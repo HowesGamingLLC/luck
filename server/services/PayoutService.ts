@@ -1,4 +1,5 @@
 import { getSupabaseAdmin } from "../lib/supabase";
+import { webSocketService } from "./WebSocketService";
 
 export interface Payout {
   userId: string;
