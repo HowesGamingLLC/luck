@@ -151,22 +151,13 @@ export class RNGService {
     result: RNGResult,
     startTime: number,
   ): Promise<void> {
-    const executionTime = Date.now() - startTime;
-
     try {
-      const supabase = this.getSupabase();
-      await supabase.from("rng_audit_logs").insert({
+      await rngQueries.create({
         game_id: gameId,
         round_id: roundId,
-        server_seed_used: result.seeds.serverSeed,
-        server_seed_hash: result.seeds.serverSeedHash,
-        client_seeds: [result.seeds.clientSeed],
-        nonce: result.seeds.nonce,
-        final_hash: result.finalHash,
-        rng_algorithm: this.ALGORITHM,
-        execution_timestamp: new Date().toISOString(),
-        execution_time_ms: executionTime,
-        verification_status: "pending",
+        server_seed: result.seeds.serverSeed,
+        client_seed: result.seeds.clientSeed,
+        result_hash: result.finalHash,
       });
     } catch (error) {
       console.error("Failed to log RNG execution:", error);
