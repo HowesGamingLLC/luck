@@ -180,9 +180,9 @@ export class PooledDrawEngine extends EventEmitter implements GameEngine {
         round_id: roundId,
         game_id: this.gameId,
         user_id: userId,
-        currency_type: entryData.currencyType,
+        currency_type: currencyType,
         entry_cost: entryAmount,
-        client_seed: entryData.clientSeed,
+        client_seed: clientSeed,
         client_seed_hash: clientSeedHash,
         status: "active",
       })
