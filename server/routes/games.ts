@@ -394,7 +394,7 @@ export const verifyResult: RequestHandler = async (req, res) => {
 export const getUserGameHistory: RequestHandler = async (req, res) => {
   try {
     const supabase = getSupabase();
-    const userId = req.user?.id;
+    const userId = (req as any).user?.id;
     const { gameId, limit = 50, offset = 0 } = req.query;
 
     if (!userId) {
