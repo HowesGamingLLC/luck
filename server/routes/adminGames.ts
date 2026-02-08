@@ -136,7 +136,7 @@ export const toggleGameEnabled: RequestHandler = async (req, res) => {
 
     // Log admin action
     await logAdminAction(
-      req.user?.id,
+      (req as any).user?.id,
       gameId,
       enabled ? "enable_game" : "disable_game",
       { enabled },
