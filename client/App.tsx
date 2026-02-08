@@ -40,6 +40,7 @@ import WalletEnhanced from "./pages/WalletEnhanced";
 import Tournaments from "./pages/Tournaments";
 import NotFound from "./pages/NotFound";
 import AdminSales from "./pages/AdminSales";
+import AdminGamesPanel from "./pages/AdminGamesPanel";
 
 const queryClient = new QueryClient();
 
