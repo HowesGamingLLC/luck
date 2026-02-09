@@ -93,7 +93,8 @@ export const addExternalGame: RequestHandler = async (req, res) => {
     if (thumbnailUrl) {
       try {
         const response = await fetch(thumbnailUrl as any);
-        const buffer = await response.buffer();
+        const arrayBuffer = await response.arrayBuffer();
+        const buffer = Buffer.from(arrayBuffer);
         const filename = `${gameId}-${Date.now()}.png`;
         const filepath = path.join(THUMBNAILS_DIR, filename);
 
