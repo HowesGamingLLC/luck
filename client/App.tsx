@@ -129,6 +129,14 @@ function App() {
                       }
                     />
                     <Route
+                      path="/games/external"
+                      element={
+                        <AuthGuard>
+                          <ExternalGamesPage />
+                        </AuthGuard>
+                      }
+                    />
+                    <Route
                       path="/tournaments"
                       element={
                         <AuthGuard>
