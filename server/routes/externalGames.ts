@@ -86,7 +86,7 @@ export const addExternalGame: RequestHandler = async (req, res) => {
       return res.status(400).json({ error: "Title and gameUrl are required" });
     }
 
-    const gameId = uuidv4();
+    const gameId = randomUUID();
     let savedThumbnailPath = null;
 
     // Download and save thumbnail if provided
