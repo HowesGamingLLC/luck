@@ -85,7 +85,11 @@ export const ExternalGamePlayer: React.FC<ExternalGamePlayerProps> = ({
   }
 
   return (
-    <div className={cn("rounded-lg border border-gray-800 overflow-hidden bg-gray-900")}>
+    <div
+      className={cn(
+        "rounded-lg border border-gray-800 overflow-hidden bg-gray-900",
+      )}
+    >
       <div className="aspect-video relative bg-gray-950">
         {isLoading && (
           <div className="absolute inset-0 bg-gray-950 flex items-center justify-center z-10">

@@ -95,10 +95,16 @@ export function createServer() {
   const externalGameRoutes =
     require("./routes/externalGames") as typeof import("./routes/externalGames");
   app.get("/api/external-games", externalGameRoutes.getExternalGames);
-  app.get("/api/external-games/:gameId", externalGameRoutes.getExternalGameById);
+  app.get(
+    "/api/external-games/:gameId",
+    externalGameRoutes.getExternalGameById,
+  );
   app.post("/api/external-games", externalGameRoutes.addExternalGame);
   app.put("/api/external-games/:gameId", externalGameRoutes.updateExternalGame);
-  app.delete("/api/external-games/:gameId", externalGameRoutes.deleteExternalGame);
+  app.delete(
+    "/api/external-games/:gameId",
+    externalGameRoutes.deleteExternalGame,
+  );
 
   // Admin game routes
   const adminGameRoutes =

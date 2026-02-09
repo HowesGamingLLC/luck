@@ -35,7 +35,9 @@ export const ExternalGameCard: React.FC<ExternalGameCardProps> = ({
           <div className="w-full h-full flex items-center justify-center bg-gradient-to-br from-purple-900/20 to-purple-950/20">
             <div className="text-center">
               <Play className="w-12 h-12 text-purple-400/50 mx-auto mb-2" />
-              <p className="text-sm text-gray-500">{provider || "External Game"}</p>
+              <p className="text-sm text-gray-500">
+                {provider || "External Game"}
+              </p>
             </div>
           </div>
         )}
@@ -63,7 +65,9 @@ export const ExternalGameCard: React.FC<ExternalGameCardProps> = ({
         <h3 className="font-semibold text-white mb-2 line-clamp-2">{title}</h3>
 
         {description && (
-          <p className="text-sm text-gray-400 mb-3 line-clamp-2">{description}</p>
+          <p className="text-sm text-gray-400 mb-3 line-clamp-2">
+            {description}
+          </p>
         )}
 
         {provider && (

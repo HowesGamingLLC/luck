@@ -64,7 +64,7 @@ export const AdminExternalGamesPanel: React.FC = () => {
       });
 
       if (!response.ok) throw new Error("Failed to add game");
-      
+
       setFormData({
         title: "",
         description: "",
@@ -97,7 +97,7 @@ export const AdminExternalGamesPanel: React.FC = () => {
       });
 
       if (!response.ok) throw new Error("Failed to update game");
-      
+
       setEditingGame(null);
       setFormData({
         title: "",
@@ -128,7 +128,10 @@ export const AdminExternalGamesPanel: React.FC = () => {
     }
   };
 
-  const handleToggleEnabled = async (gameId: string, currentEnabled: boolean) => {
+  const handleToggleEnabled = async (
+    gameId: string,
+    currentEnabled: boolean,
+  ) => {
     try {
       const response = await fetch(`/api/external-games/${gameId}`, {
         method: "PUT",
@@ -311,11 +314,21 @@ export const AdminExternalGamesPanel: React.FC = () => {
           <table className="w-full text-sm">
             <thead>
               <tr className="border-b border-gray-800">
-                <th className="px-6 py-3 text-left text-gray-300 font-semibold">Title</th>
-                <th className="px-6 py-3 text-left text-gray-300 font-semibold">Provider</th>
-                <th className="px-6 py-3 text-left text-gray-300 font-semibold">Category</th>
-                <th className="px-6 py-3 text-left text-gray-300 font-semibold">Status</th>
-                <th className="px-6 py-3 text-right text-gray-300 font-semibold">Actions</th>
+                <th className="px-6 py-3 text-left text-gray-300 font-semibold">
+                  Title
+                </th>
+                <th className="px-6 py-3 text-left text-gray-300 font-semibold">
+                  Provider
+                </th>
+                <th className="px-6 py-3 text-left text-gray-300 font-semibold">
+                  Category
+                </th>
+                <th className="px-6 py-3 text-left text-gray-300 font-semibold">
+                  Status
+                </th>
+                <th className="px-6 py-3 text-right text-gray-300 font-semibold">
+                  Actions
+                </th>
               </tr>
             </thead>
             <tbody>
@@ -340,9 +353,7 @@ export const AdminExternalGamesPanel: React.FC = () => {
                   </td>
                   <td className="px-6 py-3 text-right space-x-2">
                     <button
-                      onClick={() =>
-                        handleToggleEnabled(game.id, game.enabled)
-                      }
+                      onClick={() => handleToggleEnabled(game.id, game.enabled)}
                       className="p-2 hover:bg-gray-700 rounded transition-colors inline-flex items-center gap-2"
                       title={game.enabled ? "Disable" : "Enable"}
                     >
