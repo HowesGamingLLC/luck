@@ -1,6 +1,6 @@
 import { RequestHandler } from "express";
 import { getSupabaseAdmin } from "../lib/supabase";
-import { v4 as uuidv4 } from "crypto";
+import { randomUUID } from "crypto";
 import fs from "fs";
 import path from "path";
 
