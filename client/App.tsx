@@ -42,6 +42,7 @@ import NotFound from "./pages/NotFound";
 import AdminSales from "./pages/AdminSales";
 import AdminGamesPanel from "./pages/AdminGamesPanel";
 import { ExternalGamesPage } from "./pages/ExternalGamesPage";
+import { AdminExternalGamesPanel } from "./pages/AdminExternalGamesPanel";
 
 const queryClient = new QueryClient();
 
