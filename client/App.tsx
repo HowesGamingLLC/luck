@@ -237,6 +237,14 @@ function App() {
                       }
                     />
                     <Route
+                      path="/admin/external-games"
+                      element={
+                        <AuthGuard requireAdmin={true}>
+                          <AdminExternalGamesPanel />
+                        </AuthGuard>
+                      }
+                    />
+                    <Route
                       path="/admin/*"
                       element={
                         <AuthGuard requireAdmin={true}>
