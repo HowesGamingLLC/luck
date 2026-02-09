@@ -41,6 +41,7 @@ import Tournaments from "./pages/Tournaments";
 import NotFound from "./pages/NotFound";
 import AdminSales from "./pages/AdminSales";
 import AdminGamesPanel from "./pages/AdminGamesPanel";
+import { ExternalGamesPage } from "./pages/ExternalGamesPage";
 
 const queryClient = new QueryClient();
 
